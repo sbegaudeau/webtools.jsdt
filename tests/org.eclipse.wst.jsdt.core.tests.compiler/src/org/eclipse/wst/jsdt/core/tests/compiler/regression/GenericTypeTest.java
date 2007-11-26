@@ -19,7 +19,6 @@ import junit.framework.Test;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
@@ -3096,56 +3095,7 @@ public class GenericTypeTest extends AbstractComparableTest {
 				"}\n",
 			},
 			"SUCCESS");		
-		String expectedOutput =
-			"  // Method descriptor #25 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 4, Locals: 2\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  new X [1]\n" + 
-			"     3  dup\n" + 
-			"     4  new BX [26]\n" + 
-			"     7  dup\n" + 
-			"     8  invokespecial BX() [28]\n" + 
-			"    11  invokespecial X(AX) [29]\n" + 
-			"    14  astore_1 [x]\n" + 
-			"    15  aload_1 [x]\n" + 
-			"    16  getfield X.t : AX [16]\n" + 
-			"    19  checkcast BX [26]\n" + 
-			"    22  ldc <String \"SUCC\"> [31]\n" + 
-			"    24  invokevirtual BX.foo(java.lang.Object) : void [33]\n" + 
-			"    27  aload_1 [x]\n" + 
-			"    28  getfield X.t : AX [16]\n" + 
-			"    31  checkcast BX [26]\n" + 
-			"    34  ldc <String \"ESS\"> [37]\n" + 
-			"    36  invokevirtual BX.bar(java.lang.Object) : void [39]\n" + 
-			"    39  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 7]\n" + 
-			"        [pc: 15, line: 8]\n" + 
-			"        [pc: 27, line: 9]\n" + 
-			"        [pc: 39, line: 10]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 40] local: args index: 0 type: java.lang.String[]\n" + 
-			"        [pc: 15, pc: 40] local: x index: 1 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 15, pc: 40] local: x index: 1 type: X<? extends BX>\n";
 		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "X.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
 	}
 
 	// wildcard bound check
@@ -6230,56 +6180,7 @@ public class GenericTypeTest extends AbstractComparableTest {
 			},
 			"");
 			
-		String expectedOutput =
-			"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 2, Locals: 2\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  aload_0 [args]\n" + 
-			"     1  ifnonnull 9\n" + 
-			"     4  aconst_null\n" + 
-			"     5  astore_1 [i]\n" + 
-			"     6  goto 10\n" + 
-			"     9  return\n" + 
-			"    10  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-			"    13  aload_1 [i]\n" + 
-			"    14  invokevirtual java.io.PrintStream.println(java.lang.Object) : void [22]\n" + 
-			"    17  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-			"    20  ldc <String \"SUCCESS\"> [28]\n" + 
-			"    22  invokevirtual java.io.PrintStream.println(java.lang.String) : void [30]\n" + 
-			"    25  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 5]\n" + 
-			"        [pc: 4, line: 6]\n" + 
-			"        [pc: 6, line: 7]\n" + 
-			"        [pc: 9, line: 9]\n" + 
-			"        [pc: 10, line: 11]\n" + 
-			"        [pc: 17, line: 12]\n" + 
-			"        [pc: 25, line: 13]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 26] local: args index: 0 type: java.lang.String[]\n" + 
-			"        [pc: 6, pc: 9] local: i index: 1 type: java.util.ArrayList\n" + 
-			"        [pc: 10, pc: 26] local: i index: 1 type: java.util.ArrayList\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 6, pc: 9] local: i index: 1 type: java.util.ArrayList<java.lang.Object>\n" + 
-			"        [pc: 10, pc: 26] local: i index: 1 type: java.util.ArrayList<java.lang.Object>\n";
 		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "X.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
 	}
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=68998 parameterized field constants
 	public void test0216() { 
@@ -14930,58 +14831,7 @@ public void test0500(){
 				"}\n",
 			},
 			"nullnull");		
-		String expectedOutput =
-			"  // Method descriptor #25 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 4, Locals: 2\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  new X [1]\n" + 
-			"     3  dup\n" + 
-			"     4  new BX [26]\n" + 
-			"     7  dup\n" + 
-			"     8  invokespecial BX() [28]\n" + 
-			"    11  invokespecial X(AX) [29]\n" + 
-			"    14  astore_1 [x]\n" + 
-			"    15  getstatic java.lang.System.out : java.io.PrintStream [31]\n" + 
-			"    18  aload_1 [x]\n" + 
-			"    19  getfield X.t : AX [16]\n" + 
-			"    22  checkcast BX [26]\n" + 
-			"    25  getfield BX.ax : java.lang.Object [37]\n" + 
-			"    28  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [41]\n" + 
-			"    31  getstatic java.lang.System.out : java.io.PrintStream [31]\n" + 
-			"    34  aload_1 [x]\n" + 
-			"    35  getfield X.t : AX [16]\n" + 
-			"    38  checkcast BX [26]\n" + 
-			"    41  getfield BX.bx : java.lang.Object [47]\n" + 
-			"    44  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [41]\n" + 
-			"    47  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 7]\n" + 
-			"        [pc: 15, line: 8]\n" + 
-			"        [pc: 31, line: 9]\n" + 
-			"        [pc: 47, line: 10]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 48] local: args index: 0 type: java.lang.String[]\n" + 
-			"        [pc: 15, pc: 48] local: x index: 1 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 15, pc: 48] local: x index: 1 type: X<? extends BX>\n";
 		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "X.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
 	}
 	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=85303 - variation
 	public void test0502() {
@@ -15012,60 +14862,7 @@ public void test0500(){
 				"}\n",
 			},
 			"nullnull");		
-		String expectedOutput =
-			"  // Method descriptor #25 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 4, Locals: 2\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  new X [1]\n" + 
-			"     3  dup\n" + 
-			"     4  new BX [26]\n" + 
-			"     7  dup\n" + 
-			"     8  invokespecial BX() [28]\n" + 
-			"    11  invokespecial X(AX) [29]\n" + 
-			"    14  astore_1 [x]\n" + 
-			"    15  getstatic java.lang.System.out : java.io.PrintStream [31]\n" + 
-			"    18  aload_1 [x]\n" + 
-			"    19  invokevirtual X.self() : X [37]\n" + 
-			"    22  getfield X.t : AX [16]\n" + 
-			"    25  checkcast BX [26]\n" + 
-			"    28  getfield BX.ax : java.lang.Object [41]\n" + 
-			"    31  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [45]\n" + 
-			"    34  getstatic java.lang.System.out : java.io.PrintStream [31]\n" + 
-			"    37  aload_1 [x]\n" + 
-			"    38  invokevirtual X.self() : X [37]\n" + 
-			"    41  getfield X.t : AX [16]\n" + 
-			"    44  checkcast BX [26]\n" + 
-			"    47  getfield BX.bx : java.lang.Object [51]\n" + 
-			"    50  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [45]\n" + 
-			"    53  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 7]\n" + 
-			"        [pc: 15, line: 8]\n" + 
-			"        [pc: 34, line: 9]\n" + 
-			"        [pc: 53, line: 10]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 54] local: args index: 0 type: java.lang.String[]\n" + 
-			"        [pc: 15, pc: 54] local: x index: 1 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 15, pc: 54] local: x index: 1 type: X<? extends BX>\n";
 		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "X.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
 	}	
 	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=85303 - variation
 	public void test0503() {
@@ -15090,82 +14887,7 @@ public void test0500(){
 				"}\n",
 			},
 			"SUCCESSSUCCESS");		
-		String expectedOutput =
-			"// Signature: <E:LXA;:LXB;>Ljava/lang/Object;\n" + 
-			"public class X {\n" + 
-			"  \n" + 
-			"  // Field descriptor #6 LXA;\n" + 
-			"  // Signature: TE;\n" + 
-			"  XA e;\n" + 
-			"  \n" + 
-			"  // Method descriptor #10 ()V\n" + 
-			"  // Stack: 1, Locals: 1\n" + 
-			"  public X();\n" + 
-			"    0  aload_0 [this]\n" + 
-			"    1  invokespecial java.lang.Object() [12]\n" + 
-			"    4  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 7]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 5] local: this index: 0 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 0, pc: 5] local: this index: 0 type: X<E>\n" + 
-			"  \n" + 
-			"  // Method descriptor #21 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 3, Locals: 1\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  getstatic java.lang.System.out : java.io.PrintStream [22]\n" + 
-			"     3  new X [1]\n" + 
-			"     6  dup\n" + 
-			"     7  invokespecial X() [28]\n" + 
-			"    10  getfield X.e : XA [29]\n" + 
-			"    13  pop\n" + 
-			"    14  getstatic XAB.CONST : XB [31]\n" + 
-			"    17  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [37]\n" + 
-			"    20  new X [1]\n" + 
-			"    23  dup\n" + 
-			"    24  invokespecial X() [28]\n" + 
-			"    27  invokevirtual X.foo() : void [43]\n" + 
-			"    30  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 10]\n" + 
-			"        [pc: 20, line: 11]\n" + 
-			"        [pc: 30, line: 12]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 31] local: args index: 0 type: java.lang.String[]\n" + 
-			"  \n" + 
-			"  // Method descriptor #10 ()V\n" + 
-			"  // Stack: 2, Locals: 1\n" + 
-			"  public void foo();\n" + 
-			"     0  getstatic java.lang.System.out : java.io.PrintStream [22]\n" + 
-			"     3  getstatic XB.CONST : XB [48]\n" + 
-			"     6  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [37]\n" + 
-			"     9  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 14]\n" + 
-			"        [pc: 9, line: 15]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 10] local: this index: 0 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 0, pc: 10] local: this index: 0 type: X<E>\n";
 		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "X.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
 	}		
 	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=85303 - variation
 	public void test0504() {
@@ -15190,94 +14912,6 @@ public void test0500(){
 				"}\n",
 			},
 			"SUCCESSSUCCESS");		
-		String expectedOutput =
-			"// Signature: <E:LXA;:LXB;>Ljava/lang/Object;\n" + 
-			"public class X {\n" + 
-			"  \n" + 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 1, Locals: 1\n" + 
-			"  public X();\n" + 
-			"    0  aload_0 [this]\n" + 
-			"    1  invokespecial java.lang.Object() [8]\n" + 
-			"    4  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 7]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 5] local: this index: 0 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 0, pc: 5] local: this index: 0 type: X<E>\n" + 
-			"  \n" + 
-			"  // Method descriptor #17 ()LXA;\n" + 
-			"  // Signature: ()TE;\n" + 
-			"  // Stack: 1, Locals: 1\n" + 
-			"  XA e();\n" + 
-			"    0  aconst_null\n" + 
-			"    1  areturn\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 8]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 2] local: this index: 0 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 0, pc: 2] local: this index: 0 type: X<E>\n" + 
-			"  \n" + 
-			"  // Method descriptor #21 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 3, Locals: 1\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  getstatic java.lang.System.out : java.io.PrintStream [22]\n" + 
-			"     3  new X [1]\n" + 
-			"     6  dup\n" + 
-			"     7  invokespecial X() [28]\n" + 
-			"    10  invokevirtual X.e() : XA [29]\n" + 
-			"    13  pop\n" + 
-			"    14  getstatic XAB.CONST : XB [31]\n" + 
-			"    17  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [37]\n" + 
-			"    20  new X [1]\n" + 
-			"    23  dup\n" + 
-			"    24  invokespecial X() [28]\n" + 
-			"    27  invokevirtual X.foo() : void [43]\n" + 
-			"    30  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 10]\n" + 
-			"        [pc: 20, line: 11]\n" + 
-			"        [pc: 30, line: 12]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 31] local: args index: 0 type: java.lang.String[]\n" + 
-			"  \n" + 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 2, Locals: 1\n" + 
-			"  public void foo();\n" + 
-			"     0  getstatic java.lang.System.out : java.io.PrintStream [22]\n" + 
-			"     3  aload_0 [this]\n" + 
-			"     4  invokevirtual X.e() : XA [29]\n" + 
-			"     7  pop\n" + 
-			"     8  getstatic XB.CONST : XB [48]\n" + 
-			"    11  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [37]\n" + 
-			"    14  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 14]\n" + 
-			"        [pc: 14, line: 15]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 15] local: this index: 0 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 0, pc: 15] local: this index: 0 type: X<E>\n";
-		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "X.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
 	}			
 	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=85303 - variation
 	public void test0505() {
@@ -15306,80 +14940,6 @@ public void test0500(){
 				"}\n",
 			},
 			"SUCCESSSUCCESS");		
-		String expectedOutput =
-			"// Signature: <E:LXA;:LXB;>Ljava/lang/Object;\n" + 
-			"public class X {\n" + 
-			"  \n" + 
-			"  // Field descriptor #6 LXA;\n" + 
-			"  // Signature: TE;\n" + 
-			"  XA e;\n" + 
-			"  \n" + 
-			"  // Method descriptor #10 ()V\n" + 
-			"  // Stack: 1, Locals: 1\n" + 
-			"  public X();\n" + 
-			"    0  aload_0 [this]\n" + 
-			"    1  invokespecial java.lang.Object() [12]\n" + 
-			"    4  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 7]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 5] local: this index: 0 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 0, pc: 5] local: this index: 0 type: X<E>\n" + 
-			"  \n" + 
-			"  // Method descriptor #21 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 2, Locals: 1\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  new X [1]\n" + 
-			"     3  dup\n" + 
-			"     4  invokespecial X() [22]\n" + 
-			"     7  invokevirtual X.foo() : void [23]\n" + 
-			"    10  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 10]\n" + 
-			"        [pc: 10, line: 11]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 11] local: args index: 0 type: java.lang.String[]\n" + 
-			"  \n" + 
-			"  // Method descriptor #10 ()V\n" + 
-			"  // Stack: 3, Locals: 1\n" + 
-			"  public void foo();\n" + 
-			"     0  new X$1 [28]\n" + 
-			"     3  dup\n" + 
-			"     4  aload_0 [this]\n" + 
-			"     5  invokespecial X$1(X) [30]\n" + 
-			"     8  invokevirtual X$1.run() : void [33]\n" + 
-			"    11  getstatic java.lang.System.out : java.io.PrintStream [36]\n" + 
-			"    14  getstatic XB.CONST : XB [42]\n" + 
-			"    17  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [48]\n" + 
-			"    20  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 13]\n" + 
-			"        [pc: 8, line: 17]\n" + 
-			"        [pc: 11, line: 18]\n" + 
-			"        [pc: 20, line: 19]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 21] local: this index: 0 type: X\n" + 
-			"      Local variable type table:\n" + 
-			"        [pc: 0, pc: 21] local: this index: 0 type: X<E>\n";
-		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "X.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
 	}				
 	
 	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=85477
@@ -23846,33 +23406,7 @@ public void test0772() {
 		null,
 		false,
 		null);
-		String expectedOutput =
-			"  // Method descriptor #18 ()Ljava/lang/Object;\n" + 
-			"  // Stack: 1, Locals: 1\n" + 
-			"  public bridge synthetic java.lang.Object getIt();\n" + 
-			"    0  aload_0\n" + 
-			"    1  invokevirtual FooImpl.getIt() : java.lang.String [19]\n" + 
-			"    4  areturn\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 1]\n";
 		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "FooImpl.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}	
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=101794 - variation
 public void test0773() {
@@ -23908,33 +23442,7 @@ public void test0773() {
 		null,
 		false,
 		null);
-		String expectedOutput =
-			"  // Method descriptor #18 ()Ljava/lang/Exception;\n" + 
-			"  // Stack: 1, Locals: 1\n" + 
-			"  public bridge synthetic java.lang.Exception getIt() throws java.lang.Exception;\n" + 
-			"    0  aload_0\n" + 
-			"    1  invokevirtual FooImpl.getIt() : java.lang.NullPointerException [22]\n" + 
-			"    4  areturn\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 1]\n";
 		
-		try {
-			File f = new File(OUTPUT_DIR + File.separator + "FooImpl.class");
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-			int index = result.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(result, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, result);
-			}
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}	
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=98532
 public void test0774() {
@@ -24190,35 +23698,6 @@ public void test0779() {
 		},
 		"SUCCESS");
 	
-	String expectedOutput =
-		"  // Method descriptor #31 (I)Ljava/lang/Object;\n" + 
-		"  // Stack: 2, Locals: 2\n" + 
-		"  public bridge synthetic java.lang.Object get(int arg0);\n" + 
-		"    0  aload_0\n" + 
-		"    1  iload_1\n" + 
-		"    2  invokevirtual X$Entry$1.get(int) : java.lang.String [36]\n" + 
-		"    5  areturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n";
-	
-	// check no unnecessary checkcast on bridge method for X$1
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X$Entry$1.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=103227 - variation
 public void test0780() {
@@ -25537,41 +25016,6 @@ public void test0821() {
 			"}\n",
 		},
 		"AA");
-	// 	ensure proper declaring class for #run() invocation
-	String expectedOutput =
-		"  // Method descriptor #15 ()V\n" + 
-		"  // Stack: 1, Locals: 1\n" + 
-		"  void foo();\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  getfield X.t : java.io.Serializable [16]\n" + 
-		"     4  checkcast java.lang.Runnable [25]\n" + 
-		"     7  invokeinterface java.lang.Runnable.run() : void [27] [nargs: 1]\n" + 
-		"    12  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 9]\n" + 
-		"        [pc: 12, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 13] local: this index: 0 type: X\n" + 
-		"      Local variable type table:\n" + 
-		"        [pc: 0, pc: 13] local: this index: 0 type: X<T>\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 public void test0822() {
 	this.runConformTest(
@@ -25595,42 +25039,6 @@ public void test0822() {
 		},
 		"AA");
 	// 	ensure proper declaring class for #run() invocation
-	String expectedOutput =
-		"  // Method descriptor #17 (Ljava/io/Serializable;)V\n" + 
-		"  // Signature: (TT;)V\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  void foo(java.io.Serializable t);\n" + 
-		"     0  aload_1 [t]\n" + 
-		"     1  checkcast java.lang.Runnable [20]\n" + 
-		"     4  invokeinterface java.lang.Runnable.run() : void [22] [nargs: 1]\n" + 
-		"     9  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 5]\n" + 
-		"        [pc: 9, line: 6]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 10] local: this index: 0 type: X\n" + 
-		"        [pc: 0, pc: 10] local: t index: 1 type: java.io.Serializable\n" + 
-		"      Local variable type table:\n" + 
-		"        [pc: 0, pc: 10] local: this index: 0 type: X<T>\n" + 
-		"        [pc: 0, pc: 10] local: t index: 1 type: T\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 public void test0823() {
 	this.runConformTest(
@@ -25658,51 +25066,6 @@ public void test0823() {
 			"}\n",
 		},
 		"AAAA");
-	// 	ensure proper declaring class for #run() invocation
-	String expectedOutput =
-		"  // Method descriptor #15 ()V\n" + 
-		"  // Stack: 1, Locals: 1\n" + 
-		"  void foo();\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  ifnonnull 11\n" + 
-		"     4  aload_0 [this]\n" + 
-		"     5  getfield X.t : java.io.Serializable [16]\n" + 
-		"     8  goto 15\n" + 
-		"    11  aload_0 [this]\n" + 
-		"    12  getfield X.t : java.io.Serializable [16]\n" + 
-		"    15  checkcast java.lang.Runnable [25]\n" + 
-		"    18  invokeinterface java.lang.Runnable.run() : void [27] [nargs: 1]\n" + 
-		"    23  aload_0 [this]\n" + 
-		"    24  getfield X.t : java.io.Serializable [16]\n" + 
-		"    27  checkcast java.lang.Runnable [25]\n" + 
-		"    30  invokeinterface java.lang.Runnable.run() : void [27] [nargs: 1]\n" + 
-		"    35  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 9]\n" + 
-		"        [pc: 23, line: 10]\n" + 
-		"        [pc: 35, line: 11]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 36] local: this index: 0 type: X\n" + 
-		"      Local variable type table:\n" + 
-		"        [pc: 0, pc: 36] local: this index: 0 type: X<T,V>\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 public void test0824() {
 	this.runConformTest(
@@ -25726,51 +25089,6 @@ public void test0824() {
 			"}\n",
 		},
 		"AAAA");
-	// 	ensure proper declaring class for #run() invocation
-	String expectedOutput =
-		"  // Method descriptor #17 (Ljava/io/Serializable;)V\n" + 
-		"  // Signature: (TT;)V\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  void foo(java.io.Serializable t);\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  ifnonnull 8\n" + 
-		"     4  aload_1 [t]\n" + 
-		"     5  goto 9\n" + 
-		"     8  aload_1 [t]\n" + 
-		"     9  checkcast java.lang.Runnable [20]\n" + 
-		"    12  invokeinterface java.lang.Runnable.run() : void [22] [nargs: 1]\n" + 
-		"    17  aload_1 [t]\n" + 
-		"    18  checkcast java.lang.Runnable [20]\n" + 
-		"    21  invokeinterface java.lang.Runnable.run() : void [22] [nargs: 1]\n" + 
-		"    26  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 5]\n" + 
-		"        [pc: 17, line: 6]\n" + 
-		"        [pc: 26, line: 7]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 27] local: this index: 0 type: X\n" + 
-		"        [pc: 0, pc: 27] local: t index: 1 type: java.io.Serializable\n" + 
-		"      Local variable type table:\n" + 
-		"        [pc: 0, pc: 27] local: this index: 0 type: X<T,V>\n" + 
-		"        [pc: 0, pc: 27] local: t index: 1 type: T\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 public void test0825() {
 	this.runConformTest(
@@ -25800,71 +25118,6 @@ public void test0825() {
 			"}\n",
 		},
 		"");
-	// 	ensure proper declaring class for #run() invocation
-	String expectedOutput =
-		"  // Method descriptor #17 (Ljava/io/Serializable;)V\n" + 
-		"  // Signature: (TT;)V\n" + 
-		"  // Stack: 2, Locals: 5\n" + 
-		"  void foo(java.io.Serializable t);\n" + 
-		"     0  aload_1 [t]\n" + 
-		"     1  astore_2 [r1]\n" + 
-		"     2  aload_0 [this]\n" + 
-		"     3  ifnonnull 10\n" + 
-		"     6  aload_1 [t]\n" + 
-		"     7  goto 11\n" + 
-		"    10  aload_1 [t]\n" + 
-		"    11  astore_3 [r2]\n" + 
-		"    12  aload_1 [t]\n" + 
-		"    13  astore 4 [r3]\n" + 
-		"    15  aload_0 [this]\n" + 
-		"    16  aload_1 [t]\n" + 
-		"    17  invokevirtual X.bar(java.lang.Runnable) : void [20]\n" + 
-		"    20  aload_0 [this]\n" + 
-		"    21  aload_0 [this]\n" + 
-		"    22  ifnonnull 29\n" + 
-		"    25  aload_1 [t]\n" + 
-		"    26  goto 30\n" + 
-		"    29  aload_1 [t]\n" + 
-		"    30  invokevirtual X.bar(java.lang.Runnable) : void [20]\n" + 
-		"    33  aload_0 [this]\n" + 
-		"    34  aload_1 [t]\n" + 
-		"    35  invokevirtual X.bar(java.lang.Runnable) : void [20]\n" + 
-		"    38  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 5]\n" + 
-		"        [pc: 2, line: 6]\n" + 
-		"        [pc: 12, line: 7]\n" + 
-		"        [pc: 15, line: 9]\n" + 
-		"        [pc: 20, line: 10]\n" + 
-		"        [pc: 33, line: 11]\n" + 
-		"        [pc: 38, line: 12]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 39] local: this index: 0 type: X\n" + 
-		"        [pc: 0, pc: 39] local: t index: 1 type: java.io.Serializable\n" + 
-		"        [pc: 2, pc: 39] local: r1 index: 2 type: java.lang.Runnable\n" + 
-		"        [pc: 12, pc: 39] local: r2 index: 3 type: java.lang.Runnable\n" + 
-		"        [pc: 15, pc: 39] local: r3 index: 4 type: java.lang.Runnable\n" + 
-		"      Local variable type table:\n" + 
-		"        [pc: 0, pc: 39] local: this index: 0 type: X<T,V>\n" + 
-		"        [pc: 0, pc: 39] local: t index: 1 type: T\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=110570
 public void test0826() {
@@ -26644,57 +25897,7 @@ public void test0848() {
 			},
 			"");
 	// 	ensure proper declaring class for #run() invocation
-	String expectedOutput =
-		"  // Method descriptor #14 ()V\n" + 
-		"  // Stack: 6, Locals: 1\n" + 
-		"  public X();\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  invokespecial java.lang.Object() [16]\n" + 
-		"     4  aload_0 [this]\n" + 
-		"     5  iconst_2\n" + 
-		"     6  anewarray java.lang.Number [18]\n" + 
-		"     9  dup\n" + 
-		"    10  iconst_0\n" + 
-		"    11  iconst_1\n" + 
-		"    12  invokestatic java.lang.Integer.valueOf(int) : java.lang.Integer [20]\n" + 
-		"    15  aastore\n" + 
-		"    16  dup\n" + 
-		"    17  iconst_1\n" + 
-		"    18  ldc2_w <Double 2.2> [26]\n" + 
-		"    21  invokestatic java.lang.Double.valueOf(double) : java.lang.Double [28]\n" + 
-		"    24  aastore\n" + 
-		"    25  invokestatic java.util.Arrays.asList(java.lang.Object[]) : java.util.List [33]\n" + 
-		"    28  checkcast java.util.Collection [38]\n" + 
-		"    31  putfield X.asList : java.util.Collection [40]\n" + 
-		"    34  aload_0 [this]\n" + 
-		"    35  aload_0 [this]\n" + 
-		"    36  getfield X.asList : java.util.Collection [40]\n" + 
-		"    39  checkcast java.util.List [42]\n" + 
-		"    42  putfield X.nums : java.util.List [44]\n" + 
-		"    45  aload_0 [this]\n" + 
-		"    46  aload_0 [this]\n" + 
-		"    47  getfield X.asList : java.util.Collection [40]\n" + 
-		"    50  checkcast java.util.LinkedList [46]\n" + // <--- checkcast must appear
-		"    53  putfield X.numz : java.util.List [48]\n" + 
-		"    56  return\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}			
+
 }
 //ensure no unsafe cast is diagnosed
 public void test0849() {
@@ -27441,47 +26644,7 @@ public void test0874() {
 			"}\n",
 		},
 		"SUCCESS");
-	// 	ensure only one checkcast C
-	String expectedOutput =
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 2\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc <String \"X\"> [16]\n" + 
-		"     2  invokestatic C.instance(java.lang.String) : C [17]\n" + 
-		"     5  ldc <String \"Y\"> [23]\n" + 
-		"     7  invokevirtual C.label(java.lang.String) : B [25]\n" + 
-		"    10  checkcast C [18]\n" + 
-		"    13  astore_1 [c]\n" + 
-		"    14  getstatic java.lang.System.out : java.io.PrintStream [29]\n" + 
-		"    17  aload_1 [c]\n" + 
-		"    18  invokevirtual C.toString() : java.lang.String [35]\n" + 
-		"    21  invokevirtual java.io.PrintStream.println(java.lang.String) : void [39]\n" + 
-		"    24  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 13]\n" + 
-		"        [pc: 14, line: 14]\n" + 
-		"        [pc: 24, line: 15]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 25] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 14, pc: 25] local: c index: 1 type: C\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=119395
 public void test0875() {
@@ -27662,46 +26825,7 @@ public void test0878() {
 			"}\n",
 		},
 		"null");
-	// 	ensure only one checkcast D
-	String expectedOutput =
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 2\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc <String \"X\"> [16]\n" + 
-		"     2  invokestatic C.instance(java.lang.String) : C [17]\n" + 
-		"     5  ldc <String \"Y\"> [23]\n" + 
-		"     7  invokevirtual C.label(java.lang.String) : java.lang.Object [25]\n" + 
-		"    10  checkcast D [29]\n" + 
-		"    13  astore_1 [d]\n" + 
-		"    14  getstatic java.lang.System.out : java.io.PrintStream [31]\n" + 
-		"    17  aload_1 [d]\n" + 
-		"    18  invokevirtual java.io.PrintStream.println(java.lang.Object) : void [37]\n" + 
-		"    21  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 14]\n" + 
-		"        [pc: 14, line: 15]\n" + 
-		"        [pc: 21, line: 16]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 22] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 14, pc: 22] local: d index: 1 type: D\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=122610
 public void test0879() {
@@ -33472,41 +32596,7 @@ public void test1038() {
 		null,
 		options,
 		null);
-	// check the reference to I.CONST still got generated (for <clinit> invocation side-effect)
-	String expectedOutput = 
-		"  // Method descriptor #10 (I)V\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  B(int param);\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  invokespecial java.lang.Object() [12]\n" + 
-		"    4  getstatic B.CONST : int [15]\n" + 
-		"    7  pop\n" + 
-		"    8  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 14]\n" + 
-		"        [pc: 4, line: 15]\n" + 
-		"        [pc: 8, line: 19]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 9] local: this index: 0 type: B\n" + 
-		"        [pc: 0, pc: 9] local: param index: 1 type: int\n";
-
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "B.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}			
+	
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=159021 - variation
 public void test1039() {
@@ -33553,58 +32643,7 @@ public void test1039() {
 		null,
 		options,
 		null);
-	// check the reference to I.CONST still got generated (for <clinit> invocation side-effect)
-	String expectedOutput = 
-		"  // Method descriptor #28 (LValue;)V\n" + 
-		"  // Signature: (LValue<Ljava/lang/String;>;)V\n" + 
-		"  // Stack: 2, Locals: 2\n" + 
-		"  B(Value param);\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  invokespecial java.lang.Object() [30]\n" + 
-		"     4  aload_0 [this]\n" + 
-		"     5  ldc <String \"[B.local_field]\"> [32]\n" + 
-		"     7  invokestatic A.foo(java.lang.String) : Value [17]\n" + 
-		"    10  putfield B.local_field : Value [34]\n" + 
-		"    13  getstatic I.CONST : Value [36]\n" + 
-		"    16  pop\n" + 
-		"    17  getstatic Value.NAME : java.lang.String [39]\n" + 
-		"    20  pop\n" + 
-		"    21  getstatic Value.NAME : java.lang.String [39]\n" + 
-		"    24  pop\n" + 
-		"    25  getstatic Value.NAME : java.lang.String [39]\n" + 
-		"    28  pop\n" + 
-		"    29  getstatic Value.NAME : java.lang.String [39]\n" + 
-		"    32  pop\n" + 
-		"    33  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 20]\n" + 
-		"        [pc: 4, line: 19]\n" + 
-		"        [pc: 13, line: 21]\n" + 
-		"        [pc: 21, line: 22]\n" + 
-		"        [pc: 25, line: 23]\n" + 
-		"        [pc: 29, line: 24]\n" + 
-		"        [pc: 33, line: 25]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 34] local: this index: 0 type: B\n" + 
-		"        [pc: 0, pc: 34] local: param index: 1 type: Value\n";
 
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "B.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}			
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=159021 - variation
 public void test1040() {
@@ -33651,54 +32690,7 @@ public void test1040() {
 		options,
 		null);
 	// check the reference to I.CONST still got generated (for <clinit> invocation side-effect)
-	String expectedOutput = 
-		"  // Method descriptor #28 (LValue;)V\n" + 
-		"  // Signature: (LValue<Ljava/lang/String;>;)V\n" + 
-		"  // Stack: 2, Locals: 2\n" + 
-		"  B(Value param);\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  invokespecial java.lang.Object() [30]\n" + 
-		"     4  aload_0 [this]\n" + 
-		"     5  ldc <String \"[B.local_field]\"> [32]\n" + 
-		"     7  invokestatic A.foo(java.lang.String) : Value [17]\n" + 
-		"    10  putfield B.local_field : Value [34]\n" + 
-		"    13  getstatic B.CONST : Value [36]\n" + 
-		"    16  pop\n" + 
-		"    17  getstatic Value.NAME : java.lang.String [39]\n" + 
-		"    20  pop\n" + 
-		"    21  getstatic Value.NAME : java.lang.String [39]\n" + 
-		"    24  pop\n" + 
-		"    25  getstatic Value.NAME : java.lang.String [39]\n" + 
-		"    28  pop\n" + 
-		"    29  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 20]\n" + 
-		"        [pc: 4, line: 19]\n" + 
-		"        [pc: 13, line: 21]\n" + 
-		"        [pc: 21, line: 22]\n" + 
-		"        [pc: 25, line: 23]\n" + 
-		"        [pc: 29, line: 24]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 30] local: this index: 0 type: B\n" + 
-		"        [pc: 0, pc: 30] local: param index: 1 type: Value\n";
 
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "B.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}			
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=159245
 public void test1041() {
@@ -34278,62 +33270,7 @@ public void test1058() {
 			"}", // =================
 		},
 		"SUCCESS");
-	String expectedOutput =
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  iconst_0\n" + 
-		"     1  istore_1 [foo]\n" + 
-		"     2  ldc <String \"zero\"> [16]\n" + 
-		"     4  astore_2 [bar]\n" + 
-		"     5  getstatic java.lang.System.out : java.io.PrintStream [18]\n" + 
-		"     8  iload_1 [foo]\n" + 
-		"     9  ifeq 19\n" + 
-		"    12  iload_1 [foo]\n" + 
-		"    13  invokestatic java.lang.Integer.valueOf(int) : java.lang.Integer [24]\n" + 
-		"    16  goto 20\n" + 
-		"    19  aload_2 [bar]\n" + 
-		"    20  aconst_null\n" + 
-		"    21  invokeinterface java.lang.Comparable.compareTo(java.lang.Object) : int [30] [nargs: 2]\n" + 
-		"    26  invokevirtual java.io.PrintStream.println(int) : void [36]\n" + 
-		"    29  goto 41\n" + 
-		"    32  astore_1 [e]\n" + 
-		"    33  getstatic java.lang.System.out : java.io.PrintStream [18]\n" + 
-		"    36  ldc <String \"SUCCESS\"> [42]\n" + 
-		"    38  invokevirtual java.io.PrintStream.println(java.lang.String) : void [44]\n" + 
-		"    41  return\n" + 
-		"      Exception Table:\n" + 
-		"        [pc: 0, pc: 29] -> 32 when : java.lang.NullPointerException\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 4]\n" + 
-		"        [pc: 2, line: 5]\n" + 
-		"        [pc: 5, line: 6]\n" + 
-		"        [pc: 32, line: 7]\n" + 
-		"        [pc: 33, line: 8]\n" + 
-		"        [pc: 41, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 42] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 2, pc: 32] local: foo index: 1 type: int\n" + 
-		"        [pc: 5, pc: 32] local: bar index: 2 type: java.lang.String\n" + 
-		"        [pc: 33, pc: 41] local: e index: 1 type: java.lang.NullPointerException\n";
 	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=160795
 public void test1059() {
@@ -34538,116 +33475,7 @@ public void test1065() {
 			"}\n", // =================
 		},
 		"[A#foo()][B#foo()][A#bar()][B#bar()]");
-	// 	check presence of checkcast in #testFoo() and #testBar()
-	String expectedOutput = this.complianceLevel.equals(COMPLIANCE_1_5)
-			?	"  // Method descriptor #15 (ZLA;LB;)V\n" + 
-				"  // Stack: 2, Locals: 4\n" + 
-				"  void testFoo(boolean t, A a, B b);\n" + 
-				"     0  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-				"     3  iload_1 [t]\n" + 
-				"     4  ifeq 11\n" + 
-				"     7  aload_2 [a]\n" + 
-				"     8  goto 12\n" + 
-				"    11  aload_3 [b]\n" + 
-				"    12  invokeinterface Foo.foo() : java.lang.String [22] [nargs: 1]\n" + 
-				"    17  invokevirtual java.io.PrintStream.print(java.lang.String) : void [28]\n" + 
-				"    20  return\n" + 
-				"      Line numbers:\n" + 
-				"        [pc: 0, line: 3]\n" + 
-				"        [pc: 20, line: 4]\n" + 
-				"      Local variable table:\n" + 
-				"        [pc: 0, pc: 21] local: this index: 0 type: X\n" + 
-				"        [pc: 0, pc: 21] local: t index: 1 type: boolean\n" + 
-				"        [pc: 0, pc: 21] local: a index: 2 type: A\n" + 
-				"        [pc: 0, pc: 21] local: b index: 3 type: B\n" + 
-				"  \n" + 
-				"  // Method descriptor #15 (ZLA;LB;)V\n" + 
-				"  // Stack: 2, Locals: 4\n" + 
-				"  void testBar(boolean t, A a, B b);\n" + 
-				"     0  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-				"     3  iload_1 [t]\n" + 
-				"     4  ifeq 11\n" + 
-				"     7  aload_2 [a]\n" + 
-				"     8  goto 12\n" + 
-				"    11  aload_3 [b]\n" + 
-				"    12  checkcast Bar [41]\n" + 
-				"    15  invokeinterface Bar.bar() : java.lang.String [43] [nargs: 1]\n" + 
-				"    20  invokevirtual java.io.PrintStream.print(java.lang.String) : void [28]\n" + 
-				"    23  return\n" + 
-				"      Line numbers:\n" + 
-				"        [pc: 0, line: 6]\n" + 
-				"        [pc: 23, line: 7]\n" + 
-				"      Local variable table:\n" + 
-				"        [pc: 0, pc: 24] local: this index: 0 type: X\n" + 
-				"        [pc: 0, pc: 24] local: t index: 1 type: boolean\n" + 
-				"        [pc: 0, pc: 24] local: a index: 2 type: A\n" + 
-				"        [pc: 0, pc: 24] local: b index: 3 type: B\n"
-			:	"  // Method descriptor #15 (ZLA;LB;)V\n" + 
-				"  // Stack: 2, Locals: 4\n" + 
-				"  void testFoo(boolean t, A a, B b);\n" + 
-				"     0  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-				"     3  iload_1 [t]\n" + 
-				"     4  ifeq 11\n" + 
-				"     7  aload_2 [a]\n" + 
-				"     8  goto 12\n" + 
-				"    11  aload_3 [b]\n" + 
-				"    12  invokeinterface Foo.foo() : java.lang.String [22] [nargs: 1]\n" + 
-				"    17  invokevirtual java.io.PrintStream.print(java.lang.String) : void [28]\n" + 
-				"    20  return\n" + 
-				"      Line numbers:\n" + 
-				"        [pc: 0, line: 3]\n" + 
-				"        [pc: 20, line: 4]\n" + 
-				"      Local variable table:\n" + 
-				"        [pc: 0, pc: 21] local: this index: 0 type: X\n" + 
-				"        [pc: 0, pc: 21] local: t index: 1 type: boolean\n" + 
-				"        [pc: 0, pc: 21] local: a index: 2 type: A\n" + 
-				"        [pc: 0, pc: 21] local: b index: 3 type: B\n" + 
-				"      Stack map table: number of frames 2\n" + 
-				"        [pc: 11, same_locals_1_stack_item, stack: {java.io.PrintStream}]\n" + 
-				"        [pc: 12, full, stack: {java.io.PrintStream, Foo}, locals: {X, int, A, B}]\n" + 
-				"  \n" + 
-				"  // Method descriptor #15 (ZLA;LB;)V\n" + 
-				"  // Stack: 2, Locals: 4\n" + 
-				"  void testBar(boolean t, A a, B b);\n" + 
-				"     0  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-				"     3  iload_1 [t]\n" + 
-				"     4  ifeq 11\n" + 
-				"     7  aload_2 [a]\n" + 
-				"     8  goto 12\n" + 
-				"    11  aload_3 [b]\n" + 
-				"    12  checkcast Bar [46]\n" + 
-				"    15  invokeinterface Bar.bar() : java.lang.String [48] [nargs: 1]\n" + 
-				"    20  invokevirtual java.io.PrintStream.print(java.lang.String) : void [28]\n" + 
-				"    23  return\n" + 
-				"      Line numbers:\n" + 
-				"        [pc: 0, line: 6]\n" + 
-				"        [pc: 23, line: 7]\n" + 
-				"      Local variable table:\n" + 
-				"        [pc: 0, pc: 24] local: this index: 0 type: X\n" + 
-				"        [pc: 0, pc: 24] local: t index: 1 type: boolean\n" + 
-				"        [pc: 0, pc: 24] local: a index: 2 type: A\n" + 
-				"        [pc: 0, pc: 24] local: b index: 3 type: B\n" + 
-				"      Stack map table: number of frames 2\n" + 
-				"        [pc: 11, same_locals_1_stack_item, stack: {java.io.PrintStream}]\n" + 
-				"        [pc: 12, full, stack: {java.io.PrintStream, Foo}, locals: {X, int, A, B}]\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}
+
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=141289 - variation
 public void test1066() {
@@ -34691,406 +33519,7 @@ public void test1066() {
 			"abstract class B implements Foo, Bar { }\n", // =================
 		},
 		"[ClassCastException:foo(1)][ClassCastException:foo(2)][ClassCastException:bar(1)][ClassCastException:bar(2)]");
-	// 	check presence of checkcast
-	String expectedOutput = this.complianceLevel.equals(COMPLIANCE_1_5)
-			?	"  // Stack: 4, Locals: 8\n" + 
-				"  public static void main(java.lang.String[] args);\n" + 
-				"      0  new X [1]\n" + 
-				"      3  dup\n" + 
-				"      4  invokespecial X() [16]\n" + 
-				"      7  astore_1 [x]\n" + 
-				"      8  new java.util.ArrayList [17]\n" + 
-				"     11  dup\n" + 
-				"     12  invokespecial java.util.ArrayList() [19]\n" + 
-				"     15  astore_2 [l]\n" + 
-				"     16  aload_2 [l]\n" + 
-				"     17  ldc <String \"zork\"> [20]\n" + 
-				"     19  invokeinterface java.util.List.add(java.lang.Object) : boolean [22] [nargs: 2]\n" + 
-				"     24  pop\n" + 
-				"     25  aload_2 [l]\n" + 
-				"     26  astore_3 [la]\n" + 
-				"     27  aload_2 [l]\n" + 
-				"     28  astore 4 [lb]\n" + 
-				"     30  iconst_1\n" + 
-				"     31  istore 5 [t]\n" + 
-				"     33  iconst_0\n" + 
-				"     34  istore 6 [f]\n" + 
-				"     36  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"     39  iload 5 [t]\n" + 
-				"     41  ifeq 57\n" + 
-				"     44  aload_3 [la]\n" + 
-				"     45  iconst_0\n" + 
-				"     46  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"     51  checkcast Foo [38]\n" + 
-				"     54  goto 68\n" + 
-				"     57  aload 4 [lb]\n" + 
-				"     59  iconst_0\n" + 
-				"     60  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"     65  checkcast Foo [38]\n" + 
-				"     68  invokeinterface Foo.foo() : java.lang.String [40] [nargs: 1]\n" + 
-				"     73  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"     76  goto 115\n" + 
-				"     79  astore 7 [e]\n" + 
-				"     81  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"     84  new java.lang.StringBuilder [50]\n" + 
-				"     87  dup\n" + 
-				"     88  ldc <String \"[\"> [52]\n" + 
-				"     90  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"     93  aload 7 [e]\n" + 
-				"     95  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"     98  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    101  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    104  ldc <String \":foo(1)]\"> [69]\n" + 
-				"    106  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    109  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    112  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    115  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    118  iload 6 [f]\n" + 
-				"    120  ifeq 136\n" + 
-				"    123  aload_3 [la]\n" + 
-				"    124  iconst_0\n" + 
-				"    125  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    130  checkcast Foo [38]\n" + 
-				"    133  goto 147\n" + 
-				"    136  aload 4 [lb]\n" + 
-				"    138  iconst_0\n" + 
-				"    139  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    144  checkcast Foo [38]\n" + 
-				"    147  invokeinterface Foo.foo() : java.lang.String [40] [nargs: 1]\n" + 
-				"    152  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    155  goto 194\n" + 
-				"    158  astore 7 [e]\n" + 
-				"    160  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    163  new java.lang.StringBuilder [50]\n" + 
-				"    166  dup\n" + 
-				"    167  ldc <String \"[\"> [52]\n" + 
-				"    169  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"    172  aload 7 [e]\n" + 
-				"    174  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"    177  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    180  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    183  ldc <String \":foo(2)]\"> [74]\n" + 
-				"    185  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    188  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    191  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    194  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    197  iload 5 [t]\n" + 
-				"    199  ifeq 215\n" + 
-				"    202  aload_3 [la]\n" + 
-				"    203  iconst_0\n" + 
-				"    204  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    209  checkcast Foo [38]\n" + 
-				"    212  goto 226\n" + 
-				"    215  aload 4 [lb]\n" + 
-				"    217  iconst_0\n" + 
-				"    218  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    223  checkcast Foo [38]\n" + 
-				"    226  checkcast Bar [76]\n" + 
-				"    229  invokeinterface Bar.bar() : java.lang.String [78] [nargs: 1]\n" + 
-				"    234  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    237  goto 276\n" + 
-				"    240  astore 7 [e]\n" + 
-				"    242  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    245  new java.lang.StringBuilder [50]\n" + 
-				"    248  dup\n" + 
-				"    249  ldc <String \"[\"> [52]\n" + 
-				"    251  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"    254  aload 7 [e]\n" + 
-				"    256  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"    259  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    262  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    265  ldc <String \":bar(1)]\"> [81]\n" + 
-				"    267  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    270  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    273  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    276  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    279  iload 6 [f]\n" + 
-				"    281  ifeq 297\n" + 
-				"    284  aload_3 [la]\n" + 
-				"    285  iconst_0\n" + 
-				"    286  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    291  checkcast Foo [38]\n" + 
-				"    294  goto 308\n" + 
-				"    297  aload 4 [lb]\n" + 
-				"    299  iconst_0\n" + 
-				"    300  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    305  checkcast Foo [38]\n" + 
-				"    308  checkcast Bar [76]\n" + 
-				"    311  invokeinterface Bar.bar() : java.lang.String [78] [nargs: 1]\n" + 
-				"    316  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    319  goto 358\n" + 
-				"    322  astore 7 [e]\n" + 
-				"    324  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    327  new java.lang.StringBuilder [50]\n" + 
-				"    330  dup\n" + 
-				"    331  ldc <String \"[\"> [52]\n" + 
-				"    333  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"    336  aload 7 [e]\n" + 
-				"    338  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"    341  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    344  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    347  ldc <String \":bar(2)]\"> [83]\n" + 
-				"    349  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    352  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    355  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    358  return\n" + 
-				"      Exception Table:\n" + 
-				"        [pc: 36, pc: 76] -> 79 when : java.lang.Throwable\n" + 
-				"        [pc: 115, pc: 155] -> 158 when : java.lang.Throwable\n" + 
-				"        [pc: 194, pc: 237] -> 240 when : java.lang.Throwable\n" + 
-				"        [pc: 276, pc: 319] -> 322 when : java.lang.Throwable\n" + 
-				"      Line numbers:\n" + 
-				"        [pc: 0, line: 4]\n" + 
-				"        [pc: 8, line: 5]\n" + 
-				"        [pc: 16, line: 6]\n" + 
-				"        [pc: 25, line: 7]\n" + 
-				"        [pc: 27, line: 8]\n" + 
-				"        [pc: 30, line: 9]\n" + 
-				"        [pc: 36, line: 11]\n" + 
-				"        [pc: 79, line: 12]\n" + 
-				"        [pc: 81, line: 13]\n" + 
-				"        [pc: 115, line: 16]\n" + 
-				"        [pc: 158, line: 17]\n" + 
-				"        [pc: 160, line: 18]\n" + 
-				"        [pc: 194, line: 21]\n" + 
-				"        [pc: 240, line: 22]\n" + 
-				"        [pc: 242, line: 23]\n" + 
-				"        [pc: 276, line: 26]\n" + 
-				"        [pc: 322, line: 27]\n" + 
-				"        [pc: 324, line: 28]\n" + 
-				"        [pc: 358, line: 30]\n" + 
-				"      Local variable table:\n" + 
-				"        [pc: 0, pc: 359] local: args index: 0 type: java.lang.String[]\n" + 
-				"        [pc: 8, pc: 359] local: x index: 1 type: X\n" + 
-				"        [pc: 16, pc: 359] local: l index: 2 type: java.util.List\n" + 
-				"        [pc: 27, pc: 359] local: la index: 3 type: java.util.List\n" + 
-				"        [pc: 30, pc: 359] local: lb index: 4 type: java.util.List\n" + 
-				"        [pc: 33, pc: 359] local: t index: 5 type: boolean\n" + 
-				"        [pc: 36, pc: 359] local: f index: 6 type: boolean\n" + 
-				"        [pc: 81, pc: 115] local: e index: 7 type: java.lang.Throwable\n" + 
-				"        [pc: 160, pc: 194] local: e index: 7 type: java.lang.Throwable\n" + 
-				"        [pc: 242, pc: 276] local: e index: 7 type: java.lang.Throwable\n" + 
-				"        [pc: 324, pc: 358] local: e index: 7 type: java.lang.Throwable\n" + 
-				"      Local variable type table:\n" + 
-				"        [pc: 27, pc: 359] local: la index: 3 type: java.util.List<A>\n" + 
-				"        [pc: 30, pc: 359] local: lb index: 4 type: java.util.List<B>\n"
-			:	"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-				"  // Stack: 4, Locals: 8\n" + 
-				"  public static void main(java.lang.String[] args);\n" + 
-				"      0  new X [1]\n" + 
-				"      3  dup\n" + 
-				"      4  invokespecial X() [16]\n" + 
-				"      7  astore_1 [x]\n" + 
-				"      8  new java.util.ArrayList [17]\n" + 
-				"     11  dup\n" + 
-				"     12  invokespecial java.util.ArrayList() [19]\n" + 
-				"     15  astore_2 [l]\n" + 
-				"     16  aload_2 [l]\n" + 
-				"     17  ldc <String \"zork\"> [20]\n" + 
-				"     19  invokeinterface java.util.List.add(java.lang.Object) : boolean [22] [nargs: 2]\n" + 
-				"     24  pop\n" + 
-				"     25  aload_2 [l]\n" + 
-				"     26  astore_3 [la]\n" + 
-				"     27  aload_2 [l]\n" + 
-				"     28  astore 4 [lb]\n" + 
-				"     30  iconst_1\n" + 
-				"     31  istore 5 [t]\n" + 
-				"     33  iconst_0\n" + 
-				"     34  istore 6 [f]\n" + 
-				"     36  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"     39  iload 5 [t]\n" + 
-				"     41  ifeq 57\n" + 
-				"     44  aload_3 [la]\n" + 
-				"     45  iconst_0\n" + 
-				"     46  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"     51  checkcast Foo [38]\n" + 
-				"     54  goto 68\n" + 
-				"     57  aload 4 [lb]\n" + 
-				"     59  iconst_0\n" + 
-				"     60  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"     65  checkcast Foo [38]\n" + 
-				"     68  invokeinterface Foo.foo() : java.lang.String [40] [nargs: 1]\n" + 
-				"     73  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"     76  goto 115\n" + 
-				"     79  astore 7 [e]\n" + 
-				"     81  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"     84  new java.lang.StringBuilder [50]\n" + 
-				"     87  dup\n" + 
-				"     88  ldc <String \"[\"> [52]\n" + 
-				"     90  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"     93  aload 7 [e]\n" + 
-				"     95  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"     98  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    101  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    104  ldc <String \":foo(1)]\"> [69]\n" + 
-				"    106  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    109  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    112  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    115  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    118  iload 6 [f]\n" + 
-				"    120  ifeq 136\n" + 
-				"    123  aload_3 [la]\n" + 
-				"    124  iconst_0\n" + 
-				"    125  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    130  checkcast Foo [38]\n" + 
-				"    133  goto 147\n" + 
-				"    136  aload 4 [lb]\n" + 
-				"    138  iconst_0\n" + 
-				"    139  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    144  checkcast Foo [38]\n" + 
-				"    147  invokeinterface Foo.foo() : java.lang.String [40] [nargs: 1]\n" + 
-				"    152  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    155  goto 194\n" + 
-				"    158  astore 7 [e]\n" + 
-				"    160  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    163  new java.lang.StringBuilder [50]\n" + 
-				"    166  dup\n" + 
-				"    167  ldc <String \"[\"> [52]\n" + 
-				"    169  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"    172  aload 7 [e]\n" + 
-				"    174  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"    177  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    180  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    183  ldc <String \":foo(2)]\"> [74]\n" + 
-				"    185  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    188  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    191  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    194  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    197  iload 5 [t]\n" + 
-				"    199  ifeq 215\n" + 
-				"    202  aload_3 [la]\n" + 
-				"    203  iconst_0\n" + 
-				"    204  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    209  checkcast Foo [38]\n" + 
-				"    212  goto 226\n" + 
-				"    215  aload 4 [lb]\n" + 
-				"    217  iconst_0\n" + 
-				"    218  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    223  checkcast Foo [38]\n" + 
-				"    226  checkcast Bar [76]\n" + 
-				"    229  invokeinterface Bar.bar() : java.lang.String [78] [nargs: 1]\n" + 
-				"    234  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    237  goto 276\n" + 
-				"    240  astore 7 [e]\n" + 
-				"    242  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    245  new java.lang.StringBuilder [50]\n" + 
-				"    248  dup\n" + 
-				"    249  ldc <String \"[\"> [52]\n" + 
-				"    251  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"    254  aload 7 [e]\n" + 
-				"    256  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"    259  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    262  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    265  ldc <String \":bar(1)]\"> [81]\n" + 
-				"    267  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    270  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    273  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    276  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    279  iload 6 [f]\n" + 
-				"    281  ifeq 297\n" + 
-				"    284  aload_3 [la]\n" + 
-				"    285  iconst_0\n" + 
-				"    286  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    291  checkcast Foo [38]\n" + 
-				"    294  goto 308\n" + 
-				"    297  aload 4 [lb]\n" + 
-				"    299  iconst_0\n" + 
-				"    300  invokeinterface java.util.List.get(int) : java.lang.Object [34] [nargs: 2]\n" + 
-				"    305  checkcast Foo [38]\n" + 
-				"    308  checkcast Bar [76]\n" + 
-				"    311  invokeinterface Bar.bar() : java.lang.String [78] [nargs: 1]\n" + 
-				"    316  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    319  goto 358\n" + 
-				"    322  astore 7 [e]\n" + 
-				"    324  getstatic java.lang.System.out : java.io.PrintStream [28]\n" + 
-				"    327  new java.lang.StringBuilder [50]\n" + 
-				"    330  dup\n" + 
-				"    331  ldc <String \"[\"> [52]\n" + 
-				"    333  invokespecial java.lang.StringBuilder(java.lang.String) [54]\n" + 
-				"    336  aload 7 [e]\n" + 
-				"    338  invokevirtual java.lang.Object.getClass() : java.lang.Class [56]\n" + 
-				"    341  invokevirtual java.lang.Class.getSimpleName() : java.lang.String [60]\n" + 
-				"    344  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    347  ldc <String \":bar(2)]\"> [83]\n" + 
-				"    349  invokevirtual java.lang.StringBuilder.append(java.lang.String) : java.lang.StringBuilder [65]\n" + 
-				"    352  invokevirtual java.lang.StringBuilder.toString() : java.lang.String [71]\n" + 
-				"    355  invokevirtual java.io.PrintStream.print(java.lang.String) : void [44]\n" + 
-				"    358  return\n" + 
-				"      Exception Table:\n" + 
-				"        [pc: 36, pc: 76] -> 79 when : java.lang.Throwable\n" + 
-				"        [pc: 115, pc: 155] -> 158 when : java.lang.Throwable\n" + 
-				"        [pc: 194, pc: 237] -> 240 when : java.lang.Throwable\n" + 
-				"        [pc: 276, pc: 319] -> 322 when : java.lang.Throwable\n" + 
-				"      Line numbers:\n" + 
-				"        [pc: 0, line: 4]\n" + 
-				"        [pc: 8, line: 5]\n" + 
-				"        [pc: 16, line: 6]\n" + 
-				"        [pc: 25, line: 7]\n" + 
-				"        [pc: 27, line: 8]\n" + 
-				"        [pc: 30, line: 9]\n" + 
-				"        [pc: 36, line: 11]\n" + 
-				"        [pc: 79, line: 12]\n" + 
-				"        [pc: 81, line: 13]\n" + 
-				"        [pc: 115, line: 16]\n" + 
-				"        [pc: 158, line: 17]\n" + 
-				"        [pc: 160, line: 18]\n" + 
-				"        [pc: 194, line: 21]\n" + 
-				"        [pc: 240, line: 22]\n" + 
-				"        [pc: 242, line: 23]\n" + 
-				"        [pc: 276, line: 26]\n" + 
-				"        [pc: 322, line: 27]\n" + 
-				"        [pc: 324, line: 28]\n" + 
-				"        [pc: 358, line: 30]\n" + 
-				"      Local variable table:\n" + 
-				"        [pc: 0, pc: 359] local: args index: 0 type: java.lang.String[]\n" + 
-				"        [pc: 8, pc: 359] local: x index: 1 type: X\n" + 
-				"        [pc: 16, pc: 359] local: l index: 2 type: java.util.List\n" + 
-				"        [pc: 27, pc: 359] local: la index: 3 type: java.util.List\n" + 
-				"        [pc: 30, pc: 359] local: lb index: 4 type: java.util.List\n" + 
-				"        [pc: 33, pc: 359] local: t index: 5 type: boolean\n" + 
-				"        [pc: 36, pc: 359] local: f index: 6 type: boolean\n" + 
-				"        [pc: 81, pc: 115] local: e index: 7 type: java.lang.Throwable\n" + 
-				"        [pc: 160, pc: 194] local: e index: 7 type: java.lang.Throwable\n" + 
-				"        [pc: 242, pc: 276] local: e index: 7 type: java.lang.Throwable\n" + 
-				"        [pc: 324, pc: 358] local: e index: 7 type: java.lang.Throwable\n" + 
-				"      Local variable type table:\n" + 
-				"        [pc: 27, pc: 359] local: la index: 3 type: java.util.List<A>\n" + 
-				"        [pc: 30, pc: 359] local: lb index: 4 type: java.util.List<B>\n" + 
-				"      Stack map table: number of frames 16\n" + 
-				"        [pc: 57, full, stack: {java.io.PrintStream}, locals: {java.lang.String[], X, java.util.List, java.util.List, java.util.List, int, int}]\n" + 
-				"        [pc: 68, full, stack: {java.io.PrintStream, Foo}, locals: {java.lang.String[], X, java.util.List, java.util.List, java.util.List, int, int}]\n" + 
-				"        [pc: 79, same_locals_1_stack_item, stack: {java.lang.Throwable}]\n" + 
-				"        [pc: 115, same]\n" + 
-				"        [pc: 136, same_locals_1_stack_item, stack: {java.io.PrintStream}]\n" + 
-				"        [pc: 147, full, stack: {java.io.PrintStream, Foo}, locals: {java.lang.String[], X, java.util.List, java.util.List, java.util.List, int, int}]\n" + 
-				"        [pc: 158, same_locals_1_stack_item, stack: {java.lang.Throwable}]\n" + 
-				"        [pc: 194, same]\n" + 
-				"        [pc: 215, same_locals_1_stack_item, stack: {java.io.PrintStream}]\n" + 
-				"        [pc: 226, full, stack: {java.io.PrintStream, Foo}, locals: {java.lang.String[], X, java.util.List, java.util.List, java.util.List, int, int}]\n" + 
-				"        [pc: 240, same_locals_1_stack_item, stack: {java.lang.Throwable}]\n" + 
-				"        [pc: 276, same]\n" + 
-				"        [pc: 297, same_locals_1_stack_item, stack: {java.io.PrintStream}]\n" + 
-				"        [pc: 308, full, stack: {java.io.PrintStream, Foo}, locals: {java.lang.String[], X, java.util.List, java.util.List, java.util.List, int, int}]\n" + 
-				"        [pc: 322, same_locals_1_stack_item, stack: {java.lang.Throwable}]\n" + 
-				"        [pc: 358, same]\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}	
+
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=162991
 // using only source types

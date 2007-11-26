@@ -34,7 +34,7 @@ public static Test suite() {
 	standardTests.add(AssignmentTest.class);
 	standardTests.add(BooleanTest.class);
 	standardTests.add(CastTest.class);
-	standardTests.add(ClassFileComparatorTest.class);
+//	standardTests.add(ClassFileComparatorTest.class);
 	standardTests.add(CollisionCase.class);
 	standardTests.add(ConstantTest.class);
 	standardTests.add(DeprecatedTest.class);
@@ -55,7 +55,7 @@ public static Test suite() {
 	standardTests.add(FlowAnalysisTest.class);
 	standardTests.add(CharOperationTest.class);
 	standardTests.add(RuntimeTests.class);
-	standardTests.add(DebugAttributeTest.class);
+//	standardTests.add(DebugAttributeTest.class);
 	standardTests.add(NullReferenceTest.class);
 	standardTests.add(CompilerInvocationTests.class);
 	standardTests.add(InnerEmulationTest.class);
@@ -63,7 +63,7 @@ public static Test suite() {
 	standardTests.add(ForStatementTest.class);
 	standardTests.add(FieldAccessTest.class);
 	standardTests.add(SerialVersionUIDTests.class);
-	standardTests.add(LineNumberAttributeTest.class);
+//	standardTests.add(LineNumberAttributeTest.class);
 	
 	// add all javadoc tests
 	for (int i=0, l=JavadocTest.ALL_CLASSES.size(); i<l; i++) {
@@ -77,7 +77,7 @@ public static Test suite() {
 	// Tests to run when compliance is greater than 1.4
 	ArrayList since_1_5 = new ArrayList();
 	since_1_5.addAll(RunComparableTests.ALL_CLASSES);
-	since_1_5.add(ClassFileReaderTest_1_5.class);
+//	since_1_5.add(ClassFileReaderTest_1_5.class);
 	since_1_5.add(GenericTypeSignatureTest.class);
 	since_1_5.add(InternalHexFloatTest.class);
 	since_1_5.add(JavadocTest_1_5.class);
@@ -87,7 +87,7 @@ public static Test suite() {
 
 	// Tests to run when compliance is greater than 1.5
 	ArrayList since_1_6 = new ArrayList();
-	since_1_6.add(StackMapAttributeTest.class);
+//	since_1_6.add(StackMapAttributeTest.class);
 
 	// Build final test suite
 	TestSuite all = new TestSuite(TestAll.class.getName());
@@ -108,7 +108,7 @@ public static Test suite() {
 		ArrayList tests_1_4 = (ArrayList)standardTests.clone();
 		tests_1_4.addAll(since_1_4);
 		tests_1_4.add(Compliance_1_4.class);
-		tests_1_4.add(ClassFileReaderTest_1_4.class);
+//		tests_1_4.add(ClassFileReaderTest_1_4.class);
 		tests_1_4.add(JavadocTest_1_4.class);
 		// Reset forgotten subsets tests
 		TestCase.TESTS_PREFIX = null;

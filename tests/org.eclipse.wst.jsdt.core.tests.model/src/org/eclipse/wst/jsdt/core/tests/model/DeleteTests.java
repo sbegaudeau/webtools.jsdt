@@ -787,35 +787,7 @@ public void testDeletePackageFragment4() throws CoreException {
 		deleteProject("P1");
 	}
 }
-/*
- * Ensures that deleting a project after using its jar using ToolFactory#createDefaultClassFileReader
- * works.
- * (regression test for bug 78128 Error deleting project with jar file referenced by other project)
- */
-public void testDeleteProjectAfterUsingJar() throws CoreException, IOException {
-	try {
-		IJavaProject javaProject = createJavaProject("P78128");
-		addLibrary(
-			javaProject, 
-			"lib.jar", 
-			"libsrc.zip", 
-			new String[] {
-				"p/X.js",
-				"package p;\n" +
-				"public class X {\n" +
-				"}",
-			}, 
-			JavaCore.VERSION_1_4
-		);
-		IClassFile classFile = getClassFile("P78128", "lib.jar", "p", "X.class");
-		ToolFactory.createDefaultClassFileReader(classFile, IClassFileReader.ALL);
-		Util.delete(javaProject.getProject());
-	} finally {
-		if (getProject("P78128").exists()) 
-			System.gc();
-		deleteProject("P78128");
-	}
-}
+
 /**
  * Ensures that a field can be deleted if it contains syntax errors
  */

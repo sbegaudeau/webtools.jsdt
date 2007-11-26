@@ -18,14 +18,11 @@ import java.util.Map;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.ToolFactory;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.core.tests.util.Util;
 
 public class AnnotationTest extends AbstractComparableTest {
 	
@@ -1126,60 +1123,60 @@ public class AnnotationTest extends AbstractComparableTest {
 		"----------\n");
 	}
 	
-	// check array handling of singleton 
-	public void test047() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    boolean[] val() default {true};\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(val = false) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(val={false})\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-
-		try {
-			ClassFileReader fileReader = ClassFileReader.read(new File(OUTPUT_DIR + File.separator  +"I.class"));
-			assertEquals("Not an annotation type declaration", TypeDeclaration.ANNOTATION_TYPE_DECL, TypeDeclaration.kind(fileReader.getModifiers()));
-		} catch (ClassFormatException e1) {
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e1) {
-			assertTrue("IOException", false);
-		}
-	}		
-	
+//	// check array handling of singleton 
+//	public void test047() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    boolean[] val() default {true};\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(val = false) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(val={false})\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//
+//		try {
+//			ClassFileReader fileReader = ClassFileReader.read(new File(OUTPUT_DIR + File.separator  +"I.class"));
+//			assertEquals("Not an annotation type declaration", TypeDeclaration.ANNOTATION_TYPE_DECL, TypeDeclaration.kind(fileReader.getModifiers()));
+//		} catch (ClassFormatException e1) {
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e1) {
+//			assertTrue("IOException", false);
+//		}
+//	}		
+//	
 	// check invalid constant in array initializer
 	public void test048() {
 		this.runNegativeTest(
@@ -1229,801 +1226,801 @@ public class AnnotationTest extends AbstractComparableTest {
 		"----------\n");
 	}
 
-	// check array handling of singleton 
-	public void test050() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    String[] value();\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(\"Hello\") void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value={\"Hello\"})\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	
-	public void test051() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    String value() default \"Hello\";\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(\"Hi\") void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=\"Hi\")\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test052() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    int value() default 0;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(2) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=(int) 2)\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test053() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    byte value() default 0;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(2) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=(byte) 2)\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test054() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    short value() default 0;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(2) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=(short) 2)\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test055() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    char value() default ' ';\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I('@') void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=\'@\')\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test056() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    long value() default 6;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(Long.MAX_VALUE) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=9223372036854775807L)\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test057() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    float value();\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(-0.0f) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=-0.0f)\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	
-	public void test058() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    double value();\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(-0.0) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=-0.0)\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test059() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface Foo {\n" + 
-				"    double value() default 0.0;\n" + 
-				"    int id();\n" + 
-				"}\n" + 
-				"@interface I {\n" + 
-				"    Foo value();\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(@Foo(id=5)) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=@Foo(id=(int) 5))\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test060() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"enum Color {" +
-				"	BLUE, RED, GREEN\n" + 
-				"}\n" + 
-				"@interface I {\n" + 
-				"    Color value() default Color.GREEN;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(Color.RED) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value=Color.RED)\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test061() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"enum Color {" +
-				"	BLUE, RED, GREEN\n" + 
-				"}\n" + 
-				"@interface I {\n" + 
-				"    Color[] value() default { Color.GREEN };\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(Color.RED) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(value={Color.RED})\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	public void test062() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface Foo {\n" + 
-				"    double value() default 0.0;\n" + 
-				"    int id() default 0;\n" + 
-				"}\n" + 
-				"enum Color {" +
-				"	BLUE, RED, GREEN\n" + 
-				"}\n" + 
-				"@interface I {\n" + 
-				"    Color[] enums() default { Color.GREEN };\n" + 
-				"    Foo[] annotations() default { @Foo() };\n" + 
-				"    int[] ints() default { 0, 1, 2, 3 };\n" + 
-				"    byte[] bytes() default { 0 };\n" + 
-				"    short[] shorts() default { 0 };\n" + 
-				"    long[] longs() default { Long.MIN_VALUE, Long.MAX_VALUE };\n" + 
-				"    String[] strings() default { \"\" };\n" + 
-				"    boolean[] booleans() default { true, false };\n" + 
-				"    float[] floats() default { Float.MAX_VALUE };\n" + 
-				"    double[] doubles() default { Double.MAX_VALUE };\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(enums=Color.RED,\n" + 
-				"		annotations=@Foo(),\n" + 
-				"		ints=2,\n" + 
-				"		bytes=1,\n" + 
-				"		shorts=5,\n" + 
-				"		longs=Long.MIN_VALUE,\n" + 
-				"		strings=\"Hi\",\n" + 
-				"		booleans=true,\n" +
-				"		floats=0.0f,\n" +
-				"		doubles=-0.0) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(enums={Color.RED},\n" + 
-			"      annotations={@Foo},\n" + 
-			"      ints={(int) 2},\n" + 
-			"      bytes={(byte) 1},\n" + 
-			"      shorts={(short) 5},\n" + 
-			"      longs={-9223372036854775808L},\n" + 
-			"      strings={\"Hi\"},\n" + 
-			"      booleans={true},\n" + 
-			"      floats={0.0f},\n" + 
-			"      doubles={-0.0})\n" + 
-			"  void foo();"; 
-
-		int index = actualOutput.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(actualOutput, 3));
-		}
-		if (index == -1) {
-			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-		}
-	}
-	
-	public void test063() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface Foo {\n" + 
-				"    double value() default 0.0;\n" + 
-				"    int id() default 0;\n" + 
-				"}\n" + 
-				"enum Color {" +
-				"	BLUE, RED, GREEN\n" + 
-				"}\n" + 
-				"@interface I {\n" + 
-				"    Color enums() default Color.GREEN;\n" + 
-				"    Foo annotations() default @Foo();\n" + 
-				"    int ints() default 0;\n" + 
-				"    byte bytes() default 0;\n" + 
-				"    short shorts() default 0;\n" + 
-				"    long longs() default Long.MIN_VALUE;\n" + 
-				"    String strings() default \"\";\n" + 
-				"    boolean booleans() default true;\n" + 
-				"    float floats() default Float.MAX_VALUE;\n" + 
-				"    double doubles() default Double.MAX_VALUE;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(enums=Color.RED,\n" + 
-				"		annotations=@Foo(),\n" + 
-				"		ints=2,\n" + 
-				"		bytes=1,\n" + 
-				"		shorts=5,\n" + 
-				"		longs=Long.MIN_VALUE,\n" + 
-				"		strings=\"Hi\",\n" + 
-				"		booleans=true,\n" +
-				"		floats=0.0f,\n" +
-				"		doubles=-0.0) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(enums=Color.RED,\n" + 
-			"      annotations=@Foo,\n" + 
-			"      ints=(int) 2,\n" + 
-			"      bytes=(byte) 1,\n" + 
-			"      shorts=(short) 5,\n" + 
-			"      longs=-9223372036854775808L,\n" + 
-			"      strings=\"Hi\",\n" + 
-			"      booleans=true,\n" + 
-			"      floats=0.0f,\n" + 
-			"      doubles=-0.0)\n" + 
-			"  void foo();"; 
-			
-		int index = actualOutput.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(actualOutput, 3));
-		}
-		if (index == -1) {
-			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-		}
-	}
-	
-	public void test064() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    String[] names();\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(names={\"Hello\"}) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" + 
-			"  // Stack: 0, Locals: 1\n" + 
-			"  @I(names={\"Hello\"})\n" + 
-			"  void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=79848
-	public void test065() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" +
-				"    Class[] classes();\n" +
-				"}\n" +
-				"\n" +
-				"public class X {\n" +
-				"    @I(classes = {X.class, I.class}) public void foo(){\n" +
-				"    }\n" +
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"  // Method descriptor #6 ()V\n" +
-			"  // Stack: 0, Locals: 1\n" +
-			"  @I(classes={X,I})\n" +
-			"  public void foo();"; 
-			
-		if (actualOutput.indexOf(expectedOutput) == -1) {
-			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
-		}
-		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
-	}
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=79844
-	public void test066() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface I {\n" + 
-				"    short value() default 0;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(2) void foo() {\n" + 
-				"    }\n" + 
-				"}\n" + 
-				"\n"
-			},
-		"");
-	}
+//	// check array handling of singleton 
+//	public void test050() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    String[] value();\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(\"Hello\") void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value={\"Hello\"})\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	
+//	public void test051() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    String value() default \"Hello\";\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(\"Hi\") void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=\"Hi\")\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test052() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    int value() default 0;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(2) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=(int) 2)\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test053() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    byte value() default 0;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(2) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=(byte) 2)\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test054() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    short value() default 0;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(2) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=(short) 2)\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test055() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    char value() default ' ';\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I('@') void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=\'@\')\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test056() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    long value() default 6;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(Long.MAX_VALUE) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=9223372036854775807L)\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test057() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    float value();\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(-0.0f) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=-0.0f)\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	
+//	public void test058() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    double value();\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(-0.0) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=-0.0)\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test059() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface Foo {\n" + 
+//				"    double value() default 0.0;\n" + 
+//				"    int id();\n" + 
+//				"}\n" + 
+//				"@interface I {\n" + 
+//				"    Foo value();\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(@Foo(id=5)) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=@Foo(id=(int) 5))\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test060() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"enum Color {" +
+//				"	BLUE, RED, GREEN\n" + 
+//				"}\n" + 
+//				"@interface I {\n" + 
+//				"    Color value() default Color.GREEN;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(Color.RED) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value=Color.RED)\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test061() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"enum Color {" +
+//				"	BLUE, RED, GREEN\n" + 
+//				"}\n" + 
+//				"@interface I {\n" + 
+//				"    Color[] value() default { Color.GREEN };\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(Color.RED) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(value={Color.RED})\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	public void test062() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface Foo {\n" + 
+//				"    double value() default 0.0;\n" + 
+//				"    int id() default 0;\n" + 
+//				"}\n" + 
+//				"enum Color {" +
+//				"	BLUE, RED, GREEN\n" + 
+//				"}\n" + 
+//				"@interface I {\n" + 
+//				"    Color[] enums() default { Color.GREEN };\n" + 
+//				"    Foo[] annotations() default { @Foo() };\n" + 
+//				"    int[] ints() default { 0, 1, 2, 3 };\n" + 
+//				"    byte[] bytes() default { 0 };\n" + 
+//				"    short[] shorts() default { 0 };\n" + 
+//				"    long[] longs() default { Long.MIN_VALUE, Long.MAX_VALUE };\n" + 
+//				"    String[] strings() default { \"\" };\n" + 
+//				"    boolean[] booleans() default { true, false };\n" + 
+//				"    float[] floats() default { Float.MAX_VALUE };\n" + 
+//				"    double[] doubles() default { Double.MAX_VALUE };\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(enums=Color.RED,\n" + 
+//				"		annotations=@Foo(),\n" + 
+//				"		ints=2,\n" + 
+//				"		bytes=1,\n" + 
+//				"		shorts=5,\n" + 
+//				"		longs=Long.MIN_VALUE,\n" + 
+//				"		strings=\"Hi\",\n" + 
+//				"		booleans=true,\n" +
+//				"		floats=0.0f,\n" +
+//				"		doubles=-0.0) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(enums={Color.RED},\n" + 
+//			"      annotations={@Foo},\n" + 
+//			"      ints={(int) 2},\n" + 
+//			"      bytes={(byte) 1},\n" + 
+//			"      shorts={(short) 5},\n" + 
+//			"      longs={-9223372036854775808L},\n" + 
+//			"      strings={\"Hi\"},\n" + 
+//			"      booleans={true},\n" + 
+//			"      floats={0.0f},\n" + 
+//			"      doubles={-0.0})\n" + 
+//			"  void foo();"; 
+//
+//		int index = actualOutput.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(actualOutput, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
+//		}
+//	}
+//	
+//	public void test063() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface Foo {\n" + 
+//				"    double value() default 0.0;\n" + 
+//				"    int id() default 0;\n" + 
+//				"}\n" + 
+//				"enum Color {" +
+//				"	BLUE, RED, GREEN\n" + 
+//				"}\n" + 
+//				"@interface I {\n" + 
+//				"    Color enums() default Color.GREEN;\n" + 
+//				"    Foo annotations() default @Foo();\n" + 
+//				"    int ints() default 0;\n" + 
+//				"    byte bytes() default 0;\n" + 
+//				"    short shorts() default 0;\n" + 
+//				"    long longs() default Long.MIN_VALUE;\n" + 
+//				"    String strings() default \"\";\n" + 
+//				"    boolean booleans() default true;\n" + 
+//				"    float floats() default Float.MAX_VALUE;\n" + 
+//				"    double doubles() default Double.MAX_VALUE;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(enums=Color.RED,\n" + 
+//				"		annotations=@Foo(),\n" + 
+//				"		ints=2,\n" + 
+//				"		bytes=1,\n" + 
+//				"		shorts=5,\n" + 
+//				"		longs=Long.MIN_VALUE,\n" + 
+//				"		strings=\"Hi\",\n" + 
+//				"		booleans=true,\n" +
+//				"		floats=0.0f,\n" +
+//				"		doubles=-0.0) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(enums=Color.RED,\n" + 
+//			"      annotations=@Foo,\n" + 
+//			"      ints=(int) 2,\n" + 
+//			"      bytes=(byte) 1,\n" + 
+//			"      shorts=(short) 5,\n" + 
+//			"      longs=-9223372036854775808L,\n" + 
+//			"      strings=\"Hi\",\n" + 
+//			"      booleans=true,\n" + 
+//			"      floats=0.0f,\n" + 
+//			"      doubles=-0.0)\n" + 
+//			"  void foo();"; 
+//			
+//		int index = actualOutput.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(actualOutput, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
+//		}
+//	}
+//	
+//	public void test064() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    String[] names();\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(names={\"Hello\"}) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" + 
+//			"  // Stack: 0, Locals: 1\n" + 
+//			"  @I(names={\"Hello\"})\n" + 
+//			"  void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=79848
+//	public void test065() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" +
+//				"    Class[] classes();\n" +
+//				"}\n" +
+//				"\n" +
+//				"public class X {\n" +
+//				"    @I(classes = {X.class, I.class}) public void foo(){\n" +
+//				"    }\n" +
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"  // Method descriptor #6 ()V\n" +
+//			"  // Stack: 0, Locals: 1\n" +
+//			"  @I(classes={X,I})\n" +
+//			"  public void foo();"; 
+//			
+//		if (actualOutput.indexOf(expectedOutput) == -1) {
+//			System.out.println(org.eclipse.wst.jsdt.core.tests.util.Util.displayString(actualOutput, 2));
+//		}
+//		assertTrue("unexpected bytecode sequence", actualOutput.indexOf(expectedOutput) != -1);
+//	}
+//	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=79844
+//	public void test066() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface I {\n" + 
+//				"    short value() default 0;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(2) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n" + 
+//				"\n"
+//			},
+//		"");
+//	}
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=79844 - variation
 	public void test067() {
 		this.runNegativeTest(
@@ -2182,211 +2179,211 @@ public class AnnotationTest extends AbstractComparableTest {
 			"The attribute hashCode is undefined for the annotation type I\n" + 
 			"----------\n");
 	}
-	// check code generation of annotation default attribute (autowrapping)
-	public void test073() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface Foo {\n" + 
-				"    double value() default 0.0;\n" + 
-				"    int id() default 0;\n" + 
-				"}\n" + 
-				"enum Color {" +
-				"	BLUE, RED, GREEN\n" + 
-				"}\n" + 
-				"@interface I {\n" + 
-				"    Color[] enums() default Color.GREEN;\n" + 
-				"    Foo[] annotations() default @Foo();\n" + 
-				"    int[] ints() default 0;\n" + 
-				"    byte[] bytes() default 1;\n" + 
-				"    short[] shorts() default 3;\n" + 
-				"    long[] longs() default Long.MIN_VALUE;\n" + 
-				"    String[] strings() default \"\";\n" + 
-				"    boolean[] booleans() default true;\n" + 
-				"    float[] floats() default Float.MAX_VALUE;\n" + 
-				"    double[] doubles() default Double.MAX_VALUE;\n" + 
-				"    Class[] classes() default I.class;\n" + 
-				"}\n" + 
-				"\n" + 
-				"public class X {\n" + 
-				"    @I(enums=Color.RED,\n" + 
-				"		annotations=@Foo(),\n" + 
-				"		ints=2,\n" + 
-				"		bytes=1,\n" + 
-				"		shorts=5,\n" + 
-				"		longs=Long.MIN_VALUE,\n" + 
-				"		strings=\"Hi\",\n" + 
-				"		booleans=true,\n" +
-				"		floats=0.0f,\n" +
-				"		doubles=-0.0) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"I.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"abstract @interface I extends java.lang.annotation.Annotation {\n" + 
-			"  \n" + 
-			"  // Method descriptor #8 ()[LColor;\n" + 
-			"  public abstract Color[] enums() default {Color.GREEN};\n" + 
-			"  \n" + 
-			"  // Method descriptor #13 ()[LFoo;\n" + 
-			"  public abstract Foo[] annotations() default {@Foo};\n" + 
-			"  \n" + 
-			"  // Method descriptor #16 ()[I\n" + 
-			"  public abstract int[] ints() default {(int) 0};\n" + 
-			"  \n" + 
-			"  // Method descriptor #19 ()[B\n" + 
-			"  public abstract byte[] bytes() default {(byte) 1};\n" + 
-			"  \n" + 
-			"  // Method descriptor #22 ()[S\n" + 
-			"  public abstract short[] shorts() default {(short) 3};\n" + 
-			"  \n" + 
-			"  // Method descriptor #25 ()[J\n" + 
-			"  public abstract long[] longs() default {-9223372036854775808L};\n" + 
-			"  \n" + 
-			"  // Method descriptor #29 ()[Ljava/lang/String;\n" + 
-			"  public abstract java.lang.String[] strings() default {\"\"};\n" + 
-			"  \n" + 
-			"  // Method descriptor #32 ()[Z\n" + 
-			"  public abstract boolean[] booleans() default {true};\n" + 
-			"  \n" + 
-			"  // Method descriptor #34 ()[F\n" + 
-			"  public abstract float[] floats() default {3.4028235E38f};\n" + 
-			"  \n" + 
-			"  // Method descriptor #37 ()[D\n" + 
-			"  public abstract double[] doubles() default {1.7976931348623157E308};\n" + 
-			"  \n" + 
-			"  // Method descriptor #41 ()[Ljava/lang/Class;\n" + 
-			"  public abstract java.lang.Class[] classes() default {I};\n";
-			
-		int index = actualOutput.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(actualOutput, 3));
-		}
-		if (index == -1) {
-			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-		}
-	}
-	// check code generation of annotation default attribute non array types
-	public void test074() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"@interface Foo {\n" + 
-				"    double value() default 0.0;\n" + 
-				"    int id() default 0;\n" + 
-				"}\n" + 
-				"enum Color {" +
-				"	BLUE, RED, GREEN\n" + 
-				"}\n" + 
-				"@interface I {\n" + 
-				"    Color _enum() default Color.GREEN;\n" + 
-				"    Foo _annotation() default @Foo;\n" + 
-				"    int _int() default 0;\n" + 
-				"    byte _byte() default 1;\n" + 
-				"    short _short() default 3;\n" + 
-				"    long _long() default Long.MIN_VALUE;\n" + 
-				"    String _string() default \"\";\n" + 
-				"    boolean _boolean() default true;\n" + 
-				"    float _float() default Float.MAX_VALUE;\n" + 
-				"    double _double() default Double.MAX_VALUE;\n" + 
-				"    Class _class() default I.class;\n" + 
-				"}\n" + 
-				"public class X {\n" + 
-				"    @I(_enum=Color.RED,\n" + 
-				"		_annotation=@Foo(),\n" + 
-				"		_int=2,\n" + 
-				"		_byte=1,\n" + 
-				"		_short=5,\n" + 
-				"		_long=Long.MIN_VALUE,\n" + 
-				"		_string=\"Hi\",\n" + 
-				"		_boolean=true,\n" +
-				"		_float=0.0f,\n" +
-				"		_double=-0.0) void foo() {\n" + 
-				"    }\n" + 
-				"}\n"
-			},
-		"");
-		
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"I.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		
-		String expectedOutput = 
-			"abstract @interface I extends java.lang.annotation.Annotation {\n" + 
-			"  \n" + 
-			"  // Method descriptor #8 ()LColor;\n" + 
-			"  public abstract Color _enum() default Color.GREEN;\n" + 
-			"  \n" + 
-			"  // Method descriptor #13 ()LFoo;\n" + 
-			"  public abstract Foo _annotation() default @Foo;\n" + 
-			"  \n" + 
-			"  // Method descriptor #16 ()I\n" + 
-			"  public abstract int _int() default (int) 0;\n" + 
-			"  \n" + 
-			"  // Method descriptor #19 ()B\n" + 
-			"  public abstract byte _byte() default (byte) 1;\n" + 
-			"  \n" + 
-			"  // Method descriptor #22 ()S\n" + 
-			"  public abstract short _short() default (short) 3;\n" + 
-			"  \n" + 
-			"  // Method descriptor #25 ()J\n" + 
-			"  public abstract long _long() default -9223372036854775808L;\n" + 
-			"  \n" + 
-			"  // Method descriptor #29 ()Ljava/lang/String;\n" + 
-			"  public abstract java.lang.String _string() default \"\";\n" + 
-			"  \n" + 
-			"  // Method descriptor #32 ()Z\n" + 
-			"  public abstract boolean _boolean() default true;\n" + 
-			"  \n" + 
-			"  // Method descriptor #34 ()F\n" + 
-			"  public abstract float _float() default 3.4028235E38f;\n" + 
-			"  \n" + 
-			"  // Method descriptor #37 ()D\n" + 
-			"  public abstract double _double() default 1.7976931348623157E308;\n" + 
-			"  \n" + 
-			"  // Method descriptor #41 ()Ljava/lang/Class;\n" + 
-			"  public abstract java.lang.Class _class() default I;\n";
-			
-		int index = actualOutput.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(actualOutput, 3));
-		}
-		if (index == -1) {
-			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-		}
-	}	
+//	// check code generation of annotation default attribute (autowrapping)
+//	public void test073() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface Foo {\n" + 
+//				"    double value() default 0.0;\n" + 
+//				"    int id() default 0;\n" + 
+//				"}\n" + 
+//				"enum Color {" +
+//				"	BLUE, RED, GREEN\n" + 
+//				"}\n" + 
+//				"@interface I {\n" + 
+//				"    Color[] enums() default Color.GREEN;\n" + 
+//				"    Foo[] annotations() default @Foo();\n" + 
+//				"    int[] ints() default 0;\n" + 
+//				"    byte[] bytes() default 1;\n" + 
+//				"    short[] shorts() default 3;\n" + 
+//				"    long[] longs() default Long.MIN_VALUE;\n" + 
+//				"    String[] strings() default \"\";\n" + 
+//				"    boolean[] booleans() default true;\n" + 
+//				"    float[] floats() default Float.MAX_VALUE;\n" + 
+//				"    double[] doubles() default Double.MAX_VALUE;\n" + 
+//				"    Class[] classes() default I.class;\n" + 
+//				"}\n" + 
+//				"\n" + 
+//				"public class X {\n" + 
+//				"    @I(enums=Color.RED,\n" + 
+//				"		annotations=@Foo(),\n" + 
+//				"		ints=2,\n" + 
+//				"		bytes=1,\n" + 
+//				"		shorts=5,\n" + 
+//				"		longs=Long.MIN_VALUE,\n" + 
+//				"		strings=\"Hi\",\n" + 
+//				"		booleans=true,\n" +
+//				"		floats=0.0f,\n" +
+//				"		doubles=-0.0) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"I.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"abstract @interface I extends java.lang.annotation.Annotation {\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #8 ()[LColor;\n" + 
+//			"  public abstract Color[] enums() default {Color.GREEN};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #13 ()[LFoo;\n" + 
+//			"  public abstract Foo[] annotations() default {@Foo};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #16 ()[I\n" + 
+//			"  public abstract int[] ints() default {(int) 0};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #19 ()[B\n" + 
+//			"  public abstract byte[] bytes() default {(byte) 1};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #22 ()[S\n" + 
+//			"  public abstract short[] shorts() default {(short) 3};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #25 ()[J\n" + 
+//			"  public abstract long[] longs() default {-9223372036854775808L};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #29 ()[Ljava/lang/String;\n" + 
+//			"  public abstract java.lang.String[] strings() default {\"\"};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #32 ()[Z\n" + 
+//			"  public abstract boolean[] booleans() default {true};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #34 ()[F\n" + 
+//			"  public abstract float[] floats() default {3.4028235E38f};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #37 ()[D\n" + 
+//			"  public abstract double[] doubles() default {1.7976931348623157E308};\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #41 ()[Ljava/lang/Class;\n" + 
+//			"  public abstract java.lang.Class[] classes() default {I};\n";
+//			
+//		int index = actualOutput.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(actualOutput, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
+//		}
+//	}
+//	// check code generation of annotation default attribute non array types
+//	public void test074() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"@interface Foo {\n" + 
+//				"    double value() default 0.0;\n" + 
+//				"    int id() default 0;\n" + 
+//				"}\n" + 
+//				"enum Color {" +
+//				"	BLUE, RED, GREEN\n" + 
+//				"}\n" + 
+//				"@interface I {\n" + 
+//				"    Color _enum() default Color.GREEN;\n" + 
+//				"    Foo _annotation() default @Foo;\n" + 
+//				"    int _int() default 0;\n" + 
+//				"    byte _byte() default 1;\n" + 
+//				"    short _short() default 3;\n" + 
+//				"    long _long() default Long.MIN_VALUE;\n" + 
+//				"    String _string() default \"\";\n" + 
+//				"    boolean _boolean() default true;\n" + 
+//				"    float _float() default Float.MAX_VALUE;\n" + 
+//				"    double _double() default Double.MAX_VALUE;\n" + 
+//				"    Class _class() default I.class;\n" + 
+//				"}\n" + 
+//				"public class X {\n" + 
+//				"    @I(_enum=Color.RED,\n" + 
+//				"		_annotation=@Foo(),\n" + 
+//				"		_int=2,\n" + 
+//				"		_byte=1,\n" + 
+//				"		_short=5,\n" + 
+//				"		_long=Long.MIN_VALUE,\n" + 
+//				"		_string=\"Hi\",\n" + 
+//				"		_boolean=true,\n" +
+//				"		_float=0.0f,\n" +
+//				"		_double=-0.0) void foo() {\n" + 
+//				"    }\n" + 
+//				"}\n"
+//			},
+//		"");
+//		
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"I.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//		
+//		String expectedOutput = 
+//			"abstract @interface I extends java.lang.annotation.Annotation {\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #8 ()LColor;\n" + 
+//			"  public abstract Color _enum() default Color.GREEN;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #13 ()LFoo;\n" + 
+//			"  public abstract Foo _annotation() default @Foo;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #16 ()I\n" + 
+//			"  public abstract int _int() default (int) 0;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #19 ()B\n" + 
+//			"  public abstract byte _byte() default (byte) 1;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #22 ()S\n" + 
+//			"  public abstract short _short() default (short) 3;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #25 ()J\n" + 
+//			"  public abstract long _long() default -9223372036854775808L;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #29 ()Ljava/lang/String;\n" + 
+//			"  public abstract java.lang.String _string() default \"\";\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #32 ()Z\n" + 
+//			"  public abstract boolean _boolean() default true;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #34 ()F\n" + 
+//			"  public abstract float _float() default 3.4028235E38f;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #37 ()D\n" + 
+//			"  public abstract double _double() default 1.7976931348623157E308;\n" + 
+//			"  \n" + 
+//			"  // Method descriptor #41 ()Ljava/lang/Class;\n" + 
+//			"  public abstract java.lang.Class _class() default I;\n";
+//			
+//		int index = actualOutput.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(actualOutput, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
+//		}
+//	}	
 	// check detection of duplicate target element specification
 	public void test075() {
 		this.runNegativeTest(
@@ -2998,81 +2995,81 @@ public class AnnotationTest extends AbstractComparableTest {
 			"Syntax error on token \"default\", = expected\n" + 
 			"----------\n");
 	}
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=80780
-	public void test099() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"import java.lang.annotation.*;\n" +
-				"import java.lang.reflect.Method;\n" +
-				"\n" +
-				"public class X {\n" +
-				"    public static void main(String[] args) {\n" +
-				"        Object o = new X();\n" +
-				"        for (Method m : o.getClass().getMethods()) {\n" +
-				"            if (m.isAnnotationPresent(MyAnon.class)) {\n" +
-				"                System.out.println(m.getAnnotation(MyAnon.class).c());\n" +
-				"            }\n" +
-				"        }\n" +
-				"    }\n" +
-				"    @MyAnon(c = X.class) \n" +
-				"    public void foo() {}\n" +
-				"\n" +
-				"    @Retention(RetentionPolicy.RUNTIME) \n" +
-				"    public @interface MyAnon {\n" +
-				"        Class c();\n" +
-				"    }\n" +
-				"    public interface I {\n" +
-				"    }\n" +
-				"}"
-			},
-			"class X");
-
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String actualOutput = null;
-		try {
-			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			actualOutput =
-				disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED); 
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-
-		CompilerOptions options = new CompilerOptions(getCompilerOptions());
-		String expectedOutput = null; 
-		if (options.targetJDK == ClassFileConstants.JDK1_5) {
-			expectedOutput = 
-				"  Inner classes:\n" + 
-				"    [inner class info: #66 X$I, outer class info: #1 X\n" + 
-				"     inner name: #68 I, accessflags: 1545 public abstract static],\n" + 
-				"    [inner class info: #27 X$MyAnon, outer class info: #1 X\n" + 
-				"     inner name: #69 MyAnon, accessflags: 9737 public abstract static]\n"; 
-		} else if (options.targetJDK == ClassFileConstants.JDK1_6) {
-			expectedOutput = 
-				"  Inner classes:\n" + 
-				"    [inner class info: #70 X$I, outer class info: #1 X\n" + 
-				"     inner name: #72 I, accessflags: 1545 public abstract static],\n" + 
-				"    [inner class info: #27 X$MyAnon, outer class info: #1 X\n" + 
-				"     inner name: #73 MyAnon, accessflags: 9737 public abstract static]\n";			
-		} else {
-			return;
-		}
-			
-		int index = actualOutput.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(actualOutput, 3));
-		}
-		if (index == -1) {
-			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-		}
-	}
+//	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=80780
+//	public void test099() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"import java.lang.annotation.*;\n" +
+//				"import java.lang.reflect.Method;\n" +
+//				"\n" +
+//				"public class X {\n" +
+//				"    public static void main(String[] args) {\n" +
+//				"        Object o = new X();\n" +
+//				"        for (Method m : o.getClass().getMethods()) {\n" +
+//				"            if (m.isAnnotationPresent(MyAnon.class)) {\n" +
+//				"                System.out.println(m.getAnnotation(MyAnon.class).c());\n" +
+//				"            }\n" +
+//				"        }\n" +
+//				"    }\n" +
+//				"    @MyAnon(c = X.class) \n" +
+//				"    public void foo() {}\n" +
+//				"\n" +
+//				"    @Retention(RetentionPolicy.RUNTIME) \n" +
+//				"    public @interface MyAnon {\n" +
+//				"        Class c();\n" +
+//				"    }\n" +
+//				"    public interface I {\n" +
+//				"    }\n" +
+//				"}"
+//			},
+//			"class X");
+//
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String actualOutput = null;
+//		try {
+//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			actualOutput =
+//				disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED); 
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//
+//		CompilerOptions options = new CompilerOptions(getCompilerOptions());
+//		String expectedOutput = null; 
+//		if (options.targetJDK == ClassFileConstants.JDK1_5) {
+//			expectedOutput = 
+//				"  Inner classes:\n" + 
+//				"    [inner class info: #66 X$I, outer class info: #1 X\n" + 
+//				"     inner name: #68 I, accessflags: 1545 public abstract static],\n" + 
+//				"    [inner class info: #27 X$MyAnon, outer class info: #1 X\n" + 
+//				"     inner name: #69 MyAnon, accessflags: 9737 public abstract static]\n"; 
+//		} else if (options.targetJDK == ClassFileConstants.JDK1_6) {
+//			expectedOutput = 
+//				"  Inner classes:\n" + 
+//				"    [inner class info: #70 X$I, outer class info: #1 X\n" + 
+//				"     inner name: #72 I, accessflags: 1545 public abstract static],\n" + 
+//				"    [inner class info: #27 X$MyAnon, outer class info: #1 X\n" + 
+//				"     inner name: #73 MyAnon, accessflags: 9737 public abstract static]\n";			
+//		} else {
+//			return;
+//		}
+//			
+//		int index = actualOutput.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(actualOutput, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
+//		}
+//	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=80544
 	public void test100() {
@@ -5340,274 +5337,274 @@ public void test142c() {
 			options
 		);
     }
-
-	// check array handling of singleton 
-	public void test166() {
-		this.runConformTest(
-			new String[] {
-				"X.java",
-				"import java.lang.annotation.Retention;\n" +
-				"import java.lang.annotation.RetentionPolicy;\n" +
-				"import java.lang.annotation.Inherited;\n" +
-				"\n" +
-				"@Retention(RetentionPolicy.RUNTIME)\n" +
-				"@Inherited()\n" +
-				"@interface ParameterAnnotation {\n" +
-				"	String value() default \"Default\";\n" +
-				"}\n"+
-				"@interface ClassAnnotation {\n" +
-				"	String value() default \"Default\";\n" +
-				"}\n" +
-				"\n" +
-				"enum EnumClass{\n" +
-				"	Value1, Value2, Value3\n" +
-				"}\n" +
-				"\n" +
-				"@Retention(RetentionPolicy.RUNTIME)\n" +
-				"@Inherited()\n" +
-				"@interface ValueAnnotation {\n" +
-				"	String value() default \"Default\";\n" +
-				"	boolean booleanValue() default true;\n" +
-				"	char charValue() default \'q\';\n" +
-				"	byte byteValue() default 123;\n" +
-				"	short shortValue() default 12345;\n" +
-				"	int intValue() default 1234567890;\n" +
-				"	float floatValue() default 12345.6789f;\n" +
-				"	double doubleValue() default 12345.6789;\n" +
-				"	long longValue() default 1234567890123456789l;\n" +
-				"	String stringValue() default \"stringValue\";\n" +
-				"	EnumClass enumValue() default EnumClass.Value1;\n" +
-				"	Class classValue() default EnumClass.class;\n" +
-				"	ClassAnnotation annotationValue() default @ClassAnnotation();\n" +
-				"	boolean[] booleanArrayValue() default {true, false};\n" +
-				"	char[] charArrayValue() default {\'q\', \'m\'};\n" +
-				"	byte[] byteArrayValue() default {123, -123};\n" +
-				"	short[] shortArrayValue() default {12345, -12345};\n" +
-				"	int[] intArrayValue() default {1234567890, -1234567890};\n" +
-				"	float[] floatArrayValue() default {12345.6789f, -12345.6789f};\n" +
-				"	double[] doubleArrayValue() default {12345.6789, -12345.6789};\n" +
-				"	long[] longArrayValue() default {1234567890123456789l, -1234567890123456789l};\n" +
-				"	String[] stringArrayValue() default {\"stringValue\", \"valueString\"};\n" +
-				"	EnumClass[] enumArrayValue() default {EnumClass.Value1, EnumClass.Value2};\n" +
-				"	Class[] classArrayValue() default {X.class, EnumClass.class};\n" +
-				"	ClassAnnotation[] annotationArrayValue() default {@ClassAnnotation(), @ClassAnnotation()};\n" +
-				"}\n" +
-				"\n" +
-				"public class X {\n" +
-				"	@ValueAnnotation(\n" +
-				"		value=\"ValueAnnotation\",\n" +
-				"		booleanValue=true,\n" +
-				"		charValue=\'m\',\n" +
-				"		byteValue=-123,\n" +
-				"		shortValue=-12345,\n" +
-				"		intValue=-1234567890,\n" +
-				"		floatValue=-12345.6789f,\n" +
-				"		doubleValue=-12345.6789,\n" +
-				"		longValue=-1234567890123456789l,\n" +
-				"		stringValue=\"valueString\",\n" +
-				"		enumValue=EnumClass.Value3,\n" +
-				"		classValue=X.class,\n" +
-				"		annotationValue=@ClassAnnotation(value=\"ClassAnnotation\"),\n" +
-				"		booleanArrayValue={\n" +
-				"			false,\n" +
-				"			true\n" +
-				"		},\n" +
-				"		charArrayValue={\n" +
-				"			\'m\',\n" +
-				"			\'q\'\n" +
-				"		},\n" +
-				"		byteArrayValue={\n" +
-				"			-123,\n" +
-				"			123\n" +
-				"		},\n" +
-				"		shortArrayValue={\n" +
-				"			-12345,\n" +
-				"			12345\n" +
-				"		},\n" +
-				"		intArrayValue={\n" +
-				"			-1234567890,\n" +
-				"			1234567890\n" +
-				"		},\n" +
-				"		floatArrayValue={\n" +
-				"			-12345.6789f,\n" +
-				"			12345.6789f\n" +
-				"		},\n" +
-				"		doubleArrayValue={\n" +
-				"			-12345.6789,\n" +
-				"			12345.6789\n" +
-				"		},\n" +
-				"		longArrayValue={\n" +
-				"			-1234567890123456789l,\n" +
-				"			1234567890123456789l\n" +
-				"		},\n" +
-				"		stringArrayValue={\n" +
-				"			\"valueString\",\n" +
-				"			\"stringValue\"\n" +
-				"		},\n" +
-				"		enumArrayValue={\n" +
-				"			EnumClass.Value2,\n" +
-				"			EnumClass.Value1\n" +
-				"		},\n" +
-				"		classArrayValue={\n" +
-				"			EnumClass.class,\n" +
-				"			X.class\n" +
-				"		},\n" +
-				"		annotationArrayValue={\n" +
-				"			@ClassAnnotation(value=\"ClassAnnotation1\"),\n" +
-				"			@ClassAnnotation(value=\"ClassAnnotation2\")\n" +
-				"		})\n" +
-				"	public String field;\n" +
-				"	@ValueAnnotation(\n" +
-				"		value=\"ValueAnnotation\",\n" +
-				"		booleanValue=true,\n" +
-				"		charValue=\'m\',\n" +
-				"		byteValue=-123,\n" +
-				"		shortValue=-12345,\n" +
-				"		intValue=-1234567890,\n" +
-				"		floatValue=-12345.6789f,\n" +
-				"		doubleValue=-12345.6789,\n" +
-				"		longValue=-1234567890123456789l,\n" +
-				"		stringValue=\"valueString\",\n" +
-				"		enumValue=EnumClass.Value3,\n" +
-				"		classValue=X.class,\n" +
-				"		annotationValue=@ClassAnnotation(value=\"ClassAnnotation\"),\n" +
-				"		booleanArrayValue={\n" +
-				"			false,\n" +
-				"			true\n" +
-				"		},\n" +
-				"		charArrayValue={\n" +
-				"			\'m\',\n" +
-				"			\'q\'\n" +
-				"		},\n" +
-				"		byteArrayValue={\n" +
-				"			-123,\n" +
-				"			123\n" +
-				"		},\n" +
-				"		shortArrayValue={\n" +
-				"			-12345,\n" +
-				"			12345\n" +
-				"		},\n" +
-				"		intArrayValue={\n" +
-				"			-1234567890,\n" +
-				"			1234567890\n" +
-				"		},\n" +
-				"		floatArrayValue={\n" +
-				"			-12345.6789f,\n" +
-				"			12345.6789f\n" +
-				"		},\n" +
-				"		doubleArrayValue={\n" +
-				"			-12345.6789,\n" +
-				"			12345.6789\n" +
-				"		},\n" +
-				"		longArrayValue={\n" +
-				"			-1234567890123456789l,\n" +
-				"			1234567890123456789l\n" +
-				"		},\n" +
-				"		stringArrayValue={\n" +
-				"			\"valueString\",\n" +
-				"			\"stringValue\"\n" +
-				"		},\n" +
-				"		enumArrayValue={\n" +
-				"			EnumClass.Value2,\n" +
-				"			EnumClass.Value1\n" +
-				"		},\n" +
-				"		classArrayValue={\n" +
-				"			EnumClass.class,\n" +
-				"			X.class\n" +
-				"		},\n" +
-				"		annotationArrayValue={\n" +
-				"			@ClassAnnotation(value=\"ClassAnnotation1\"),\n" +
-				"			@ClassAnnotation(value=\"ClassAnnotation2\")\n" +
-				"		})\n" +
-				"	public X(@ParameterAnnotation(value=\"ParameterAnnotation\") @Deprecated() String param1, @ParameterAnnotation(value=\"ParameterAnnotation\") String param2) {\n" +
-				"	}\n" +
-				"	@ValueAnnotation(\n" +
-				"		value=\"ValueAnnotation\",\n" +
-				"		booleanValue=true,\n" +
-				"		charValue=\'m\',\n" +
-				"		byteValue=-123,\n" +
-				"		shortValue=-12345,\n" +
-				"		intValue=-1234567890,\n" +
-				"		floatValue=-12345.6789f,\n" +
-				"		doubleValue=-12345.6789,\n" +
-				"		longValue=-1234567890123456789l,\n" +
-				"		stringValue=\"valueString\",\n" +
-				"		enumValue=EnumClass.Value3,\n" +
-				"		classValue=X.class,\n" +
-				"		annotationValue=@ClassAnnotation(value=\"ClassAnnotation\"),\n" +
-				"		booleanArrayValue={\n" +
-				"			false,\n" +
-				"			true\n" +
-				"		},\n" +
-				"		charArrayValue={\n" +
-				"			\'m\',\n" +
-				"			\'q\'\n" +
-				"		},\n" +
-				"		byteArrayValue={\n" +
-				"			-123,\n" +
-				"			123\n" +
-				"		},\n" +
-				"		shortArrayValue={\n" +
-				"			-12345,\n" +
-				"			12345\n" +
-				"		},\n" +
-				"		intArrayValue={\n" +
-				"			-1234567890,\n" +
-				"			1234567890\n" +
-				"		},\n" +
-				"		floatArrayValue={\n" +
-				"			-12345.6789f,\n" +
-				"			12345.6789f\n" +
-				"		},\n" +
-				"		doubleArrayValue={\n" +
-				"			-12345.6789,\n" +
-				"			12345.6789\n" +
-				"		},\n" +
-				"		longArrayValue={\n" +
-				"			-1234567890123456789l,\n" +
-				"			1234567890123456789l\n" +
-				"		},\n" +
-				"		stringArrayValue={\n" +
-				"			\"valueString\",\n" +
-				"			\"stringValue\"\n" +
-				"		},\n" +
-				"		enumArrayValue={\n" +
-				"			EnumClass.Value2,\n" +
-				"			EnumClass.Value1\n" +
-				"		},\n" +
-				"		classArrayValue={\n" +
-				"			EnumClass.class,\n" +
-				"			X.class\n" +
-				"		},\n" +
-				"		annotationArrayValue={\n" +
-				"			@ClassAnnotation(value=\"ClassAnnotation1\"),\n" +
-				"			@ClassAnnotation(value=\"ClassAnnotation2\")\n" +
-				"		})\n" +
-				"	public void method(@ParameterAnnotation(value=\"ParameterAnnotation\") @Deprecated() String param1, @ParameterAnnotation(value=\"ParameterAnnotation\") String param2){\n" +
-				"	}\n" +
-				"}"
-			},
-		"");
-		
-		try {
-			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-			final byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-			new ClassFileReader(classFileBytes, "X.java".toCharArray(), true);
-			disassembler.disassemble(
-					classFileBytes,
-					"\n",
-					ClassFileBytesDisassembler.DETAILED);			
-		} catch (ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-	}    
+//
+//	// check array handling of singleton 
+//	public void test166() {
+//		this.runConformTest(
+//			new String[] {
+//				"X.java",
+//				"import java.lang.annotation.Retention;\n" +
+//				"import java.lang.annotation.RetentionPolicy;\n" +
+//				"import java.lang.annotation.Inherited;\n" +
+//				"\n" +
+//				"@Retention(RetentionPolicy.RUNTIME)\n" +
+//				"@Inherited()\n" +
+//				"@interface ParameterAnnotation {\n" +
+//				"	String value() default \"Default\";\n" +
+//				"}\n"+
+//				"@interface ClassAnnotation {\n" +
+//				"	String value() default \"Default\";\n" +
+//				"}\n" +
+//				"\n" +
+//				"enum EnumClass{\n" +
+//				"	Value1, Value2, Value3\n" +
+//				"}\n" +
+//				"\n" +
+//				"@Retention(RetentionPolicy.RUNTIME)\n" +
+//				"@Inherited()\n" +
+//				"@interface ValueAnnotation {\n" +
+//				"	String value() default \"Default\";\n" +
+//				"	boolean booleanValue() default true;\n" +
+//				"	char charValue() default \'q\';\n" +
+//				"	byte byteValue() default 123;\n" +
+//				"	short shortValue() default 12345;\n" +
+//				"	int intValue() default 1234567890;\n" +
+//				"	float floatValue() default 12345.6789f;\n" +
+//				"	double doubleValue() default 12345.6789;\n" +
+//				"	long longValue() default 1234567890123456789l;\n" +
+//				"	String stringValue() default \"stringValue\";\n" +
+//				"	EnumClass enumValue() default EnumClass.Value1;\n" +
+//				"	Class classValue() default EnumClass.class;\n" +
+//				"	ClassAnnotation annotationValue() default @ClassAnnotation();\n" +
+//				"	boolean[] booleanArrayValue() default {true, false};\n" +
+//				"	char[] charArrayValue() default {\'q\', \'m\'};\n" +
+//				"	byte[] byteArrayValue() default {123, -123};\n" +
+//				"	short[] shortArrayValue() default {12345, -12345};\n" +
+//				"	int[] intArrayValue() default {1234567890, -1234567890};\n" +
+//				"	float[] floatArrayValue() default {12345.6789f, -12345.6789f};\n" +
+//				"	double[] doubleArrayValue() default {12345.6789, -12345.6789};\n" +
+//				"	long[] longArrayValue() default {1234567890123456789l, -1234567890123456789l};\n" +
+//				"	String[] stringArrayValue() default {\"stringValue\", \"valueString\"};\n" +
+//				"	EnumClass[] enumArrayValue() default {EnumClass.Value1, EnumClass.Value2};\n" +
+//				"	Class[] classArrayValue() default {X.class, EnumClass.class};\n" +
+//				"	ClassAnnotation[] annotationArrayValue() default {@ClassAnnotation(), @ClassAnnotation()};\n" +
+//				"}\n" +
+//				"\n" +
+//				"public class X {\n" +
+//				"	@ValueAnnotation(\n" +
+//				"		value=\"ValueAnnotation\",\n" +
+//				"		booleanValue=true,\n" +
+//				"		charValue=\'m\',\n" +
+//				"		byteValue=-123,\n" +
+//				"		shortValue=-12345,\n" +
+//				"		intValue=-1234567890,\n" +
+//				"		floatValue=-12345.6789f,\n" +
+//				"		doubleValue=-12345.6789,\n" +
+//				"		longValue=-1234567890123456789l,\n" +
+//				"		stringValue=\"valueString\",\n" +
+//				"		enumValue=EnumClass.Value3,\n" +
+//				"		classValue=X.class,\n" +
+//				"		annotationValue=@ClassAnnotation(value=\"ClassAnnotation\"),\n" +
+//				"		booleanArrayValue={\n" +
+//				"			false,\n" +
+//				"			true\n" +
+//				"		},\n" +
+//				"		charArrayValue={\n" +
+//				"			\'m\',\n" +
+//				"			\'q\'\n" +
+//				"		},\n" +
+//				"		byteArrayValue={\n" +
+//				"			-123,\n" +
+//				"			123\n" +
+//				"		},\n" +
+//				"		shortArrayValue={\n" +
+//				"			-12345,\n" +
+//				"			12345\n" +
+//				"		},\n" +
+//				"		intArrayValue={\n" +
+//				"			-1234567890,\n" +
+//				"			1234567890\n" +
+//				"		},\n" +
+//				"		floatArrayValue={\n" +
+//				"			-12345.6789f,\n" +
+//				"			12345.6789f\n" +
+//				"		},\n" +
+//				"		doubleArrayValue={\n" +
+//				"			-12345.6789,\n" +
+//				"			12345.6789\n" +
+//				"		},\n" +
+//				"		longArrayValue={\n" +
+//				"			-1234567890123456789l,\n" +
+//				"			1234567890123456789l\n" +
+//				"		},\n" +
+//				"		stringArrayValue={\n" +
+//				"			\"valueString\",\n" +
+//				"			\"stringValue\"\n" +
+//				"		},\n" +
+//				"		enumArrayValue={\n" +
+//				"			EnumClass.Value2,\n" +
+//				"			EnumClass.Value1\n" +
+//				"		},\n" +
+//				"		classArrayValue={\n" +
+//				"			EnumClass.class,\n" +
+//				"			X.class\n" +
+//				"		},\n" +
+//				"		annotationArrayValue={\n" +
+//				"			@ClassAnnotation(value=\"ClassAnnotation1\"),\n" +
+//				"			@ClassAnnotation(value=\"ClassAnnotation2\")\n" +
+//				"		})\n" +
+//				"	public String field;\n" +
+//				"	@ValueAnnotation(\n" +
+//				"		value=\"ValueAnnotation\",\n" +
+//				"		booleanValue=true,\n" +
+//				"		charValue=\'m\',\n" +
+//				"		byteValue=-123,\n" +
+//				"		shortValue=-12345,\n" +
+//				"		intValue=-1234567890,\n" +
+//				"		floatValue=-12345.6789f,\n" +
+//				"		doubleValue=-12345.6789,\n" +
+//				"		longValue=-1234567890123456789l,\n" +
+//				"		stringValue=\"valueString\",\n" +
+//				"		enumValue=EnumClass.Value3,\n" +
+//				"		classValue=X.class,\n" +
+//				"		annotationValue=@ClassAnnotation(value=\"ClassAnnotation\"),\n" +
+//				"		booleanArrayValue={\n" +
+//				"			false,\n" +
+//				"			true\n" +
+//				"		},\n" +
+//				"		charArrayValue={\n" +
+//				"			\'m\',\n" +
+//				"			\'q\'\n" +
+//				"		},\n" +
+//				"		byteArrayValue={\n" +
+//				"			-123,\n" +
+//				"			123\n" +
+//				"		},\n" +
+//				"		shortArrayValue={\n" +
+//				"			-12345,\n" +
+//				"			12345\n" +
+//				"		},\n" +
+//				"		intArrayValue={\n" +
+//				"			-1234567890,\n" +
+//				"			1234567890\n" +
+//				"		},\n" +
+//				"		floatArrayValue={\n" +
+//				"			-12345.6789f,\n" +
+//				"			12345.6789f\n" +
+//				"		},\n" +
+//				"		doubleArrayValue={\n" +
+//				"			-12345.6789,\n" +
+//				"			12345.6789\n" +
+//				"		},\n" +
+//				"		longArrayValue={\n" +
+//				"			-1234567890123456789l,\n" +
+//				"			1234567890123456789l\n" +
+//				"		},\n" +
+//				"		stringArrayValue={\n" +
+//				"			\"valueString\",\n" +
+//				"			\"stringValue\"\n" +
+//				"		},\n" +
+//				"		enumArrayValue={\n" +
+//				"			EnumClass.Value2,\n" +
+//				"			EnumClass.Value1\n" +
+//				"		},\n" +
+//				"		classArrayValue={\n" +
+//				"			EnumClass.class,\n" +
+//				"			X.class\n" +
+//				"		},\n" +
+//				"		annotationArrayValue={\n" +
+//				"			@ClassAnnotation(value=\"ClassAnnotation1\"),\n" +
+//				"			@ClassAnnotation(value=\"ClassAnnotation2\")\n" +
+//				"		})\n" +
+//				"	public X(@ParameterAnnotation(value=\"ParameterAnnotation\") @Deprecated() String param1, @ParameterAnnotation(value=\"ParameterAnnotation\") String param2) {\n" +
+//				"	}\n" +
+//				"	@ValueAnnotation(\n" +
+//				"		value=\"ValueAnnotation\",\n" +
+//				"		booleanValue=true,\n" +
+//				"		charValue=\'m\',\n" +
+//				"		byteValue=-123,\n" +
+//				"		shortValue=-12345,\n" +
+//				"		intValue=-1234567890,\n" +
+//				"		floatValue=-12345.6789f,\n" +
+//				"		doubleValue=-12345.6789,\n" +
+//				"		longValue=-1234567890123456789l,\n" +
+//				"		stringValue=\"valueString\",\n" +
+//				"		enumValue=EnumClass.Value3,\n" +
+//				"		classValue=X.class,\n" +
+//				"		annotationValue=@ClassAnnotation(value=\"ClassAnnotation\"),\n" +
+//				"		booleanArrayValue={\n" +
+//				"			false,\n" +
+//				"			true\n" +
+//				"		},\n" +
+//				"		charArrayValue={\n" +
+//				"			\'m\',\n" +
+//				"			\'q\'\n" +
+//				"		},\n" +
+//				"		byteArrayValue={\n" +
+//				"			-123,\n" +
+//				"			123\n" +
+//				"		},\n" +
+//				"		shortArrayValue={\n" +
+//				"			-12345,\n" +
+//				"			12345\n" +
+//				"		},\n" +
+//				"		intArrayValue={\n" +
+//				"			-1234567890,\n" +
+//				"			1234567890\n" +
+//				"		},\n" +
+//				"		floatArrayValue={\n" +
+//				"			-12345.6789f,\n" +
+//				"			12345.6789f\n" +
+//				"		},\n" +
+//				"		doubleArrayValue={\n" +
+//				"			-12345.6789,\n" +
+//				"			12345.6789\n" +
+//				"		},\n" +
+//				"		longArrayValue={\n" +
+//				"			-1234567890123456789l,\n" +
+//				"			1234567890123456789l\n" +
+//				"		},\n" +
+//				"		stringArrayValue={\n" +
+//				"			\"valueString\",\n" +
+//				"			\"stringValue\"\n" +
+//				"		},\n" +
+//				"		enumArrayValue={\n" +
+//				"			EnumClass.Value2,\n" +
+//				"			EnumClass.Value1\n" +
+//				"		},\n" +
+//				"		classArrayValue={\n" +
+//				"			EnumClass.class,\n" +
+//				"			X.class\n" +
+//				"		},\n" +
+//				"		annotationArrayValue={\n" +
+//				"			@ClassAnnotation(value=\"ClassAnnotation1\"),\n" +
+//				"			@ClassAnnotation(value=\"ClassAnnotation2\")\n" +
+//				"		})\n" +
+//				"	public void method(@ParameterAnnotation(value=\"ParameterAnnotation\") @Deprecated() String param1, @ParameterAnnotation(value=\"ParameterAnnotation\") String param2){\n" +
+//				"	}\n" +
+//				"}"
+//			},
+//		"");
+//		
+//		try {
+//			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//			final byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//			new ClassFileReader(classFileBytes, "X.java".toCharArray(), true);
+//			disassembler.disassemble(
+//					classFileBytes,
+//					"\n",
+//					ClassFileBytesDisassembler.DETAILED);			
+//		} catch (ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//			e.printStackTrace();
+//			assertTrue("ClassFormatException", false);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			assertTrue("IOException", false);
+//		}
+//	}    
     //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99469
     public void test167() {
         this.runNegativeTest(

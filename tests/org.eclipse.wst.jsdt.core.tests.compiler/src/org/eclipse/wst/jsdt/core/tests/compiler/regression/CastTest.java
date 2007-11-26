@@ -18,7 +18,6 @@ import junit.framework.Test;
 
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
@@ -54,50 +53,6 @@ public void test001() {
 		},
 		"SUCCESS");
 
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-
-	String expectedOutput =
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  iconst_0\n" + 
-		"     1  newarray int [10]\n" + 
-		"     3  astore_1 [c1]\n" + 
-		"     4  aload_1 [c1]\n" + 
-		"     5  astore_2 [c2]\n" + 
-		"     6  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-		"     9  ldc <String \"SUCCESS\"> [22]\n" + 
-		"    11  invokevirtual java.io.PrintStream.print(java.lang.String) : void [24]\n" + 
-		"    14  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 3]\n" + 
-		"        [pc: 4, line: 4]\n" + 
-		"        [pc: 6, line: 5]\n" + 
-		"        [pc: 14, line: 6]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 15] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 15] local: c1 index: 1 type: java.lang.Cloneable\n" + 
-		"        [pc: 6, pc: 15] local: c2 index: 2 type: java.lang.Cloneable\n";
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 2));
-	}
-	if (index == -1) {
-		assertEquals("Wrong contents", expectedOutput, actualOutput);
-	}
 }
 
 public void test002() {
@@ -1275,65 +1230,6 @@ public void test034() {
 		},
 		"SUCCESS");
 
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-
-	String expectedOutput =
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 4\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  new java.util.ArrayList [16]\n" + 
-		"     3  dup\n" + 
-		"     4  invokespecial java.util.ArrayList() [18]\n" + 
-		"     7  astore_1 [list]\n" + 
-		"     8  new java.util.ArrayList [16]\n" + 
-		"    11  dup\n" + 
-		"    12  invokespecial java.util.ArrayList() [18]\n" + 
-		"    15  astore_1 [list]\n" + 
-		"    16  new java.util.ArrayList [16]\n" + 
-		"    19  dup\n" + 
-		"    20  invokespecial java.util.ArrayList() [18]\n" + 
-		"    23  astore_2 [alist]\n" + 
-		"    24  aload_2 [alist]\n" + 
-		"    25  astore_3 [list2]\n" + 
-		"    26  aload_2 [alist]\n" + 
-		"    27  astore_3 [list2]\n" + 
-		"    28  getstatic java.lang.System.out : java.io.PrintStream [19]\n" + 
-		"    31  ldc <String \"SUCCESS\"> [25]\n" + 
-		"    33  invokevirtual java.io.PrintStream.println(java.lang.String) : void [27]\n" + 
-		"    36  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 8, line: 7]\n" + 
-		"        [pc: 16, line: 9]\n" + 
-		"        [pc: 24, line: 10]\n" + 
-		"        [pc: 26, line: 11]\n" + 
-		"        [pc: 28, line: 13]\n" + 
-		"        [pc: 36, line: 14]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 37] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 8, pc: 37] local: list index: 1 type: java.util.List\n" + 
-		"        [pc: 24, pc: 37] local: alist index: 2 type: java.util.ArrayList\n" + 
-		"        [pc: 26, pc: 37] local: list2 index: 3 type: java.util.List\n";
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 2));
-	}
-	if (index == -1) {
-		assertEquals("Wrong contents", expectedOutput, actualOutput);
-	}
 }
 // javac incorrectly accepts it
 public void test035() {

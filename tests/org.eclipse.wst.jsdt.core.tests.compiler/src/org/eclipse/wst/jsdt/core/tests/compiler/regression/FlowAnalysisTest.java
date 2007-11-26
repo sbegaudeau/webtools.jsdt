@@ -10,20 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.ToolFactory;
+import junit.framework.Test;
+
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
-
-import junit.framework.Test;
 
 public class FlowAnalysisTest extends AbstractRegressionTest {
 	
@@ -794,38 +789,6 @@ public void test028() {
 			"}\n" // =================
 		},
 		"");
-	// check no default return opcode is appended
-	String expectedOutput =
-		"  public X();\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  invokespecial java.lang.Object() [8]\n" + 
-		"     4  new java.lang.NullPointerException [10]\n" + 
-		"     7  dup\n" + 
-		"     8  invokespecial java.lang.NullPointerException() [12]\n" + 
-		"    11  athrow\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"        [pc: 4, line: 3]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: this index: 0 type: X\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}	
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=155423 - variation
 public void test029() {
@@ -842,40 +805,6 @@ public void test029() {
 			"}\n", // =================
 		},
 		"");
-	// check no default return opcode is appended
-	String expectedOutput =
-		"  // Method descriptor #6 ()V\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  X();\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  invokespecial java.lang.Object() [8]\n" + 
-		"     4  new java.lang.NullPointerException [10]\n" + 
-		"     7  dup\n" + 
-		"     8  invokespecial java.lang.NullPointerException() [12]\n" + 
-		"    11  athrow\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 5]\n" + 
-		"        [pc: 4, line: 3]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: this index: 0 type: X\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}	
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=155423 - variation
 public void test030() {
@@ -912,43 +841,6 @@ public void test030() {
 			"}\n", // =================
 		},
 		"SUCCESS:caught:NPE");
-	// check no default return opcode is appended
-	String expectedOutput =
-		"  // Method descriptor #6 ()V\n" + 
-		"  // Stack: 3, Locals: 1\n" + 
-		"  X();\n" + 
-		"     0  aload_0 [this]\n" + 
-		"     1  new X$1 [8]\n" + 
-		"     4  dup\n" + 
-		"     5  invokespecial X$1() [10]\n" + 
-		"     8  invokespecial Y(java.lang.Object) [12]\n" + 
-		"    11  new java.lang.NullPointerException [15]\n" + 
-		"    14  dup\n" + 
-		"    15  invokespecial java.lang.NullPointerException() [17]\n" + 
-		"    18  athrow\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 14]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 19] local: this index: 0 type: X\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}	
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=155423 - variation
 public void test031() {

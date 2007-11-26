@@ -10,13 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.eclipse.wst.jsdt.core.ToolFactory;
-import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
-
 import junit.framework.Test;
 
 public class BooleanTest extends AbstractRegressionTest {
@@ -430,48 +423,48 @@ public void test018() {
 			"}\n",
 		},
 		"true");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  getstatic X.f0 : float [26]\n" + 
-		"    10  fconst_1\n" + 
-		"    11  fadd\n" + 
-		"    12  putstatic X.f0 : float [26]\n" + 
-		"    15  iconst_1\n" + 
-		"    16  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
-		"    19  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 16, line: 8]\n" + 
-		"        [pc: 19, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 20] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 20] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+//	// 	ensure optimized boolean codegen sequence
+//	String expectedOutput =
+//		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
+//		"  // Stack: 3, Locals: 3\n" + 
+//		"  public static void main(java.lang.String[] args);\n" + 
+//		"     0  ldc2_w <Long -26> [18]\n" + 
+//		"     3  lstore_1 [l11]\n" + 
+//		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
+//		"     7  getstatic X.f0 : float [26]\n" + 
+//		"    10  fconst_1\n" + 
+//		"    11  fadd\n" + 
+//		"    12  putstatic X.f0 : float [26]\n" + 
+//		"    15  iconst_1\n" + 
+//		"    16  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
+//		"    19  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 6]\n" + 
+//		"        [pc: 4, line: 8]\n" + 
+//		"        [pc: 7, line: 9]\n" + 
+//		"        [pc: 16, line: 8]\n" + 
+//		"        [pc: 19, line: 10]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 20] local: args index: 0 type: java.lang.String[]\n" + 
+//		"        [pc: 4, pc: 20] local: l11 index: 1 type: long\n";
+//	
+//	try {
+//		File f = new File(OUTPUT_DIR + File.separator + "X.class");
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
+//		int index = result.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(result, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("Wrong contents", expectedOutput, result);
+//		}
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue(false);
+//	} catch (IOException e) {
+//		assertTrue(false);
+//	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test019() {
@@ -492,54 +485,54 @@ public void test019() {
 		},
 		"false");
 	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 5, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  lload_1 [l11]\n" + 
-		"     8  l2f\n" + 
-		"     9  getstatic X.f0 : float [26]\n" + 
-		"    12  dup\n" + 
-		"    13  fconst_1\n" + 
-		"    14  fadd\n" + 
-		"    15  putstatic X.f0 : float [26]\n" + 
-		"    18  fcmpg\n" + 
-		"    19  ifge 26\n" + 
-		"    22  iconst_0\n" + 
-		"    23  goto 27\n" + 
-		"    26  iconst_1\n" + 
-		"    27  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
-		"    30  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 27, line: 8]\n" + 
-		"        [pc: 30, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 31] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 31] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+//	String expectedOutput =
+//		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
+//		"  // Stack: 5, Locals: 3\n" + 
+//		"  public static void main(java.lang.String[] args);\n" + 
+//		"     0  ldc2_w <Long -26> [18]\n" + 
+//		"     3  lstore_1 [l11]\n" + 
+//		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
+//		"     7  lload_1 [l11]\n" + 
+//		"     8  l2f\n" + 
+//		"     9  getstatic X.f0 : float [26]\n" + 
+//		"    12  dup\n" + 
+//		"    13  fconst_1\n" + 
+//		"    14  fadd\n" + 
+//		"    15  putstatic X.f0 : float [26]\n" + 
+//		"    18  fcmpg\n" + 
+//		"    19  ifge 26\n" + 
+//		"    22  iconst_0\n" + 
+//		"    23  goto 27\n" + 
+//		"    26  iconst_1\n" + 
+//		"    27  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
+//		"    30  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 6]\n" + 
+//		"        [pc: 4, line: 8]\n" + 
+//		"        [pc: 7, line: 9]\n" + 
+//		"        [pc: 27, line: 8]\n" + 
+//		"        [pc: 30, line: 10]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 31] local: args index: 0 type: java.lang.String[]\n" + 
+//		"        [pc: 4, pc: 31] local: l11 index: 1 type: long\n";
+//	
+//	try {
+//		File f = new File(OUTPUT_DIR + File.separator + "X.class");
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
+//		int index = result.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(result, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("Wrong contents", expectedOutput, result);
+//		}
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue(false);
+//	} catch (IOException e) {
+//		assertTrue(false);
+//	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test020() {
@@ -559,44 +552,44 @@ public void test020() {
 			"}\n",
 		},
 		"true");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  iconst_1\n" + 
-		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
-		"    11  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 8, line: 8]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+//	// 	ensure optimized boolean codegen sequence
+//	String expectedOutput =
+//		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
+//		"  // Stack: 2, Locals: 3\n" + 
+//		"  public static void main(java.lang.String[] args);\n" + 
+//		"     0  ldc2_w <Long -26> [18]\n" + 
+//		"     3  lstore_1 [l11]\n" + 
+//		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
+//		"     7  iconst_1\n" + 
+//		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
+//		"    11  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 6]\n" + 
+//		"        [pc: 4, line: 8]\n" + 
+//		"        [pc: 7, line: 9]\n" + 
+//		"        [pc: 8, line: 8]\n" + 
+//		"        [pc: 11, line: 10]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
+//		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
+//	
+//	try {
+//		File f = new File(OUTPUT_DIR + File.separator + "X.class");
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
+//		int index = result.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(result, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("Wrong contents", expectedOutput, result);
+//		}
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue(false);
+//	} catch (IOException e) {
+//		assertTrue(false);
+//	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test021() {
@@ -616,44 +609,44 @@ public void test021() {
 			"}\n",
 		},
 		"true");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  iconst_1\n" + 
-		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
-		"    11  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 8, line: 8]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+//	// 	ensure optimized boolean codegen sequence
+//	String expectedOutput =
+//		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
+//		"  // Stack: 2, Locals: 3\n" + 
+//		"  public static void main(java.lang.String[] args);\n" + 
+//		"     0  ldc2_w <Long -26> [18]\n" + 
+//		"     3  lstore_1 [l11]\n" + 
+//		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
+//		"     7  iconst_1\n" + 
+//		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
+//		"    11  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 6]\n" + 
+//		"        [pc: 4, line: 8]\n" + 
+//		"        [pc: 7, line: 9]\n" + 
+//		"        [pc: 8, line: 8]\n" + 
+//		"        [pc: 11, line: 10]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
+//		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
+//	
+//	try {
+//		File f = new File(OUTPUT_DIR + File.separator + "X.class");
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
+//		int index = result.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(result, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("Wrong contents", expectedOutput, result);
+//		}
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue(false);
+//	} catch (IOException e) {
+//		assertTrue(false);
+//	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test022() {
@@ -673,44 +666,44 @@ public void test022() {
 			"}\n",
 		},
 		"true");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  iconst_1\n" + 
-		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
-		"    11  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 8, line: 8]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+//	// 	ensure optimized boolean codegen sequence
+//	String expectedOutput =
+//		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
+//		"  // Stack: 2, Locals: 3\n" + 
+//		"  public static void main(java.lang.String[] args);\n" + 
+//		"     0  ldc2_w <Long -26> [18]\n" + 
+//		"     3  lstore_1 [l11]\n" + 
+//		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
+//		"     7  iconst_1\n" + 
+//		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
+//		"    11  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 6]\n" + 
+//		"        [pc: 4, line: 8]\n" + 
+//		"        [pc: 7, line: 9]\n" + 
+//		"        [pc: 8, line: 8]\n" + 
+//		"        [pc: 11, line: 10]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
+//		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
+//	
+//	try {
+//		File f = new File(OUTPUT_DIR + File.separator + "X.class");
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
+//		int index = result.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(result, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("Wrong contents", expectedOutput, result);
+//		}
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue(false);
+//	} catch (IOException e) {
+//		assertTrue(false);
+//	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120
 public void test023() {
@@ -730,48 +723,48 @@ public void test023() {
 			"}\n",
 		},
 		"false");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  getstatic X.f0 : float [26]\n" + 
-		"    10  fconst_1\n" + 
-		"    11  fadd\n" + 
-		"    12  putstatic X.f0 : float [26]\n" + 
-		"    15  iconst_0\n" + 
-		"    16  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
-		"    19  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 16, line: 8]\n" + 
-		"        [pc: 19, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 20] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 20] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
+//	// 	ensure optimized boolean codegen sequence
+//	String expectedOutput =
+//		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
+//		"  // Stack: 3, Locals: 3\n" + 
+//		"  public static void main(java.lang.String[] args);\n" + 
+//		"     0  ldc2_w <Long -26> [18]\n" + 
+//		"     3  lstore_1 [l11]\n" + 
+//		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
+//		"     7  getstatic X.f0 : float [26]\n" + 
+//		"    10  fconst_1\n" + 
+//		"    11  fadd\n" + 
+//		"    12  putstatic X.f0 : float [26]\n" + 
+//		"    15  iconst_0\n" + 
+//		"    16  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
+//		"    19  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 6]\n" + 
+//		"        [pc: 4, line: 8]\n" + 
+//		"        [pc: 7, line: 9]\n" + 
+//		"        [pc: 16, line: 8]\n" + 
+//		"        [pc: 19, line: 10]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 20] local: args index: 0 type: java.lang.String[]\n" + 
+//		"        [pc: 4, pc: 20] local: l11 index: 1 type: long\n";
+//	
+//	try {
+//		File f = new File(OUTPUT_DIR + File.separator + "X.class");
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
+//		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
+//		int index = result.indexOf(expectedOutput);
+//		if (index == -1 || expectedOutput.length() == 0) {
+//			System.out.println(Util.displayString(result, 3));
+//		}
+//		if (index == -1) {
+//			assertEquals("Wrong contents", expectedOutput, result);
+//		}
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue(false);
+//	} catch (IOException e) {
+//		assertTrue(false);
+//	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test024() {
@@ -791,55 +784,6 @@ public void test024() {
 			"}\n",
 		},
 		"true");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 5, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  lload_1 [l11]\n" + 
-		"     8  l2f\n" + 
-		"     9  getstatic X.f0 : float [26]\n" + 
-		"    12  dup\n" + 
-		"    13  fconst_1\n" + 
-		"    14  fadd\n" + 
-		"    15  putstatic X.f0 : float [26]\n" + 
-		"    18  fcmpg\n" + 
-		"    19  ifge 26\n" + 
-		"    22  iconst_1\n" + 
-		"    23  goto 27\n" + 
-		"    26  iconst_0\n" + 
-		"    27  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
-		"    30  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 27, line: 8]\n" + 
-		"        [pc: 30, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 31] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 31] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test025() {
@@ -859,44 +803,6 @@ public void test025() {
 			"}\n",
 		},
 		"false");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  iconst_0\n" + 
-		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
-		"    11  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 8, line: 8]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test026() {
@@ -916,45 +822,6 @@ public void test026() {
 			"}\n",
 		},
 		"false");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  iconst_0\n" + 
-		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
-		"    11  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 8, line: 8]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n" + 
-		"}";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test027() {
@@ -974,44 +841,6 @@ public void test027() {
 			"}\n",
 		},
 		"false");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  iconst_0\n" + 
-		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
-		"    11  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 8, line: 8]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test028() {
@@ -1031,44 +860,6 @@ public void test028() {
 			"}\n",
 		},
 		"false");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  iconst_0\n" + 
-		"     8  invokevirtual java.io.PrintStream.println(boolean) : void [26]\n" + 
-		"    11  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 8, line: 8]\n" + 
-		"        [pc: 11, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 12] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 12] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
@@ -1095,44 +886,6 @@ public void test029() {
 			"}\n",
 		},
 		"foobarfalse");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  getstatic java.lang.System.out : java.io.PrintStream [18]\n" + 
-		"     3  invokestatic X.foo() : boolean [24]\n" + 
-		"     6  ifne 13\n" + 
-		"     9  invokestatic X.bar() : boolean [28]\n" + 
-		"    12  pop\n" + 
-		"    13  iconst_0\n" + 
-		"    14  invokevirtual java.io.PrintStream.println(boolean) : void [31]\n" + 
-		"    17  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 3, line: 7]\n" + 
-		"        [pc: 14, line: 6]\n" + 
-		"        [pc: 17, line: 8]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 18] local: args index: 0 type: java.lang.String[]\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117120 - variation
 public void test030() {
@@ -1160,52 +913,6 @@ public void test030() {
 			"}\n",
 		},
 		"foobartrue");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  ldc2_w <Long -26> [18]\n" + 
-		"     3  lstore_1 [l11]\n" + 
-		"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-		"     7  getstatic X.f0 : float [26]\n" + 
-		"    10  fconst_1\n" + 
-		"    11  fadd\n" + 
-		"    12  putstatic X.f0 : float [26]\n" + 
-		"    15  invokestatic X.foo() : boolean [28]\n" + 
-		"    18  ifne 25\n" + 
-		"    21  invokestatic X.bar() : boolean [32]\n" + 
-		"    24  pop\n" + 
-		"    25  iconst_1\n" + 
-		"    26  invokevirtual java.io.PrintStream.println(boolean) : void [35]\n" + 
-		"    29  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 4, line: 8]\n" + 
-		"        [pc: 7, line: 9]\n" + 
-		"        [pc: 26, line: 8]\n" + 
-		"        [pc: 29, line: 10]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 30] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 4, pc: 30] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117451
 public void test031() {
@@ -1225,82 +932,6 @@ public void test031() {
 			"}\n",
 		},
 		"true");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput = this.complianceLevel.equals(COMPLIANCE_1_3)
-		?	"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 2, Locals: 4\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  ldc2_w <Long -26> [18]\n" + 
-			"     3  lstore_1 [l11]\n" + 
-			"     4  new X [1]\n" + 
-			"     7  dup\n" + 
-			"     8  invokespecial X() [20]\n" + 
-			"    11  astore_3 [x]\n" + 
-			"    12  getstatic java.lang.System.out : java.io.PrintStream [21]\n" + 
-			"    15  aload_3 [x]\n" + 
-			"    16  invokevirtual java.lang.Object.getClass() : java.lang.Class [27]\n" + 
-			"    19  pop\n" + 
-			"    20  iconst_1\n" + 
-			"    21  invokevirtual java.io.PrintStream.println(boolean) : void [31]\n" + 
-			"    24  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 6]\n" + 
-			"        [pc: 4, line: 7]\n" + 
-			"        [pc: 12, line: 8]\n" + 
-			"        [pc: 15, line: 9]\n" + 
-			"        [pc: 21, line: 8]\n" + 
-			"        [pc: 24, line: 10]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 25] local: args index: 0 type: java.lang.String[]\n" + 
-			"        [pc: 4, pc: 25] local: l11 index: 1 type: long\n" + 
-			"        [pc: 12, pc: 25] local: x index: 3 type: X\n"
-
-		:	"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 2, Locals: 4\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  ldc2_w <Long -26> [18]\n" + 
-			"     3  lstore_1 [l11]\n" + 
-			"     4  new X [1]\n" + 
-			"     7  dup\n" + 
-			"     8  invokespecial X() [20]\n" + 
-			"    11  astore_3 [x]\n" + 
-			"    12  getstatic java.lang.System.out : java.io.PrintStream [21]\n" + 
-			"    15  aload_3 [x]\n" + 
-			"    16  getfield X.f0 : float [27]\n" + 
-			"    19  pop\n" + 
-			"    20  iconst_1\n" + 
-			"    21  invokevirtual java.io.PrintStream.println(boolean) : void [29]\n" + 
-			"    24  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 6]\n" + 
-			"        [pc: 4, line: 7]\n" + 
-			"        [pc: 12, line: 8]\n" + 
-			"        [pc: 15, line: 9]\n" + 
-			"        [pc: 21, line: 8]\n" + 
-			"        [pc: 24, line: 10]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 25] local: args index: 0 type: java.lang.String[]\n" + 
-			"        [pc: 4, pc: 25] local: l11 index: 1 type: long\n" + 
-			"        [pc: 12, pc: 25] local: x index: 3 type: X\n";
-	
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117451 - variation
 public void test032() {
@@ -1319,46 +950,6 @@ public void test032() {
 			"}\n",
 		},
 		"true");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-			"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-			"  // Stack: 2, Locals: 3\n" + 
-			"  public static void main(java.lang.String[] args);\n" + 
-			"     0  ldc2_w <Long -26> [18]\n" + 
-			"     3  lstore_1 [l11]\n" + 
-			"     4  getstatic java.lang.System.out : java.io.PrintStream [20]\n" + 
-			"     7  ldc <Float 13.0> [26]\n" + 
-			"     9  putstatic X.f0 : float [27]\n" + 
-			"    12  iconst_1\n" + 
-			"    13  invokevirtual java.io.PrintStream.println(boolean) : void [29]\n" + 
-			"    16  return\n" + 
-			"      Line numbers:\n" + 
-			"        [pc: 0, line: 6]\n" + 
-			"        [pc: 4, line: 7]\n" + 
-			"        [pc: 7, line: 8]\n" + 
-			"        [pc: 13, line: 7]\n" + 
-			"        [pc: 16, line: 9]\n" + 
-			"      Local variable table:\n" + 
-			"        [pc: 0, pc: 17] local: args index: 0 type: java.lang.String[]\n" + 
-			"        [pc: 4, pc: 17] local: l11 index: 1 type: long\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 
 public void test033() {
@@ -1374,50 +965,6 @@ public void test033() {
 			"}\n",
 		},
 		"falsefalse");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 3, Locals: 2\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  iconst_1\n" + 
-		"     1  istore_1 [b]\n" + 
-		"     2  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-		"     5  iload_1 [b]\n" + 
-		"     6  iload_1 [b]\n" + 
-		"     7  ixor\n" + 
-		"     8  invokevirtual java.io.PrintStream.print(boolean) : void [22]\n" + 
-		"    11  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-		"    14  iload_1 [b]\n" + 
-		"    15  iconst_1\n" + 
-		"    16  ixor\n" + 
-		"    17  invokevirtual java.io.PrintStream.println(boolean) : void [28]\n" + 
-		"    20  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 3]\n" + 
-		"        [pc: 2, line: 4]\n" + 
-		"        [pc: 11, line: 5]\n" + 
-		"        [pc: 20, line: 6]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 21] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 2, pc: 21] local: b index: 1 type: boolean\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 public void test034() {
 	this.runConformTest(
@@ -1433,47 +980,6 @@ public void test034() {
 			"}\n",
 		},
 		"SUCCESS");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 2\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  iconst_1\n" + 
-		"     1  istore_1 [b]\n" + 
-		"     2  iload_1 [b]\n" + 
-		"     3  ifeq 10\n" + 
-		"     6  iload_1 [b]\n" + 
-		"     7  ifeq 18\n" + 
-		"    10  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-		"    13  ldc <String \"SUCCESS\"> [22]\n" + 
-		"    15  invokevirtual java.io.PrintStream.println(java.lang.String) : void [24]\n" + 
-		"    18  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 3]\n" + 
-		"        [pc: 2, line: 4]\n" + 
-		"        [pc: 10, line: 5]\n" + 
-		"        [pc: 18, line: 7]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 19] local: args index: 0 type: java.lang.String[]\n" + 
-		"        [pc: 2, pc: 19] local: b index: 1 type: boolean\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117451 - variation
 public void test035() {
@@ -1488,38 +994,6 @@ public void test035() {
 			"}\n",
 		},
 		"false");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #17 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"    0  getstatic java.lang.System.out : java.io.PrintStream [18]\n" + 
-		"    3  iconst_0\n" + 
-		"    4  invokevirtual java.io.PrintStream.println(boolean) : void [24]\n" + 
-		"    7  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 4]\n" + 
-		"        [pc: 7, line: 5]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 8] local: args index: 0 type: java.lang.String[]\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=117451 - variation
 public void test036() {
@@ -1537,38 +1011,6 @@ public void test036() {
 			"}\n",
 		},
 		"false");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #8 ()V\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  void foo();\n" + 
-		"    0  getstatic java.lang.System.out : java.io.PrintStream [24]\n" + 
-		"    3  iconst_0\n" + 
-		"    4  invokevirtual java.io.PrintStream.println(boolean) : void [30]\n" + 
-		"    7  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 7]\n" + 
-		"        [pc: 7, line: 8]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 8] local: this index: 0 type: X\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=147024
 public void test037() {
@@ -1682,208 +1124,6 @@ public void test037() {
 		},
 		"It worked.");
 	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #21 ()Z\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public boolean getFlagBT();\n" + 
-		"    0  iconst_1\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_1\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 6]\n" + 
-		"        [pc: 2, line: 8]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #24 ()I\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public int getFlagIT();\n" + 
-		"    0  iconst_1\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_0\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 14]\n" + 
-		"        [pc: 2, line: 16]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #21 ()Z\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public boolean getFlagBF();\n" + 
-		"    0  iconst_0\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_0\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 22]\n" + 
-		"        [pc: 2, line: 26]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #24 ()I\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public int getFlagIF();\n" + 
-		"    0  iconst_0\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_1\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 30]\n" + 
-		"        [pc: 2, line: 34]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #21 ()Z\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public boolean getFlagBT2();\n" + 
-		"    0  iconst_1\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_1\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 37]\n" + 
-		"        [pc: 2, line: 39]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #24 ()I\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public int getFlagIT2();\n" + 
-		"    0  iconst_1\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_0\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 45]\n" + 
-		"        [pc: 2, line: 47]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #21 ()Z\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public boolean getFlagBF2();\n" + 
-		"    0  iconst_0\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_0\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 53]\n" + 
-		"        [pc: 2, line: 57]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #24 ()I\n" + 
-		"  // Stack: 1, Locals: 2\n" + 
-		"  public int getFlagIF2();\n" + 
-		"    0  iconst_0\n" + 
-		"    1  istore_1 [b]\n" + 
-		"    2  iconst_1\n" + 
-		"    3  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 61]\n" + 
-		"        [pc: 2, line: 65]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 4] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 4] local: b index: 1 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #21 ()Z\n" + 
-		"  // Stack: 1, Locals: 3\n" + 
-		"  public boolean getFlagBT3();\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  astore_1 [self]\n" + 
-		"    2  iconst_1\n" + 
-		"    3  istore_2 [b]\n" + 
-		"    4  iconst_1\n" + 
-		"    5  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 68]\n" + 
-		"        [pc: 2, line: 69]\n" + 
-		"        [pc: 4, line: 71]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 6] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 6] local: self index: 1 type: X\n" + 
-		"        [pc: 4, pc: 6] local: b index: 2 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #24 ()I\n" + 
-		"  // Stack: 1, Locals: 3\n" + 
-		"  public int getFlagIT3();\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  astore_1 [self]\n" + 
-		"    2  iconst_1\n" + 
-		"    3  istore_2 [b]\n" + 
-		"    4  iconst_0\n" + 
-		"    5  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 77]\n" + 
-		"        [pc: 2, line: 78]\n" + 
-		"        [pc: 4, line: 80]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 6] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 6] local: self index: 1 type: X\n" + 
-		"        [pc: 4, pc: 6] local: b index: 2 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #21 ()Z\n" + 
-		"  // Stack: 1, Locals: 3\n" + 
-		"  public boolean getFlagBF3();\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  astore_1 [self]\n" + 
-		"    2  iconst_0\n" + 
-		"    3  istore_2 [b]\n" + 
-		"    4  iconst_0\n" + 
-		"    5  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 86]\n" + 
-		"        [pc: 2, line: 87]\n" + 
-		"        [pc: 4, line: 91]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 6] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 6] local: self index: 1 type: X\n" + 
-		"        [pc: 4, pc: 6] local: b index: 2 type: boolean\n" + 
-		"  \n" + 
-		"  // Method descriptor #24 ()I\n" + 
-		"  // Stack: 1, Locals: 3\n" + 
-		"  public int getFlagIF3();\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  astore_1 [self]\n" + 
-		"    2  iconst_0\n" + 
-		"    3  istore_2 [b]\n" + 
-		"    4  iconst_1\n" + 
-		"    5  ireturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 94]\n" + 
-		"        [pc: 2, line: 95]\n" + 
-		"        [pc: 4, line: 99]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 6] local: this index: 0 type: X\n" + 
-		"        [pc: 2, pc: 6] local: self index: 1 type: X\n" + 
-		"        [pc: 4, pc: 6] local: b index: 2 type: boolean\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 public void test038() {
 	this.runConformTest(
@@ -1901,37 +1141,6 @@ public void test038() {
 			"}", // =================
 		},
 		"[foo][bar][done]");
-	// 	ensure optimized boolean codegen sequence
-	String expectedOutput =
-		"  // Method descriptor #34 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"     0  invokestatic X.foo() : boolean [35]\n" + 
-		"     3  ifne 10\n" + 
-		"     6  invokestatic X.bar() : boolean [37]\n" + 
-		"     9  pop\n" + 
-		"    10  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-		"    13  ldc <String \"[done]\"> [39]\n" + 
-		"    15  invokevirtual java.io.PrintStream.println(java.lang.String) : void [41]\n" + 
-		"    18  return\n";
-	
-	try {
-		File f = new File(OUTPUT_DIR + File.separator + "X.class");
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-		ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-		String result = disassembler.disassemble(classFileBytes, "\n", ClassFileBytesDisassembler.DETAILED);
-		int index = result.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(result, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, result);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue(false);
-	} catch (IOException e) {
-		assertTrue(false);
-	}		
 }
 
 public static Class testClass() {

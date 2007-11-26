@@ -28,16 +28,16 @@ public class RunComparableTests extends junit.framework.TestCase {
 	static {
 		ALL_CLASSES = new ArrayList();
 		ALL_CLASSES.add(AmbiguousMethodTest.class);
-		ALL_CLASSES.add(AutoBoxingTest.class);
+//		ALL_CLASSES.add(AutoBoxingTest.class);
 		ALL_CLASSES.add(Compliance_1_5.class);
 		ALL_CLASSES.add(GenericTypeTest.class);
-		ALL_CLASSES.add(ForeachStatementTest.class);
+//		ALL_CLASSES.add(ForeachStatementTest.class);
 		ALL_CLASSES.add(StaticImportTest.class);
 		ALL_CLASSES.add(VarargsTest.class);
 		ALL_CLASSES.add(EnumTest.class);
 		ALL_CLASSES.add(MethodVerifyTest.class);
 		ALL_CLASSES.add(AnnotationTest.class);
-		ALL_CLASSES.add(EnclosingMethodAttributeTest.class);
+//		ALL_CLASSES.add(EnclosingMethodAttributeTest.class);
 		// Reset forgotten subsets tests
 		TestCase.TESTS_PREFIX = null;
 		TestCase.TESTS_NAMES = null;

@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
-import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 public class Compliance_1_5 extends AbstractComparableTest {
@@ -1409,49 +1404,49 @@ public void _test043() {
 		false, // do not flush previous output dir content
 		null); // no special vm args		
 }
-/* 
- * array.clone() should use array type in methodRef
- * http://bugs.eclipse.org/bugs/show_bug.cgi?id=36307
- */
-public void test044() {
-	this.runConformTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"    public static void main(String[] args) {\n" +
-			"		args.clone();	\n"+
-			"		System.out.println(\"SUCCESS\");\n" +
-			"    }\n" +
-			"}\n",
-		},
-		"SUCCESS");
-		
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	String expectedOutput = 
-		"     1  invokevirtual java.lang.String[].clone() : java.lang.Object [16]\n";
-		
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 2));
-	}
-	if (index == -1) {
-		assertEquals("Wrong contents", expectedOutput, actualOutput);
-	}
-}
+///* 
+// * array.clone() should use array type in methodRef
+// * http://bugs.eclipse.org/bugs/show_bug.cgi?id=36307
+// */
+//public void test044() {
+//	this.runConformTest(
+//		new String[] {
+//			"X.java",
+//			"public class X {\n" +
+//			"    public static void main(String[] args) {\n" +
+//			"		args.clone();	\n"+
+//			"		System.out.println(\"SUCCESS\");\n" +
+//			"    }\n" +
+//			"}\n",
+//		},
+//		"SUCCESS");
+//		
+//	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//	String actualOutput = null;
+//	try {
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//		actualOutput =
+//			disassembler.disassemble(
+//				classFileBytes,
+//				"\n",
+//				ClassFileBytesDisassembler.DETAILED); 
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue("ClassFormatException", false);
+//	} catch (IOException e) {
+//		assertTrue("IOException", false);
+//	}
+//	
+//	String expectedOutput = 
+//		"     1  invokevirtual java.lang.String[].clone() : java.lang.Object [16]\n";
+//		
+//	int index = actualOutput.indexOf(expectedOutput);
+//	if (index == -1 || expectedOutput.length() == 0) {
+//		System.out.println(Util.displayString(actualOutput, 2));
+//	}
+//	if (index == -1) {
+//		assertEquals("Wrong contents", expectedOutput, actualOutput);
+//	}
+//}
 // 39172
 public void test045() {
 	this.runNegativeTest(
@@ -3334,68 +3329,68 @@ public void test102() {
 		},
 		"X$1$1");
 }
-public void test103() {
-	this.runConformTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"    public static void main(String[] args) {\n" +
-			"		System.out.print(X.class);\n" +
-			"    }\n" +
-			"}\n",
-		},
-		"class X");
-		
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	String expectedOutput = 
-		"public class X {\n" + 
-		"  \n" + 
-		"  // Method descriptor #6 ()V\n" + 
-		"  // Stack: 1, Locals: 1\n" + 
-		"  public X();\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  invokespecial java.lang.Object() [8]\n" + 
-		"    4  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 5] local: this index: 0 type: X\n" + 
-		"  \n" + 
-		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  public static void main(java.lang.String[] args);\n" + 
-		"    0  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
-		"    3  ldc <Class X> [1]\n" + 
-		"    5  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [22]\n" + 
-		"    8  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 3]\n" + 
-		"        [pc: 8, line: 4]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 9] local: args index: 0 type: java.lang.String[]\n";
-		
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 2));
-	}
-	if (index == -1) {
-		assertEquals("Wrong contents", expectedOutput, actualOutput);
-	}
-}
+//public void test103() {
+//	this.runConformTest(
+//		new String[] {
+//			"X.java",
+//			"public class X {\n" +
+//			"    public static void main(String[] args) {\n" +
+//			"		System.out.print(X.class);\n" +
+//			"    }\n" +
+//			"}\n",
+//		},
+//		"class X");
+//		
+//	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+//	String actualOutput = null;
+//	try {
+//		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
+//		actualOutput =
+//			disassembler.disassemble(
+//				classFileBytes,
+//				"\n",
+//				ClassFileBytesDisassembler.DETAILED); 
+//	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
+//		assertTrue("ClassFormatException", false);
+//	} catch (IOException e) {
+//		assertTrue("IOException", false);
+//	}
+//	
+//	String expectedOutput = 
+//		"public class X {\n" + 
+//		"  \n" + 
+//		"  // Method descriptor #6 ()V\n" + 
+//		"  // Stack: 1, Locals: 1\n" + 
+//		"  public X();\n" + 
+//		"    0  aload_0 [this]\n" + 
+//		"    1  invokespecial java.lang.Object() [8]\n" + 
+//		"    4  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 1]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 5] local: this index: 0 type: X\n" + 
+//		"  \n" + 
+//		"  // Method descriptor #15 ([Ljava/lang/String;)V\n" + 
+//		"  // Stack: 2, Locals: 1\n" + 
+//		"  public static void main(java.lang.String[] args);\n" + 
+//		"    0  getstatic java.lang.System.out : java.io.PrintStream [16]\n" + 
+//		"    3  ldc <Class X> [1]\n" + 
+//		"    5  invokevirtual java.io.PrintStream.print(java.lang.Object) : void [22]\n" + 
+//		"    8  return\n" + 
+//		"      Line numbers:\n" + 
+//		"        [pc: 0, line: 3]\n" + 
+//		"        [pc: 8, line: 4]\n" + 
+//		"      Local variable table:\n" + 
+//		"        [pc: 0, pc: 9] local: args index: 0 type: java.lang.String[]\n";
+//		
+//	int index = actualOutput.indexOf(expectedOutput);
+//	if (index == -1 || expectedOutput.length() == 0) {
+//		System.out.println(Util.displayString(actualOutput, 2));
+//	}
+//	if (index == -1) {
+//		assertEquals("Wrong contents", expectedOutput, actualOutput);
+//	}
+//}
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=125570
 public void test104() {
 	this.runConformTest(

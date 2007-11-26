@@ -10,16 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.ToolFactory;
-import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
-import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-
 import junit.framework.Test;
+
+import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 public class EnumTest extends AbstractComparableTest {
 	
@@ -1593,31 +1588,6 @@ public void test056() {
 		},
 		""
 	);
-	String expectedOutput = 
-		"// Signature: Ljava/lang/Enum<LX;>;\n" + 
-		"public abstract enum X {\n"; 
-
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-		int index = actualOutput.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(actualOutput, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, actualOutput);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
 }
 
 /**
@@ -2021,37 +1991,6 @@ public void test070() {
 		},
 		""
 	);
-	String expectedOutput = 
-		"  // Method descriptor #18 (Ljava/lang/String;I)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  private X(java.lang.String arg0, int arg1);\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  aload_1\n" + 
-		"    2  iload_2\n" + 
-		"    3  invokespecial java.lang.Enum(java.lang.String, int) [25]\n" + 
-		"    6  return\n";
-
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-		int index = actualOutput.indexOf(expectedOutput);
-		if (index == -1 || expectedOutput.length() == 0) {
-			System.out.println(Util.displayString(actualOutput, 3));
-		}
-		if (index == -1) {
-			assertEquals("Wrong contents", expectedOutput, actualOutput);
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
 }
 
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=83901
@@ -2440,37 +2379,6 @@ public void test079() {
 		""
 	);
 
-	String[] expectedOutputs = new String[] {
-		"  private strictfp X(java.lang.String arg0, int arg1);\n",
-		"  public static strictfp X[] values();\n",
-		"  public static strictfp X valueOf(java.lang.String arg0);\n"
-	};
-
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED);
-		
-		for (int i = 0, max = expectedOutputs.length; i < max; i++) {
-			String expectedOutput = expectedOutputs[i];
-			int index = actualOutput.indexOf(expectedOutput);
-			if (index == -1 || expectedOutput.length() == 0) {
-				System.out.println(Util.displayString(actualOutput, 3));
-			}
-			if (index == -1) {
-				assertEquals("Wrong contents", expectedOutput, actualOutput);
-			}
-		}
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
 }	
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=87064
 public void test080() {
@@ -2630,33 +2538,6 @@ public void test084() {
 		},
 		"");
 	
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	String expectedOutput = 
-		"  // Method descriptor #20 (Ljava/lang/String;I)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  private X(java.lang.String arg0, int arg1);\n"; 
-		
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 3));
-	}
-	if (index == -1) {
-		assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-	}
 }	
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=88625
 public void test085() {
@@ -2883,91 +2764,6 @@ public void test094() {
 		},
 		"");
 	
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	String expectedOutput = 
-		"// Signature: Ljava/lang/Enum<LX;>;\n" + 
-		"public final enum X {\n" + 
-		"  \n" + 
-		"  // Field descriptor #6 [LX;\n" + 
-		"  private static final synthetic X[] ENUM$VALUES;\n" + 
-		"  \n" + 
-		"  // Method descriptor #8 ()V\n" + 
-		"  // Stack: 1, Locals: 0\n" + 
-		"  static {};\n" + 
-		"    0  iconst_0\n" + 
-		"    1  anewarray X [1]\n" + 
-		"    4  putstatic X.ENUM$VALUES : X[] [10]\n" + 
-		"    7  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"  \n" + 
-		"  // Method descriptor #15 (Ljava/lang/String;I)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  private X(java.lang.String arg0, int arg1);\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  aload_1\n" + 
-		"    2  iload_2\n" + 
-		"    3  invokespecial java.lang.Enum(java.lang.String, int) [16]\n" + 
-		"    6  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 7] local: this index: 0 type: X\n" + 
-		"  \n" + 
-		"  // Method descriptor #21 ()[LX;\n" + 
-		"  // Stack: 5, Locals: 3\n" + 
-		"  public static X[] values();\n" + 
-		"     0  getstatic X.ENUM$VALUES : X[] [10]\n" + 
-		"     3  dup\n" + 
-		"     4  astore_0\n" + 
-		"     5  iconst_0\n" + 
-		"     6  aload_0\n" + 
-		"     7  arraylength\n" + 
-		"     8  dup\n" + 
-		"     9  istore_1\n" + 
-		"    10  anewarray X [1]\n" + 
-		"    13  dup\n" + 
-		"    14  astore_2\n" + 
-		"    15  iconst_0\n" + 
-		"    16  iload_1\n" + 
-		"    17  invokestatic java.lang.System.arraycopy(java.lang.Object, int, java.lang.Object, int, int) : void [22]\n" + 
-		"    20  aload_2\n" + 
-		"    21  areturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"  \n" + 
-		"  // Method descriptor #29 (Ljava/lang/String;)LX;\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  public static X valueOf(java.lang.String arg0);\n" + 
-		"     0  ldc <Class X> [1]\n" + 
-		"     2  aload_0\n" + 
-		"     3  invokestatic java.lang.Enum.valueOf(java.lang.Class, java.lang.String) : java.lang.Enum [30]\n" + 
-		"     6  checkcast X [1]\n" + 
-		"     9  areturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n"; 
-		
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 3));
-	}
-	if (index == -1) {
-		assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-	}
 }
 public void test095() { // check missing abstract cases from multiple interfaces
 	this.runNegativeTest(
@@ -4270,57 +4066,6 @@ public void test127() {
 		},
 		"[1]");
 	
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	String expectedOutput = 
-		"  private static final synthetic X[] ENUM$VALUES;\n"; 
-		
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 3));
-	}
-	if (index == -1) {
-		assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-	}
-	
-	disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X$1.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	expectedOutput = 
-		"ENUM$VALUES"; 
-		
-	index = actualOutput.indexOf(expectedOutput);
-	if (index != -1) {
-		System.out.println(Util.displayString(actualOutput, 3));
-	}
-	if (index != -1) {
-		assertTrue("Must not have field ENUM$VALUES", false);
-	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=127766
 public void test128() {
@@ -4363,132 +4108,6 @@ public void test129() {
 		},
 		"");
 	
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	String expectedOutput = 
-		"// Signature: Ljava/lang/Enum<LX;>;\n" + 
-		"public final enum X {\n" + 
-		"  \n" + 
-		"  // Field descriptor #6 LX;\n" + 
-		"  public static final enum X A;\n" + 
-		"  \n" + 
-		"  // Field descriptor #6 LX;\n" + 
-		"  public static final enum X B;\n" + 
-		"  \n" + 
-		"  // Field descriptor #6 LX;\n" + 
-		"  public static final enum X C;\n" + 
-		"  \n" + 
-		"  // Field descriptor #10 [LX;\n" + 
-		"  private static final synthetic X[] ENUM$VALUES;\n" + 
-		"  \n" + 
-		"  // Method descriptor #12 ()V\n" + 
-		"  // Stack: 4, Locals: 0\n" + 
-		"  static {};\n" + 
-		"     0  new X [1]\n" + 
-		"     3  dup\n" + 
-		"     4  ldc <String \"A\"> [14]\n" + 
-		"     6  iconst_0\n" + 
-		"     7  invokespecial X(java.lang.String, int) [15]\n" + 
-		"    10  putstatic X.A : X [19]\n" + 
-		"    13  new X [1]\n" + 
-		"    16  dup\n" + 
-		"    17  ldc <String \"B\"> [21]\n" + 
-		"    19  iconst_1\n" + 
-		"    20  invokespecial X(java.lang.String, int) [15]\n" + 
-		"    23  putstatic X.B : X [22]\n" + 
-		"    26  new X [1]\n" + 
-		"    29  dup\n" + 
-		"    30  ldc <String \"C\"> [24]\n" + 
-		"    32  iconst_2\n" + 
-		"    33  invokespecial X(java.lang.String, int) [15]\n" + 
-		"    36  putstatic X.C : X [25]\n" + 
-		"    39  iconst_3\n" + 
-		"    40  anewarray X [1]\n" + 
-		"    43  dup\n" + 
-		"    44  iconst_0\n" + 
-		"    45  getstatic X.A : X [19]\n" + 
-		"    48  aastore\n" + 
-		"    49  dup\n" + 
-		"    50  iconst_1\n" + 
-		"    51  getstatic X.B : X [22]\n" + 
-		"    54  aastore\n" + 
-		"    55  dup\n" + 
-		"    56  iconst_2\n" + 
-		"    57  getstatic X.C : X [25]\n" + 
-		"    60  aastore\n" + 
-		"    61  putstatic X.ENUM$VALUES : X[] [27]\n" + 
-		"    64  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 2]\n" + 
-		"        [pc: 39, line: 1]\n" + 
-		"  \n" + 
-		"  // Method descriptor #18 (Ljava/lang/String;I)V\n" + 
-		"  // Stack: 3, Locals: 3\n" + 
-		"  private X(java.lang.String arg0, int arg1);\n" + 
-		"    0  aload_0 [this]\n" + 
-		"    1  aload_1\n" + 
-		"    2  iload_2\n" + 
-		"    3  invokespecial java.lang.Enum(java.lang.String, int) [31]\n" + 
-		"    6  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"      Local variable table:\n" + 
-		"        [pc: 0, pc: 7] local: this index: 0 type: X\n" + 
-		"  \n" + 
-		"  // Method descriptor #34 ()[LX;\n" + 
-		"  // Stack: 5, Locals: 3\n" + 
-		"  public static X[] values();\n" + 
-		"     0  getstatic X.ENUM$VALUES : X[] [27]\n" + 
-		"     3  dup\n" + 
-		"     4  astore_0\n" + 
-		"     5  iconst_0\n" + 
-		"     6  aload_0\n" + 
-		"     7  arraylength\n" + 
-		"     8  dup\n" + 
-		"     9  istore_1\n" + 
-		"    10  anewarray X [1]\n" + 
-		"    13  dup\n" + 
-		"    14  astore_2\n" + 
-		"    15  iconst_0\n" + 
-		"    16  iload_1\n" + 
-		"    17  invokestatic java.lang.System.arraycopy(java.lang.Object, int, java.lang.Object, int, int) : void [35]\n" + 
-		"    20  aload_2\n" + 
-		"    21  areturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"  \n" + 
-		"  // Method descriptor #42 (Ljava/lang/String;)LX;\n" + 
-		"  // Stack: 2, Locals: 1\n" + 
-		"  public static X valueOf(java.lang.String arg0);\n" + 
-		"     0  ldc <Class X> [1]\n" + 
-		"     2  aload_0\n" + 
-		"     3  invokestatic java.lang.Enum.valueOf(java.lang.Class, java.lang.String) : java.lang.Enum [43]\n" + 
-		"     6  checkcast X [1]\n" + 
-		"     9  areturn\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 1]\n" + 
-		"}"; 
-		
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 3));
-	}
-	if (index == -1) {
-		assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-	}
 }
 	
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=141810
@@ -4591,70 +4210,6 @@ public void test133() {
     			"}\n",
          },
          "");
-	ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-	String actualOutput = null;
-	try {
-		byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-		actualOutput =
-			disassembler.disassemble(
-				classFileBytes,
-				"\n",
-				ClassFileBytesDisassembler.DETAILED); 
-	} catch (org.eclipse.wst.jsdt.core.util.ClassFormatException e) {
-		assertTrue("ClassFormatException", false);
-	} catch (IOException e) {
-		assertTrue("IOException", false);
-	}
-	
-	String expectedOutput = 
-		"  // Method descriptor #12 ()V\n" + 
-		"  // Stack: 4, Locals: 0\n" + 
-		"  static {};\n" + 
-		"     0  new X [1]\n" + 
-		"     3  dup\n" + 
-		"     4  ldc <String \"A\"> [14]\n" + 
-		"     6  iconst_0\n" + 
-		"     7  invokespecial X(java.lang.String, int) [15]\n" + 
-		"    10  putstatic X.A : X [19]\n" + 
-		"    13  new X [1]\n" + 
-		"    16  dup\n" + 
-		"    17  ldc <String \"B\"> [21]\n" + 
-		"    19  iconst_1\n" + 
-		"    20  invokespecial X(java.lang.String, int) [15]\n" + 
-		"    23  putstatic X.B : X [22]\n" + 
-		"    26  new X [1]\n" + 
-		"    29  dup\n" + 
-		"    30  ldc <String \"C\"> [24]\n" + 
-		"    32  iconst_2\n" + 
-		"    33  invokespecial X(java.lang.String, int) [15]\n" + 
-		"    36  putstatic X.C : X [25]\n" + 
-		"    39  iconst_3\n" + 
-		"    40  anewarray X [1]\n" + 
-		"    43  dup\n" + 
-		"    44  iconst_0\n" + 
-		"    45  getstatic X.A : X [19]\n" + 
-		"    48  aastore\n" + 
-		"    49  dup\n" + 
-		"    50  iconst_1\n" + 
-		"    51  getstatic X.B : X [22]\n" + 
-		"    54  aastore\n" + 
-		"    55  dup\n" + 
-		"    56  iconst_2\n" + 
-		"    57  getstatic X.C : X [25]\n" + 
-		"    60  aastore\n" + 
-		"    61  putstatic X.ENUM$VALUES : X[] [27]\n" + 
-		"    64  return\n" + 
-		"      Line numbers:\n" + 
-		"        [pc: 0, line: 2]\n" + 
-		"        [pc: 39, line: 1]\n"; 
-		
-	int index = actualOutput.indexOf(expectedOutput);
-	if (index == -1 || expectedOutput.length() == 0) {
-		System.out.println(Util.displayString(actualOutput, 3));
-	}
-	if (index == -1) {
-		assertEquals("unexpected bytecode sequence", expectedOutput, actualOutput);
-	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=149042
 public void test134() {

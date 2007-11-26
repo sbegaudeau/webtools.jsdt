@@ -20,16 +20,7 @@ import junit.framework.Test;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.IAttributeNamesConstants;
-import org.eclipse.wst.jsdt.core.util.IClassFileAttribute;
-import org.eclipse.wst.jsdt.core.util.IClassFileReader;
-import org.eclipse.wst.jsdt.core.util.ICodeAttribute;
-import org.eclipse.wst.jsdt.core.util.ILocalVariableTypeTableAttribute;
-import org.eclipse.wst.jsdt.core.util.ILocalVariableTypeTableEntry;
-import org.eclipse.wst.jsdt.core.util.IMethodInfo;
-import org.eclipse.wst.jsdt.core.util.ISignatureAttribute;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
@@ -195,204 +186,6 @@ public class GenericTypeSignatureTest extends AbstractRegressionTest {
 			testsSource,
 			"SUCCESS");
 
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Lp/A<TT;>;", new String(classFileReader.getGenericSignature()));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-		
-		IClassFileReader classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		IClassFileAttribute classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		ISignatureAttribute signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		char[] signature = signatureAttribute.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Lp/A<TT;>;", new String(signature));
-		IMethodInfo[] methodInfos = classFileReader.getMethodInfos();
-		int length = methodInfos.length;
-		assertEquals("Wrong size", 2, length);
-		IMethodInfo mainMethod = null;
-		for (int i = 0; i < length; i++) {
-			IMethodInfo methodInfo = methodInfos[i];
-			if ("main".equals(new String(methodInfo.getName()))) {
-				mainMethod = methodInfo;
-				break;
-			}
-		}
-		if (mainMethod == null) {
-			assertNotNull(mainMethod);
-			return;
-		}
-		ICodeAttribute codeAttribute = mainMethod.getCodeAttribute();
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(codeAttribute, IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE);
-		assertNotNull(classFileAttribute);
-		ILocalVariableTypeTableAttribute localVariableTypeTableAttribute = (ILocalVariableTypeTableAttribute) classFileAttribute;
-		ILocalVariableTypeTableEntry[] entries = localVariableTypeTableAttribute.getLocalVariableTypeTable();
-		ILocalVariableTypeTableEntry xsEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("xs".equals(new String(entry.getName()))) {
-				xsEntry = entry;
-				break;
-			}
-		}
-		if (xsEntry == null) {
-			assertNotNull(xsEntry);
-			return;
-		}
-		signature = xsEntry.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "LX<LX<Ljava/lang/String;>;>;", new String(signature));
-
-		IMethodInfo constructorMethod = null;
-		for (int i = 0; i < length; i++) {
-			IMethodInfo methodInfo = methodInfos[i];
-			if ("<init>".equals(new String(methodInfo.getName()))) {
-				constructorMethod = methodInfo;
-				break;
-			}
-		}
-		if (constructorMethod == null) {
-			assertNotNull(constructorMethod);
-			return;
-		}
-		codeAttribute = constructorMethod.getCodeAttribute();
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(codeAttribute, IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE);
-		assertNotNull(classFileAttribute);
-		localVariableTypeTableAttribute = (ILocalVariableTypeTableAttribute) classFileAttribute;
-		entries = localVariableTypeTableAttribute.getLocalVariableTypeTable();
-		ILocalVariableTypeTableEntry thisEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("this".equals(new String(entry.getName()))) {
-				thisEntry = entry;
-				break;
-			}
-		}
-		if (thisEntry == null) {
-			assertNotNull(thisEntry);
-			return;
-		}
-		signature = thisEntry.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "LX<TT;>;", new String(signature));
-		ILocalVariableTypeTableEntry tEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("t".equals(new String(entry.getName()))) {
-				tEntry = entry;
-				break;
-			}
-		}
-		if (tEntry == null) {
-			assertNotNull(tEntry);
-			return;
-		}
-		signature = tEntry.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "TT;", new String(signature));
-		
-		if (!RunJavac) return;
-		
-		// Compare with javac
-		cleanUp();
-		runJavac("test001", testsSource);
-		
-		classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		signature = signatureAttribute.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Lp/A<TT;>;", new String(signature));
-		methodInfos = classFileReader.getMethodInfos();
-		length = methodInfos.length;
-		assertEquals("Wrong size", 2, length);
-		mainMethod = null;
-		for (int i = 0; i < length; i++) {
-			IMethodInfo methodInfo = methodInfos[i];
-			if ("main".equals(new String(methodInfo.getName()))) {
-				mainMethod = methodInfo;
-				break;
-			}
-		}
-		if (mainMethod == null) {
-			assertNotNull(mainMethod);
-			return;
-		}
-		codeAttribute = mainMethod.getCodeAttribute();
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(codeAttribute, IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE);
-		assertNotNull(classFileAttribute);
-		localVariableTypeTableAttribute = (ILocalVariableTypeTableAttribute) classFileAttribute;
-		entries = localVariableTypeTableAttribute.getLocalVariableTypeTable();
-		xsEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("xs".equals(new String(entry.getName()))) {
-				xsEntry = entry;
-				break;
-			}
-		}
-		if (xsEntry == null) {
-			assertNotNull(xsEntry);
-			return;
-		}
-		signature = xsEntry.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "LX<LX<Ljava/lang/String;>;>;", new String(signature));
-
-		constructorMethod = null;
-		for (int i = 0; i < length; i++) {
-			IMethodInfo methodInfo = methodInfos[i];
-			if ("<init>".equals(new String(methodInfo.getName()))) {
-				constructorMethod = methodInfo;
-				break;
-			}
-		}
-		if (constructorMethod == null) {
-			assertNotNull(constructorMethod);
-			return;
-		}
-		codeAttribute = constructorMethod.getCodeAttribute();
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(codeAttribute, IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE);
-		assertNotNull(classFileAttribute);
-		localVariableTypeTableAttribute = (ILocalVariableTypeTableAttribute) classFileAttribute;
-		entries = localVariableTypeTableAttribute.getLocalVariableTypeTable();
-		thisEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("this".equals(new String(entry.getName()))) {
-				thisEntry = entry;
-				break;
-			}
-		}
-		if (thisEntry == null) {
-			assertNotNull(thisEntry);
-			return;
-		}
-		signature = thisEntry.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "LX<TT;>;", new String(signature));
-		tEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("t".equals(new String(entry.getName()))) {
-				tEntry = entry;
-				break;
-			}
-		}
-		if (tEntry == null) {
-			assertNotNull(tEntry);
-			return;
-		}
-		signature = tEntry.getSignature();
-		assertNotNull("no signature", signature);
-		assertEquals("Wrong signature", "TT;", new String(signature));
 	}
 	
 	public void test002() {
@@ -412,121 +205,6 @@ public class GenericTypeSignatureTest extends AbstractRegressionTest {
 			};
 		this.runConformTest(testsSource);
 		
-		IClassFileReader classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		IClassFileAttribute classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		ISignatureAttribute signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		assertEquals("Wrong signature", "Lp/A<Ljava/lang/String;>;", new String(signatureAttribute.getSignature()));
-
-		classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "p/A.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		char[] signature = signatureAttribute.getSignature();
-		assertNotNull("No signature", signature);
-		assertEquals("Wrong signature", "<P:Ljava/lang/Object;>Ljava/lang/Object;", new String(signature));
-
-		IMethodInfo[] methodInfos = classFileReader.getMethodInfos();
-		int length = methodInfos.length;
-		assertEquals("Wrong size", 1, length);
-		IMethodInfo constructorMethod = methodInfos[0];
-		ICodeAttribute codeAttribute = constructorMethod.getCodeAttribute();
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(codeAttribute, IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE);
-		assertNotNull(classFileAttribute);
-		ILocalVariableTypeTableAttribute localVariableTypeTableAttribute = (ILocalVariableTypeTableAttribute) classFileAttribute;
-		ILocalVariableTypeTableEntry[] entries = localVariableTypeTableAttribute.getLocalVariableTypeTable();
-		ILocalVariableTypeTableEntry thisEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("this".equals(new String(entry.getName()))) {
-				thisEntry = entry;
-				break;
-			}
-		}
-		if (thisEntry == null) {
-			assertNotNull(thisEntry);
-			return;
-		}
-		assertEquals("Wrong signature", "Lp/A<TP;>;", new String(thisEntry.getSignature()));
-		ILocalVariableTypeTableEntry tEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("p".equals(new String(entry.getName()))) {
-				tEntry = entry;
-				break;
-			}
-		}
-		if (tEntry == null) {
-			assertNotNull(tEntry);
-			return;
-		}
-		signature = tEntry.getSignature();
-		assertNotNull("No signature", signature);
-		assertEquals("Wrong signature", "TP;", new String(signature));
-
-		if (!RunJavac) return;
-
-		// Compare with javac
-		cleanUp();
-		runJavac("test002", testsSource);
-		
-		classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		assertEquals("Wrong signature", "Lp/A<Ljava/lang/String;>;", new String(signatureAttribute.getSignature()));
-
-		classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "p/A.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		signature = signatureAttribute.getSignature();
-		assertNotNull("No signature", signature);
-		assertEquals("Wrong signature", "<P:Ljava/lang/Object;>Ljava/lang/Object;", new String(signature));
-
-		methodInfos = classFileReader.getMethodInfos();
-		length = methodInfos.length;
-		assertEquals("Wrong size", 1, length);
-		constructorMethod = methodInfos[0];
-		codeAttribute = constructorMethod.getCodeAttribute();
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(codeAttribute, IAttributeNamesConstants.LOCAL_VARIABLE_TYPE_TABLE);
-		assertNotNull(classFileAttribute);
-		localVariableTypeTableAttribute = (ILocalVariableTypeTableAttribute) classFileAttribute;
-		entries = localVariableTypeTableAttribute.getLocalVariableTypeTable();
-		thisEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("this".equals(new String(entry.getName()))) {
-				thisEntry = entry;
-				break;
-			}
-		}
-		if (thisEntry == null) {
-			assertNotNull(thisEntry);
-			return;
-		}
-		signature = thisEntry.getSignature();
-		assertNotNull("No signature", signature);
-		assertEquals("Wrong signature", "Lp/A<TP;>;", new String(signature));
-		tEntry = null;
-		for (int i = 0, max = entries.length; i < max; i++) {
-			ILocalVariableTypeTableEntry entry = entries[i];
-			if ("p".equals(new String(entry.getName()))) {
-				tEntry = entry;
-				break;
-			}
-		}
-		if (tEntry == null) {
-			assertNotNull(tEntry);
-			return;
-		}
-		signature = tEntry.getSignature();
-		assertNotNull("No signature", signature);
-		assertEquals("Wrong signature", "TP;", new String(signature));
 	}
 	
 	public void test003() {
@@ -554,25 +232,6 @@ public class GenericTypeSignatureTest extends AbstractRegressionTest {
 		};
 		this.runConformTest(testsSource);
 		
-		IClassFileReader classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		IClassFileAttribute classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		ISignatureAttribute signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;:Lp/B<-TT;>;>Lp/A<TT;>;", new String(signatureAttribute.getSignature()));
-
-		if (!RunJavac) return;
-
-		// Compare with javac
-		cleanUp();
-		runJavac("test003", testsSource);
-		
-		classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;:Lp/B<-TT;>;>Lp/A<TT;>;", new String(signatureAttribute.getSignature()));
 	}	
 
 	public void test004() {
@@ -600,25 +259,6 @@ public class GenericTypeSignatureTest extends AbstractRegressionTest {
 		};
 		this.runConformTest(testsSource);
 		
-		IClassFileReader classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		IClassFileAttribute classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		ISignatureAttribute signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;:Lp/B;>Lp/A<TT;>;", new String(signatureAttribute.getSignature()));
-
-		if (!RunJavac) return;
-
-		// Compare with javac
-		cleanUp();
-		runJavac("test004", testsSource);
-		
-		classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;:Lp/B;>Lp/A<TT;>;", new String(signatureAttribute.getSignature()));
 	}	
 
 	public void test005() {
@@ -650,29 +290,6 @@ public class GenericTypeSignatureTest extends AbstractRegressionTest {
 		};
 		this.runConformTest(testsSource);
 		
-		IClassFileReader classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		IClassFileAttribute classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		ISignatureAttribute signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		char[] signature = signatureAttribute.getSignature();
-		assertNotNull("No signature", signature);
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;:Lp/B;:Lp/C;>Lp/A<TT;>;", new String(signature));
-
-		if (!RunJavac) return;
-
-		// Compare with javac
-		cleanUp();
-		runJavac("test005", testsSource);
-		
-		classFileReader = ToolFactory.createDefaultClassFileReader(OUTPUT_DIR + File.separator + "X.class", IClassFileReader.ALL);
-		assertNotNull(classFileReader);
-		classFileAttribute = org.eclipse.wst.jsdt.internal.core.util.Util.getAttribute(classFileReader, IAttributeNamesConstants.SIGNATURE);
-		assertNotNull(classFileAttribute);
-		signatureAttribute = (ISignatureAttribute) classFileAttribute;
-		signature = signatureAttribute.getSignature();
-		assertNotNull("No signature", signature);
-		assertEquals("Wrong signature", "<T:Ljava/lang/Object;:Lp/B;:Lp/C;>Lp/A<TT;>;", new String(signature));
 	}
 	
 	public void test006() {
