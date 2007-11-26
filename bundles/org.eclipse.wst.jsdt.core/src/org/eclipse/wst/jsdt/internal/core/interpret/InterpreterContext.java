@@ -9,7 +9,7 @@ import org.eclipse.wst.jsdt.internal.core.interpret.builtin.BuiltInHelper;
 public class InterpreterContext implements ValueReference{
 
 	protected HashtableOfObject values=new HashtableOfObject();
-	InterpreterContext parent;
+	protected InterpreterContext parent;
 	InterpreterContext lastReference;
 	public Value returnValue;
 	ValueReference thisObject;
@@ -25,7 +25,7 @@ public class InterpreterContext implements ValueReference{
 		
 	}
 	
-	
+
 	
 	public Value getValue(char [] name) {
 		
@@ -81,5 +81,10 @@ public class InterpreterContext implements ValueReference{
 
 	public ValueReference getThisObject() {
 		return thisObject;
+	}
+	
+	public InterpreterContext getParent()
+	{
+		return this.parent;
 	}
 }

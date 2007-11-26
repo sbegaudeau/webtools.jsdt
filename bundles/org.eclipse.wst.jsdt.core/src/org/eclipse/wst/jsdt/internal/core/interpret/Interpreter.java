@@ -73,7 +73,7 @@ ICompilationUnit sourceUnit = new CompilationUnit(source, "interpreted", null); 
 CompilationResult compilationUnitResult = new CompilationResult(sourceUnit, 0, 0,  compilerOptions.maxProblemsPerUnit);
 CompilationUnitDeclaration parsedUnit = parser.parse(sourceUnit, compilationUnitResult);
 int[] lineEnds = parser.scanner.lineEnds;
-return new InterpretedScript(parsedUnit,lineEnds,source.length);
+return new InterpretedScript(parsedUnit,lineEnds,parser.scanner.linePtr);
 	}
 	
 	public static InterpreterResult interpret(CompilationUnitDeclaration ast, InterpreterContext context)

@@ -49,7 +49,8 @@ public class FunctionValue extends ObjectValue {
 		Value returnValue=context.returnValue;
 		if (returnValue==null)
 			returnValue=Value.UndefinedObjectValue;
-		interpreter.context=context.parent;
+		
+		interpreter.restorePreviousContext();
 		return returnValue;
 	}
 }

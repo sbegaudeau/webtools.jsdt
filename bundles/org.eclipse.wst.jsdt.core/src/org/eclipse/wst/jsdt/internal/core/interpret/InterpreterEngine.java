@@ -702,6 +702,10 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 		return new InterpreterContext( parent, thisObject);
 	}
 
+	public void restorePreviousContext() {
+		this.context=this.context.parent;
+	}
+
 
 	
     
