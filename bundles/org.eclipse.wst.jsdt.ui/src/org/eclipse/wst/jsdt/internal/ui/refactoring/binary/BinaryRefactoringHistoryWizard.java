@@ -65,7 +65,7 @@ import org.eclipse.wst.jsdt.internal.corext.refactoring.tagging.IScriptableRefac
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
-import org.eclipse.wst.jsdt.internal.ui.jarimport.JarImportMessages;
+import org.eclipse.wst.jsdt.internal.ui.refactoring.RefactoringMessages;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 
 /**
@@ -121,7 +121,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 	private static RefactoringStatus checkPackageFragmentRoots(final IPackageFragmentRoot root, final IProgressMonitor monitor) {
 		final RefactoringStatus status= new RefactoringStatus();
 		try {
-			monitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, 100);
+			monitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, 100);
 			final IWorkspaceRoot workspace= ResourcesPlugin.getWorkspace().getRoot();
 			if (workspace != null) {
 				final IJavaModel model= JavaCore.create(workspace);
@@ -132,12 +132,12 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 							final IJavaProject[] projects= model.getJavaProjects();
 							final IProgressMonitor subMonitor= new SubProgressMonitor(monitor, 100, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL);
 							try {
-								subMonitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, projects.length * 100);
+								subMonitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, projects.length * 100);
 								for (int index= 0; index < projects.length; index++) {
 									final IPackageFragmentRoot[] roots= projects[index].getPackageFragmentRoots();
 									final IProgressMonitor subsubMonitor= new SubProgressMonitor(subMonitor, 100, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL);
 									try {
-										subsubMonitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, roots.length);
+										subsubMonitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, roots.length);
 										for (int offset= 0; offset < roots.length; offset++) {
 											final IPackageFragmentRoot current= roots[offset];
 											if (!current.equals(root) && current.getKind() == IPackageFragmentRoot.K_BINARY) {
@@ -145,7 +145,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 												if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
 													final URI location= getLocationURI(entry);
 													if (uri.equals(location))
-														status.addFatalError(Messages.format(JarImportMessages.JarImportWizard_error_shared_jar, new String[] { current.getJavaProject().getElementName() }));
+														status.addFatalError(Messages.format(RefactoringMessages.JarImportWizard_error_shared_jar, new String[] { current.getJavaProject().getElementName() }));
 												}
 											}
 											subsubMonitor.worked(1);
@@ -187,7 +187,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 	 */
 	private static void configureClasspath(final IJavaProject project, final IPackageFragmentRoot root, final IFolder folder, final IProgressMonitor monitor) throws IllegalStateException, CoreException {
 		try {
-			monitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, 200);
+			monitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, 200);
 			final IClasspathEntry entry= root.getRawClasspathEntry();
 			final IClasspathEntry[] entries= project.getRawClasspath();
 			final List list= new ArrayList();
@@ -294,7 +294,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 			fJavaProject= null;
 			fSourceFolder= null;
 			fProcessedFragments.clear();
-			monitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, 520);
+			monitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, 520);
 			status.merge(super.aboutToPerformHistory(new SubProgressMonitor(monitor, 10, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL)));
 			if (!status.hasFatalError()) {
 				final IPackageFragmentRoot root= getPackageFragmentRoot();
@@ -341,7 +341,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 	protected RefactoringStatus aboutToPerformRefactoring(final Refactoring refactoring, final RefactoringDescriptor descriptor, final IProgressMonitor monitor) {
 		final RefactoringStatus status= new RefactoringStatus();
 		try {
-			monitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, 100);
+			monitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, 100);
 			status.merge(createNecessarySourceCode(refactoring, new SubProgressMonitor(monitor, 100, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL)));
 			if (!status.hasFatalError()) {
 				if (fCurrentRefactoring != null && fCurrentArguments != null)
@@ -385,17 +385,17 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 		try {
 			if (!canUseSourceAttachment()) {
 				final RefactoringDescriptorProxy[] proxies= getRefactoringHistory().getDescriptors();
-				monitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, proxies.length * 100);
+				monitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, proxies.length * 100);
 				for (int index= 0; index < proxies.length; index++) {
 					final RefactoringDescriptor descriptor= proxies[index].requestDescriptor(new SubProgressMonitor(monitor, 100, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 					if (descriptor != null) {
 						final int flags= descriptor.getFlags();
 						if ((flags & JavaRefactoringDescriptor.JAR_SOURCE_ATTACHMENT) != 0)
-							status.merge(RefactoringStatus.createFatalErrorStatus(Messages.format(JarImportMessages.BinaryRefactoringHistoryWizard_error_missing_source_attachment, descriptor.getDescription())));
+							status.merge(RefactoringStatus.createFatalErrorStatus(Messages.format(RefactoringMessages.BinaryRefactoringHistoryWizard_error_missing_source_attachment, descriptor.getDescription())));
 					}
 				}
 			} else
-				monitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, 1);
+				monitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, 1);
 		} finally {
 			monitor.done();
 		}
@@ -413,7 +413,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 	private RefactoringStatus createNecessarySourceCode(final Refactoring refactoring, final IProgressMonitor monitor) {
 		final RefactoringStatus status= new RefactoringStatus();
 		try {
-			monitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, 240);
+			monitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, 240);
 			final IPackageFragmentRoot root= getPackageFragmentRoot();
 			if (root != null && fSourceFolder != null && fJavaProject != null) {
 				try {
@@ -421,7 +421,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 					final IJavaElement[] elements= root.getChildren();
 					final List list= new ArrayList(elements.length);
 					try {
-						subMonitor.beginTask(JarImportMessages.JarImportWizard_prepare_import, elements.length);
+						subMonitor.beginTask(RefactoringMessages.JarImportWizard_prepare_import, elements.length);
 						for (int index= 0; index < elements.length; index++) {
 							final IJavaElement element= elements[index];
 							if (!fProcessedFragments.contains(element) && !element.getElementName().equals(META_INF_FRAGMENT))
@@ -552,7 +552,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 	 */
 	private void deconfigureClasspath(final IProgressMonitor monitor) throws CoreException {
 		try {
-			monitor.beginTask(JarImportMessages.JarImportWizard_cleanup_import, 300);
+			monitor.beginTask(RefactoringMessages.JarImportWizard_cleanup_import, 300);
 			if (fJavaProject != null) {
 				final IClasspathEntry[] entries= fJavaProject.readRawClasspath();
 				final boolean changed= deconfigureClasspath(entries, new SubProgressMonitor(monitor, 100, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
@@ -641,7 +641,7 @@ public abstract class BinaryRefactoringHistoryWizard extends RefactoringHistoryW
 	 */
 	protected RefactoringStatus historyPerformed(final IProgressMonitor monitor) {
 		try {
-			monitor.beginTask(JarImportMessages.JarImportWizard_cleanup_import, 100);
+			monitor.beginTask(RefactoringMessages.JarImportWizard_cleanup_import, 100);
 			final RefactoringStatus status= super.historyPerformed(new SubProgressMonitor(monitor, 10, SubProgressMonitor.SUPPRESS_SUBTASK_LABEL));
 			if (!status.hasFatalError()) {
 				try {

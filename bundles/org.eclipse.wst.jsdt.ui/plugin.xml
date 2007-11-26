@@ -1880,7 +1880,6 @@
          </selection>
       </wizard>
    </extension>
--->
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -1910,6 +1909,7 @@
          </action>
       </objectContribution>
    </extension>
+-->
 <!-- =========================================================================== -->
 <!-- Javadoc Export                                                              -->
 <!-- =========================================================================== -->

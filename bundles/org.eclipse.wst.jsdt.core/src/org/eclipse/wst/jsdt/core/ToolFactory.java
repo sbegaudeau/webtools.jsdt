@@ -10,15 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -27,18 +21,9 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
-import org.eclipse.wst.jsdt.core.util.ClassFormatException;
-import org.eclipse.wst.jsdt.core.util.IClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
-import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
-import org.eclipse.wst.jsdt.internal.compiler.util.Util;
-import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
-import org.eclipse.wst.jsdt.internal.core.PackageFragment;
-import org.eclipse.wst.jsdt.internal.core.util.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.core.util.Disassembler;
 import org.eclipse.wst.jsdt.internal.core.util.PublicScanner;
 import org.eclipse.wst.jsdt.internal.formatter.DefaultCodeFormatter;
 
@@ -169,178 +154,10 @@ public class ToolFactory {
 		}
 		return new DefaultCodeFormatter(currentOptions);
 	}
+ 
 
-	/**
-	 * Create a classfile bytecode disassembler, able to produce a String representation of a given classfile.
-	 *
-	 * @return a classfile bytecode disassembler
-	 * @see ClassFileBytesDisassembler
-	 * @since 2.1
-	 */
-	public static ClassFileBytesDisassembler createDefaultClassFileBytesDisassembler(){
-		return new Disassembler();
-	}
 
-	/**
-	 * Create a classfile bytecode disassembler, able to produce a String representation of a given classfile.
-	 *
-	 * @return a classfile bytecode disassembler
-	 * @see org.eclipse.wst.jsdt.core.util.IClassFileDisassembler
-	 * @deprecated Use {@link #createDefaultClassFileBytesDisassembler()} instead
-	 */
-	public static org.eclipse.wst.jsdt.core.util.IClassFileDisassembler createDefaultClassFileDisassembler(){
-		class DeprecatedDisassembler extends Disassembler implements org.eclipse.wst.jsdt.core.util.IClassFileDisassembler {
-			// for backward compatibility, defines a disassembler which implements IClassFileDisassembler
-		}
-		return new DeprecatedDisassembler();
-	}
 
-	/**
-	 * Create a classfile reader onto a classfile Java element.
-	 * Create a default classfile reader, able to expose the internal representation of a given classfile
-	 * according to the decoding flag used to initialize the reader.
-	 * Answer null if the file named fileName doesn't represent a valid .class file.
-	 *
-	 * The decoding flags are described in IClassFileReader.
-	 *
-	 * @param classfile the classfile element to introspect
-	 * @param decodingFlag the flag used to decode the class file reader.
-	 * @return a default classfile reader
-	 *
-	 * @see IClassFileReader
-	 */
-	public static IClassFileReader createDefaultClassFileReader(IClassFile classfile, int decodingFlag){
-
-		IPackageFragmentRoot root = (IPackageFragmentRoot) classfile.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
-		if (root != null){
-			try {
-				if (root instanceof JarPackageFragmentRoot) {
-					String archiveName = null;
-					ZipFile jar = null;
-					try {
-						jar = ((JarPackageFragmentRoot)root).getJar();
-						archiveName = jar.getName();
-					} finally {
-						JavaModelManager.getJavaModelManager().closeZipFile(jar);
-					}
-					PackageFragment packageFragment = (PackageFragment) classfile.getParent();
-					String classFileName = classfile.getElementName();
-					String entryName = org.eclipse.wst.jsdt.internal.core.util.Util.concatWith(packageFragment.names, classFileName, '/');
-					return createDefaultClassFileReader(archiveName, entryName, decodingFlag);
-				} else {
-					InputStream in = null;
-					try {
-						in = ((IFile) classfile.getResource()).getContents();
-						return createDefaultClassFileReader(in, decodingFlag);
-					} finally {
-						if (in != null)
-							try {
-								in.close();
-							} catch (IOException e) {
-								// ignore
-							}
-					}
-				}
-			} catch(CoreException e){
-				// unable to read
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Create a default classfile reader, able to expose the internal representation of a given classfile
-	 * according to the decoding flag used to initialize the reader.
-	 * Answer null if the input stream contents cannot be retrieved
-	 *
-	 * The decoding flags are described in IClassFileReader.
-	 *
-	 * @param stream the given input stream to read
-	 * @param decodingFlag the flag used to decode the class file reader.
-	 * @return a default classfile reader
-	 *
-	 * @see IClassFileReader
-	 * @since 3.2
-	 */
-	public static IClassFileReader createDefaultClassFileReader(InputStream stream, int decodingFlag) {
-		try {
-			return new ClassFileReader(Util.getInputStreamAsByteArray(stream, -1), decodingFlag);
-		} catch(ClassFormatException e) {
-			return null;
-		} catch(IOException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Create a default classfile reader, able to expose the internal representation of a given classfile
-	 * according to the decoding flag used to initialize the reader.
-	 * Answer null if the file named fileName doesn't represent a valid .class file.
-	 * The fileName has to be an absolute OS path to the given .class file.
-	 *
-	 * The decoding flags are described in IClassFileReader.
-	 *
-	 * @param fileName the name of the file to be read
-	 * @param decodingFlag the flag used to decode the class file reader.
-	 * @return a default classfile reader
-	 *
-	 * @see IClassFileReader
-	 */
-	public static IClassFileReader createDefaultClassFileReader(String fileName, int decodingFlag){
-		try {
-			return new ClassFileReader(Util.getFileByteContent(new File(fileName)), decodingFlag);
-		} catch(ClassFormatException e) {
-			return null;
-		} catch(IOException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Create a default classfile reader, able to expose the internal representation of a given classfile
-	 * according to the decoding flag used to initialize the reader.
-	 * Answer null if the file named zipFileName doesn't represent a valid zip file or if the zipEntryName
-	 * is not a valid entry name for the specified zip file or if the bytes don't represent a valid
-	 * .class file according to the JVM specifications.
-	 *
-	 * The decoding flags are described in IClassFileReader.
-	 *
-	 * @param zipFileName the name of the zip file
-	 * @param zipEntryName the name of the entry in the zip file to be read
-	 * @param decodingFlag the flag used to decode the class file reader.
-	 * @return a default classfile reader
-	 * @see IClassFileReader
-	 */
-	public static IClassFileReader createDefaultClassFileReader(String zipFileName, String zipEntryName, int decodingFlag){
-		ZipFile zipFile = null;
-		try {
-			if (JavaModelManager.ZIP_ACCESS_VERBOSE) {
-				System.out.println("(" + Thread.currentThread() + ") [ToolFactory.createDefaultClassFileReader()] Creating ZipFile on " + zipFileName); //$NON-NLS-1$	//$NON-NLS-2$
-			}
-			zipFile = new ZipFile(zipFileName);
-			ZipEntry zipEntry = zipFile.getEntry(zipEntryName);
-			if (zipEntry == null) {
-				return null;
-			}
-			if (!zipEntryName.toLowerCase().endsWith(SuffixConstants.SUFFIX_STRING_class)) {
-				return null;
-			}
-			byte classFileBytes[] = Util.getZipEntryByteContent(zipEntry, zipFile);
-			return new ClassFileReader(classFileBytes, decodingFlag);
-		} catch(ClassFormatException e) {
-			return null;
-		} catch(IOException e) {
-			return null;
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch(IOException e) {
-					// ignore
-				}
-			}
-		}
-	}
 
 	/**
 	 * Create an instance of the built-in code formatter. A code formatter implementation can be contributed via the

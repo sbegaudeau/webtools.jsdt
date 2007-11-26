@@ -26,17 +26,12 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchSite;
 import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.texteditor.IUpdate;
-import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
-import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.ActionMessages;
-import org.eclipse.wst.jsdt.internal.ui.actions.JarImportWizardAction;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 
@@ -90,26 +85,26 @@ public class GenerateBuildPathActionGroup extends ActionGroup {
 	}
 	private Action fNoActionAvailable= new NoActionAvailable();
 	   		
-    private class UpdateJarFileAction extends JarImportWizardAction implements IUpdate {
-
-		public UpdateJarFileAction() {
-			setText(ActionMessages.GenerateBuildPathActionGroup_update_jar_text);
-			setDescription(ActionMessages.GenerateBuildPathActionGroup_update_jar_description);
-			setToolTipText(ActionMessages.GenerateBuildPathActionGroup_update_jar_tooltip);
-			setImageDescriptor(JavaPluginImages.DESC_OBJS_JAR);
-			PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.JARIMPORT_WIZARD_PAGE);
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		public void update() {
-			final IWorkbenchPart part= fSite.getPage().getActivePart();
-			if (part != null)
-				setActivePart(this, part);
-			selectionChanged(this, fSite.getSelectionProvider().getSelection());
-		}
-	}
+//    private class UpdateJarFileAction extends JarImportWizardAction implements IUpdate {
+//
+//		public UpdateJarFileAction() {
+//			setText(ActionMessages.GenerateBuildPathActionGroup_update_jar_text);
+//			setDescription(ActionMessages.GenerateBuildPathActionGroup_update_jar_description);
+//			setToolTipText(ActionMessages.GenerateBuildPathActionGroup_update_jar_tooltip);
+//			setImageDescriptor(JavaPluginImages.DESC_OBJS_JAR);
+//			PlatformUI.getWorkbench().getHelpSystem().setHelp(this, IJavaHelpContextIds.JARIMPORT_WIZARD_PAGE);
+//		}
+//
+//		/**
+//		 * {@inheritDoc}
+//		 */
+//		public void update() {
+//			final IWorkbenchPart part= fSite.getPage().getActivePart();
+//			if (part != null)
+//				setActivePart(this, part);
+//			selectionChanged(this, fSite.getSelectionProvider().getSelection());
+//		}
+//	}
 
     private IWorkbenchSite fSite;
     private List/*<Action>*/ fActions;
@@ -163,8 +158,8 @@ public class GenerateBuildPathActionGroup extends ActionGroup {
 		final AddLibraryToBuildpathAction addLibrary= new AddLibraryToBuildpathAction(site);
 		fActions.add(addLibrary);	
 		
-		final UpdateJarFileAction updateAction= new UpdateJarFileAction();
-		fActions.add(updateAction);
+//		final UpdateJarFileAction updateAction= new UpdateJarFileAction();
+//		fActions.add(updateAction);
 		
 		final ExcludeFromBuildpathAction exclude= new ExcludeFromBuildpathAction(site);
 		fActions.add(exclude);	

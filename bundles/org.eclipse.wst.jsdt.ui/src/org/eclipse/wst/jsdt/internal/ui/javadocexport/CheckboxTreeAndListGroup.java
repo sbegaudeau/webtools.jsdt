@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.internal.ui.jarpackager;
+package org.eclipse.wst.jsdt.internal.ui.javadocexport;
 
 import java.util.ArrayList;
 import java.util.HashMap;

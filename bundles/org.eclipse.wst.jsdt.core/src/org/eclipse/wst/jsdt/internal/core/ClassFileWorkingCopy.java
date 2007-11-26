@@ -18,13 +18,8 @@ import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
-import org.eclipse.wst.jsdt.core.util.IClassFileReader;
-import org.eclipse.wst.jsdt.internal.core.util.Disassembler;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * A working copy on an <code>IClassFile</code>.
@@ -74,38 +69,7 @@ public IResource getResource() {
 	return this.classFile.getResource();
 }
 
-/**
- * @see Openable#openBuffer(IProgressMonitor, Object)
- */
-protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws JavaModelException {
 
-	// create buffer
-	IBuffer buffer = this.owner.createBuffer(this);
-	if (buffer == null) return null;
-
-	// set the buffer source
-	if (buffer.getCharacters() == null) {
-		IBuffer classFileBuffer = this.classFile.getBuffer();
-		if (classFileBuffer != null) {
-			buffer.setContents(classFileBuffer.getCharacters());
-		} else {
-			// Disassemble
-			IClassFileReader reader = ToolFactory.createDefaultClassFileReader(this.classFile, IClassFileReader.ALL);
-			Disassembler disassembler = new Disassembler();
-			String contents = disassembler.disassemble(reader, Util.getLineSeparator("", getJavaProject()), ClassFileBytesDisassembler.WORKING_COPY); //$NON-NLS-1$
-			buffer.setContents(contents);
-		}
-	}
-
-	// add buffer to buffer cache
-	BufferManager bufManager = getBufferManager();
-	bufManager.addBuffer(buffer);
-
-	// listen to buffer changes
-	buffer.addBufferChangedListener(this);
-
-	return buffer;
-}
 
 protected void toStringName(StringBuffer buffer) {
 	buffer.append(this.classFile.getElementName());

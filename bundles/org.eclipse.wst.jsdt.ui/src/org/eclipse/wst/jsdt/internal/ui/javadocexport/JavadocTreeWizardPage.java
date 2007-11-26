@@ -57,7 +57,6 @@ import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusUtil;
-import org.eclipse.wst.jsdt.internal.ui.jarpackager.CheckboxTreeAndListGroup;
 import org.eclipse.wst.jsdt.internal.ui.util.SWTUtil;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.eclipse.wst.jsdt.ui.JavaElementComparator;

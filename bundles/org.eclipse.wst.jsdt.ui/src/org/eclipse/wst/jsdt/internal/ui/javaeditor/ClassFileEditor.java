@@ -74,10 +74,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.util.ClassFileBytesDisassembler;
-import org.eclipse.wst.jsdt.core.util.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
@@ -196,7 +193,7 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			data= new GridData(GridData.FILL_BOTH);
 			fNoSourceTextWidget.setLayoutData(data);
 			
-			updateCodeView(fNoSourceTextWidget, fFile);
+//			updateCodeView(fNoSourceTextWidget, fFile);
 			
 			return fComposite;
 		}
@@ -389,18 +386,18 @@ public class ClassFileEditor extends JavaEditor implements ClassFileDocumentProv
 			return button;
 		}
 
-		private void updateCodeView(StyledText styledText, IClassFile classFile) {
-			String content= null;
-			ClassFileBytesDisassembler disassembler= ToolFactory.createDefaultClassFileBytesDisassembler();
-			try {
-				content= disassembler.disassemble(classFile.getBytes(), "\n", ClassFileBytesDisassembler.DETAILED); //$NON-NLS-1$
-			} catch (JavaModelException ex) {
-				JavaPlugin.log(ex.getStatus());
-			} catch (ClassFormatException ex) {
-				JavaPlugin.log(ex);
-			}
-			styledText.setText(content == null ? "" : content); //$NON-NLS-1$
-		}
+//		private void updateCodeView(StyledText styledText, IClassFile classFile) {
+//			String content= null;
+//			ClassFileBytesDisassembler disassembler= ToolFactory.createDefaultClassFileBytesDisassembler();
+//			try {
+//				content= disassembler.disassemble(classFile.getBytes(), "\n", ClassFileBytesDisassembler.DETAILED); //$NON-NLS-1$
+//			} catch (JavaModelException ex) {
+//				JavaPlugin.log(ex.getStatus());
+//			} catch (ClassFormatException ex) {
+//				JavaPlugin.log(ex);
+//			}
+//			styledText.setText(content == null ? "" : content); //$NON-NLS-1$
+//		}
 	}
 
 	/**

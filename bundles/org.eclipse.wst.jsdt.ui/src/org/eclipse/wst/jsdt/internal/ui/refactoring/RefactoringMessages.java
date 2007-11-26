@@ -948,7 +948,12 @@ public final class RefactoringMessages extends NLS {
 
 	public static String SelfEncapsulateFieldInputPage_useexistinggetter_label;
 	
+	public static String JarImportWizard_prepare_import;
+	public static String JarImportWizard_error_shared_jar;
+	public static String BinaryRefactoringHistoryWizard_error_missing_source_attachment;
+	public static String JarImportWizard_cleanup_import;
 
+	
 	static {
 		reloadMessages();
 	}

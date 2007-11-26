@@ -11,13 +11,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.ui.wizards;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -34,21 +31,15 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
-import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IScanner;
 import org.eclipse.wst.jsdt.core.compiler.ITerminalSymbols;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
-import org.eclipse.wst.jsdt.core.util.IClassFileReader;
-import org.eclipse.wst.jsdt.core.util.ISourceAttribute;
-import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 
 import com.ibm.icu.text.Collator;
@@ -58,8 +49,8 @@ import com.ibm.icu.text.Collator;
 public class ClassPathDetector implements IResourceProxyVisitor {
 		
 	private HashMap fSourceFolders;
-	private List fClassFiles;
-	private HashSet fJARFiles;
+//	private List fClassFiles;
+//	private HashSet fJARFiles;
 		
 	private IProject fProject;
 		
@@ -80,8 +71,8 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 	
 	public ClassPathDetector(IProject project, IProgressMonitor monitor) throws CoreException {
 		fSourceFolders= new HashMap();
-		fJARFiles= new HashSet(10);
-		fClassFiles= new ArrayList(100);
+//		fJARFiles= new HashSet(10);
+//		fClassFiles= new ArrayList(100);
 		fProject= project;
 			
 		fResultClasspath= null;
@@ -95,15 +86,15 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 	}
 	
 	
-	private boolean isNested(IPath path, Iterator iter) {
-		while (iter.hasNext()) {
-			IPath other= (IPath) iter.next();
-			if (other.isPrefixOf(path)) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	private boolean isNested(IPath path, Iterator iter) {
+//		while (iter.hasNext()) {
+//			IPath other= (IPath) iter.next();
+//			if (other.isPrefixOf(path)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 	/**
 	 * Method detectClasspath.
@@ -127,19 +118,19 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 			monitor.worked(1);
 			
 			
-			IPath outputLocation= detectOutputFolder(cpEntries);
-			if (monitor.isCanceled()) {
-				throw new OperationCanceledException();
-			}
-			monitor.worked(1);
+			IPath outputLocation= null;//detectOutputFolder(cpEntries);
+//			if (monitor.isCanceled()) {
+//				throw new OperationCanceledException();
+//			}
+//			monitor.worked(1);
 
-			detectLibraries(cpEntries, outputLocation);
-			if (monitor.isCanceled()) {
-				throw new OperationCanceledException();
-			}
-			monitor.worked(1);
+//			detectLibraries(cpEntries, outputLocation);
+//			if (monitor.isCanceled()) {
+//				throw new OperationCanceledException();
+//			}
+//			monitor.worked(1);
 
-			if (cpEntries.isEmpty() && fClassFiles.isEmpty()) {
+			if (cpEntries.isEmpty()/* && fClassFiles.isEmpty()*/) {
 				return;
 			}
 			IClasspathEntry[] jreEntries= PreferenceConstants.getDefaultJRELibrary();
@@ -159,98 +150,98 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 		}
 	}
 	
-	private IPath findInSourceFolders(IPath path) {
-		Iterator iter= fSourceFolders.keySet().iterator();
-		while (iter.hasNext()) {
-			Object key= iter.next();
-			List cus= (List) fSourceFolders.get(key);
-			if (cus.contains(path)) {
-				return (IPath) key;
-			}
-		}
-		return null;
-	}
+//	private IPath findInSourceFolders(IPath path) {
+//		Iterator iter= fSourceFolders.keySet().iterator();
+//		while (iter.hasNext()) {
+//			Object key= iter.next();
+//			List cus= (List) fSourceFolders.get(key);
+//			if (cus.contains(path)) {
+//				return (IPath) key;
+//			}
+//		}
+//		return null;
+//	}
 	
-	private IPath detectOutputFolder(List entries) throws CoreException {
-		HashSet classFolders= new HashSet();
-		
-		for (Iterator iter= fClassFiles.iterator(); iter.hasNext();) {
-			IFile file= (IFile) iter.next();
-			IClassFileReader reader= null;
-			InputStream content= null;
-			try {
-				content= file.getContents();
-				reader= ToolFactory.createDefaultClassFileReader(content, IClassFileReader.CLASSFILE_ATTRIBUTES);
-			} finally {
-				try {
-					if (content != null)
-						content.close();
-				} catch (IOException e) {
-					throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
-						Messages.format(NewWizardMessages.ClassPathDetector_error_closing_file, file.getFullPath().toString()),
-						e));
-				}
-			}
-			if (reader == null) {
-				continue; // problematic class file
-			}
-			char[] className= reader.getClassName();
-			ISourceAttribute sourceAttribute= reader.getSourceFileAttribute();
-			if (className != null && sourceAttribute != null && sourceAttribute.getSourceFileName() != null) {
-				IPath packPath= file.getParent().getFullPath();
-				int idx= CharOperation.lastIndexOf('/', className) + 1;
-				IPath relPath= new Path(new String(className, 0, idx));
-				IPath cuPath= relPath.append(new String(sourceAttribute.getSourceFileName()));
-				
-				IPath resPath= null;
-				if (idx == 0) {
-					resPath= packPath;
-				} else {
-					IPath folderPath= getFolderPath(packPath, relPath);
-					if (folderPath != null) {
-						resPath= folderPath;
-					}
-				}
-				if (resPath != null) {
-					IPath path= findInSourceFolders(cuPath);
-					if (path != null) {
-						return resPath;
-					} else {
-						classFolders.add(resPath);	
-					}
-				}
-			}			
-		}		
-		IPath projPath= fProject.getFullPath();
-		if (fSourceFolders.size() == 1 && classFolders.isEmpty() && fSourceFolders.get(projPath) != null) {
-			return projPath;
-		} else {
-			IPath path= projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
-			while (classFolders.contains(path)) {
-				path= new Path(path.toString() + '1');
-			}
-			return path;
-		} 			
-	}
+//	private IPath detectOutputFolder(List entries) throws CoreException {
+//		HashSet classFolders= new HashSet();
+//		
+//		for (Iterator iter= fClassFiles.iterator(); iter.hasNext();) {
+//			IFile file= (IFile) iter.next();
+//			IClassFileReader reader= null;
+//			InputStream content= null;
+//			try {
+//				content= file.getContents();
+//				reader= ToolFactory.createDefaultClassFileReader(content, IClassFileReader.CLASSFILE_ATTRIBUTES);
+//			} finally {
+//				try {
+//					if (content != null)
+//						content.close();
+//				} catch (IOException e) {
+//					throw new CoreException(new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IStatus.ERROR,
+//						Messages.format(NewWizardMessages.ClassPathDetector_error_closing_file, file.getFullPath().toString()),
+//						e));
+//				}
+//			}
+//			if (reader == null) {
+//				continue; // problematic class file
+//			}
+//			char[] className= reader.getClassName();
+//			ISourceAttribute sourceAttribute= reader.getSourceFileAttribute();
+//			if (className != null && sourceAttribute != null && sourceAttribute.getSourceFileName() != null) {
+//				IPath packPath= file.getParent().getFullPath();
+//				int idx= CharOperation.lastIndexOf('/', className) + 1;
+//				IPath relPath= new Path(new String(className, 0, idx));
+//				IPath cuPath= relPath.append(new String(sourceAttribute.getSourceFileName()));
+//				
+//				IPath resPath= null;
+//				if (idx == 0) {
+//					resPath= packPath;
+//				} else {
+//					IPath folderPath= getFolderPath(packPath, relPath);
+//					if (folderPath != null) {
+//						resPath= folderPath;
+//					}
+//				}
+//				if (resPath != null) {
+//					IPath path= findInSourceFolders(cuPath);
+//					if (path != null) {
+//						return resPath;
+//					} else {
+//						classFolders.add(resPath);	
+//					}
+//				}
+//			}			
+//		}		
+//		IPath projPath= fProject.getFullPath();
+//		if (fSourceFolders.size() == 1 && classFolders.isEmpty() && fSourceFolders.get(projPath) != null) {
+//			return projPath;
+//		} else {
+//			IPath path= projPath.append(PreferenceConstants.getPreferenceStore().getString(PreferenceConstants.SRCBIN_BINNAME));
+//			while (classFolders.contains(path)) {
+//				path= new Path(path.toString() + '1');
+//			}
+//			return path;
+//		} 			
+//	}
 
 
-	private void detectLibraries(ArrayList cpEntries, IPath outputLocation) {
-		ArrayList res= new ArrayList();
-		Set sourceFolderSet= fSourceFolders.keySet();
-		for (Iterator iter= fJARFiles.iterator(); iter.hasNext();) {
-			IPath path= (IPath) iter.next();
-			if (isNested(path, sourceFolderSet.iterator())) {
-				continue;
-			}
-			if (outputLocation != null && outputLocation.isPrefixOf(path)) {
-				continue;
-			}
-			IClasspathEntry entry= JavaCore.newLibraryEntry(path, null, null);
-			res.add(entry);	
-		}
-		Collections.sort(res, new CPSorter());
-		cpEntries.addAll(res);
-	}
+//	private void detectLibraries(ArrayList cpEntries, IPath outputLocation) {
+//		ArrayList res= new ArrayList();
+//		Set sourceFolderSet= fSourceFolders.keySet();
+//		for (Iterator iter= fJARFiles.iterator(); iter.hasNext();) {
+//			IPath path= (IPath) iter.next();
+//			if (isNested(path, sourceFolderSet.iterator())) {
+//				continue;
+//			}
+//			if (outputLocation != null && outputLocation.isPrefixOf(path)) {
+//				continue;
+//			}
+//			IClasspathEntry entry= JavaCore.newLibraryEntry(path, null, null);
+//			res.add(entry);	
+//		}
+//		Collections.sort(res, new CPSorter());
+//		cpEntries.addAll(res);
+//	}
 
 
 	private void detectSourceFolders(ArrayList resEntries) {
@@ -349,9 +340,9 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 		return null;
 	}
 
-	private boolean hasExtension(String name, String ext) {
-		return name.endsWith(ext) && (ext.length() != name.length()); 
-	}
+//	private boolean hasExtension(String name, String ext) {
+//		return name.endsWith(ext) && (ext.length() != name.length()); 
+//	}
 	
 	private boolean isValidCUName(String name) {
 		return !JavaConventions.validateCompilationUnitName(name).matches(IStatus.ERROR);
@@ -369,10 +360,10 @@ public class ClassPathDetector implements IResourceProxyVisitor {
 			String name= proxy.getName();
 			if (isValidCUName(name)) {
 				visitCompilationUnit((IFile) proxy.requestResource());
-			} else if (hasExtension(name, ".class")) { //$NON-NLS-1$
-				fClassFiles.add(proxy.requestResource());
-			} else if (hasExtension(name, ".jar")) { //$NON-NLS-1$
-				fJARFiles.add(proxy.requestFullPath());
+//			} else if (hasExtension(name, ".class")) { //$NON-NLS-1$
+//				fClassFiles.add(proxy.requestResource());
+//			} else if (hasExtension(name, ".jar")) { //$NON-NLS-1$
+//				fJARFiles.add(proxy.requestFullPath());
 			}
 			return false;
 		}
