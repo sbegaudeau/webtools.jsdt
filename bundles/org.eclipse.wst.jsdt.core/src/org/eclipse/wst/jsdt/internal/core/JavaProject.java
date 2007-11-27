@@ -85,6 +85,7 @@ import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.eval.EvaluationContext;
+import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.osgi.service.prefs.BackingStoreException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -117,13 +118,17 @@ public class JavaProject
 	/**
 	 * Name of file containing project classpath
 	 */
-	public static final String CLASSPATH_FILENAME = ".jsdtscope";  //$NON-NLS-1$
+	//public static final String CLASSPATH_FILENAME = ".jsdtscope";  //$NON-NLS-1$
 
 	/**
 	 * Value of the project's raw classpath if the .classpath file contains invalid entries.
 	 */
 	public static final IClasspathEntry[] INVALID_CLASSPATH = new IClasspathEntry[0];
 
+	/* default CLASSPATH for projects without a classpath set.
+	 * 
+	 */
+	
 	/**
 	 * Whether the underlying file system is case sensitive.
 	 */
@@ -156,7 +161,13 @@ public class JavaProject
 	private static final IClasspathEntry[] RESOLUTION_IN_PROGRESS = new IClasspathEntry[0];
 
 	private static final String SHARED_PROPERTIES_DIRECTORY = ".settings"; //$NON-NLS-1$
-
+	
+	/**
+	 * Name of file containing project classpath
+	 * appended settings directory per bug: 210831
+	 */
+	
+	public static final String CLASSPATH_FILENAME = SHARED_PROPERTIES_DIRECTORY + "/" + ".jsdtscope";  //$NON-NLS-1$
 	/**
 	 * The platform project this <code>IJavaProject</code> is based on
 	 */
@@ -420,8 +431,12 @@ public class JavaProject
 	}
 
 	private IClasspathEntry[] getDefaultClasspath() {
-		// TODO return a default classpath  
-		return null;
+		IClasspathEntry[] defaultClasspath = {JavaCore.newContainerEntry(new Path(JavaRuntime.JRE_CONTAINER)),
+						                      JavaCore.newContainerEntry(new Path(JavaRuntime.BASE_BROWSER_LIB)),
+						                      JavaCore.newSourceEntry(getProject().getFullPath())};
+
+		
+		return defaultClasspath;
 	}
 
 	/**

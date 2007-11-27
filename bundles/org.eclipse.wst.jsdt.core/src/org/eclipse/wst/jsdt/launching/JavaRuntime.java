@@ -128,6 +128,7 @@ public final class JavaRuntime {
 	 * @since 2.0
 	 */
 	public static final String JRE_CONTAINER ="org.eclipse.wst.jsdt.launching.JRE_CONTAINER"; //$NON-NLS-1$
+	public static final String BASE_BROWSER_LIB="org.eclipse.wst.jsdt.launching.baseBrowserLibrary";
 	
 	/*
 	 * Default supertype for compilation units
