@@ -415,9 +415,8 @@ public class JavaProject
 		// check whether the java project can be opened
 		if (!hasJavaNature((IProject) underlyingResource)) {
 //			throw newNotPresentException();
-			 resolvedClasspath = getDefaultClasspath();
+//			 resolvedClasspath = getDefaultClasspath();
 		}
-		else
 		// cannot refresh cp markers on opening (emulate cp check on startup) since can create deadlocks (see bug 37274)
 			resolvedClasspath = getResolvedClasspath();
 
@@ -973,9 +972,9 @@ public class JavaProject
 	 * This is the root of the project
 	 */
 	protected IClasspathEntry[] defaultClasspath() {
-
-		return new IClasspathEntry[] {
-			 JavaCore.newSourceEntry(this.project.getFullPath())};
+		return getDefaultClasspath();
+//		return new IClasspathEntry[] {
+//			 JavaCore.newSourceEntry(this.project.getFullPath())};
 	}
 
 	/**

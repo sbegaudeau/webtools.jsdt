@@ -1868,9 +1868,9 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	public PerProjectInfo getPerProjectInfoCheckExistence(IProject project) throws JavaModelException {
 		JavaModelManager.PerProjectInfo info = getPerProjectInfo(project, false /* don't create info */);
 		if (info == null) {
-			if (!JavaProject.hasJavaNature(project)) {
-				throw ((JavaProject)JavaCore.create(project)).newNotPresentException();
-			}
+//			if (!JavaProject.hasJavaNature(project)) {
+//				throw ((JavaProject)JavaCore.create(project)).newNotPresentException();
+//			}
 			info = getPerProjectInfo(project, true /* create info */);
 		}
 		return info;
