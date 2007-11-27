@@ -400,13 +400,15 @@ public class JavaProject
 	 */
 	protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, Map newElements, IResource underlyingResource) throws JavaModelException {
 
+		IClasspathEntry[] resolvedClasspath =null;
 		// check whether the java project can be opened
 		if (!hasJavaNature((IProject) underlyingResource)) {
-			throw newNotPresentException();
+//			throw newNotPresentException();
+			 resolvedClasspath = getDefaultClasspath();
 		}
-
+		else
 		// cannot refresh cp markers on opening (emulate cp check on startup) since can create deadlocks (see bug 37274)
-		IClasspathEntry[] resolvedClasspath = getResolvedClasspath();
+			resolvedClasspath = getResolvedClasspath();
 
 		// compute the pkg fragment roots
 		info.setChildren(computePackageFragmentRoots(resolvedClasspath, false, null /*no reverse map*/));
@@ -415,6 +417,11 @@ public class JavaProject
 		getPerProjectInfo().rememberExternalLibTimestamps();
 
 		return true;
+	}
+
+	private IClasspathEntry[] getDefaultClasspath() {
+		// TODO return a default classpath  
+		return null;
 	}
 
 	/**
