@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.mapping.IResourceChangeDescriptionFactory;
@@ -84,7 +85,8 @@ public abstract class RefactoringModifications {
 		IProject project= resource.getProject();
 		if (project == null)
 			return null;
-		IResource result= project.findMember(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
+		IFolder rscPath = project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+		IResource result= rscPath.findMember(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
 		if (result instanceof IFile)
 			return (IFile)result;
 		return null;

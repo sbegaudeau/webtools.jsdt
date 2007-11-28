@@ -18,6 +18,7 @@ package org.eclipse.wst.jsdt.core;
 
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -56,6 +57,9 @@ import org.eclipse.wst.jsdt.core.eval.IEvaluationContext;
  */
 public interface IJavaProject extends IParent, IJavaElement, IOpenable {
 
+	/* returns the projects scope file */
+	IFile getJSDTScopeFile();
+	
 	/**
 	 * Decodes the classpath entry that has been encoded in the given string
 	 * in the context of this project.

@@ -160,14 +160,14 @@ public class JavaProject
 	 */
 	private static final IClasspathEntry[] RESOLUTION_IN_PROGRESS = new IClasspathEntry[0];
 
-	private static final String SHARED_PROPERTIES_DIRECTORY = ".settings"; //$NON-NLS-1$
+	public static final String SHARED_PROPERTIES_DIRECTORY = ".settings"; //$NON-NLS-1$
 	
 	/**
 	 * Name of file containing project classpath
 	 * appended settings directory per bug: 210831
 	 */
 	
-	public static final String CLASSPATH_FILENAME = SHARED_PROPERTIES_DIRECTORY + "/" + ".jsdtscope";  //$NON-NLS-1$
+	public static final String CLASSPATH_FILENAME = ".jsdtscope";  //$NON-NLS-1$
 	/**
 	 * The platform project this <code>IJavaProject</code> is based on
 	 */
@@ -182,9 +182,41 @@ public class JavaProject
 		super(null);
 	}
 
+	public IFile getJSDTScopeFile() {
+		// Return the projects .jsdtscope file
+		IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+		if(!rscPath.exists())
+			try {
+				rscPath.create(true, true, new NullProgressMonitor());
+			}
+			catch (CoreException e) {}
+
+		
+		IFile jsdtScope = rscPath.getFile(CLASSPATH_FILENAME);
+		
+		if(!jsdtScope.exists()) {
+			// Check for the file in its older location project root and move it.
+			IResource oldJsdtScope = project.findMember(CLASSPATH_FILENAME);	
+			if(oldJsdtScope!=null && oldJsdtScope.exists()) {
+				try {
+					oldJsdtScope.copy(jsdtScope.getFullPath(), false, new NullProgressMonitor());
+				}
+				catch (CoreException e) {
+					/* file is locked so return the old one and do the copy on next read*/
+					return (IFile)oldJsdtScope;
+				}
+			}
+		}
+		
+		return jsdtScope;
+		
+		
+	}
+	
 	public JavaProject(IProject project, JavaElement parent) {
 		super(parent);
 		this.project = project;
+		getJSDTScopeFile();
 	}
 
 	public static boolean areClasspathsEqual(
@@ -2371,7 +2403,7 @@ public class JavaProject
 	 */
 	public IClasspathEntry[] readFileEntriesWithException(Map unknownElements) throws CoreException, IOException, AssertionFailedException {
 		String xmlClasspath;
-		IFile rscFile = this.project.getFile(JavaProject.CLASSPATH_FILENAME);
+		IFile rscFile = getJSDTScopeFile();
 		if (rscFile.exists()) {
 			byte[] bytes = Util.getResourceContentsAsByteArray(rscFile);
 			try {
@@ -2684,7 +2716,7 @@ public class JavaProject
 
 		// actual file saving
 		try {
-			setSharedProperty(JavaProject.CLASSPATH_FILENAME, encodeClasspath(newClasspath, newOutputLocation, true, unknownElements));
+			setSharedProperty(getJSDTScopeFile().getProjectRelativePath().toString(), encodeClasspath(newClasspath, newOutputLocation, true, unknownElements));
 			return true;
 		} catch (CoreException e) {
 			throw new JavaModelException(e);
@@ -2811,6 +2843,8 @@ public class JavaProject
 
 		this.project = project;
 		this.parent = JavaModelManager.getJavaModelManager().getJavaModel();
+		/* Make sure the scope file is properly set. */
+		getJSDTScopeFile();
 	}
 
 	/**

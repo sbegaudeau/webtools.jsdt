@@ -35,7 +35,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.core.JavaProject;
+
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 
 /**
@@ -92,7 +92,7 @@ public class DeleteModifications extends RefactoringModifications {
 					getResourceModifications().addDelete(resource);
 				IJavaProject[] referencingProjects= JavaElementUtil.getReferencingProjects((IPackageFragmentRoot) element);
 				for (int i= 0; i < referencingProjects.length; i++) {
-					IFile classpath= referencingProjects[i].getProject().getFile(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
+					IFile classpath= referencingProjects[i].getJSDTScopeFile(); //$NON-NLS-1$
 					getResourceModifications().addChanged(classpath);
 				}
 				return;

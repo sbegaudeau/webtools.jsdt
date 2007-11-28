@@ -304,7 +304,7 @@ public class BuildPathsBlock {
 		boolean projectExists= false;
 		List newClassPath= null;
 		IProject project= fCurrJProject.getProject();
-		projectExists= (project.exists() && project.getFile(JavaProject.CLASSPATH_FILENAME).exists()); //$NON-NLS-1$
+		projectExists= (project.exists() && jproject.getJSDTScopeFile().exists()); //$NON-NLS-1$
 		if  (projectExists) {
 //			if (outputLocation == null) {
 //				outputLocation=  fCurrJProject.readOutputLocation();
@@ -415,16 +415,16 @@ public class BuildPathsBlock {
 		if(fCurrPage!=null) fCurrPage.aboutToShow();
 	}
 	public boolean hasChangesInClasspathFile() {
-		IFile file= fCurrJProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
+		IFile file= fCurrJProject.getJSDTScopeFile(); //$NON-NLS-1$
 		return fFileTimeStamp != file.getModificationStamp();
 	}
 	
 	public boolean isClassfileMissing() {
-		return !fCurrJProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME).exists(); //$NON-NLS-1$
+		return !fCurrJProject.getJSDTScopeFile().exists(); //$NON-NLS-1$
 	}
 	
 	public void initializeTimeStamps() {
-		IFile file= fCurrJProject.getProject().getFile(JavaProject.CLASSPATH_FILENAME); //$NON-NLS-1$
+		IFile file= fCurrJProject.getJSDTScopeFile(); //$NON-NLS-1$
 		fFileTimeStamp= file.getModificationStamp();
 		fUserSettingsTimeStamp= getEncodedSettings();
 	}

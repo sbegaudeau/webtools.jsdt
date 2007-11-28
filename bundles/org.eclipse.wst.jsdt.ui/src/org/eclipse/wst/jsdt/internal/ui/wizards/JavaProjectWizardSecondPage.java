@@ -205,7 +205,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 //			IPath outputLocation= null;
 	
 			if (fFirstPage.getDetect()) {
-				if (!fCurrProject.getFile(JavaProject.CLASSPATH_FILENAME).exists()) { 
+				if (!fCurrProject.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY).getFile(JavaProject.CLASSPATH_FILENAME).exists()) { 
 					final ClassPathDetector detector= new ClassPathDetector(fCurrProject, new SubProgressMonitor(monitor, 2));
 					entries= detector.getClasspath();
 //                    outputLocation= detector.getOutputLocation();
