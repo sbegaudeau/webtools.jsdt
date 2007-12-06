@@ -37,7 +37,7 @@ Window.prototype.frames= new Window();
 Window.prototype.window= new Window();
 Window.prototype.find=function(){};
 Window.prototype.self= new Window();
-Window.prototype.history= new Array();
+Window.prototype.history= new history();
 Window.prototype.content= new Window();
 Window.prototype.menubar= new BarProp();
 Window.prototype.toolbar= new BarProp();
@@ -83,8 +83,32 @@ Window.prototype.removeEventListener=function(arg1,arg2,arg3){};
 Window.prototype.dispatchEvent=function(arg1){};
 Window.prototype.getComputedStyle=function(arg1,arg2){};
 Window.prototype.sessionStorage="";
+Window.prototype.location=new location();
 
+/**
+  * Object history()
 
+  * @super Array
+  * @constructor
+  * @see Array
+  * @class history
+  * @since Common Usage, no standard
+ */
+function history(){};
+history.prototype=new Array();
+history.prototype.back=function(){};
+
+/**
+  * Object location()
+
+  * @super Object
+  * @constructor
+  * @class location
+  * @since Common Usage, no standard
+ */
+function location(){};
+location.prototype=new Object();
+location.prototype.reload=function(arg1){};
 
 
 
