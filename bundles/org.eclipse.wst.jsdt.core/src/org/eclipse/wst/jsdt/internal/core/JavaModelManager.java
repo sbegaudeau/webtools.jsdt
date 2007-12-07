@@ -64,6 +64,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.PerformanceStats;
@@ -4216,6 +4217,18 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 				traceVariableAndContainers("Loaded", start); //$NON-NLS-1$
 
 			final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			
+			IProject[] projects = new IProject[0];
+			IWorkspaceRoot workSpaceRoot = workspace.getRoot();
+			if(workSpaceRoot!=null) {
+				projects = workSpaceRoot.getProjects();
+			}
+			
+			for(int i = 0;projects!=null && i<projects.length;i++) {
+				copyJsdtScopeFile(projects[i]);
+				
+			}
+			
 			workspace.addResourceChangeListener(
 				this.deltaState,
 				/* update spec in JavaCore#addPreProcessingResourceChangedListener(...) if adding more event types */
@@ -4294,6 +4307,37 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		// Note: no need to close the Java model as this just removes Java element infos from the Java model cache
 	}
 
+	
+	private void copyJsdtScopeFile(IProject project) {
+		
+		IResource oldJsdtScope = project.findMember(JavaProject.CLASSPATH_FILENAME);
+		if(oldJsdtScope==null || ! oldJsdtScope.exists()) return;
+		
+		IFolder rscPath = project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+		if(!rscPath.exists())
+			try {
+				rscPath.create(true, true, new NullProgressMonitor());
+			}
+			catch (CoreException e) {}
+
+		
+		IFile jsdtScope = rscPath.getFile(JavaProject.CLASSPATH_FILENAME);
+		
+		if(!jsdtScope.exists()) {
+			// Check for the file in its older location project root and move it.
+			
+			if(oldJsdtScope!=null && oldJsdtScope.exists()) {
+				try {
+					oldJsdtScope.copy(jsdtScope.getFullPath(), false, new NullProgressMonitor());
+				}
+				catch (CoreException e) {
+					
+				}
+			}
+		}
+		
+	}
+	
 	public synchronized IPath variableGet(String variableName){
 		// check initialization in progress first
 		HashSet initializations = variableInitializationInProgress();

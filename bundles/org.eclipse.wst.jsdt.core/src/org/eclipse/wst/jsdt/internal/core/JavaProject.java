@@ -198,40 +198,10 @@ public class JavaProject
 		
 	}
 	
-	private void copyJsdtScopeFile() {
-		
-		IResource oldJsdtScope = project.findMember(CLASSPATH_FILENAME);
-		if(oldJsdtScope==null || ! oldJsdtScope.exists()) return;
-		
-		IFolder rscPath = this.project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
-		if(!rscPath.exists())
-			try {
-				rscPath.create(true, true, new NullProgressMonitor());
-			}
-			catch (CoreException e) {}
 
-		
-		IFile jsdtScope = rscPath.getFile(CLASSPATH_FILENAME);
-		
-		if(!jsdtScope.exists()) {
-			// Check for the file in its older location project root and move it.
-			
-			if(oldJsdtScope!=null && oldJsdtScope.exists()) {
-				try {
-					oldJsdtScope.copy(jsdtScope.getFullPath(), false, new NullProgressMonitor());
-				}
-				catch (CoreException e) {
-					
-				}
-			}
-		}
-		
-	}
-	
 	public JavaProject(IProject project, JavaElement parent) {
 		super(parent);
 		this.project = project;
-		copyJsdtScopeFile();
 	}
 
 	public static boolean areClasspathsEqual(
