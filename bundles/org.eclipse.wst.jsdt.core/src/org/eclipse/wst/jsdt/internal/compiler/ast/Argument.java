@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
 public class Argument extends LocalDeclaration {
 
+	public char [] comment;
 	// prefix for setter method (to recognize special hiding argument)
 //	private final static char[] SET = "set".toCharArray(); //$NON-NLS-1$
 

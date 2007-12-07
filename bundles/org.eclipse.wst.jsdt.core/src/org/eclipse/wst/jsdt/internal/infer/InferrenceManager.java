@@ -32,20 +32,20 @@ public class InferrenceManager {
 
 
 
-	public InferEngine [] getInferenceEngines()
+	public InferrenceProvider [] getInferenceProviders()
 	{
 
 		if (extensions==null)
 		{
 			loadInferenceExtensions();
 		}
-		ArrayList extEngines=new ArrayList();
-		extEngines.add(new InferEngine());
+		ArrayList extProviders=new ArrayList();
+		extProviders.add(new DefaultInferrenceProvider());
 		for (int i = 0; i < extensions.length; i++) {
-			  if (extensions[i].inferEngine!=null)
-				  extEngines.add(extensions[i].inferEngine);
+			  if (extensions[i].inferProvider!=null)
+				  extProviders.add(extensions[i].inferProvider);
 			}
-		return (InferEngine [] )extEngines.toArray(new InferEngine[extEngines.size()]);
+		return (InferrenceProvider [] )extProviders.toArray(new InferrenceProvider[extProviders.size()]);
 	}
 
 
@@ -63,13 +63,13 @@ public class InferrenceManager {
 							.getConfigurationElements();
 					for (int j = 0; j < elements.length; j++) {
 						try {
-							InferEngine inferEngine = null;
+							InferrenceProvider inferProvider = null;
 							if (elements[j].getName().equals(TAG_INFERENGINE)) {
-								inferEngine = (InferEngine) elements[j]
+								inferProvider = (InferrenceProvider) elements[j]
 										.createExecutableExtension(ATTR_INFERENGINE_CLASS);
 							}
 							InferrenceSupportExtension inferenceSupport = new InferrenceSupportExtension();
-							inferenceSupport.inferEngine = inferEngine;
+							inferenceSupport.inferProvider = inferProvider;
 
 							extList.add(inferenceSupport);
 						} catch (CoreException e) {

@@ -17,6 +17,7 @@ public class InferOptions {
 
 	public static final String OPTION_UseAssignments = "org.eclipse.wst.jsdt.core.infer.useAssignments"; //$NON-NLS-1$
 	public static final String OPTION_UseInitMethod = "org.eclipse.wst.jsdt.core.infer.useInitMethod"; //$NON-NLS-1$
+	public static final String OPTION_SaveArgumentComments = "org.eclipse.wst.jsdt.core.infer.saveArgumentComments"; //$NON-NLS-1$
 
 
 
@@ -27,7 +28,9 @@ public class InferOptions {
 
 	public boolean useInitMethod;
 	public String engineClass;
-
+    public boolean saveArgumentComments;
+	
+	
 
 	/**
 	 * Initializing the compiler options with defaults
@@ -51,12 +54,14 @@ public class InferOptions {
 	{
 		this.useAssignments=true;
 		this.useInitMethod=true;
+		this.saveArgumentComments=false;
 	}
 
 	public Map getMap() {
 		Map optionsMap = new HashMap(30);
 		optionsMap.put(OPTION_UseAssignments, this.useAssignments ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
 		optionsMap.put(OPTION_UseInitMethod, this.useInitMethod ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
+		optionsMap.put(OPTION_SaveArgumentComments, this.saveArgumentComments ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
 		return optionsMap;
 	}
 
@@ -69,6 +74,9 @@ public class InferOptions {
 		}
 		if ((optionValue = optionsMap.get(OPTION_UseInitMethod)) != null) {
 			this.useInitMethod="true".equals(optionValue) ; //$NON-NLS-1$
+		}	
+		if ((optionValue = optionsMap.get(OPTION_SaveArgumentComments)) != null) {
+			this.saveArgumentComments="true".equals(optionValue) ; //$NON-NLS-1$
 		}
 	}
 

@@ -881,22 +881,9 @@ public class InferEngine extends ASTVisitor {
 				   methodDeclaration.inferredType=type;
 				}
 
-				if (methodDeclaration.arguments!=null)
-				for (int i = 0; i < methodDeclaration.arguments.length; i++) {
-					JavadocSingleNameReference param = javadoc.findParam(methodDeclaration.arguments[i].name);
-					if (param!=null)
-					{
-						if (param.types!=null)
-							for (int j = 0; j < param.types.length; j++) {
-								TypeReference reference = param.types[j];
-								InferredType paramType=this.addType(reference.getSimpleTypeName());
-								methodDeclaration.arguments[i].inferredType=paramType;
-//TODO: what to do when more than one type?
-								break;
-							}
-					}
-				}
 			}
+			if (methodDeclaration.arguments!=null)
+				handleFunctionDeclarationArguments(methodDeclaration);
 		}
 		// check if this is a constructor
 		if (passNumber==2)
@@ -922,6 +909,26 @@ public class InferEngine extends ASTVisitor {
 		if (methodDeclaration.inferredType==null)
 			methodDeclaration.inferredType=VoidType;
 		return true;
+	}
+
+	protected void handleFunctionDeclarationArguments(MethodDeclaration methodDeclaration) {
+		Javadoc javadoc = methodDeclaration.javadoc;
+		if (javadoc==null)
+			return;
+		for (int i = 0; i < methodDeclaration.arguments.length; i++) {
+			JavadocSingleNameReference param = javadoc.findParam(methodDeclaration.arguments[i].name);
+			if (param!=null)
+			{
+				if (param.types!=null)
+					for (int j = 0; j < param.types.length; j++) {
+						TypeReference reference = param.types[j];
+						InferredType paramType=this.addType(reference.getSimpleTypeName());
+						methodDeclaration.arguments[i].inferredType=paramType;
+//TODO: what to do when more than one type?
+						break;
+					}
+			}
+		}
 	}
 
 

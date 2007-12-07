@@ -571,14 +571,16 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 //			}
 //			type.bits |= ASTNode.IsVarArgs; // set isVarArgs
 //		}
-		int modifierPositions = intStack[intPtr--];
-		intPtr--;
+//		int modifierPositions = intStack[intPtr--];
+//		intPtr--;
+		int modifierPositions=(int) (namePositions >>> 32);
 		Argument arg =
 			new SelectionOnArgumentName(
 				identifierName,
 				namePositions,
 				null,
-				intStack[intPtr + 1] & ~ClassFileConstants.AccDeprecated); // modifiers
+				 ClassFileConstants.AccDefault);
+//				intStack[intPtr + 1] & ~ClassFileConstants.AccDeprecated); // modifiers
 		arg.declarationSourceStart = modifierPositions;
 		pushOnAstStack(arg);
 

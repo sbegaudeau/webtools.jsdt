@@ -586,13 +586,13 @@ protected void consumeFormalParameter(boolean isVarArgs) {
 //		}
 //		type.bits |= ASTNode.IsVarArgs; // set isVarArgs
 //	}
-	intPtr -= 3;
+	intPtr -= 1;
 	Argument arg =
 		new Argument(
 			parameterName,
 			namePositions,
 			null,
-			intStack[intPtr + 1]);// modifiers
+			ClassFileConstants.AccDefault);// modifiers
 	// consume annotations
 //	int length;
 //	if ((length = this.expressionLengthStack[this.expressionLengthPtr--]) != 0) {
