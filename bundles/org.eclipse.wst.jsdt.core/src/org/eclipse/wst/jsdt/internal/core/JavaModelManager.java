@@ -4328,7 +4328,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			
 			if(oldJsdtScope!=null && oldJsdtScope.exists()) {
 				try {
-					oldJsdtScope.copy(jsdtScope.getFullPath(), false, new NullProgressMonitor());
+					oldJsdtScope.move(jsdtScope.getFullPath(), false, new NullProgressMonitor());
 				}
 				catch (CoreException e) {
 					
