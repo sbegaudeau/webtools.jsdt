@@ -1049,6 +1049,12 @@ public Parser(ProblemReporter problemReporter, boolean optimizeStringLiterals) {
 
 	// javadoc support
 	this.javadocParser = createJavadocParser();
+	
+	this.inferenceProviders=  InferrenceManager.getInstance().getInferenceProviders();
+	for (int i = 0; i < this.inferenceProviders.length; i++) {
+		this.inferenceProviders[i].initializeOptions(this.options.inferOptions);
+	}
+	
 }
 protected void annotationRecoveryCheckPoint(int start, int end) {
 	if(this.lastCheckPoint > start && this.lastCheckPoint < end) {
@@ -8552,10 +8558,6 @@ public void initialize(boolean initializeNLS) {
 	this.genericsPtr = -1;
 
 
-	this.inferenceProviders=  InferrenceManager.getInstance().getInferenceProviders();
-	for (int i = 0; i < this.inferenceProviders.length; i++) {
-		this.inferenceProviders[i].initializeOptions(this.options.inferOptions);
-	}
 	
 }
 public void initializeScanner(){
