@@ -1542,10 +1542,12 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			try {
 		
 				char[] source = s.toCharArray();
+				CompilerOptions compilerOptions = new CompilerOptions(getCompilerOptions());
+				compilerOptions.inferOptions=inferOptions;
 				TestParser parser = 
 					new TestParser(
 					  new DefaultProblemFactory(Locale.getDefault()), 
-						new CompilerOptions(getCompilerOptions()),
+						compilerOptions,
 						true/*optimize string literals*/,
 						false); 
 
