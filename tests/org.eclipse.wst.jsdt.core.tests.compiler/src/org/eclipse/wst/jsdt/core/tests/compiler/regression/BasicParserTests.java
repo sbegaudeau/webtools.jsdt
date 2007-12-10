@@ -691,7 +691,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		// special characters to a character representation before
 		// doing the compare. 
 		this.runParseTest(
-				"\"abc\\u022def\";\n",
+				"\"abc\\u0022def\";\n",
 			"X.js",
 				"\"abc\\\"def\";\n"			
 		);
@@ -699,7 +699,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 	
 	public void test036() {
 		this.runParseTest(
-				"'abc\\u027def';\n",
+				"'abc\\u0027def';\n",
 			"X.js",
 				"'abc'def';\n"			
 		);
@@ -711,7 +711,7 @@ public class BasicParserTests extends AbstractRegressionTest {
 		// special characters to a character representation before
 		// doing the compare. 
 		this.runParseTest(
-				"\"\\u022def\";\n",
+				"\"\\u0022def\";\n",
 			"X.js",
 				"\"\\\"def\";\n"			
 		);
