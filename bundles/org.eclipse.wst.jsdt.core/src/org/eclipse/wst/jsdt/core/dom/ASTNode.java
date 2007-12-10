@@ -758,6 +758,7 @@ public abstract class ASTNode {
 	public static final int INFERRED_TYPE = 89;
 	public static final int WITH_STATEMENT = 90;
 	public static final int LIST_EXPRESSION = 91;
+	public static final int EMPTY_EXPRESSION = 92;
 
 
 

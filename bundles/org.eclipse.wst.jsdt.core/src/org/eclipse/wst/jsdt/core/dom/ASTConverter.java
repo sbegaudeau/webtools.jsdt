@@ -1511,6 +1511,13 @@ class ASTConverter {
 		return emptyStatement;
 	}
 
+
+	public EmptyExpression convert(org.eclipse.wst.jsdt.internal.compiler.ast.EmptyExpression expression) {
+		EmptyExpression emptyExpression = new EmptyExpression(this.ast);
+		emptyExpression.setSourceRange(expression.sourceStart, expression.sourceEnd - expression.sourceStart + 1);
+		return emptyExpression;
+	}
+
 	// field is an enum constant
 	public EnumConstantDeclaration convert(org.eclipse.wst.jsdt.internal.compiler.ast.FieldDeclaration enumConstant) {
 		checkCanceled();
@@ -1776,6 +1783,9 @@ class ASTConverter {
 		}
 		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.ListExpression) expression);
+		}
+		if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.EmptyExpression) {
+			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.EmptyExpression) expression);
 		}
 		return null;
 	}

@@ -240,7 +240,8 @@ public class ArrayInitializer extends Expression {
 			if (this.expressions != null) {
 				int expressionsLength = this.expressions.length;
 				for (int i = 0; i < expressionsLength; i++)
-					this.expressions[i].traverse(visitor, scope);
+					if (this.expressions[i]!=null)
+					  this.expressions[i].traverse(visitor, scope);
 			}
 		}
 		visitor.endVisit(this, scope);

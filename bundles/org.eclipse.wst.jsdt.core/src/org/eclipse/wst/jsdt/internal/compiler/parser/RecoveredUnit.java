@@ -15,6 +15,7 @@ package org.eclipse.wst.jsdt.internal.compiler.parser;
  */
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
+import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Block;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -252,6 +253,8 @@ public CompilationUnitDeclaration updatedCompilationUnitDeclaration(){
 			 }
 			 if (updatedASTNode instanceof AbstractMethodDeclaration && ((AbstractMethodDeclaration)updatedASTNode).bodyEnd<=0 )
 				 ((AbstractMethodDeclaration)updatedASTNode).bodyEnd=this.unitDeclaration.sourceEnd;
+			 else if (updatedASTNode instanceof AbstractVariableDeclaration && ((AbstractVariableDeclaration)updatedASTNode).declarationSourceEnd<=0 )
+				 ((AbstractVariableDeclaration)updatedASTNode).declarationSourceEnd=this.unitDeclaration.sourceEnd;
 
 				//			  this.statements[i].updateParseTree();
 			// filter out local types (12454)
