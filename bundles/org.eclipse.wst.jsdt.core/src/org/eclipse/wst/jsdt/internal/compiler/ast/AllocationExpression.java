@@ -339,7 +339,7 @@ public TypeBinding resolveType(BlockScope scope) {
 			return this.resolvedType;
 		}
 	}
-	if (this.resolvedType == null)
+	if (this.resolvedType == null || this.resolvedType.isAnyType())
 	{
 		this.binding= new ProblemMethodBinding(
 				TypeConstants.INIT,
