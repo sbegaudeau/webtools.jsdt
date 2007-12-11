@@ -99,7 +99,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapte
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ITreeListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
-import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
+//import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.SelectionButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringButtonDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.TreeListDialogField;
@@ -122,7 +122,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 	public static class LibraryNameDialog extends StatusDialog implements IDialogFieldListener {
 
 		private StringDialogField fNameField;
-		private SelectionButtonDialogField fIsSystemField;
+		//private SelectionButtonDialogField fIsSystemField;
 
 		private CPUserLibraryElement fElementToEdit;
 		private List fExistingLibraries;
@@ -142,15 +142,15 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 			fNameField.setDialogFieldListener(this);
 			fNameField.setLabelText(PreferencesMessages.UserLibraryPreferencePage_LibraryNameDialog_name_label); 
 			
-			fIsSystemField= new SelectionButtonDialogField(SWT.CHECK);
-			fIsSystemField.setLabelText(PreferencesMessages.UserLibraryPreferencePage_LibraryNameDialog_issystem_label); 
+			//fIsSystemField= new SelectionButtonDialogField(SWT.CHECK);
+			//fIsSystemField.setLabelText(PreferencesMessages.UserLibraryPreferencePage_LibraryNameDialog_issystem_label); 
 			
 			if (elementToEdit != null) {
 				fNameField.setText(elementToEdit.getName());
-				fIsSystemField.setSelection(elementToEdit.isSystemLibrary());
+			//	fIsSystemField.setSelection(elementToEdit.isSystemLibrary());
 			} else {
 				fNameField.setText(""); //$NON-NLS-1$
-				fIsSystemField.setSelection(false);
+				//fIsSystemField.setSelection(false);
 			}
 		}
 		
@@ -159,7 +159,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		 */
 		protected Control createDialogArea(Composite parent) {
 			Composite composite= (Composite) super.createDialogArea(parent);
-			LayoutUtil.doDefaultLayout(composite, new DialogField[] { fNameField, fIsSystemField }, true, SWT.DEFAULT, SWT.DEFAULT);
+			LayoutUtil.doDefaultLayout(composite, new DialogField[] { fNameField }, true, SWT.DEFAULT, SWT.DEFAULT);
 			fNameField.postSetFocusOnDialogField(parent.getDisplay());
 			
 			Dialog.applyDialogFont(composite);
@@ -201,7 +201,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 			if (fElementToEdit != null) {
 				entries= fElementToEdit.getChildren();
 			}
-			return new CPUserLibraryElement(fNameField.getText(), fIsSystemField.isSelected(), entries);
+			return new CPUserLibraryElement(fNameField.getText(), false, entries);
 		}
 		
 	}
@@ -1299,7 +1299,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		
 		FileDialog dialog= new FileDialog(getShell(), existing == null ? SWT.MULTI : SWT.SINGLE);
 		dialog.setText(title);
-		dialog.setFilterExtensions(new String[] {"*.jar;*.zip"}); //$NON-NLS-1$
+		dialog.setFilterExtensions(new String[] {"*.js"}); //$NON-NLS-1$
 		dialog.setFilterPath(lastUsedPath);
 		if (existing != null) {
 			dialog.setFileName(existing.getPath().lastSegment());
