@@ -16,7 +16,7 @@
         value="org.eclipse.wst.jsdt.core.tests.compiler" />
     <property
         name="classname"
-        value="org.eclipse.wst.jsdt.core.tests.compile.JSDTTestAll" />
+        value="org.eclipse.wst.jsdt.core.tests.compiler.JSDTTestAll" />
     <property
         name="testType"
         value="core-test" />
