@@ -21,7 +21,7 @@ public class EmptyExpression extends Expression {
 	}
 	
 	public TypeBinding resolveType(BlockScope scope) {
-		return null;
+		return TypeBinding.ANY;
 	}
 
 }
