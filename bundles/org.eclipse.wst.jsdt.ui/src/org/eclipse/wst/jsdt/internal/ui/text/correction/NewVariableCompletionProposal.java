@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.Block;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
@@ -187,7 +186,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 	private ASTRewrite doAddLocal(CompilationUnit cu) throws CoreException {
 		AST ast= cu.getAST();
 
-		Block body;
+		ASTNode body;
 		BodyDeclaration decl= ASTResolving.findParentBodyDeclaration(fOriginalNode);
 		IBinding targetContext= null;
 		if (decl instanceof MethodDeclaration) {
@@ -196,12 +195,15 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 		} else if (decl instanceof Initializer) {
 			body= (((Initializer) decl).getBody());
 			targetContext= Bindings.getBindingOfParentType(decl);
+		} else if (decl ==null ) {
+			body= cu;
+			targetContext= cu.resolveBinding();
 		} else {
 			return null;
 		}
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		
-		ImportRewrite imports= createImportRewrite((CompilationUnit) decl.getRoot());
+		ImportRewrite imports= createImportRewrite(cu);
 
 		SimpleName[] names= getAllReferences(body);
 		ASTNode dominant= getDominantNode(names);
@@ -287,7 +289,7 @@ public class NewVariableCompletionProposal extends LinkedCorrectionProposal {
 		return rewrite;
 	}
 
-	private SimpleName[] getAllReferences(Block body) {
+	private SimpleName[] getAllReferences(ASTNode body) {
 		SimpleName[] names= LinkedNodeFinder.findByProblems(body, fOriginalNode);
 		if (names == null) {
 			return new SimpleName[] { fOriginalNode };

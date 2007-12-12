@@ -612,7 +612,7 @@ public class ASTResolving {
 		return (BodyDeclaration) node;
 	}
 	
-	public static BodyDeclaration findParentBodyDeclaration(ASTNode node, boolean treatModifiersOutside) {
+	public static ASTNode findParentBodyDeclaration(ASTNode node, boolean treatModifiersOutside) {
 		StructuralPropertyDescriptor lastLocation= null;
 		
 		while (node != null) {
@@ -623,10 +623,12 @@ public class ASTResolving {
 				}
 				treatModifiersOutside= false;
 			}
+			else if (node instanceof CompilationUnit)
+				return node;
 			lastLocation= node.getLocationInParent();
 			node= node.getParent();
 		}
-		return (BodyDeclaration) node;
+		return  node;
 	}
 	
 

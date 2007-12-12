@@ -242,15 +242,16 @@ public class UnresolvedElementsSubProcessor {
 
 	private static void addNewVariableProposals(ICompilationUnit cu, Name node, SimpleName simpleName, Collection proposals) {
 		String name= simpleName.getIdentifier();
-		BodyDeclaration bodyDeclaration= ASTResolving.findParentBodyDeclaration(node, true);
-		int type= bodyDeclaration.getNodeType();
+		ASTNode bodyDeclaration= ASTResolving.findParentBodyDeclaration(node, true);
+		int type= bodyDeclaration.getNodeType(); 
 		if (type == ASTNode.METHOD_DECLARATION) {
 			int relevance= StubUtility.hasParameterName(cu.getJavaProject(), name) ? 8 : 5;
 			String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createparameter_description, simpleName.getIdentifier());
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);
 			proposals.add(new NewVariableCompletionProposal(label, cu, NewVariableCompletionProposal.PARAM, simpleName, null, relevance, image));
 		}
-		if (type == ASTNode.INITIALIZER || (type == ASTNode.METHOD_DECLARATION && !ASTResolving.isInsideConstructorInvocation((MethodDeclaration) bodyDeclaration, node))) {
+		if (type == ASTNode.INITIALIZER || type == ASTNode.COMPILATION_UNIT ||
+				(type == ASTNode.METHOD_DECLARATION && !ASTResolving.isInsideConstructorInvocation((MethodDeclaration) bodyDeclaration, node))) {
 			int relevance= StubUtility.hasLocalVariableName(cu.getJavaProject(), name) ? 10 : 7;
 			String label= Messages.format(CorrectionMessages.UnresolvedElementsSubProcessor_createlocal_description, simpleName.getIdentifier());
 			Image image= JavaPluginImages.get(JavaPluginImages.IMG_CORRECTION_LOCAL);
