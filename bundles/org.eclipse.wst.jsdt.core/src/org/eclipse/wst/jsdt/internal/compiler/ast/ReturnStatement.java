@@ -212,7 +212,7 @@ public void resolve(BlockScope scope) {
 			? ((methodBinding = ((AbstractMethodDeclaration) methodScope.referenceContext).binding) == null
 				? null
 				: methodBinding.returnType)
-			: TypeBinding.VOID;
+			: TypeBinding.ANY;
 	TypeBinding expressionType;
 	if (methodType == TypeBinding.VOID) {
 		// the expression should be null
