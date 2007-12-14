@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
@@ -83,6 +84,38 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 			typeName= javaElementRef.substring(0, typeEndPosition);
 		}
 
+		if (typeName.endsWith(".js"))
+		{
+			ITypeRoot typeRoot=null;
+			try {
+				 typeRoot=javaProject.findTypeRoot(typeName);
+			} catch (JavaModelException e) {	}
+			assertExists(typeRoot);
+			if (typeEndPosition == -1) {
+				return typeRoot;
+			}
+			String memberRef= javaElementRef.substring(typeEndPosition + 1);
+
+			final int paramStartPosition= memberRef.indexOf(PARAM_START_CHAR);
+			if (paramStartPosition == -1) {
+				IField field= typeRoot.getField(memberRef);
+				assertExists(field);
+				return field;
+			}
+			String methodName= memberRef.substring(0, paramStartPosition);
+			String signature= memberRef.substring(paramStartPosition);
+			String[] parameterTypes= null;
+			try {
+				parameterTypes= Signature.getParameterTypes(signature);
+			} catch (IllegalArgumentException ex) {
+				// parameterTypes == null
+			}
+			assertWellFormed(parameterTypes != null);
+			IMethod method= typeRoot.getMethod(methodName, parameterTypes);
+			assertExists(method);
+			return method;
+		}
+		
 		IType type= null;
 		try {
 			type= javaProject.findType(typeName);

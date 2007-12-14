@@ -1033,4 +1033,7 @@ public interface IJavaProject extends IParent, IJavaElement, IOpenable {
 	 */
 	void setRawClasspath(IClasspathEntry[] entries, IPath outputLocation, IProgressMonitor monitor)
 		throws JavaModelException;
+	
+	ITypeRoot findTypeRoot(String fullyQualifiedName) throws JavaModelException;
+
 }

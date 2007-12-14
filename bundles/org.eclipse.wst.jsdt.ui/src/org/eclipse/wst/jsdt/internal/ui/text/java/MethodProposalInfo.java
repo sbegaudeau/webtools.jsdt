@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
@@ -61,18 +62,23 @@ public final class MethodProposalInfo extends MemberProposalInfo {
 		if (declarationSignature!=null) {
 			String typeName = SignatureUtil.stripSignatureToFQN(String
 					.valueOf(declarationSignature));
+			String name = String.valueOf(fProposal.getName());
+			String[] parameters = Signature.getParameterTypes(String
+					.valueOf(SignatureUtil.fix83600(fProposal
+							.getSignature())));
+			for (int i = 0; i < parameters.length; i++) {
+				parameters[i] = SignatureUtil.getLowerBound(parameters[i]);
+			}
 			IType type = fJavaProject.findType(typeName);
 			if (type != null) {
-				String name = String.valueOf(fProposal.getName());
-				String[] parameters = Signature.getParameterTypes(String
-						.valueOf(SignatureUtil.fix83600(fProposal
-								.getSignature())));
-				for (int i = 0; i < parameters.length; i++) {
-					parameters[i] = SignatureUtil.getLowerBound(parameters[i]);
-				}
 				boolean isConstructor = fProposal.isConstructor();
 
 				return findMethod(name, parameters, isConstructor, type);
+			}
+			else
+			{
+				ITypeRoot typeRoot=fJavaProject.findTypeRoot(typeName);
+				return typeRoot.getMethod(name, parameters);
 			}
 		}		
 		return null;

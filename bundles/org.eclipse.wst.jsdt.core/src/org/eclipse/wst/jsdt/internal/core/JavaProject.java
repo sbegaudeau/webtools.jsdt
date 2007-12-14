@@ -68,6 +68,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IRegion;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.LibrarySuperType;
@@ -81,6 +82,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelManager.PerProjectInfo;
 import org.eclipse.wst.jsdt.internal.core.JavaProjectElementInfo.LookupCache;
 import org.eclipse.wst.jsdt.internal.core.builder.JavaBuilder;
 import org.eclipse.wst.jsdt.internal.core.eval.EvaluationContextWrapper;
+import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -1262,6 +1264,10 @@ public class JavaProject
 				}
 			}
 			return type;
+		}
+		if (answer.type==null && answer.element instanceof ITypeRoot)
+		{
+			answer.type=((ITypeRoot)answer.element).getType(fullyQualifiedName);
 		}
 		return answer.type;
 	}
@@ -3080,5 +3086,43 @@ public class JavaProject
 				ex.printStackTrace();
 			}
 
+		}
+
+		public ITypeRoot findTypeRoot(String fullyQualifiedName) throws JavaModelException {
+			
+			HandleFactory handleFactory=new HandleFactory();
+			Openable openable = handleFactory.createOpenable(fullyQualifiedName, null);
+			if (openable instanceof ITypeRoot)
+				return (ITypeRoot) openable;
+			return null;
+//			IPath path = new Path(fullyQualifiedName);
+//			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+//			if (root.getLocation().isPrefixOf(path))
+//				path=path.removeFirstSegments(root.getLocation().segmentCount());
+//			IResource resource = root.findMember(path);
+//			if (resource.exists())
+//			{
+//				 PackageFragmentRoot packageFragmentRoot = (PackageFragmentRoot)getPackageFragmentRoot(path.removeLastSegments(1));
+//				path=path.removeFirstSegments(packageFragmentRoot.getPath().segmentCount());
+//				String[] simpleNames = path.segments();
+//				String[] pkgName;
+//				int length = simpleNames.length-1;
+//				if (length > 0) {
+//					pkgName = new String[length];
+//					System.arraycopy(simpleNames, 0, pkgName, 0, length);
+//				} else {
+//					pkgName = CharOperation.NO_STRINGS;
+//				}
+//				PackageFragment pkgFragment = packageFragmentRoot.getPackageFragment(pkgName);
+//				String simpleName= simpleNames[length];
+//				if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName)) {
+//					ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
+//					return  unit;
+//				} else {
+//					IClassFile classFile= pkgFragment.getClassFile(simpleName);
+//					return classFile;
+//				}
+//			}
+//			return null;
 		}
 }
