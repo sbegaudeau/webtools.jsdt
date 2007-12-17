@@ -349,6 +349,27 @@ public class JavaProject
 		return false;
 	}
 
+	public static boolean hasJSDTScope(IProject project) {
+
+		
+		IFile file = project.getFile(CLASSPATH_FILENAME);
+		if (file!=null && file.exists())
+			return true;
+
+		IFolder rscPath =  project.getFolder(JavaProject.SHARED_PROPERTIES_DIRECTORY);
+		if(rscPath.exists())
+		{
+			file = rscPath.getFile(CLASSPATH_FILENAME);
+			if (file!=null && file.exists())
+				return true;
+
+		}
+
+		return false;
+	}
+
+
+	
 	/*
 	 * Detect cycles in the classpath of the workspace's projects
 	 * and create markers if necessary.
