@@ -11,7 +11,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IActionDelegate;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.ui.project.JsNature;
 
 /**
@@ -23,7 +22,7 @@ public class SetupProjectsWizzard implements IObjectActionDelegate, IActionDeleg
 	Object[] fTarget;
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		throw new UnimplementedException("setActivePart(IAction action, IWorkbenchPart targetPart)"); //$NON-NLS-1$
+//		throw new UnimplementedException("setActivePart(IAction action, IWorkbenchPart targetPart)"); //$NON-NLS-1$
 	}
 
 	public void run(IAction action) {
