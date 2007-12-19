@@ -63,5 +63,9 @@ public class BasicInterpretTest extends InterpretTest {
 				,"i","2");
 	}
 
-
+	
+	public void test0010() {
+		interpetTest("a = \"abc\"; a.indexOf(\"b\");","1");
+	}
+	
 }
