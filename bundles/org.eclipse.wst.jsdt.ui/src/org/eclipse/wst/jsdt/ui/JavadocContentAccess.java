@@ -13,7 +13,14 @@ package org.eclipse.wst.jsdt.ui;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
@@ -24,6 +31,7 @@ import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.javadoc.JavaDocCommentReader;
 import org.eclipse.wst.jsdt.internal.corext.util.MethodOverrideTester;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDoc2HTMLTextReader;
 
 /**
@@ -36,6 +44,14 @@ import org.eclipse.wst.jsdt.internal.ui.text.javadoc.JavaDoc2HTMLTextReader;
  * @since 3.1
  */
 public class JavadocContentAccess {
+	
+	
+	public static final String EXTENSION_POINT= "documentationProvider"; //$NON-NLS-1$
+
+	protected static final String TAG_DOCUMENTATIONPROVIDER = "documentationProvider"; //$NON-NLS-1$
+	protected static final String ATTR_DOCUMENTATIONPROVIDER_CLASS = "class"; //$NON-NLS-1$
+
+	private static IDocumentationReader[] docReaders;
 	
 	private JavadocContentAccess() {
 		// do not instantiate
@@ -53,6 +69,11 @@ public class JavadocContentAccess {
 	 * @throws JavaModelException is thrown when the elements javadoc can not be accessed
 	 */
 	public static Reader getContentReader(IMember member, boolean allowInherited) throws JavaModelException {
+		
+		IDocumentationReader docReader = getDocReader(member);
+		if (docReader!=null)
+			return docReader.getContentReader(member, allowInherited);
+		
 		IBuffer buf= member.getOpenable().getBuffer();
 		if (buf == null) {
 			return null; // no source attachment found
@@ -112,7 +133,12 @@ public class JavadocContentAccess {
 	public static Reader getHTMLContentReader(IMember member, boolean allowInherited, boolean useAttachedJavadoc) throws JavaModelException {
 		Reader contentReader= getContentReader(member, allowInherited);
 		if (contentReader != null)
+		{
+			IDocumentationReader docReader = getDocReader(member); 
+			if (docReader!=null)
+				return docReader.getDocumentation2HTMLReader(contentReader);
 			return new JavaDoc2HTMLTextReader(contentReader);
+		}
 		
 		if (useAttachedJavadoc && member.getOpenable().getBuffer() == null) { // only if no source available
 			String s= member.getAttachedJavadoc(null);
@@ -124,22 +150,7 @@ public class JavadocContentAccess {
 	
 	
 
-	/**
-	 * Gets a reader for an IMember's Javadoc comment content from the source attachment.
-	 * and renders the tags in HTML. 
-	 * Returns <code>null</code> if the member does not contain a Javadoc comment or if no source is available.
-	 * 
-	 * @param member The member to get the Javadoc of.
-	 * @param allowInherited For methods with no (Javadoc) comment, the comment of the overridden class
-	 * is returned if <code>allowInherited</code> is <code>true</code>.
-	 * @return Returns a reader for the Javadoc comment content in HTML or <code>null</code> if the member
-	 * does not contain a Javadoc comment or if no source is available
-	 * @throws JavaModelException is thrown when the elements javadoc can not be accessed
-	 * @deprecated As of 3.2, replaced by {@link #getHTMLContentReader(IMember, boolean, boolean)}
-	 */
-	public static Reader getHTMLContentReader(IMember member, boolean allowInherited) throws JavaModelException {
-		return getHTMLContentReader(member, allowInherited, false);
-	}
+ 
 
 	private static Reader findDocInHierarchy(IMethod method) throws JavaModelException {
 		IType type= method.getDeclaringType();
@@ -163,4 +174,51 @@ public class JavadocContentAccess {
 		return null;
 	}		
 
+	private static IDocumentationReader getDocReader(IMember member)
+	{
+		if (docReaders==null)
+			loadExtensions();
+		for (int i = 0; i < docReaders.length; i++) {
+			if (docReaders[i].appliesTo(member))
+				return docReaders[i];
+		}
+		return null;
+	}
+	
+	
+	private static void loadExtensions() {
+		IExtensionRegistry registry = Platform.getExtensionRegistry();
+		ArrayList extList = new ArrayList();
+		if (registry != null) {
+			IExtensionPoint point = registry.getExtensionPoint(
+					JavaPlugin.getPluginId(), EXTENSION_POINT);
+
+			if (point != null) {
+				IExtension[] extensions = point.getExtensions();
+				for (int i = 0; i < extensions.length; i++) {
+					IConfigurationElement[] elements = extensions[i]
+							.getConfigurationElements();
+					for (int j = 0; j < elements.length; j++) {
+						try {
+							IDocumentationReader docProvider = null;
+							if (elements[j].getName().equals(TAG_DOCUMENTATIONPROVIDER)) {
+								  docProvider = (IDocumentationReader) elements[j]
+										.createExecutableExtension(ATTR_DOCUMENTATIONPROVIDER_CLASS);
+							}
+
+							extList.add(docProvider);
+						} catch (CoreException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+
+		 docReaders = (IDocumentationReader[]) extList
+				.toArray(new IDocumentationReader[extList.size()]);
+	}
+
+
+	
 }

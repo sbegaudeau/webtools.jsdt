@@ -673,7 +673,7 @@ FormalParameterList ::= FormalParameterList ',' FormalParameter
 /:$readableName FormalParameterList:/
 
 --1.1 feature
-FormalParameter ::= Modifiersopt VariableDeclaratorId
+FormalParameter ::= VariableDeclaratorId
 /.$putCase consumeFormalParameter(false); $break ./
 
 -- ClassTypeList -> ClassTypeElt
@@ -685,7 +685,7 @@ FormalParameter ::= Modifiersopt VariableDeclaratorId
 -- /.$putCase consumeClassTypeElt(); $break ./
 -- /:$readableName ClassType:/
 
-MethodBody ::= NestedMethod '{' BlockStatementsopt '}' 
+MethodBody ::= NestedMethod '{' PostDoc BlockStatementsopt '}' 
 /.$putCase consumeMethodBody(); $break ./
 /:$readableName MethodBody:/
 -- /:$no_statements_recovery:/
@@ -693,6 +693,10 @@ MethodBody ::= NestedMethod '{' BlockStatementsopt '}'
 NestedMethod ::= $empty
 /.$putCase consumeNestedMethod(); $break ./
 /:$readableName NestedMethod:/
+
+PostDoc ::= $empty
+/.$putCase consumePostDoc(); $break ./
+/:$readableName PostDoc:/
 
 --18.8.4 Productions from 8.5: Static Initializers
 

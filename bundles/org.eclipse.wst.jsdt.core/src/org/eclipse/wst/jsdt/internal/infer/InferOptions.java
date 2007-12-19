@@ -18,7 +18,11 @@ public class InferOptions {
 	public static final String OPTION_UseAssignments = "org.eclipse.wst.jsdt.core.infer.useAssignments"; //$NON-NLS-1$
 	public static final String OPTION_UseInitMethod = "org.eclipse.wst.jsdt.core.infer.useInitMethod"; //$NON-NLS-1$
 	public static final String OPTION_SaveArgumentComments = "org.eclipse.wst.jsdt.core.infer.saveArgumentComments"; //$NON-NLS-1$
+	public static final String OPTION_DocLocation = "org.eclipse.wst.jsdt.core.infer.docLocation"; //$NON-NLS-1$
 
+	
+	public static final int DOC_LOCATION_BEFORE=1;
+	public static final int DOC_LOCATION_AFTER=2;
 
 
 	// tags used to recognize tasks in comments
@@ -29,6 +33,8 @@ public class InferOptions {
 	public boolean useInitMethod;
 	public String engineClass;
     public boolean saveArgumentComments;
+    public int docLocation=DOC_LOCATION_BEFORE;
+    
 	
 	
 
@@ -62,6 +68,7 @@ public class InferOptions {
 		optionsMap.put(OPTION_UseAssignments, this.useAssignments ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
 		optionsMap.put(OPTION_UseInitMethod, this.useInitMethod ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
 		optionsMap.put(OPTION_SaveArgumentComments, this.saveArgumentComments ? "true":"false"); //$NON-NLS-1$ //$NON-NLS-2$
+		optionsMap.put(OPTION_DocLocation, String.valueOf(this.docLocation)); //$NON-NLS-1$ //$NON-NLS-2$
 		return optionsMap;
 	}
 
@@ -77,6 +84,9 @@ public class InferOptions {
 		}	
 		if ((optionValue = optionsMap.get(OPTION_SaveArgumentComments)) != null) {
 			this.saveArgumentComments="true".equals(optionValue) ; //$NON-NLS-1$
+		}
+		if ((optionValue = optionsMap.get(OPTION_DocLocation)) != null) {
+			this.docLocation=   Integer.parseInt((String)optionValue) ; //$NON-NLS-1$
 		}
 	}
 

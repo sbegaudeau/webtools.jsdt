@@ -7,5 +7,6 @@ public  class BuiltInHelper {
 	public static void initializeBuiltinObjects(InterpreterContext context)
 	{
 		BuiltInObject.initializeContext(context);
+		BuiltInString.initializeContext(context);
 	}
 }

@@ -25,7 +25,14 @@ public class ObjectValue extends Value implements ValueReference {
 		properties.put(name, value);
 	}
 
-
+	public  String stringValue() 
+	{
+		Value value = (Value)properties.get(VALUE_ARR);
+		if (value!=null)
+			return value.stringValue();
+		return ""; //$NON-NLS-1$
+	}
+	
 	public ObjectValue getObjectValue()
 	{
 		return this;

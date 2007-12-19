@@ -38,6 +38,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.WhileStatement;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
+import org.eclipse.wst.jsdt.internal.core.interpret.builtin.BuiltInString;
 
 public class InterpreterEngine extends ASTVisitor implements Contants{
 
@@ -117,13 +118,24 @@ public class InterpreterEngine extends ASTVisitor implements Contants{
 			case UNDEFINED:
 				throw new InterpretException("null reference"); //$NON-NLS-1$
 			case BOOLEAN:
-			case NUMBER:
-			case STRING:
+			{
 				ObjectValue obj= new ObjectValue();
-						obj.setValue(VALUE_ARR,this);
+				obj.setValue(VALUE_ARR,this);
+				return obj;
+			}
+			case NUMBER:
+			{
+				ObjectValue obj= new ObjectValue();
+				obj.setValue(VALUE_ARR,this);
+				return obj;
+			}
+			case STRING:
+			{
+						ObjectValue obj= new ObjectValue(BuiltInString.prototype);
+						obj.setValue(VALUE_ARR,new StringValue(this.stringValue()));
 						return obj;
 			}
-				
+			}	
 			throw new UnimplementedException();
 		
 		

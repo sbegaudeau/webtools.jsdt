@@ -35,6 +35,7 @@ public class InferredType extends ASTNode {
 	public ClassScope scope;
 	ReferenceBinding resolvedSuperType;
 
+	public boolean isArray=false;
 	public boolean isAnonymous=false;
 
 
