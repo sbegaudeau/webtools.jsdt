@@ -103,7 +103,7 @@ public void complainIfUnusedExceptionHandlers(BlockScope scope,TryStatement tryS
 		if ((this.isReached[cacheIndex] & bitMask) == 0) {
 			scope.problemReporter().unreachableCatchBlock(
 				this.handledExceptions[index],
-				tryStatement.catchArguments[index].type);
+				tryStatement.catchArguments[index] );
 		} else {
 			if ((this.isNeeded[cacheIndex] & bitMask) == 0) {
 				scope.problemReporter().hiddenCatchBlock(

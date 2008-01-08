@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
@@ -110,8 +111,9 @@ public class Argument extends LocalDeclaration {
 		// provide the scope with a side effect : insertion of a LOCAL
 		// that represents the argument. The type must be from JavaThrowable
 
+		ReferenceBinding javaLangError = scope.getJavaLangError();
 		TypeBinding exceptionType = this.type!=null ?
-			this.type.resolveType(scope, true /* check bounds*/) : TypeBinding.UNKNOWN;
+			this.type.resolveType(scope, true /* check bounds*/) : javaLangError;
 		if (exceptionType == null) return null;
 		boolean hasError = false;
 		if (exceptionType.isBoundParameterizedType()) {
@@ -129,7 +131,7 @@ public class Argument extends LocalDeclaration {
 			hasError = true;
 			// fall thru to create the variable - avoids additional errors because the variable is missing
 		}
-		if ( !(exceptionType==TypeBinding.ANY || exceptionType==TypeBinding.UNKNOWN) && exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
+		if ( !(exceptionType==javaLangError) && exceptionType.findSuperTypeErasingTo(TypeIds.T_JavaLangThrowable, true) == null) {
 			scope.problemReporter().cannotThrowType(this.type, exceptionType);
 			hasError = true;
 			// fall thru to create the variable - avoids additional errors because the variable is missing

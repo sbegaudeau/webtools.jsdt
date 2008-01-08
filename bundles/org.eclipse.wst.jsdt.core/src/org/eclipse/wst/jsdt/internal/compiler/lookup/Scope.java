@@ -2527,6 +2527,13 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		unitScope.recordQualifiedReference(JAVA_LANG_THROWABLE);
 		return unitScope.environment.getResolvedType(JAVA_LANG_THROWABLE, this);
 	}
+	
+	public final ReferenceBinding getJavaLangError() {
+		CompilationUnitScope unitScope = compilationUnitScope();
+		unitScope.recordQualifiedReference(ERROR);
+		return unitScope.environment.getResolvedType(ERROR, this);
+	}
+	
 	public final ReferenceBinding getJavaLangRegExp() {
 		CompilationUnitScope unitScope = compilationUnitScope();
 		unitScope.recordQualifiedReference(REGEXP);

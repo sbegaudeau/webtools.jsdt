@@ -99,6 +99,7 @@ public interface TypeConstants {
 	char[][] BOOLEAN_OBJECT = {/*JAVA, LANG, */SYSTEMJS,  "Boolean".toCharArray()}; //$NON-NLS-1$
 	char[][] ARRAY = {/*JAVA, LANG, */SYSTEMJS,  "Array".toCharArray()}; //$NON-NLS-1$
 	char[][] REGEXP = {/*JAVA, LANG, */SYSTEMJS,  "RegExp".toCharArray()}; //$NON-NLS-1$
+	char[][] ERROR = {/*JAVA, LANG, */SYSTEMJS,  "Error".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_STRINGBUFFER = {JAVA, LANG, "StringBuffer".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_STRINGBUILDER = {JAVA, LANG, "StringBuilder".toCharArray()}; //$NON-NLS-1$
 	char[][] JAVA_LANG_SYSTEM = {JAVA, LANG, "System".toCharArray()}; //$NON-NLS-1$

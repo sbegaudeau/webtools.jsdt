@@ -417,14 +417,14 @@ public void computeId() {
 //					else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_DEPRECATED[2]))
 //						this.id = TypeIds.T_JavaLangDeprecated;
 //					return;
-//				case 'E' :
-//					if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ERROR[2]))
-//						this.id = TypeIds.T_JavaLangError;
+				case 'E' :
+					if (CharOperation.equals(typeName, TypeConstants.ERROR[1]))
+						this.id = TypeIds.T_JavaLangError;
 //					else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_EXCEPTION[2]))
 //						this.id = TypeIds.T_JavaLangException;
 //					else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_ENUM[2]))
 //						this.id = TypeIds.T_JavaLangEnum;
-//					return;
+					return;
 				case 'F' :
 					if (CharOperation.equals(typeName, TypeConstants.FUNCTION[1]))
 						this.id = TypeIds.T_function;
