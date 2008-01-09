@@ -48,6 +48,7 @@ import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.navigator.ContainerFolder;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.WorkingSetModel;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
+import org.eclipse.wst.jsdt.ui.ProjectLibraryRoot;
 import org.eclipse.wst.jsdt.ui.StandardJavaElementContentProvider;
  
 /**
@@ -262,7 +263,11 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 			}
 			if (parentElement instanceof PackageFragmentRootContainer)
 				return getContainerPackageFragmentRoots((PackageFragmentRootContainer)parentElement, true);
-				
+			
+			if(parentElement instanceof ProjectLibraryRoot) {
+				return ((ProjectLibraryRoot)parentElement).getChildren();
+			}
+			
 			if (parentElement instanceof IProject) 
 				return ((IProject)parentElement).members();
 			
@@ -337,7 +342,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		List result= new ArrayList();
 
 		boolean addJARContainer= false;
-		
+		ArrayList projectPackageFragmentRoots  = new ArrayList();
 		IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
 		for (int i= 0; i < roots.length; i++) {
 			IPackageFragmentRoot root= roots[i];
@@ -345,8 +350,9 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			int entryKind= classpathEntry.getEntryKind();
 			if (entryKind == IClasspathEntry.CPE_CONTAINER) {
 				// all ClassPathContainers are added later 
-			} else if (fShowLibrariesNode && (entryKind == IClasspathEntry.CPE_LIBRARY || entryKind == IClasspathEntry.CPE_VARIABLE)) {
+			} else if (fShowLibrariesNode && (entryKind != IClasspathEntry.CPE_SOURCE) && entryKind!=IClasspathEntry.CPE_CONTAINER) {
 				addJARContainer= true;
+				projectPackageFragmentRoots.add(root);
 			} else {
 				if (isProjectPackageFragmentRoot(root)) {
 					// filter out package fragments that correspond to projects and
@@ -362,7 +368,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		}
 		
 		if (addJARContainer) {
-			result.add(new LibraryContainer(project));
+			projectPackageFragmentRoots.add(new LibraryContainer(project));
 		}
 		
 		// separate loop to make sure all containers are on the classpath
@@ -370,13 +376,15 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		for (int i= 0; i < rawClasspath.length; i++) {
 			IClasspathEntry classpathEntry= rawClasspath[i];
 			if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-				result.add(new ClassPathContainer(project, classpathEntry));
+				projectPackageFragmentRoots.add(new ClassPathContainer(project, classpathEntry));
 			}	
 		}	
 		Object[] resources= project.getNonJavaResources();
 		for (int i= 0; i < resources.length; i++) {
 			result.add(resources[i]);
 		}
+		ProjectLibraryRoot projectLibs = new ProjectLibraryRoot(project,projectPackageFragmentRoots.toArray());
+		result.add(projectLibs);
 		return result.toArray();
 	}
 //	private Object[] getContainerPackageFragmentRoots3(PackageFragmentRootContainer container) {
