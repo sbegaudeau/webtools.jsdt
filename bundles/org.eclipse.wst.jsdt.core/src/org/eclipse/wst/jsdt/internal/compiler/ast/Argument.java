@@ -139,11 +139,11 @@ public class Argument extends LocalDeclaration {
 
 		Binding existingVariable = scope.getBinding(name, Binding.VARIABLE, this, false /*do not resolve hidden field*/);
 		if (existingVariable != null && existingVariable.isValidBinding()){
-			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
-				scope.problemReporter().redefineArgument(this);
-			} else {
+//			if (existingVariable instanceof LocalVariableBinding && this.hiddenVariableDepth == 0) {
+//				scope.problemReporter().redefineArgument(this);
+//			} else {
 				scope.problemReporter().localVariableHiding(this, existingVariable, false);
-			}
+//			}
 		}
 
 		this.binding = new LocalVariableBinding(this, exceptionType, modifiers, false); // argument decl, but local var  (where isArgument = false)
