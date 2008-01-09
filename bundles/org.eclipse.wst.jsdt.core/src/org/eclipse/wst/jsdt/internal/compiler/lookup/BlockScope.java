@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     David Thompson = bug 214171 -Class cast exception
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
@@ -305,7 +306,9 @@ public void emulateOuterAccess(LocalVariableBinding outerLocalVariable) {
 	if (outerVariableScope == null)
 		return; // no need to further emulate as already inserted (val$this$0)
 	MethodScope currentMethodScope = this.methodScope();
-	if (outerVariableScope.methodScope() != currentMethodScope) {
+	if (outerVariableScope.methodScope() != currentMethodScope &&
+			 this.enclosingSourceType() instanceof
+			NestedTypeBinding) {
 		NestedTypeBinding currentType = (NestedTypeBinding) this.enclosingSourceType();
 
 		//do nothing for member types, pre emulation was performed already
