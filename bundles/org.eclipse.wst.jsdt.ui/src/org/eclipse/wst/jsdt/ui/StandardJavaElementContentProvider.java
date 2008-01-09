@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJarEntryResource;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -36,8 +35,6 @@ import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
-import org.eclipse.wst.jsdt.internal.ui.packageview.LibraryContainer;
  
 /**
  * A base content provider for Java elements. It provides access to the
@@ -170,27 +167,6 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 	/* (non-Javadoc)
 	 * Method declared on ITreeContentProvider.
 	 */
-	
-	
-	public Object[] getProjectFilesAndLibEntry(IJavaProject project) {
-		
-		ArrayList result = new ArrayList();
-		result.add(new ProjectLibraryRoot(project));
-		Object[] resources = new Object[0];
-		try {
-			resources = project.getNonJavaResources();
-		}
-		catch (JavaModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for (int i= 0; i < resources.length; i++) {
-			result.add(resources[i]);
-		}
-		return result.toArray();
-		
-	}
-	
 	public Object[] getChildren(Object element) {
 		if (!exists(element))
 			return NO_CHILDREN;
@@ -200,12 +176,7 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 				return getJavaProjects((IJavaModel)element);
 			
 			if (element instanceof IJavaProject) 
-				return getProjectFilesAndLibEntry((IJavaProject)element);
-				//return getPackageFragmentRoots((IJavaProject)element);
-			
-			if(element instanceof ProjectLibraryRoot) {
-				return getLibraries(((ProjectLibraryRoot)element).getProject());
-			}
+				return getPackageFragmentRoots((IJavaProject)element);
 			
 			if (element instanceof IPackageFragmentRoot) 
 				return getPackageFragmentRootContent((IPackageFragmentRoot)element);
@@ -382,57 +353,6 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 		return list.toArray();
 	}
 
-	protected Object[] getLibraries(IJavaProject project) throws JavaModelException {
-		
-	//	if(true) return getPackageFragmentRoots(project);
-		
-		if (!project.getProject().isOpen())
-			return NO_CHILDREN;
-			
-		List result= new ArrayList();
-
-		boolean addJARContainer= false;
-		
-		IPackageFragmentRoot[] roots= project.getPackageFragmentRoots();
-		for (int i= 0; i < roots.length; i++) {
-			IPackageFragmentRoot root= roots[i];
-			IClasspathEntry classpathEntry= root.getRawClasspathEntry();
-			int entryKind= classpathEntry.getEntryKind();
-			if (entryKind == IClasspathEntry.CPE_CONTAINER) {
-				// all ClassPathContainers are added later 
-			} //else if (fShowLibrariesNode && (entryKind == IClasspathEntry.CPE_LIBRARY || entryKind == IClasspathEntry.CPE_VARIABLE)) {
-				//addJARContainer= true;
-			//} 
-			else {
-				if (isProjectPackageFragmentRoot(root)) {
-					// filter out package fragments that correspond to projects and
-					// replace them with the package fragments directly
-					Object[] fragments= getPackageFragmentRootContent(root);
-					for (int j= 0; j < fragments.length; j++) {
-						result.add(fragments[j]);
-					}
-				} else {
-					result.add(root);
-				}
-			}
-		}
-		
-		if (addJARContainer) {
-			result.add(new LibraryContainer(project));
-		}
-		
-		// separate loop to make sure all containers are on the classpath
-		IClasspathEntry[] rawClasspath= project.getRawClasspath();
-		for (int i= 0; i < rawClasspath.length; i++) {
-			IClasspathEntry classpathEntry= rawClasspath[i];
-			if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-				result.add(new ClassPathContainer(project, classpathEntry));
-			}	
-		}	
-
-		return result.toArray();
-	}
-	
 	/**
 	 * Note: This method is for internal use only. Clients should not call this method.
 	 */
