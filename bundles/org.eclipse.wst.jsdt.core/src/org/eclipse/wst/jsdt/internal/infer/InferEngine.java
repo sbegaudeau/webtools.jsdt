@@ -390,6 +390,12 @@ public class InferEngine extends ASTVisitor {
 					int nameStart=(int)(fRef.nameSourcePosition>>>32);
 
 					InferredType receiverType = getInferredType( fRef.receiver );
+					if (receiverType==null)
+					{
+					  MethodDeclaration function = getDefinedFunction(fRef.receiver);
+					  if (function!=null)
+						  receiverType=addType(constructTypeName(fRef.receiver));
+					}
 					if (receiverType==null && this.passNumber==2)
 						  receiverType=getInferredType2(fRef.receiver );
 
