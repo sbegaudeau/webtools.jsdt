@@ -619,6 +619,25 @@ public class InferTypesTests extends AbstractRegressionTest {
 			 );
 		}
 
+
+		/*
+		 * only statics
+		 */
+		public void test075b() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"function x(){};" +
+				"x.foo = \"\";" +
+				"x.bar = function(){" +
+				"  return \"\";" +
+				"}",
+				"X.js",
+				"class x extends Object{\n  static String foo;\n  static String bar()\n  x()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+
+		
 		
 		/*
 		 * Global Object mixin
