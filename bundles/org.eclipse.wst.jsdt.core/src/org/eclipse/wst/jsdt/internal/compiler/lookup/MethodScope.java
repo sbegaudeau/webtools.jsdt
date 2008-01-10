@@ -331,6 +331,8 @@ public class MethodScope extends BlockScope {
 			else	// not local method
 				methodBinding =
 					new MethodBinding(modifiers, name,returnType, null, null, declaringClass);
+			if (method.inferredMethod!=null && method.inferredMethod.isConstructor)
+				methodBinding.tagBits|=TagBits.IsConstructor;
 			checkAndSetModifiersForMethod(methodBinding);
 		}
 		this.isStatic =methodBinding.isStatic();

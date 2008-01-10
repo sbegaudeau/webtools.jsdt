@@ -417,10 +417,28 @@ public TypeBinding resolveType(BlockScope scope) {
 	if (selector==null)
 		this.binding=new IndirectMethodBinding(0,this.actualReceiverType,argumentTypes,scope.compilationUnitScope().referenceContext.compilationUnitBinding);
 	else
-		this.binding =
-			receiver==null || receiver.isImplicitThis()
-				? scope.getImplicitMethod(selector, argumentTypes, this)
-						: scope.getMethod(this.actualReceiverType, selector, argumentTypes, this);
+	{
+		if (receiver==null || receiver.isImplicitThis())
+			this.binding =scope.getImplicitMethod(selector, argumentTypes, this);
+		else
+		{
+			this.binding =scope.getMethod(this.actualReceiverType, selector, argumentTypes, this);
+			//  if receiver type was function, try using binding from receiver
+			if (!binding.isValidBinding() && scope.getJavaLangFunction().equals(this.actualReceiverType))
+			{
+			   Binding alternateBinding = receiver.alternateBinding();
+			   if (alternateBinding instanceof MethodBinding && ((MethodBinding)alternateBinding).isConstructor())
+			   {
+				   MethodBinding constructorBinding=(MethodBinding)alternateBinding;
+				   this.actualReceiverType=constructorBinding.returnType;
+				   this.binding=scope.getMethod(this.actualReceiverType, selector, argumentTypes, this);
+				   receiverIsType=true;
+			   }
+			}
+		
+		}
+	}
+
 	if (!binding.isValidBinding() && !(this.actualReceiverType==TypeBinding.ANY || this.actualReceiverType==TypeBinding.UNKNOWN)) {
 		if (binding.declaringClass == null) {
 			if (this.actualReceiverType==null || this.actualReceiverType instanceof ReferenceBinding) {

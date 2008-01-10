@@ -110,4 +110,5 @@ public interface TagBits {
 
 	// set when type contains non-private constructor(s)
 	long HasNonPrivateConstructor = ASTNode.Bit53L;
+	long IsConstructor = ASTNode.Bit54L;
 }

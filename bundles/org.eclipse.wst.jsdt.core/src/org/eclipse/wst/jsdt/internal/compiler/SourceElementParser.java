@@ -1263,6 +1263,8 @@ public void notifySourceElementRequestor( InferredType type ) {
 		fieldInfo.name = field.name;
 		fieldInfo.modifiers = 0;
 
+		if (field.isStatic)
+			fieldInfo.modifiers |= ClassFileConstants.AccStatic;
 		fieldInfo.nameSourceStart = field.nameStart;
 		fieldInfo.nameSourceEnd = field.nameStart+field.name.length-1;
 
@@ -1306,6 +1308,8 @@ public void notifySourceElementRequestor( InferredType type ) {
 
 		methodInfo.declarationStart = methodDeclaration.declarationSourceStart;
 		methodInfo.modifiers = 0;
+		if (method.isStatic)
+			methodInfo.modifiers |= ClassFileConstants.AccStatic;
 		methodInfo.name =method.name;
 		methodInfo.nameSourceStart = method.nameStart;
 		methodInfo.nameSourceEnd = method.nameStart+method.name.length-1;

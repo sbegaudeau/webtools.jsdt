@@ -1074,4 +1074,7 @@ public void markAsNonNull() {
 	{
 		return false;
 	}
+	
+	protected Binding alternateBinding()
+	{ return null;}
 }

@@ -29,6 +29,7 @@ public class MethodBinding extends Binding {
 	public TypeVariableBinding[] typeVariables = Binding.NO_TYPE_VARIABLES;
 	char[] signature;
 	public long tagBits;
+	
 
 protected MethodBinding() {
 	// for creating problem or synthetic method
@@ -523,7 +524,7 @@ public final boolean isBridge() {
 /* Answer true if the receiver is a constructor
 */
 public final boolean isConstructor() {
-	return selector == TypeConstants.INIT;
+	return (selector == TypeConstants.INIT || (this.tagBits&=TagBits.IsConstructor)!=0);
 }
 
 /* Answer true if the receiver has default visibility

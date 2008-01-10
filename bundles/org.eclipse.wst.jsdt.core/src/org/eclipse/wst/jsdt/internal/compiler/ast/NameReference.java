@@ -65,4 +65,10 @@ public void setFieldIndex(int index){
 }
 
 public abstract String unboundReferenceErrorName();
+
+protected Binding alternateBinding()
+{ return binding;}
+
 }
+
+
