@@ -67,7 +67,7 @@ public void setFieldIndex(int index){
 
 public abstract String unboundReferenceErrorName();
 
-protected Binding alternateBinding()
+public Binding alternateBinding()
 {
 	   Binding alternateBinding = binding;
 	   if (alternateBinding instanceof MethodBinding && ((MethodBinding)alternateBinding).isConstructor())

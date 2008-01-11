@@ -31,9 +31,11 @@ package org.eclipse.wst.jsdt.internal.codeassist.complete;
  * which should be replaced by the completion.
  */
 
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnSingleNameReference extends SingleNameReference {
@@ -66,6 +68,9 @@ public class CompletionOnSingleNameReference extends SingleNameReference {
 		throw new CompletionNodeFound(this, scope);
 	}
 
+	public TypeBinding resolveForAllocation(Scope scope, ASTNode location) {
+		throw new CompletionNodeFound(this, scope);
+	}	
 	public boolean isSpecialNode()
 	{
 		return true;

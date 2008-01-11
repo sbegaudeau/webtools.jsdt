@@ -915,4 +915,21 @@ public int nullStatus(FlowInfo flowInfo) {
 
 		return new String(token);
 	}
+	
+	public TypeBinding resolveForAllocation(Scope scope, ASTNode location)
+	{
+		char[] memberName = this.token;
+		TypeBinding typeBinding=null;
+		this.binding=	
+				scope.getBinding(memberName, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
+		if (binding instanceof TypeBinding)
+			typeBinding=(TypeBinding)binding;
+		else if (binding instanceof MethodBinding)
+			typeBinding=((MethodBinding)binding).returnType;
+		else if (binding!=null && !binding.isValidBinding())
+		{
+			scope.problemReporter().invalidType(location, new ProblemReferenceBinding(memberName,null,binding.problemId()));
+		}
+		return typeBinding;
+	}
 }

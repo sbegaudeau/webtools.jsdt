@@ -25,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
@@ -253,17 +252,7 @@ public TypeBinding resolveType(BlockScope scope) {
 		// initialization of an enum constant
 		if (this.member instanceof SingleNameReference)
 		{
-			char[] memberName = ((SingleNameReference)this.member).token;
-			Binding binding=	
-					scope.getBinding(memberName, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
-			if (binding instanceof TypeBinding)
-				this.resolvedType=(TypeBinding)binding;
-			else if (binding instanceof MethodBinding)
-				this.resolvedType=((MethodBinding)binding).returnType;
-			else if (binding!=null && !binding.isValidBinding())
-			{
-				scope.problemReporter().invalidType(this, new ProblemReferenceBinding(memberName,null,binding.problemId()));
-			}
+			this.resolvedType=((SingleNameReference)this.member).resolveForAllocation(scope, this);
 
 		}
 		else

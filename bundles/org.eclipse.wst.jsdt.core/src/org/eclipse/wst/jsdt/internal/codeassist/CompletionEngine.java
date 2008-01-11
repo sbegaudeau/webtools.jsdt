@@ -1562,7 +1562,7 @@ public final class CompletionEngine
 				setSourceRange((int) (completionPosition >>> 32), (int) completionPosition);
 				TypeBinding receiverType = ((VariableBinding) qualifiedBinding).type;
 				if (receiverType != null) {
-					findFieldsAndMethods(this.completionToken, receiverType.capture(scope, ref.sourceEnd), scope, ref, scope,false,false, null, null, null, false);
+					findFieldsAndMethods(this.completionToken, receiverType.capture(scope, ref.sourceEnd), scope, ref, scope,false,false,false, null, null, null, false);
 				} else if (this.assistNodeInJavadoc == 0 &&
 						(this.requestor.isAllowingRequiredProposals(CompletionProposal.FIELD_REF, CompletionProposal.TYPE_REF) ||
 								this.requestor.isAllowingRequiredProposals(CompletionProposal.METHOD_REF, CompletionProposal.TYPE_REF))) {
@@ -1799,6 +1799,7 @@ public final class CompletionEngine
 						scope,
 						access,
 						scope,
+						access.isStatic,
 						false,
 						access.receiver instanceof SuperReference,
 						null,
@@ -3803,6 +3804,7 @@ public final class CompletionEngine
 		Scope scope,
 		InvocationSite invocationSite,
 		Scope invocationScope,
+		boolean staticsOnly,
 		boolean implicitCall,
 		boolean superCall,
 		Binding[] missingElements,
@@ -3950,7 +3952,7 @@ public final class CompletionEngine
 				scope,
 				new ObjectVector(),
 				new ObjectVector(),
-				false,
+				staticsOnly,
 				invocationSite,
 				invocationScope,
 				implicitCall,
@@ -3969,7 +3971,7 @@ public final class CompletionEngine
 				(ReferenceBinding) receiverType,
 				scope,
 				methodsFound,
-				false,
+				staticsOnly,
 				false,
 				false,
 				invocationSite,
@@ -4214,6 +4216,7 @@ public final class CompletionEngine
 						scope,
 						invocationSite,
 						invocationScope,
+						false,
 						false,
 						false,
 						missingElements,
@@ -7566,6 +7569,7 @@ public final class CompletionEngine
 
 							if (local == null)
 								break next;
+							
 
 							if (tokenLength > local.name.length)
 								continue next;

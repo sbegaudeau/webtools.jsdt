@@ -36,6 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
@@ -44,6 +45,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class CompletionOnMemberAccess extends FieldReference {
 
 	public boolean isInsideAnnotation;
+	public boolean isStatic;
 
 	public CompletionOnMemberAccess(char[] source, long pos, boolean isInsideAnnotation) {
 
@@ -60,6 +62,15 @@ public class CompletionOnMemberAccess extends FieldReference {
 	public TypeBinding resolveType(BlockScope scope) {
 
 		this.receiverType = receiver.resolveType(scope);
+		if (scope.getJavaLangFunction().equals(this.receiverType))
+		{
+			Binding typeBinding = receiver.alternateBinding();
+			if (typeBinding instanceof TypeBinding)
+			{
+				this.receiverType=(TypeBinding)typeBinding;
+				isStatic=true;
+			}
+		}
 
 		if (this.receiverType == null && receiver instanceof MessageSend) {
 			MessageSend messageSend = (MessageSend) receiver;

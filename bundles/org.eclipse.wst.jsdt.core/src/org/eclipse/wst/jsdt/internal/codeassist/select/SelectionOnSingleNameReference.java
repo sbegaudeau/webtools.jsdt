@@ -29,13 +29,16 @@ package org.eclipse.wst.jsdt.internal.codeassist.select;
  *
  */
 
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class SelectionOnSingleNameReference extends SingleNameReference {
@@ -75,6 +78,35 @@ public TypeBinding resolveType(BlockScope scope) {
 
 	throw new SelectionNodeFound(binding);
 }
+
+public TypeBinding resolveForAllocation(Scope scope, ASTNode location) {
+	TypeBinding typeBinding=null;
+	this.binding=	
+			scope.getBinding(this.token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);
+	if (binding instanceof TypeBinding)
+		typeBinding=(TypeBinding)binding;
+	else if (binding instanceof MethodBinding)
+		typeBinding=((MethodBinding)binding).returnType;
+	else
+		if (typeBinding==null || binding==null)
+			throw new SelectionNodeFound();
+		else if (!binding.isValidBinding()){
+			switch (binding.problemId() ) {
+			case ProblemReasons.NotVisible:
+			case ProblemReasons.InheritedNameHidesEnclosingName:
+			case ProblemReasons.NonStaticReferenceInConstructorInvocation:
+			case ProblemReasons.NonStaticReferenceInStaticContext:
+				throw new SelectionNodeFound(typeBinding);
+
+			default:
+				throw new SelectionNodeFound();
+			}
+//			!binding.isValidBinding())
+		}
+
+	throw new SelectionNodeFound(typeBinding);
+}
+
 public StringBuffer printExpression(int indent, StringBuffer output) {
 	output.append("<SelectOnName:"); //$NON-NLS-1$
 	return super.printExpression(0, output).append('>');
