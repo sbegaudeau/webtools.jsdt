@@ -587,6 +587,19 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	 * or field. We are trying to mimic that property below (Java does have a distinction)
 	 */
 	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
+	boolean receiverIsType=   receiver instanceof NameReference && ( ((NameReference) receiver).bits & Binding.TYPE) != 0;
+	if (!memberBinding.isValidBinding() && scope.getJavaLangFunction().equals(this.receiverType))
+	{
+		   Binding alternateBinding = receiver.alternateBinding();
+		   if (alternateBinding instanceof TypeBinding)
+		   {
+			   this.receiverType=(TypeBinding)alternateBinding;
+				memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
+				receiverIsType=true;
+		   }
+	}
+			
+	
 	//FieldBinding fieldBinding = this.codegenBinding = this.binding = scope.getField(this.receiverType, token, this);
 
 	constant = Constant.NotAConstant;
@@ -626,7 +639,8 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 			// static field accessed through receiver? legal but unoptimal (optional warning)
 			if (!(isImplicitThisRcv
 					|| (receiver instanceof NameReference
-						&& (((NameReference) receiver).bits & Binding.TYPE) != 0))) {
+						&& receiverIsType
+						))) {
 				scope.problemReporter().nonStaticAccessToStaticField(this, fieldBinding);
 			}
 			if (!isImplicitThisRcv

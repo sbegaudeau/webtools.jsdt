@@ -427,10 +427,9 @@ public TypeBinding resolveType(BlockScope scope) {
 			if (!binding.isValidBinding() && scope.getJavaLangFunction().equals(this.actualReceiverType))
 			{
 			   Binding alternateBinding = receiver.alternateBinding();
-			   if (alternateBinding instanceof MethodBinding && ((MethodBinding)alternateBinding).isConstructor())
+			   if (alternateBinding instanceof TypeBinding)
 			   {
-				   MethodBinding constructorBinding=(MethodBinding)alternateBinding;
-				   this.actualReceiverType=constructorBinding.returnType;
+				   this.actualReceiverType=(TypeBinding)alternateBinding;
 				   this.binding=scope.getMethod(this.actualReceiverType, selector, argumentTypes, this);
 				   receiverIsType=true;
 			   }

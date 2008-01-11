@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
@@ -67,7 +68,18 @@ public void setFieldIndex(int index){
 public abstract String unboundReferenceErrorName();
 
 protected Binding alternateBinding()
-{ return binding;}
+{
+	   Binding alternateBinding = binding;
+	   if (alternateBinding instanceof MethodBinding && ((MethodBinding)alternateBinding).isConstructor())
+	   {
+		   MethodBinding constructorBinding=(MethodBinding)alternateBinding;
+		   alternateBinding=constructorBinding.returnType;
+	   }
+	
+	return alternateBinding;
+
+
+}
 
 }
 
