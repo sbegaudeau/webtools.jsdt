@@ -383,7 +383,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		for (int i= 0; i < resources.length; i++) {
 			result.add(resources[i]);
 		}
-		ProjectLibraryRoot projectLibs = new ProjectLibraryRoot(project,projectPackageFragmentRoots.toArray());
+		ProjectLibraryRoot projectLibs = new ProjectLibraryRoot(project);
 		result.add(0,projectLibs);
 		return result.toArray();
 	}

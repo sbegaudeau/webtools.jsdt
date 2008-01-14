@@ -259,8 +259,20 @@ public class StandardJavaElementContentProvider implements ITreeContentProvider,
 	public boolean hasChildren(Object element) {
 		if (getProvideMembers()) {
 			// assume CUs and class files are never empty
-			if (element instanceof ICompilationUnit ||
-				element instanceof IClassFile) {
+			if (element instanceof ICompilationUnit ||	element instanceof IClassFile) {
+				try {
+					if(element instanceof ICompilationUnit ) {
+						ICompilationUnit cu = (ICompilationUnit)element;
+						return cu.hasChildren();
+					}else if(element instanceof IClassFile) {
+						IClassFile cf = (IClassFile)element;
+						return cf.hasChildren();
+					}
+				}catch(JavaModelException ex) {
+					return false;
+				}
+				
+				
 				return true;
 			}
 		} else {

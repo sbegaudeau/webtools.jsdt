@@ -26,7 +26,6 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -300,17 +299,17 @@ public class JavaElementImageProvider {
 //	}
 //	
 	protected ImageDescriptor getPackageFragmentIcon(IJavaElement element, int renderFlags) throws JavaModelException {
-		IPackageFragment fragment= (IPackageFragment)element;
-		boolean containsJavaElements= false;
-		try {
-			containsJavaElements= fragment.hasChildren();
-		} catch(JavaModelException e) {
-			// assuming no children;
-		}
-		if(!containsJavaElements && (fragment.getNonJavaResources().length > 0))
-			return JavaPluginImages.DESC_OBJS_EMPTY_PACKAGE_RESOURCES;
-		else if (!containsJavaElements)
-			return JavaPluginImages.DESC_OBJS_EMPTY_PACKAGE;
+//		IPackageFragment fragment= (IPackageFragment)element;
+//		boolean containsJavaElements= false;
+//		try {
+//			containsJavaElements= fragment.hasChildren();
+//		} catch(JavaModelException e) {
+//			// assuming no children;
+//		}
+//		if(!containsJavaElements && (fragment.getNonJavaResources().length > 0))
+//			return JavaPluginImages.DESC_OBJS_EMPTY_PACKAGE_RESOURCES;
+//		else if (!containsJavaElements)
+//			return JavaPluginImages.DESC_OBJS_EMPTY_PACKAGE;
 		return JavaPluginImages.DESC_OBJS_PACKAGE;
 	}
 	

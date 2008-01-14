@@ -3,11 +3,19 @@
  */
 package org.eclipse.wst.jsdt.ui;
 
+import java.util.ArrayList;
+
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.LibraryContainer;
 
 /**
  * @author childsb
@@ -17,7 +25,7 @@ public class ProjectLibraryRoot implements IAdaptable{
 	
 	private IJavaProject project;
 	private static final String LIBRARY_UI_DESC = "JavaScript Global Scope Libraries";
-	private Object[] children;
+
 	
 	public static final class WorkBenchAdapter implements IWorkbenchAdapter{
 
@@ -26,7 +34,8 @@ public class ProjectLibraryRoot implements IAdaptable{
 		 */
 		public Object[] getChildren(Object o) {
 			
-		 if(o instanceof ProjectLibraryRoot) return ((ProjectLibraryRoot)o).getChildren();
+		 if(o instanceof ProjectLibraryRoot) 
+			return ((ProjectLibraryRoot)o).getChildren();    		 
 		 return new Object[0];
 		}
 
@@ -58,9 +67,9 @@ public class ProjectLibraryRoot implements IAdaptable{
 		
 	}
 	
-	public ProjectLibraryRoot(IJavaProject project, Object[] children) {
+	public ProjectLibraryRoot(IJavaProject project) {
 		this.project=project;
-		this.children = children;
+	
 	}
 	public IJavaProject getProject() {
 		return project;
@@ -69,7 +78,46 @@ public class ProjectLibraryRoot implements IAdaptable{
 		return "JavaScript Global Scope";
 	}
 	public Object[] getChildren() {
-		return children;
+	     if (!project.getProject().isOpen())
+				return new Object[0];
+			boolean addJARContainer= false;
+			ArrayList projectPackageFragmentRoots  = new ArrayList();
+			IPackageFragmentRoot[] roots = new IPackageFragmentRoot[0];
+			try {
+				roots = project.getPackageFragmentRoots();
+			}
+			catch (JavaModelException e1) {}
+			for (int i= 0; i < roots.length; i++) {
+				IPackageFragmentRoot root= roots[i];
+				IClasspathEntry classpathEntry=null;
+				try {
+					classpathEntry = root.getRawClasspathEntry();
+				}
+				catch (JavaModelException e) {}
+				int entryKind= classpathEntry.getEntryKind();
+			if ( (entryKind != IClasspathEntry.CPE_SOURCE) && entryKind!=IClasspathEntry.CPE_CONTAINER) {
+					addJARContainer= true;
+					projectPackageFragmentRoots.add(root);
+				} 
+			}
+			
+			if (addJARContainer) {
+				projectPackageFragmentRoots.add(new LibraryContainer(project));
+			}
+			
+			// separate loop to make sure all containers are on the classpath
+			IClasspathEntry[] rawClasspath = new IClasspathEntry[0];
+			try {
+				rawClasspath = project.getRawClasspath();
+			}
+			catch (JavaModelException e) {}
+			for (int i= 0; i < rawClasspath.length; i++) {
+				IClasspathEntry classpathEntry= rawClasspath[i];
+				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
+					projectPackageFragmentRoots.add(new ClassPathContainer(project, classpathEntry));
+				}	
+			}	
+		 return projectPackageFragmentRoots.toArray();
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
