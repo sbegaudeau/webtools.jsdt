@@ -1136,10 +1136,22 @@ public void notifySourceElementRequestor(CompilationUnitDeclaration parsedUnit) 
 			requestor.enterCompilationUnit();
 		}
 		char[][] packageName = parsedUnit.compilationResult.getPackageName();
+		
+		
+		/* Start BC ---- Shouldn't need package decleration element, but still may be used elsewhere.  This keeps the packagename out of the UI */
+		/*
 		requestor.acceptPackage(
 				-1,
 				-1,
 				CharOperation.concatWith(packageName, '.'));
+		*/
+		
+		/* --------- END BC -------- */
+		
+		
+		
+		
+		
 //		ImportReference currentPackage = parsedUnit.currentPackage;
 //		ImportReference[] imports = parsedUnit.imports;
 //		TypeDeclaration[] types = parsedUnit.types;

@@ -1153,10 +1153,15 @@ public class JavaProject
 				} else {
 					qualifiedName = typeName;
 				}
-
-				// lookup type
+				// lookup cu
 				NameLookup lookup = newNameLookup(owner);
-				NameLookup.Answer answer = lookup.findType(
+				ICompilationUnit cu = lookup.findCompilationUnit(qualifiedName);
+				if(cu!=null)	return cu;
+				// lookup type
+				
+				
+				NameLookup.Answer answer =
+					lookup.findType(
 					qualifiedName,
 					false,
 					NameLookup.ACCEPT_ALL,
