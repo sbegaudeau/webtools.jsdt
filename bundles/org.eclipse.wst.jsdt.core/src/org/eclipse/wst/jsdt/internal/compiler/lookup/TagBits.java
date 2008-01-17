@@ -111,4 +111,9 @@ public interface TagBits {
 	// set when type contains non-private constructor(s)
 	long HasNonPrivateConstructor = ASTNode.Bit53L;
 	long IsConstructor = ASTNode.Bit54L;
+	
+	long IsInferredJsDocType = ASTNode.Bit55L;
+	long IsInferredType = ASTNode.Bit56L;
+	
+	
 }

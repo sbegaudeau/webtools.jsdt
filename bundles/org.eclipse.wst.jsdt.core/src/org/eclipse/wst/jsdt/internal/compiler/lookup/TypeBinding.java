@@ -984,4 +984,9 @@ public void swapUnresolved(UnresolvedReferenceBinding unresolvedType,
 public TypeVariableBinding[] typeVariables() {
 	return Binding.NO_TYPE_VARIABLES;
 }
+
+public boolean isFunctionType()
+{
+	return false;
+}
 }

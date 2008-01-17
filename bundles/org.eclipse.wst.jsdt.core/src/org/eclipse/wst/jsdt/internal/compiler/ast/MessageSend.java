@@ -423,8 +423,8 @@ public TypeBinding resolveType(BlockScope scope) {
 		else
 		{
 			this.binding =scope.getMethod(this.actualReceiverType, selector, argumentTypes, this);
-			//  if receiver type was function, try using binding from receiver
-			if (!binding.isValidBinding() && scope.getJavaLangFunction().equals(this.actualReceiverType))
+			//  if receiver type was function, try using binding from receiver  
+			if (!binding.isValidBinding() && (this.actualReceiverType!=null && this.actualReceiverType.isFunctionType()))
 			{
 			   Binding alternateBinding = receiver.alternateBinding();
 			   if (alternateBinding instanceof TypeBinding)

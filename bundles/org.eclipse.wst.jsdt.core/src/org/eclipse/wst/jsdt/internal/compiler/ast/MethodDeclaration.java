@@ -95,12 +95,14 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 			}
 			// check for missing returning path
 			TypeBinding returnTypeBinding = binding.returnType;
+			boolean isJsDocInferredReturn = (binding.tagBits&TagBits.IsInferredJsDocType)!=0;
 			if ((returnTypeBinding == TypeBinding.VOID) || isAbstract()) {
 				this.needFreeReturn =
 					(flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0;
 			} else {
 				if (flowInfo != FlowInfo.DEAD_END) {
-					if (this.inferredMethod==null || !this.inferredMethod.isConstructor)
+					if ((this.inferredMethod==null || !this.inferredMethod.isConstructor) &&
+						!isJsDocInferredReturn)
 						scope.problemReporter().shouldReturn(returnTypeBinding, this);
 				}
 			}

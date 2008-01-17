@@ -104,6 +104,10 @@ public final class BaseTypeBinding extends TypeBinding {
 				return (id == TypeIds.T_byte);
 			case TypeIds.T_any :
 				return true;
+			case TypeIds.T_JavaLangString:
+			case TypeIds.T_JavaLangObject:
+			case TypeIds.T_function:
+				return (id==TypeIds.T_null);
 		}
 		return false;
 	}

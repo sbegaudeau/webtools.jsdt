@@ -588,7 +588,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	 */
 	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
 	boolean receiverIsType=   receiver instanceof NameReference && ( ((NameReference) receiver).bits & Binding.TYPE) != 0;
-	if (!memberBinding.isValidBinding() && scope.getJavaLangFunction().equals(this.receiverType))
+	if (!memberBinding.isValidBinding() && (this.receiverType!=null && this.receiverType.isFunctionType()))
 	{
 		   Binding alternateBinding = receiver.alternateBinding();
 		   if (alternateBinding instanceof TypeBinding)

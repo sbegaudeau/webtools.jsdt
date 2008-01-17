@@ -29,6 +29,7 @@ public class MethodBinding extends Binding {
 	public TypeVariableBinding[] typeVariables = Binding.NO_TYPE_VARIABLES;
 	char[] signature;
 	public long tagBits;
+	public FunctionTypeBinding functionTypeBinding;
 	
 
 protected MethodBinding() {
@@ -326,7 +327,8 @@ public char[] computeUniqueKey(boolean isLeaf) {
 	int declaringLength = declaringKey.length;
 
 	// selector
-	int selectorLength = this.selector == TypeConstants.INIT ? 0 : this.selector.length;
+	int selectorLength =  
+		(this.selector == TypeConstants.INIT || this.selector==null) ? 0 : this.selector.length;
 
 	// generic signature
 	char[] sig = genericSignature();
@@ -354,7 +356,8 @@ public char[] computeUniqueKey(boolean isLeaf) {
 	System.arraycopy(declaringKey, 0, uniqueKey, index, declaringLength);
 	index = declaringLength;
 	uniqueKey[index++] = '.';
-	System.arraycopy(this.selector, 0, uniqueKey, index, selectorLength);
+	if (this.selector!=null)
+	  System.arraycopy(this.selector, 0, uniqueKey, index, selectorLength);
 	index += selectorLength;
 	System.arraycopy(sig, 0, uniqueKey, index, signatureLength);
 	if (thrownExceptionsSignatureLength > 0) {
@@ -524,7 +527,7 @@ public final boolean isBridge() {
 /* Answer true if the receiver is a constructor
 */
 public final boolean isConstructor() {
-	return (selector == TypeConstants.INIT || (this.tagBits&=TagBits.IsConstructor)!=0);
+	return (selector == TypeConstants.INIT || (this.tagBits&TagBits.IsConstructor)!=0);
 }
 
 /* Answer true if the receiver has default visibility
@@ -984,5 +987,19 @@ public MethodBinding tiebreakMethod() {
 }
 public TypeVariableBinding[] typeVariables() {
 	return this.typeVariables;
+}
+
+public void createFunctionTypeBinding(Scope scope)
+{
+	functionTypeBinding=new FunctionTypeBinding(this,scope);
+}
+
+public MethodBinding createNamedMethodBinding(char [] name)
+{
+	MethodBinding newBinding=new MethodBinding(this.modifiers,name, this.returnType, this.parameters, this.thrownExceptions, this.declaringClass);
+	newBinding.functionTypeBinding=this.functionTypeBinding;
+	newBinding.tagBits=this.tagBits;
+	newBinding.signature=this.signature;
+	return newBinding;
 }
 }

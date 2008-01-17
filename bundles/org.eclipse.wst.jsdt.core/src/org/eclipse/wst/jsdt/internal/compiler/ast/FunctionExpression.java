@@ -31,8 +31,10 @@ public class FunctionExpression extends Expression {
 	public TypeBinding resolveType(BlockScope scope) {
 		constant = Constant.NotAConstant;
 		this.methodDeclaration.scope=new MethodScope(scope,this.methodDeclaration,false);
+		this.methodDeclaration.binding=this.methodDeclaration.scope.createMethod(this.methodDeclaration, null, scope.enclosingCompilationUnit(), false, false);
+		this.methodDeclaration.binding.createFunctionTypeBinding(scope);
 		this.methodDeclaration.resolve(scope);
-		return scope.getJavaLangFunction();
+		return this.methodDeclaration.binding.functionTypeBinding;
 	}
 
 	public int nullStatus(FlowInfo flowInfo) {

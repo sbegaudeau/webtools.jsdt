@@ -233,6 +233,10 @@ public abstract class ASTNode implements TypeConstants, TypeIds {
 	// for synchronized statement
 	public static final int BlockExit = Bit30;
 
+	// for method decls and var decls
+	public static final int IsInferredType = Bit14;
+	public static final int IsInferredJsDocType = Bit15;
+	
 	// constants used when checking invocation arguments
 	public static final int INVOCATION_ARGUMENT_OK = 0;
 	public static final int INVOCATION_ARGUMENT_UNCHECKED = 1;

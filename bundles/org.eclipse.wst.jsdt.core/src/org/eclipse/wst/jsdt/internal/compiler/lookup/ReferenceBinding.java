@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.lookup;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -1019,6 +1020,8 @@ public boolean isThrowable() {
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#isUncheckedException(boolean)
  */
 public boolean isUncheckedException(boolean includeSupertype) {
+	if (JavaCore.IS_EMCASCRIPT4)	// no checked exceptions for now
+	{
 	switch (this.id) {
 			case TypeIds.T_JavaLangError :
 			case TypeIds.T_JavaLangRuntimeException :
@@ -1039,6 +1042,9 @@ public boolean isUncheckedException(boolean includeSupertype) {
 		}
 	}
 	return false;
+	}
+	else
+		return true;
 }
 /**
  * Answer true if the receiver has private visibility and is used locally

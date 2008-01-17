@@ -1217,6 +1217,7 @@ public MethodBinding getUpdatedMethodBinding(MethodBinding targetMethod, Referen
 	MethodBinding updatedMethod = (MethodBinding) methodMap.get(newDeclaringClass);
 	if (updatedMethod == null){
 		updatedMethod = new MethodBinding(targetMethod, newDeclaringClass);
+		updatedMethod.createFunctionTypeBinding(scope);
 		methodMap.put(newDeclaringClass, updatedMethod);
 	}
 	return updatedMethod;

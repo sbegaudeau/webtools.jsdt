@@ -118,6 +118,7 @@ public  void addLocalVariable(LocalVariableBinding binding) {
 
 		MethodBinding methodBinding=
 			new MethodBinding(0, binding.name, TypeBinding.UNKNOWN, null, null,this.enclosingTypeBinding());
+		methodBinding.createFunctionTypeBinding(this);
 		addLocalMethod(methodBinding);
 
 	}

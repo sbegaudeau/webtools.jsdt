@@ -3,6 +3,7 @@ package org.eclipse.wst.jsdt.internal.infer;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
@@ -197,78 +198,9 @@ public class InferEngine extends ASTVisitor {
 		}
 		else if (assignment.expression instanceof FunctionExpression)
 		{
-			FunctionExpression functionExpression=(FunctionExpression)assignment.expression;
-
-			char [] possibleTypeName = constructTypeName( assignment.lhs );
-
-			InferredType type = null;
-			if( possibleTypeName != null )
-				type = compUnit.findInferredType( possibleTypeName );
-
-			if (type!=null)	// isConstructor
-			{
-				if (this.inferOptions.useInitMethod)
-				{
-					this.currentContext.currentType=type;
-					this.currentContext.currentType=type;
-					type.isDefinition=true;
-					InferredMethod method = type.addMethod(type.name, functionExpression.methodDeclaration);
-					method.isConstructor=true;
-					method.nameStart=assignment.lhs.sourceStart;
-				}
-
-			}
-			else	// could be method
-			{
-				if (assignment.lhs instanceof FieldReference)
-				{
-					FieldReference fieldReference=(FieldReference)assignment.lhs;
-					int nameStart=(int)(fieldReference.nameSourcePosition>>>32);
-
-					InferredType receiverType = getInferredType( fieldReference.receiver );
-
-					if( receiverType != null ){
-
-						//check if there is a member method already created
-						InferredMethod method = receiverType.findMethod( fieldReference.token, functionExpression.methodDeclaration );
-
-						if( method == null ){
-							//create member method if it does not exist
-
-							method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration );
-							receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd); // @GINO: not sure if necessary
-							method.nameStart = nameStart;
-
-							/*
-							 * determine if static
-							 *
-							 * check if the receiver is a type
-							 */
-							char [] possibleInTypeName = constructTypeName( fieldReference.receiver );
-
-							if( possibleInTypeName != null && compUnit.findInferredType( possibleInTypeName ) != null )
-								method.isStatic = true;
-							else
-								method.isStatic = false;
-
-							return true; //keep visiting to get return type
-						}
-						else
-							return false; //no need to visit again
-
-					}
-					else if (this.passNumber==2)	// create anonymous class
-					{
-						receiverType = getInferredType2(fieldReference.receiver);
-						if (receiverType!=null)
-						{
-							InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
-							method.nameStart=nameStart;
-							receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
-						}
-					}
-				}
-			}
+			boolean keepVisiting= handleFunctionExpressionAssignment(assignment);
+			if (!keepVisiting)
+				return false;
 		}
 		else if (assignment.expression instanceof SingleNameReference  && this.currentContext.currentType !=null &&
 				isThis(assignment.lhs))
@@ -377,6 +309,10 @@ public class InferEngine extends ASTVisitor {
 
 				}
 			}
+		}
+		else if ( assignment.expression instanceof AllocationExpression && 
+			((AllocationExpression)assignment.expression).member instanceof FunctionExpression){
+			handleFunctionExpressionAssignment(assignment);
 		}
 		else
 		{
@@ -515,6 +451,92 @@ public class InferEngine extends ASTVisitor {
 		return anonType;
 	}
 
+	
+	protected boolean handleFunctionExpressionAssignment(Assignment assignment)
+	{
+		FunctionExpression functionExpression=null;
+		if (assignment.expression instanceof FunctionExpression)
+			functionExpression=(FunctionExpression)assignment.expression;
+		else if (assignment.expression instanceof AllocationExpression)
+			functionExpression=(FunctionExpression)((AllocationExpression)assignment.expression).member;
+
+		char [] possibleTypeName = constructTypeName( assignment.lhs );
+
+		InferredType type = null;
+		if( possibleTypeName != null )
+			type = compUnit.findInferredType( possibleTypeName );
+
+		if (type!=null)	// isConstructor
+		{
+			if (this.inferOptions.useInitMethod)
+			{
+				this.currentContext.currentType=type;
+				this.currentContext.currentType=type;
+				type.isDefinition=true;
+				InferredMethod method = type.addMethod(type.name, functionExpression.methodDeclaration);
+				method.isConstructor=true;
+				method.nameStart=assignment.lhs.sourceStart;
+			}
+
+		}
+		else	// could be method
+		{
+			if (assignment.lhs instanceof FieldReference)
+			{
+				FieldReference fieldReference=(FieldReference)assignment.lhs;
+				int nameStart=(int)(fieldReference.nameSourcePosition>>>32);
+
+				InferredType receiverType = getInferredType( fieldReference.receiver );
+
+				if( receiverType != null ){
+
+					//check if there is a member method already created
+					InferredMethod method = receiverType.findMethod( fieldReference.token, functionExpression.methodDeclaration );
+
+					if( method == null ){
+						//create member method if it does not exist
+
+						method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration );
+						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd); // @GINO: not sure if necessary
+						method.nameStart = nameStart;
+
+						/*
+						 * determine if static
+						 *
+						 * check if the receiver is a type
+						 */
+						char [] possibleInTypeName = constructTypeName( fieldReference.receiver );
+
+						if( possibleInTypeName != null && compUnit.findInferredType( possibleInTypeName ) != null )
+							method.isStatic = true;
+						else
+							method.isStatic = false;
+
+						return true; //keep visiting to get return type
+					}
+					else
+						return false; //no need to visit again
+
+				}
+				else if (this.passNumber==2)	// create anonymous class
+				{
+					receiverType = getInferredType2(fieldReference.receiver);
+					if (receiverType!=null)
+					{
+						InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
+						method.nameStart=nameStart;
+						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
+					}
+				}
+			}
+			else if (assignment.lhs instanceof SingleNameReference)
+			{
+			}
+		}
+		return true;
+	}
+	
+	
 	protected boolean handlePrototype(Assignment assignment) {
 
 		Expression lhs = assignment.lhs;
@@ -885,6 +907,7 @@ public class InferEngine extends ASTVisitor {
 				{
 				   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
 				   methodDeclaration.inferredType=type;
+				   methodDeclaration.bits |= ASTNode.IsInferredJsDocType;
 				}
 
 			}

@@ -331,6 +331,13 @@ public class MethodScope extends BlockScope {
 			else	// not local method
 				methodBinding =
 					new MethodBinding(modifiers, name,returnType, null, null, declaringClass);
+			if (method.inferredMethod!=null)
+			{
+				methodBinding.tagBits |= TagBits.IsInferredType;
+				if ((method.bits&ASTNode.IsInferredJsDocType)!=0)
+					methodBinding.tagBits |= TagBits.IsInferredJsDocType;
+			}
+			methodBinding.createFunctionTypeBinding(this);
 			if (method.inferredMethod!=null && method.inferredMethod.isConstructor)
 				methodBinding.tagBits|=TagBits.IsConstructor;
 			checkAndSetModifiersForMethod(methodBinding);

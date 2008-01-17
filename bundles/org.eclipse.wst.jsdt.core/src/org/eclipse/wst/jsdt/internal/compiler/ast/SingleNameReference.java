@@ -20,6 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FunctionTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
@@ -845,12 +846,28 @@ public int nullStatus(FlowInfo flowInfo) {
 //								scope.problemReporter().cannotReferToNonFinalOuterLocal((LocalVariableBinding)variable, this);
 //							}
 							TypeBinding fieldType = variable.type;
-							if (useType!=null && useType.id!=T_null)
+							if (useType!=null && !(useType.id==T_null ||useType.id==T_any))
 							{
-								if (fieldType==TypeBinding.UNKNOWN)
+								if (define)
+								{
 									fieldType=variable.type=useType;
-								else if (!fieldType.isCompatibleWith(useType))
-									fieldType=variable.type=TypeBinding.ANY;
+									if (useType.isFunctionType())	// add method binding if function
+									{
+										MethodBinding methodBinding = ((FunctionTypeBinding)useType).functionBinding.createNamedMethodBinding(this.token);
+										MethodScope methodScope = scope.enclosingMethodScope();
+										if (methodScope!=null)
+											methodScope.addLocalMethod(methodBinding);
+										else
+											scope.compilationUnitScope().addLocalMethod(methodBinding);
+									}
+								}
+								else
+								{
+									if (fieldType==TypeBinding.UNKNOWN)
+										fieldType=variable.type=useType;
+									else if (!fieldType.isCompatibleWith(useType))
+										fieldType=variable.type=TypeBinding.ANY;
+								}
 							}
 							if ((this.bits & IsStrictlyAssigned) == 0) {
 								constant = variable.constant();
@@ -877,7 +894,7 @@ public int nullStatus(FlowInfo flowInfo) {
 
 					if (binding instanceof MethodBinding)
 					{
-						return scope.getJavaLangFunction();
+						return ((MethodBinding)binding).functionTypeBinding;
 					}
 					else
 					{

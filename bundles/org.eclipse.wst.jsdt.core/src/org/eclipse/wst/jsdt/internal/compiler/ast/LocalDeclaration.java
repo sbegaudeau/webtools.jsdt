@@ -183,7 +183,9 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				variableType=type.resolveType(scope, true /* check bounds*/);
 			else {
 				if (inferredType!=null)
+				{
 				  variableType=inferredType.resolveType(scope,this);
+				}
 				else
 					variableType=TypeBinding.UNKNOWN;
 			}

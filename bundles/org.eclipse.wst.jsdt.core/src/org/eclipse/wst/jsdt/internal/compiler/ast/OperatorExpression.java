@@ -903,6 +903,7 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		//	table[(T_null<<4)+T_int] 			= T_undefined;
 		table[(T_null<<4)+T_null] 			= /*null2Object                 null2Object*/
 											  (T_JavaLangObject<<16)+(T_null<<12)+(T_JavaLangObject<<8)+(T_null<<4)+T_boolean;
+		table[(T_null<<4)+T_function] 			= T_boolean;
 		table[(T_null<<4)+T_any] 			= T_boolean;
 
 		table[(T_any<<4)+T_undefined] 		= T_undefined;
@@ -920,6 +921,15 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 		table[(T_any<<4)+T_null] 			= T_boolean;
 		table[(T_any<<4)+T_any] 			= T_boolean;
 		table[(T_any<<4)+T_function] 		= T_boolean;
+
+		table[(T_function<<4)+T_undefined] 		= T_boolean;
+		table[(T_function<<4)+T_JavaLangString] 		= T_boolean;
+		table[(T_function<<4)+T_JavaLangObject] 		= T_boolean;
+		table[(T_function<<4)+T_null] 			= T_boolean;
+		table[(T_function<<4)+T_any] 			= T_boolean;
+		table[(T_function<<4)+T_function] 		= T_boolean;
+
+		
 		return table;
 	}
 
