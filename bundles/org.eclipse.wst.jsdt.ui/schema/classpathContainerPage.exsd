@@ -52,7 +52,7 @@ edit a includepath container entry.
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="name" type="string">
+         <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
                   the name of the includepath container used when selecting a new container.  This attribute should be a translated string.
@@ -62,7 +62,7 @@ edit a includepath container entry.
                </appInfo>
             </annotation>
          </attribute>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   the name of the class that implements this container page.  The
