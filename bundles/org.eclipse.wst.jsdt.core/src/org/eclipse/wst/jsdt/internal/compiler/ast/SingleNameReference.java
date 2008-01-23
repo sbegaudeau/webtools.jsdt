@@ -205,9 +205,13 @@ public class SingleNameReference extends NameReference implements OperatorIds {
 		if (!isStatic) {
 			// must check for the static status....
 			if (methodScope!=null && methodScope.isStatic) {
-				scope.problemReporter().staticFieldAccessToNonStaticVariable(this, fieldBinding);
-				this.constant = Constant.NotAConstant;
-				return fieldBinding.type;
+					// reference is ok if coming from compilation unit superclass
+				if (fieldBinding.declaringClass==null || !fieldBinding.declaringClass.equals(scope.compilationUnitScope().superBinding))
+				{
+					scope.problemReporter().staticFieldAccessToNonStaticVariable(this, fieldBinding);
+					this.constant = Constant.NotAConstant;
+					return fieldBinding.type;
+				}
 			}
 		}
 		this.constant = fieldBinding.constant();
