@@ -590,6 +590,89 @@ public class BasicResolveTests extends AbstractRegressionTest {
 
 	}
 
+	
+	public void test046()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function debug2() {\n" +
+						" var keyFunct = null;\n" +
+						" keyFunct = function () {};\n" +
+						"  keyFunct();\n" +
+						"  }\n" +
+						"" 
+				},
+				""
+		);
 
+	}
+
+	
+	public void test046b()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function debug2() {\n" +
+						" var keyFunct = null;\n" +
+						" keyFunct = new function () {};\n" +
+						"  keyFunct();\n" +
+						"  }\n" +
+						"" 
+				},
+				""
+		);
+
+	}
+	
+
+	public void test047()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function Config() {}\n" +
+						"Config.printDocTypes = function() { throw new (\"doctype 1.\"); };\n" +
+						"Config.prototype.toString = function () { return \"\"; };\n" +
+						"function main() {\n" +
+						"    Config.printDocTypes();\n" +
+						"}   \n" +
+						"" 
+				},
+				""
+		);
+	}
+
+
+	public void test048()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function Config2() {};\n" +
+						"Config2.INPUT_DIR = \"\";\n" +
+						"Config2.OUTPUT_DIR = Config2.INPUT_DIR  ;\n" +
+						"Config2.getNum = function() { return 1; }\n" +
+						"function numberGen() { \n" +
+						"    return Config2.getNum(); \n" +
+						"}   \n" +
+						"" 
+				},
+				""
+		);
+	}
+
+	public void test049()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var arr=[];\n" +
+						"var ref=arr.length;\n" +
+						"var o=arr.pop();\n" +
+						"" 
+				},
+				""
+		);
+	}
+
+  
+	   
 		
 }
