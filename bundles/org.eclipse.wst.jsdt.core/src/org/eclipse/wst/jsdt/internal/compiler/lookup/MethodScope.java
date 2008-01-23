@@ -322,7 +322,12 @@ public class MethodScope extends BlockScope {
 				 (method.inferredType!=null)?method.inferredType.resolveType(this,method):TypeBinding.UNKNOWN;
 //			TypeBinding returnType =
 //			 (method instanceof MethodDeclaration && ((MethodDeclaration)method).returnType!=null && method.inferredMethod!=null)?method.inferredType.resolveType(this,((MethodDeclaration)method).returnType):TypeBinding.ANY;
-
+			if (method.inferredType==null && method.inferredMethod!=null && method.inferredMethod.isConstructor
+					&& method.inferredMethod.inType!=null)
+			{
+				returnType=method.inferredMethod.inType.resolveType(this,method);
+			}
+				 
 			if (isLocal && method.selector!=null)
 			{
 				methodBinding =
