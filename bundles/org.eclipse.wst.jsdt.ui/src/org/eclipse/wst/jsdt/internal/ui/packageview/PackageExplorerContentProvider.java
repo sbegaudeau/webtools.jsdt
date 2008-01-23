@@ -404,8 +404,53 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container) {
 		return getContainerPackageFragmentRoots(container, false);
 	}
-	
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean createFolder) {
+		
+			Object[] children = container.getChildren();
+		
+			ArrayList allChildren = new ArrayList();
+			ArrayList expanded = new ArrayList();
+			expanded.addAll(Arrays.asList(children));
+			
+			
+			if(expanded==null || expanded.size() < 1) return new Object[0];
+			
+			Object next = expanded.remove(0);
+
+			while(next!=null) {
+				try {
+					if(next instanceof IPackageFragment) {
+						expanded.addAll(Arrays.asList(((IPackageFragment)next).getChildren()));
+					}else if(next instanceof IPackageFragmentRoot) {
+						expanded.addAll(Arrays.asList(((IPackageFragmentRoot)next).getChildren()));
+					}else if(next instanceof IClassFile) {
+						List newChildren = Arrays.asList( filter(((IClassFile)next).getChildren() ));
+						allChildren.removeAll(newChildren);
+						allChildren.addAll(newChildren);
+					}else if(next instanceof ICompilationUnit) {
+						List newChildren = Arrays.asList( filter(((ICompilationUnit)next).getChildren()));
+						allChildren.removeAll(newChildren);
+						allChildren.addAll(newChildren);
+					
+					}
+				} catch (JavaModelException ex) {
+					// TODO Auto-generated catch block
+					ex.printStackTrace();
+				}
+				
+				if(expanded.size()>0) 
+					next = expanded.remove(0);
+				else
+					next = null;
+				
+			}
+			
+			return allChildren.toArray();
+		
+		
+		
+	}
+	private Object[] getContainerPackageFragmentRootsDeprc(PackageFragmentRootContainer container, boolean createFolder) {
 		
 		
 		if(container!=null) {	
