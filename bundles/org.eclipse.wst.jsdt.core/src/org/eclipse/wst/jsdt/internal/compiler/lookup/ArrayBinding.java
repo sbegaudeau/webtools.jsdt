@@ -283,6 +283,12 @@ boolean implementsMethod(MethodBinding method) {
 public MethodBinding[] methods() {
 	return referenceBinding.methods();
 }
+public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
+	return referenceBinding.getExactMethod(selector, argumentTypes, refScope);
+}
 
+public FieldBinding getField(char[] fieldName, boolean needResolve) {
+	return referenceBinding.getField(fieldName, needResolve);
+}
 
 }
