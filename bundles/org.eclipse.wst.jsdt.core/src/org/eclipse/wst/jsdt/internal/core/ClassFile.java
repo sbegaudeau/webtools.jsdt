@@ -126,7 +126,9 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	// check whether the class file can be opened
 	IStatus status = validateClassFile();
 	if (!status.isOK()) throw newJavaModelException(status);
-	if (underlyingResource != null && !underlyingResource.isAccessible()) throw newNotPresentException();
+	if (underlyingResource != null && !underlyingResource.isAccessible()) {
+		throw newNotPresentException();
+	}
 
 
 
@@ -579,6 +581,11 @@ public IJavaElement getElementAtConsideringSibling(int position) throws JavaMode
 	}
 }
 public String getElementName() {
+	/* check if the name already has the .js extension */
+	if(this.name!=null && this.name.toUpperCase().endsWith(SuffixConstants.SUFFIX_STRING_class.toUpperCase())){
+		return this.name;
+	}
+	
 	return this.name + SuffixConstants.SUFFIX_STRING_class;
 }
 /**
