@@ -34,10 +34,8 @@ public static Test suite() {
 	ArrayList standardTests = new ArrayList();
 //	standardTests.addAll(JavadocTest.allTestClasses);
 	standardTests.add(BasicParserTests.class);
-	if (false) {	// temporary
-		standardTests.add(BasicErrorTests.class);
-		standardTests.add(InferTypesTests.class);
-	}	
+//	standardTests.add(BasicErrorTests.class);
+	standardTests.add(InferTypesTests.class);
 	//	// add all javadoc tests
 //	for (int i=0, l=JavadocTest.ALL_CLASSES.size(); i<l; i++) {
 //		standardTests.add(JavadocTest.ALL_CLASSES.get(i));
