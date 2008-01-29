@@ -937,7 +937,7 @@ public int nullStatus(FlowInfo flowInfo) {
 		return new String(token);
 	}
 	
-	public TypeBinding resolveForAllocation(Scope scope, ASTNode location)
+	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location)
 	{
 		char[] memberName = this.token;
 		TypeBinding typeBinding=null;

@@ -219,7 +219,7 @@ public class InferEngine extends ASTVisitor {
 			if( object instanceof MethodDeclaration ){
 
 				MethodDeclaration method=(MethodDeclaration)object;
-				member = this.currentContext.currentType.addMethod( memberName, method );
+				member = this.currentContext.currentType.addMethod( memberName, method,false );
 
 			}
 			/*
@@ -355,7 +355,7 @@ public class InferEngine extends ASTVisitor {
 
 							if (definedFunction!=null)
 							{
-								method = receiverType.addMethod(fRef.token, definedFunction);
+								method = receiverType.addMethod(fRef.token, definedFunction,false);
 								method.nameStart=nameStart;
 							}
 							else
@@ -473,8 +473,7 @@ public class InferEngine extends ASTVisitor {
 				this.currentContext.currentType=type;
 				this.currentContext.currentType=type;
 				type.isDefinition=true;
-				InferredMethod method = type.addMethod(type.name, functionExpression.methodDeclaration);
-				method.isConstructor=true;
+				InferredMethod method = type.addMethod(type.name, functionExpression.methodDeclaration,true);
 				method.nameStart=assignment.lhs.sourceStart;
 			}
 
@@ -496,7 +495,7 @@ public class InferEngine extends ASTVisitor {
 					if( method == null ){
 						//create member method if it does not exist
 
-						method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration );
+						method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration ,false);
 						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd); // @GINO: not sure if necessary
 						method.nameStart = nameStart;
 
@@ -523,7 +522,7 @@ public class InferEngine extends ASTVisitor {
 					receiverType = getInferredType2(fieldReference.receiver);
 					if (receiverType!=null)
 					{
-						InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration);
+						InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration,false);
 						method.nameStart=nameStart;
 						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
 					}
@@ -663,7 +662,7 @@ public class InferEngine extends ASTVisitor {
 
 				if (methodDecl!=null)
 				{
-					InferredMember method = newType.addMethod(memberName, methodDecl);
+					InferredMember method = newType.addMethod(memberName, methodDecl,false);
 					method.nameStart=nameStart;
 				}
 				else if (!CharOperation.equals(CONSTRUCTOR_ID, memberName))
@@ -820,7 +819,7 @@ public class InferEngine extends ASTVisitor {
 				//need to build the members of the annonymous inferred type
 				if (field.initializer instanceof FunctionExpression) {
 					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
-				    InferredMember method = type.addMethod(name, functionExpression.methodDeclaration);
+				    InferredMember method = type.addMethod(name, functionExpression.methodDeclaration,false);
 				    method.nameStart = nameStart;
 
 				}
@@ -887,7 +886,7 @@ public class InferEngine extends ASTVisitor {
 				{
 					InferredType type = this.addType(methodDeclaration.selector);
 					type.isDefinition=true;
-					method = type.addMethod(methodDeclaration.selector, methodDeclaration);
+					method = type.addMethod(methodDeclaration.selector, methodDeclaration,true);
 					method.nameStart=methodDeclaration.sourceStart;
 					method.isConstructor=true;
 
@@ -900,7 +899,7 @@ public class InferEngine extends ASTVisitor {
 				else if (javadoc.memberOf!=null)
 				{
 					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
-					method=type.addMethod(methodDeclaration.selector, methodDeclaration);
+					method=type.addMethod(methodDeclaration.selector, methodDeclaration,false);
 				}
 
 				if (javadoc.returnType!=null)
@@ -925,7 +924,7 @@ public class InferEngine extends ASTVisitor {
 					this.currentContext.currentType = type;
 					type.isDefinition = true;
 					InferredMethod method = type.addMethod(
-							methodDeclaration.selector, methodDeclaration);
+							methodDeclaration.selector, methodDeclaration,true);
 					method.nameStart=methodDeclaration.sourceStart;
 					method.isConstructor = true;
 					methodDeclaration.inferredType=type;
@@ -1007,7 +1006,7 @@ public class InferEngine extends ASTVisitor {
 			{
 				if (field.initializer instanceof FunctionExpression) {
 					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
-				    InferredMember method = inClass.addMethod(name, functionExpression.methodDeclaration);
+				    InferredMember method = inClass.addMethod(name, functionExpression.methodDeclaration,false);
 				    method.nameStart=nameStart;
 				    functionExpression.methodDeclaration.modifiers=javaDoc.modifiers;
 				    if (returnType!=null)

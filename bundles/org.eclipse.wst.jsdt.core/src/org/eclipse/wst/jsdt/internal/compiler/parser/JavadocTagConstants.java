@@ -24,6 +24,7 @@ public interface JavadocTagConstants {
 	public static final char[] TAG_RETURN = "return".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_THROWS = "throws".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_EXCEPTION = "exception".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_EXTENDS = "extends".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_SEE = "see".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_LINK = "link".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_LINKPLAIN = "linkplain".toCharArray(); //$NON-NLS-1$
@@ -64,6 +65,7 @@ public interface JavadocTagConstants {
 	public static final int TAG_RETURN_LENGTH = TAG_RETURN.length;
 	public static final int TAG_THROWS_LENGTH = TAG_THROWS.length;
 	public static final int TAG_EXCEPTION_LENGTH = TAG_EXCEPTION.length;
+	public static final int TAG_EXTENDS_LENGTH = TAG_EXTENDS.length;
 	public static final int TAG_SEE_LENGTH = TAG_SEE.length;
 	public static final int TAG_LINK_LENGTH = TAG_LINK.length;
 	public static final int TAG_LINKPLAIN_LENGTH = TAG_LINKPLAIN.length;

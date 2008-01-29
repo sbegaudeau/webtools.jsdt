@@ -30,6 +30,7 @@ public class MethodBinding extends Binding {
 	char[] signature;
 	public long tagBits;
 	public FunctionTypeBinding functionTypeBinding;
+	public ReferenceBinding allocationType;
 	
 
 protected MethodBinding() {

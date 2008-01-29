@@ -692,4 +692,28 @@ public boolean isPrototype()
 	return (CharOperation.equals(TypeConstants.PROTOTYPE,this.token));
 }
 
+
+public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location)
+{
+	char[] memberName = this.token;
+	TypeBinding typeBinding=null;
+	this.receiverType = receiver.resolveType(scope);
+	if (this.receiverType == null) {
+		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
+		constant = Constant.NotAConstant;
+		this.resolvedType=TypeBinding.ANY;
+		return null;
+	}
+	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
+	if( memberBinding instanceof MethodBinding && memberBinding.isValidBinding()){
+		this.resolvedType= ((MethodBinding)memberBinding).allocationType;
+		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
+		if( memberBinding.isValidBinding() )
+			return this.resolvedType;
+		return null;
+	}
+	return typeBinding;
+}
+
+
 }

@@ -555,10 +555,14 @@ public class JavadocParser extends AbstractCommentParser {
 							this.tagValue = TAG_EXCEPTION_VALUE;
 							valid = parseThrows();
 						} else
-							if (length == TAG_EXEC_LENGTH && CharOperation.equals(TAG_EXEC, tagName)) {
-								this.tagValue = TAG_EXEC_VALUE;
-								valid = true;
-							}
+							if (length == TAG_EXTENDS_LENGTH && CharOperation.equals(TAG_EXTENDS, tagName)) {
+								this.tagValue = TAG_EXTENDS_VALUE;
+								valid = parseExtends();
+							} else
+								if (length == TAG_EXEC_LENGTH && CharOperation.equals(TAG_EXEC, tagName)) {
+									this.tagValue = TAG_EXEC_VALUE;
+									valid = true;
+								}
 
 						break;
 					case 'f':

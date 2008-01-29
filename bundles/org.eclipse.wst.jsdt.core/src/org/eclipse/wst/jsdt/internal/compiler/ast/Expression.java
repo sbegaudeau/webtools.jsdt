@@ -1077,4 +1077,12 @@ public void markAsNonNull() {
 	
 	public Binding alternateBinding()
 	{ return null;}
+	
+	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location)
+	{
+		System.out.println("IMPLEMENT resolveForAllocation for "+this.getClass());
+		return this.resolveType(scope);
+	}
+	
+	
 }

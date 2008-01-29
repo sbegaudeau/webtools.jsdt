@@ -249,14 +249,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	// Propagate the type checking to the arguments, and check if the constructor is defined.
 	constant = Constant.NotAConstant;
 	if (this.member!=null) {
-		// initialization of an enum constant
-		if (this.member instanceof SingleNameReference)
-		{
-			this.resolvedType=((SingleNameReference)this.member).resolveForAllocation(scope, this);
-
-		}
-		else
-		this.resolvedType = this.member.resolveType(scope);
+		this.resolvedType=this.member.resolveForAllocation(scope, this);
 	}
 	else if (this.type == null) {
 		// initialization of an enum constant

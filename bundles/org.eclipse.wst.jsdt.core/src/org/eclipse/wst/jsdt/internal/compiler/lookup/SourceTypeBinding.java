@@ -187,7 +187,7 @@ private void buildMethods() {
 	for (int i = 0; i < size; i++) {
 		 InferredMethod method = (InferredMethod)inferredType.methods.get(i);
 			MethodScope scope = new MethodScope(this.scope, method.methodDeclaration, false);
-			MethodBinding methodBinding = scope.createMethod(method);
+			MethodBinding methodBinding = scope.createMethod(method,this);
 			method.methodBinding=methodBinding;
 			if (methodBinding != null) // is null if binding could not be created
 				methodBindings[count++] = methodBinding;

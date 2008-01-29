@@ -296,9 +296,14 @@ public class MethodScope extends BlockScope {
 	 *		that caused the problem) : ie : Incorrect thrown exception
 	 */
 
-	MethodBinding createMethod(InferredMethod inferredMethod) {
-
-		return createMethod(inferredMethod.methodDeclaration,inferredMethod.name,inferredMethod.inType.binding, inferredMethod.isConstructor,false);
+	MethodBinding createMethod(InferredMethod inferredMethod,SourceTypeBinding declaringClass) {
+        boolean isConstructor=inferredMethod.isConstructor;
+        if (isConstructor && declaringClass!=inferredMethod.inType.binding)
+        	isConstructor=false;
+		 MethodBinding binding = createMethod(inferredMethod.methodDeclaration,inferredMethod.name,declaringClass, isConstructor,false); 
+		 if (inferredMethod.isConstructor || declaringClass!=inferredMethod.inType.binding)
+			 binding.allocationType=inferredMethod.inType.binding;
+		 return binding;
 	}
 
 	public MethodBinding createMethod(AbstractMethodDeclaration method,char[] name,SourceTypeBinding declaringClass, boolean isConstructor, boolean isLocal) {

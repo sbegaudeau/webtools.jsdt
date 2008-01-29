@@ -98,29 +98,45 @@ public class InferredType extends ASTNode {
 	}
 
 
-	public InferredMethod addMethod(char [] methodName, MethodDeclaration methodDeclaration) {
+	public InferredMethod addMethod(char [] methodName, MethodDeclaration methodDeclaration, boolean isConstructor) {
 		InferredMethod method = findMethod(methodName, methodDeclaration);
 		if (method==null)
 		{
 			method=new InferredMethod(methodName,methodDeclaration,this);
+			if (methodDeclaration.inferredMethod==null) 
+				methodDeclaration.inferredMethod = method;
+			else
+			{
+				if (isConstructor)
+				{
+					methodDeclaration.inferredMethod.inType=this;
+					methodDeclaration.inferredMethod = method;
+				} else if (methodDeclaration.inferredMethod.isConstructor)
+					method.inType=methodDeclaration.inferredMethod.inType;
+				
+			}
 			if (methods==null)
 				methods=new ArrayList();
 			methods.add(method);
 
 			if( !isAnonymous )
 				this.updatePositions(methodDeclaration.sourceStart, methodDeclaration.sourceEnd);
+			method.isConstructor=isConstructor;
 		}
-		methodDeclaration.inferredMethod = method;
+		else
+			if (methodDeclaration.inferredMethod==null)
+				methodDeclaration.inferredMethod=method;
 		return method;
 	}
 
 	public InferredMethod findMethod(char [] methodName, MethodDeclaration methodDeclaration) {
-		if (methodName==TypeConstants.INIT)
-			methodName=this.name;
+		boolean isConstructor= methodName==TypeConstants.INIT;
 		if (methods!=null)
 			for (Iterator methodIterator = methods.iterator(); methodIterator.hasNext();) {
 				InferredMethod method = (InferredMethod) methodIterator.next();
 				if (CharOperation.equals(methodName,method.name))
+					return method;
+				if (isConstructor && method.isConstructor)
 					return method;
 			}
 			return null;
