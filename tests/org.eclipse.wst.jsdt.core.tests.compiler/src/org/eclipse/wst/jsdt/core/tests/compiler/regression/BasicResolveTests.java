@@ -672,7 +672,87 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		);
 	}
 
-  
+
+	public void test050()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function getDateTime() {\n" +
+						"	    this.ctime = new Object();\n" +
+						"	    this.ctime.getDay = new function() { return \"Mon\"; };\n" +
+						"	    return this;\n" +
+						"	}\n" +
+						"	function debug3() {\n" +
+						"	    var newObj = getDateTime();\n" +
+						"	    return newObj.ctime.getDay();\n" +
+						"	}\n" +
+						"" 
+				},
+				""
+		);
+	}
+
+	public void test050b()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function getDateTime() {\n" +
+						"	    this.ctime = new Object();\n" +
+						"	    this.ctime.getDay = new function() { return \"Mon\"; };\n" +
+						"	    return this;\n" +
+						"	}\n" +
+						"	function debug3() {\n" +
+						"	    var newObj = new getDateTime();\n" +
+						"	    return newObj.ctime.getDay();\n" +
+						"	}\n" +
+						"" 
+				},
+				""
+		);
+	}
+
 	   
+	public void test051()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var ns = {};\n"+ 
+						"ns.foo = function(){\n" +
+						"};\n" +
+						"ns.foo.prototype.bar = \"\";\n" +
+						"ns.foo.prototype.bar2 = function(){\n" +
+						"  return \"\";\n" +
+						"}\n"+
+						"c=new ns.foo();\n"+
+						"c.bar2();\n"+
+						"i=c.bar;\n"+
+						"" 
+				},
+				""
+		);
+	}
+
+
+	public void test052()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var myObject=new Object();\n"+ 
+						"myObject.ctor=   function(){\n" +
+						"};\n" +
+						"myObject.ctor.prototype.bar = \"\";\n" +
+						"myObject.ctor.prototype.bar2 = function(){\n" +
+						"  return \"\";\n" +
+						"}\n"+
+						"c=new myObject.ctor();\n"+
+						"c.bar2();\n"+
+						"i=c.bar;\n"+
+						"" 
+				},
+				""
+		);
+	}
+
+
 		
 }
