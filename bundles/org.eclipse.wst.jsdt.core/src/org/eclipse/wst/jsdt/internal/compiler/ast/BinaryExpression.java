@@ -1813,8 +1813,11 @@ public TypeBinding resolveType(BlockScope scope) {
 	int leftTypeID = leftType.id;
 	int rightTypeID = rightType.id;
 
-	if(operator==OperatorIds.INSTANCEOF && rightTypeID>15) {
-		rightTypeID=  TypeIds.T_JavaLangObject;
+	if(operator==OperatorIds.INSTANCEOF) {
+		if ( rightTypeID>15)
+			rightTypeID=  TypeIds.T_JavaLangObject;
+		if ( leftTypeID>15)
+			leftTypeID=  TypeIds.T_JavaLangObject;
 	}
 
 	// autoboxing support
