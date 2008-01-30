@@ -506,13 +506,6 @@ public abstract class ASTNode {
 
 	/**
 	 * Node type constant indicating a node of type
-	 * <code>SynchronizedStatement</code>.
-	 * @see SynchronizedStatement
-	 */
-	public static final int SYNCHRONIZED_STATEMENT = 51;
-
-	/**
-	 * Node type constant indicating a node of type
 	 * <code>ThisExpression</code>.
 	 * @see ThisExpression
 	 */
@@ -924,8 +917,6 @@ public abstract class ASTNode {
 				return SwitchCase.class;
 			case SWITCH_STATEMENT :
 				return SwitchStatement.class;
-			case SYNCHRONIZED_STATEMENT :
-				return SynchronizedStatement.class;
 			case TAG_ELEMENT :
 				return TagElement.class;
 			case TEXT_ELEMENT :

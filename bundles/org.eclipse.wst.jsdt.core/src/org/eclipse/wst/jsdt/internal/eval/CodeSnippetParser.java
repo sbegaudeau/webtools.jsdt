@@ -504,11 +504,7 @@ protected void consumeStatementSwitch() {
 	/* recovery */
 	recordLastStatementIfNeeded();
 }
-protected void consumeStatementSynchronized() {
-	super.consumeStatementSynchronized();
-	/* recovery */
-	recordLastStatementIfNeeded();
-}
+
 protected void consumeStatementThrow() {
 	super.consumeStatementThrow();
 	/* recovery */

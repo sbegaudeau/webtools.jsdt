@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.core.dom.ForInStatement;
 import org.eclipse.wst.jsdt.core.dom.ForStatement;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
 import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.dom.WithStatement;
@@ -179,19 +178,6 @@ public class StatementAnalyzer extends SelectionAnalyzer {
 					invalidSelection(RefactoringCoreMessages.StatementAnalyzer_switch_statement); 
 					break;
 				}
-			}
-		}
-		super.endVisit(node);
-	}
-
-	/* (non-Javadoc)
-	 * Method declared in ASTVisitor
-	 */
-	public void endVisit(SynchronizedStatement node) {
-		ASTNode firstSelectedNode= getFirstSelectedNode();
-		if (getSelection().getEndVisitSelectionMode(node) == Selection.SELECTED) {
-			if (firstSelectedNode == node.getBody()) {
-				invalidSelection(RefactoringCoreMessages.StatementAnalyzer_synchronized_statement); 
 			}
 		}
 		super.endVisit(node);

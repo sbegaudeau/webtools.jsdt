@@ -74,9 +74,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 
 		if (traversedContext instanceof InsideSubRoutineFlowContext) {
 			ASTNode node = traversedContext.associatedNode;
-			if (node instanceof SynchronizedStatement) {
-				this.bits |= ASTNode.IsSynchronized;
-			} else if (node instanceof TryStatement) {
+			if (node instanceof TryStatement) {
 				TryStatement tryStatement = (TryStatement) node;
 				flowInfo.addInitializationsFrom(tryStatement.subRoutineInits); // collect inits
 				if (hasValueToSave) {
@@ -104,7 +102,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		}
 	} else {
 		this.saveValueVariable = null;
-		if (((this.bits & ASTNode.IsSynchronized) == 0)&& this.expression != null && this.expression.resolvedType == TypeBinding.BOOLEAN) {
+		if ( this.expression != null && this.expression.resolvedType == TypeBinding.BOOLEAN) {
 			this.expression.bits |= ASTNode.IsReturnedValue;
 		}
 	}
@@ -182,7 +180,6 @@ public void generateStoreSaveValueIfNecessary(CodeStream codeStream){
 
 public boolean needValue() {
 	return this.saveValueVariable != null
-	|| (this.bits & ASTNode.IsSynchronized) != 0
 	|| ((this.bits & ASTNode.IsAnySubRoutineEscaping) == 0);
 }
 

@@ -99,7 +99,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
@@ -5286,30 +5285,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 		return false;
 	}
 
-	/**
-	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
-	 */
-	public boolean visit(
-		SynchronizedStatement synchronizedStatement,
-		BlockScope scope) {
 
-		this.scribe.printNextToken(TerminalTokens.TokenNamesynchronized);
-
-		final int line = this.scribe.line;
-
-		this.scribe.printNextToken(TerminalTokens.TokenNameLPAREN, this.preferences.insert_space_before_opening_paren_in_synchronized);
-
-		if (this.preferences.insert_space_after_opening_paren_in_synchronized) {
-			this.scribe.space();
-		}
-		synchronizedStatement.expression.traverse(this, scope);
-
-		this.scribe.printNextToken(TerminalTokens.TokenNameRPAREN, this.preferences.insert_space_before_closing_paren_in_synchronized);
-
-		formatLeftCurlyBrace(line, this.preferences.brace_position_for_block);
-		synchronizedStatement.block.traverse(this, scope);
-		return false;
-	}
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ASTVisitor#visit(org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference, org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope)
 	 */

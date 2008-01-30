@@ -111,7 +111,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
@@ -2862,18 +2861,6 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(SynchronizedStatement)
-	 */
-	public boolean visit(SynchronizedStatement node) {
-		if (!hasChildrenChanges(node)) {
-			return doVisitUnchangedChildren(node);
-		}
-
-		rewriteRequiredNode(node, SynchronizedStatement.EXPRESSION_PROPERTY);
-		rewriteRequiredNode(node, SynchronizedStatement.BODY_PROPERTY);
-		return false;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(ThisExpression)

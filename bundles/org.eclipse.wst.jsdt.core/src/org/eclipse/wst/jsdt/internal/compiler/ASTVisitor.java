@@ -97,7 +97,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
@@ -524,11 +523,7 @@ public abstract class ASTVisitor {
 	public void endVisit(SwitchStatement switchStatement, BlockScope scope) {
 		// do nothing by default
 	}
-	public void endVisit(
-		SynchronizedStatement synchronizedStatement,
-		BlockScope scope) {
-		// do nothing by default
-	}
+
 	public void endVisit(ThisReference thisReference, BlockScope scope) {
 		// do nothing by default
 	}
@@ -991,11 +986,7 @@ public abstract class ASTVisitor {
 	public boolean visit(SwitchStatement switchStatement, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}
-	public boolean visit(
-		SynchronizedStatement synchronizedStatement,
-		BlockScope scope) {
-		return true; // do nothing by default, keep traversing
-	}
+
 	public boolean visit(ThisReference thisReference, BlockScope scope) {
 		return true; // do nothing by default, keep traversing
 	}

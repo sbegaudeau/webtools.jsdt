@@ -89,7 +89,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
@@ -849,12 +848,6 @@ abstract class FlowAnalyzer extends GenericVisitor {
 		endVisit(node, createSwitchData(node));
 	}
 	
-	public void endVisit(SynchronizedStatement node) {
-		if (skipNode(node))
-			return;
-		GenericSequentialFlowInfo info= processSequential(node, node.getExpression());
-		process(info, node.getBody());
-	}
 	
 	public void endVisit(ThisExpression node) {
 		if (skipNode(node))

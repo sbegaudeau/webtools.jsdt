@@ -1303,16 +1303,6 @@ public class ASTFlattener extends GenericVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(SynchronizedStatement)
-	 */
-	public boolean visit(SynchronizedStatement node) {
-		this.fBuffer.append("synchronized (");//$NON-NLS-1$
-		node.getExpression().accept(this);
-		this.fBuffer.append(") ");//$NON-NLS-1$
-		node.getBody().accept(this);
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(TagElement)

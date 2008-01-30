@@ -1370,16 +1370,6 @@ class NaiveASTFlattener extends ASTVisitor {
 		return false;
 	}
 
-	/*
-	 * @see ASTVisitor#visit(SynchronizedStatement)
-	 */
-	public boolean visit(SynchronizedStatement node) {
-		this.buffer.append("synchronized (");//$NON-NLS-1$
-		node.getExpression().accept(this);
-		this.buffer.append(") ");//$NON-NLS-1$
-		node.getBody().accept(this);
-		return false;
-	}
 
 	/*
 	 * @see ASTVisitor#visit(TagElement)

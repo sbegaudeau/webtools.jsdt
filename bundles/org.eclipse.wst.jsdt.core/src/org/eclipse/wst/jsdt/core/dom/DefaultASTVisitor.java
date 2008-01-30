@@ -246,9 +246,6 @@ class DefaultASTVisitor extends ASTVisitor {
 	public void endVisit(SwitchStatement node) {
 		endVisitNode(node);
 	}
-	public void endVisit(SynchronizedStatement node) {
-		endVisitNode(node);
-	}
 	public void endVisit(TagElement node) {
 		endVisitNode(node);
 	}
@@ -510,9 +507,6 @@ class DefaultASTVisitor extends ASTVisitor {
 		return visitNode(node);
 	}
 	public boolean visit(SwitchStatement node) {
-		return visitNode(node);
-	}
-	public boolean visit(SynchronizedStatement node) {
 		return visitNode(node);
 	}
 	public boolean visit(TagElement node) {

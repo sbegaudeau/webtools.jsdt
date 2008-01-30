@@ -228,7 +228,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds {
 
 	// for return statement
 	public static final int IsAnySubRoutineEscaping = Bit30;
-	public static final int IsSynchronized = Bit31;
+//	public static final int IsSynchronized = Bit31;
 
 	// for synchronized statement
 	public static final int BlockExit = Bit30;

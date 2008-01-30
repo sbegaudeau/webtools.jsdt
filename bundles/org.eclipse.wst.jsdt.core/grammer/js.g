@@ -429,7 +429,7 @@ Modifier -> 'static'
 Modifier -> 'abstract'
 Modifier -> 'final'
 Modifier -> 'native'
-Modifier -> 'synchronized'
+-- Modifier -> 'synchronized'
 Modifier -> 'transient'
 Modifier -> 'volatile'
 Modifier -> 'strictfp'
@@ -1145,13 +1145,13 @@ ThrowStatement ::= 'throw' Expression ';'
 /.$putCase consumeStatementThrow(); $break ./
 /:$readableName ThrowStatement:/
 
-SynchronizedStatement ::= OnlySynchronized '(' Expression ')'    Block
-/.$putCase consumeStatementSynchronized(); $break ./
-/:$readableName SynchronizedStatement:/
+--SynchronizedStatement ::= OnlySynchronized '(' Expression ')'    Block
+--/.$putCase consumeStatementSynchronized(); $break ./
+--/:$readableName SynchronizedStatement:/
 
-OnlySynchronized ::= 'synchronized'
-/.$putCase consumeOnlySynchronized(); $break ./
-/:$readableName OnlySynchronized:/
+--OnlySynchronized ::= 'synchronized'
+--/.$putCase consumeOnlySynchronized(); $break ./
+--/:$readableName OnlySynchronized:/
 
 TryStatement ::= 'try' TryBlock Catches
 /.$putCase consumeStatementTry(false); $break ./

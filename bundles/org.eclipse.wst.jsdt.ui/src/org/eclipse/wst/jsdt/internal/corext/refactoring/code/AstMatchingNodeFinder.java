@@ -90,7 +90,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
@@ -489,11 +488,6 @@ class AstMatchingNodeFinder {
 			return super.visit(node);
 		}
 
-		public boolean visit(SynchronizedStatement node) {
-			if (node.subtreeMatch(fMatcher, fNodeToMatch))
-				return matches(node);
-			return super.visit(node);
-		}
 
 		public boolean visit(ThisExpression node) {
 			if (node.subtreeMatch(fMatcher, fNodeToMatch))

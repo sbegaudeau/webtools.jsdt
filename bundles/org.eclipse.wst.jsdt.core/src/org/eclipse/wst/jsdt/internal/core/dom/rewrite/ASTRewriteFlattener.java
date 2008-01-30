@@ -92,7 +92,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
@@ -1019,17 +1018,6 @@ public class ASTRewriteFlattener extends ASTVisitor {
 		this.result.append('{');
 		visitList(node, SwitchStatement.STATEMENTS_PROPERTY, null);
 		this.result.append('}');
-		return false;
-	}
-
-	/*
-	 * @see ASTVisitor#visit(SynchronizedStatement)
-	 */
-	public boolean visit(SynchronizedStatement node) {
-		this.result.append("synchronized ("); //$NON-NLS-1$
-		getChildNode(node, SynchronizedStatement.EXPRESSION_PROPERTY).accept(this);
-		this.result.append(')');
-		getChildNode(node, SynchronizedStatement.BODY_PROPERTY).accept(this);
 		return false;
 	}
 

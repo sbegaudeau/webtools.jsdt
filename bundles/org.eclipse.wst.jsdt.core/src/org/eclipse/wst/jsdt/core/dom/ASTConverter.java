@@ -2654,9 +2654,6 @@ class ASTConverter {
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.SwitchStatement) statement);
 		}
-		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement) {
-			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement) statement);
-		}
 		if (statement instanceof org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement) {
 			return convert((org.eclipse.wst.jsdt.internal.compiler.ast.ThrowStatement) statement);
 		}
@@ -2766,14 +2763,6 @@ class ASTConverter {
 			}
 		}
 		return switchStatement;
-	}
-
-	public SynchronizedStatement convert(org.eclipse.wst.jsdt.internal.compiler.ast.SynchronizedStatement statement) {
-		SynchronizedStatement synchronizedStatement = new SynchronizedStatement(this.ast);
-		synchronizedStatement.setSourceRange(statement.sourceStart, statement.sourceEnd - statement.sourceStart + 1);
-		synchronizedStatement.setBody(convert(statement.block));
-		synchronizedStatement.setExpression(convert(statement.expression));
-		return synchronizedStatement;
 	}
 
 	public Expression convert(org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference reference) {

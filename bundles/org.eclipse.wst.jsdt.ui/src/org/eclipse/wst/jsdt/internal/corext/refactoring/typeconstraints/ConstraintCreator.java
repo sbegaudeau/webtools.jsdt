@@ -67,7 +67,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
 import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
 import org.eclipse.wst.jsdt.core.dom.TryStatement;
@@ -470,12 +469,6 @@ public class ConstraintCreator {
 		return EMPTY_ARRAY;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.SynchronizedStatement)
-	 */
-	public ITypeConstraint[] create(SynchronizedStatement node) {
-		return EMPTY_ARRAY;
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.ThisExpression)

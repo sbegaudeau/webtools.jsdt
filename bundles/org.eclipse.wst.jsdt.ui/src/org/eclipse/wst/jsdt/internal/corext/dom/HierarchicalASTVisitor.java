@@ -653,13 +653,7 @@ public void endVisit(Statement node) {
 	public void endVisit(SwitchStatement node) {
 		endVisit((Statement) node);
 	}
-	
-	public boolean visit(SynchronizedStatement node) {
-		return visit((Statement) node);
-	}
-	public void endVisit(SynchronizedStatement node) {
-		endVisit((Statement) node);
-	}
+
 	
 	public boolean visit(ThrowStatement node) {
 		return visit((Statement) node);

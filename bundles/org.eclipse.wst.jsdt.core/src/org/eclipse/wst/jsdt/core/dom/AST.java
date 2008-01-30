@@ -2244,16 +2244,6 @@ public final class AST {
 		return new SwitchCase(this);
 	}
 
-	/**
-	 * Creates a new unparented synchronized statement node owned by this AST.
-	 * By default, the expression is unspecified, but legal, and the body is
-	 * an empty block.
-	 *
-	 * @return a new unparented synchronized statement node
-	 */
-	public SynchronizedStatement newSynchronizedStatement() {
-		return new SynchronizedStatement(this);
-	}
 
 	/**
 	 * Creates a new unparented for statement node owned by this AST.

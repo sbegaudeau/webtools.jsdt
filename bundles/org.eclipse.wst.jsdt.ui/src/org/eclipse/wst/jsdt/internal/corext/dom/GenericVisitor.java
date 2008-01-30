@@ -86,7 +86,6 @@ import org.eclipse.wst.jsdt.core.dom.SuperFieldAccess;
 import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
-import org.eclipse.wst.jsdt.core.dom.SynchronizedStatement;
 import org.eclipse.wst.jsdt.core.dom.TagElement;
 import org.eclipse.wst.jsdt.core.dom.TextElement;
 import org.eclipse.wst.jsdt.core.dom.ThisExpression;
@@ -305,9 +304,7 @@ public class GenericVisitor extends ASTVisitor {
 	public boolean visit(SwitchStatement node) {
 		return visitNode(node);
 	}
-	public boolean visit(SynchronizedStatement node) {
-		return visitNode(node);
-	}
+
 	public boolean visit(ThisExpression node) {
 		return visitNode(node);
 	}
@@ -644,9 +641,7 @@ public class GenericVisitor extends ASTVisitor {
 	public void endVisit(SwitchStatement node) {
 		endVisitNode(node);
 	}
-	public void endVisit(SynchronizedStatement node) {
-		endVisitNode(node);
-	}
+
 	public void endVisit(ThisExpression node) {
 		endVisitNode(node);
 	}
