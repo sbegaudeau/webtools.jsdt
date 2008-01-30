@@ -908,7 +908,9 @@ private boolean isCompatibleWith0(TypeBinding otherType) {
 			}
 
 
-			return otherReferenceType.isSuperclassOf(this);
+			if ( otherReferenceType.isSuperclassOf(this))
+				return true;
+			return (otherReferenceType.isAnonymousType()  && this.isSuperclassOf(otherReferenceType));
 		default :
 			return false;
 	}

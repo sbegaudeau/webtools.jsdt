@@ -37,6 +37,10 @@ public class FunctionExpression extends Expression {
 		return this.methodDeclaration.binding.functionTypeBinding;
 	}
 
+	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location) {
+		return this.resolveType(scope);
+	}
+
 	public int nullStatus(FlowInfo flowInfo) {
 			return FlowInfo.NON_NULL; // constant expression cannot be null
 	}

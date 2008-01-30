@@ -96,7 +96,7 @@ public String toString() {
  */
 public LibrarySuperType getCommonSuperType() {
 	// TODO Auto-generated method stub
-	System.out.println("Unimplemented method:CompilationUnit.getCommonSuperType"); //$NON-NLS-1$
+//	System.out.println("Unimplemented method:CompilationUnit.getCommonSuperType"); //$NON-NLS-1$
 	return null;
 }
 }

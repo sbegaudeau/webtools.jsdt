@@ -114,6 +114,18 @@ public class InferEngine extends ASTVisitor {
 
 			definedMembers.put( key, member );
 		}
+		
+		public void setCurrentType(InferredType type)
+		{
+			this.currentType=type;
+			Context parentContext=this.parent;
+			
+			while (parentContext!=null && parentContext.currentMethod==this.currentMethod)
+			{
+				parentContext.currentType=type;
+				parentContext=parentContext.parent;
+			}
+		}
 
 
 	}
@@ -416,18 +428,22 @@ public class InferEngine extends ASTVisitor {
 
 		if (currentType==null || !currentType.isAnonymous)
 		{
-			char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
-			char []name = CharOperation.concat(ANONYMOUS_PREFIX,var.name,cs);
-			InferredType type = addType(name);
-			type.isDefinition=true;
-			type.isAnonymous=true;
-			if (currentType!=null)
-				type.superClass=currentType;
+			InferredType type=createAnonymousType(var.name, currentType);
 			var.inferredType=type;
 		}
 		return var.inferredType;
 	}
 
+	private InferredType createAnonymousType(char[] possibleTypeName, InferredType currentType) {
+		char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
+		char []name = CharOperation.concat(ANONYMOUS_PREFIX,possibleTypeName,cs);
+		InferredType type = addType(name);
+		type.isDefinition=true;
+		type.isAnonymous=true;
+		if (currentType!=null)
+			type.superClass=currentType;
+		return type;
+	}
 	/*
 	 * Creates an anonymous type based in the location in the document. This information is used
 	 * to avoid creating duplicates because of the 2-pass nature of this engine.
@@ -794,7 +810,10 @@ public class InferEngine extends ASTVisitor {
 			return type;
 
 
+		} 	else if ( expression instanceof ThisReference ){
+			return this.currentContext.currentType;
 		}
+
 		return null;
 	}
 
@@ -1183,7 +1202,14 @@ public class InferEngine extends ASTVisitor {
 		 * this
 		 */
 		if( expression instanceof ThisReference ){
-
+			if (this.passNumber==2 && this.currentContext.currentType==null)
+			{
+				char [] possibleTypeName={'g','l','o','b','a','l'};
+				if (this.currentContext.currentMethod!=null)
+					possibleTypeName=this.currentContext.currentMethod.selector;
+				this.currentContext.setCurrentType(createAnonymousType(possibleTypeName, null));
+			}
+			
 			type = this.currentContext.currentType;
 		}
 		/*
@@ -1206,6 +1232,8 @@ public class InferEngine extends ASTVisitor {
 
 					if( varDecl != null ){
 						type = varDecl.inferredType; //could be null
+						if (type!=null && !type.isAnonymous)
+							type=createAnonymousType(varDecl);
 					}
 
 				}
@@ -1215,36 +1243,46 @@ public class InferEngine extends ASTVisitor {
 		 * foo.bar.xxx...
 		 */
 		else if( expression instanceof FieldReference ){
-			char [] possibleTypeName = constructTypeName( expression );
+			char[] possibleTypeName = constructTypeName(expression);
 
-			if( possibleTypeName != null ){
-				//search the defined types in the context
-				type = compUnit.findInferredType( possibleTypeName );
+			if (possibleTypeName != null)
+				// search the defined types in the context
+				type = compUnit.findInferredType(possibleTypeName);
 
-				/*
-				 * Continue the search by trying to resolve further down the name
-				 * because this token of the field reference could be a member of
-				 * a type or instance of a type
-				 */
-				if( type == null ){
-					FieldReference fRef = (FieldReference)expression;
+			/*
+			 * Continue the search by trying to resolve further down the name
+			 * because this token of the field reference could be a member of a
+			 * type or instance of a type
+			 */
+			if (type == null) {
+				FieldReference fRef = (FieldReference) expression;
 
-					//this
-					InferredType parentType = getInferredType( fRef.receiver );
+				// this
+				InferredType parentType = getInferredType(fRef.receiver);
 
-					if( parentType != null ){
-						//check the members and return type
-						InferredAttribute typeAttribute = parentType.findAttribute( fRef.token );
+				if (parentType != null) {
+					// check the members and return type
+					InferredAttribute typeAttribute = parentType
+							.findAttribute(fRef.token);
 
-						if( typeAttribute != null )
-							type = typeAttribute.type;
+					if (typeAttribute != null) {
+						type = typeAttribute.type;
+						if (type != null && !type.isAnonymous) {
+							if (possibleTypeName==null)
+								possibleTypeName=typeAttribute.name;
+							type = createAnonymousType(possibleTypeName, type);
+							typeAttribute.type = type;
+						}
 					}
 				}
 			}
+		 
 		}
 
 		return type;
 	}
+
+
 
 	/*
 	 * For SNR it returns the name
