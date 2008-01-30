@@ -2452,23 +2452,7 @@ public class ASTConverterAST3Test extends ConverterTestSetup {
 		checkSourceRange(node, "return 2\\u003B", source);//$NON-NLS-1$
 	}
 	
-	/**
-	 * SynchronizedStatement ==> SynchronizedStatement
-	 */
-	public void test0112() throws JavaModelException {
-		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0112", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		char[] source = sourceUnit.getSource().toCharArray();
-		ASTNode result = runConversion(AST.JLS3, sourceUnit, false);
-		ASTNode node = getASTNode((CompilationUnit) result, 0, 0, 0);
-		assertNotNull("Expression should not be null", node); //$NON-NLS-1$
-		SynchronizedStatement synchronizedStatement = this.ast.newSynchronizedStatement();
-		synchronizedStatement.setExpression(this.ast.newThisExpression());
-		synchronizedStatement.setBody(this.ast.newBlock());
-		assertTrue("Both AST trees should be identical", synchronizedStatement.subtreeMatch(new ASTMatcher(), node));		//$NON-NLS-1$
-		String expectedSource = "synchronized(this) {\n" +//$NON-NLS-1$
-			 "		}"; //$NON-NLS-1$
-		checkSourceRange(node, expectedSource, source);
-	}
+
 
 	/**
 	 * TryStatement ==> TryStatement

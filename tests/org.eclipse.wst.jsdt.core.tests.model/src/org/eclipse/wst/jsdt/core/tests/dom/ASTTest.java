@@ -600,13 +600,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			return super.match(node, other);
 		}
 	
-		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(SynchronizedStatement, Object)
-		 */
-		public boolean match(SynchronizedStatement node, Object other) {
-			checkPositions(node, other);
-			return super.match(node, other);
-		}
+
 	
 		/**
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(TagElement, Object)
@@ -5953,86 +5947,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		});
 	}
 	
-	/**
-	 * @deprecated (Uses getLeadingComment() which is deprecated)
-	 */
-	public void testSynchronizedStatement() {
-		long previousCount = ast.modificationCount();
-		final SynchronizedStatement x = ast.newSynchronizedStatement();
-		assertTrue(ast.modificationCount() > previousCount);
-		previousCount = ast.modificationCount();
-		assertTrue(x.getAST() == ast);
-		assertTrue(x.getParent() == null);
-		assertTrue(x.getExpression().getParent() == x);
-		assertTrue(x.getBody().statements().isEmpty());
-		assertTrue(x.getLeadingComment() == null);
-		assertTrue(x.getNodeType() == ASTNode.SYNCHRONIZED_STATEMENT);
-		assertTrue(x.structuralPropertiesForType() == 
-			SynchronizedStatement.propertyDescriptors(ast.apiLevel()));
-		// make sure that reading did not change modification count
-		assertTrue(ast.modificationCount() == previousCount);
-
-		tLeadingComment(x);
-		
-		genericPropertyTest(x, new Property("Expression", true, Expression.class) { //$NON-NLS-1$
-			public ASTNode sample(AST localAst, boolean parented) {
-				Expression result = localAst.newSimpleName("foo"); //$NON-NLS-1$
-				if (parented) {
-					localAst.newExpressionStatement(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return Expression that embeds x
-				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
-				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
-				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
-				a1.bodyDeclarations().add(s2);
-				Block s3 = ast.newBlock();
-				s2.setBody(s3);
-				s3.statements().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				Block s3 = (Block) x.getParent();
-				s3.statements().remove(x);
-			}
-			public ASTNode get() {
-				return x.getExpression();
-			}
-			public void set(ASTNode value) {
-				x.setExpression((Expression) value);
-			}
-		});
-		
-		genericPropertyTest(x, new Property("Body", true, Block.class) { //$NON-NLS-1$
-			public ASTNode sample(AST targetAst, boolean parented) {
-				Block result = targetAst.newBlock();
-				if (parented) {
-					Block b2 = targetAst.newBlock();
-					b2.statements().add(result);
-				}
-				return result;
-			}
-			public ASTNode wrap() {
-				// return a Block that embeds x
-				Block s1 = ast.newBlock();
-				s1.statements().add(x);
-				return s1;
-			}
-			public void unwrap() {
-				Block s2 = (Block) x.getParent();
-				s2.statements().remove(x);
-			}
-			public ASTNode get() {
-				return x.getBody();
-			}
-			public void set(ASTNode value) {
-				x.setBody((Block) value);
-			}
-		});
-	}
 	
 	/**
 	 * @deprecated (Uses getLeadingComment() which is deprecated)
@@ -8550,7 +8464,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ASTNode.SUPER_METHOD_INVOCATION == 48);
 		assertTrue(ASTNode.SWITCH_CASE == 49);
 		assertTrue(ASTNode.SWITCH_STATEMENT == 50);
-		assertTrue(ASTNode.SYNCHRONIZED_STATEMENT == 51);
 		assertTrue(ASTNode.THIS_EXPRESSION == 52);
 		assertTrue(ASTNode.THROW_STATEMENT == 53);
 		assertTrue(ASTNode.TRY_STATEMENT == 54);
@@ -8655,7 +8568,6 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
               ASTNode.SUPER_METHOD_INVOCATION,
               ASTNode.SWITCH_CASE,
               ASTNode.SWITCH_STATEMENT,
-              ASTNode.SYNCHRONIZED_STATEMENT,
         	  ASTNode.TAG_ELEMENT,
         	  ASTNode.TEXT_ELEMENT,
               ASTNode.THIS_EXPRESSION,

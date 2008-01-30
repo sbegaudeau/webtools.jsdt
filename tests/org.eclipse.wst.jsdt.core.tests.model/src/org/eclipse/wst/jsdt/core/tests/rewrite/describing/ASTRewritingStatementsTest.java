@@ -2924,9 +2924,9 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		assertTrue("Number of statements not 1", statements.size() == 1);
 
 		{ // replace expression and body
-			SynchronizedStatement statement= (SynchronizedStatement) statements.get(0);
-			ASTNode newExpression= ast.newSimpleName("obj");
-			rewrite.replace(statement.getExpression(), newExpression, null);
+//			SynchronizedStatement statement= (SynchronizedStatement) statements.get(0);
+//			ASTNode newExpression= ast.newSimpleName("obj");
+//			rewrite.replace(statement.getExpression(), newExpression, null);
 			
 			Block newBody= ast.newBlock();
 						
@@ -2937,7 +2937,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			newBody.statements().add(ast.newExpressionStatement(assign));
 			
-			rewrite.replace(statement.getBody(), newBody, null);
+//			rewrite.replace(statement.getBody(), newBody, null);
 		}		
 				
 		String preview= evaluateRewrite(cu, rewrite);
@@ -2946,9 +2946,9 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("package test1;\n");
 		buf.append("public class E {\n");
 		buf.append("    public void foo() {\n");
-		buf.append("        synchronized(obj) {\n");
+//		buf.append("        synchronized(obj) {\n");
 		buf.append("            x = 1;\n");
-		buf.append("        }\n");
+//		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());

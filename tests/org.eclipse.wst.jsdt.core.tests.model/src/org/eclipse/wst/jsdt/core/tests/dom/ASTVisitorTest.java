@@ -879,14 +879,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			b.append("sSW)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(SynchronizedStatement node) {
-			b.append("(sSY"); //$NON-NLS-1$
-			return isVisitingChildren();
-		}
-		public void endVisit(SynchronizedStatement node) {
-			b.append("sSY)"); //$NON-NLS-1$
-		}
-
 		public boolean visit(ThisExpression node) {
 			b.append("(eTH"); //$NON-NLS-1$
 			return isVisitingChildren();
@@ -1941,16 +1933,6 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.accept(v1);
 		String result = b.toString();
 		assertTrue(result.equals("[(sSW"+E1S+S1S+S2S+"sSW)]")); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-	public void testSynchronizedStatement() {
-		SynchronizedStatement x1 = ast.newSynchronizedStatement();
-		x1.setExpression(E1);
-		x1.setBody(B1);
-		TestVisitor v1 = new TestVisitor();
-		b.setLength(0);
-		x1.accept(v1);
-		String result = b.toString();
-		assertTrue(result.equals("[(sSY"+E1S+B1S+"sSY)]")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public void testTagElement() {

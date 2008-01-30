@@ -475,9 +475,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		public boolean match(SwitchStatement node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(SynchronizedStatement node, Object other) {
-			return standardBody(node, other, superMatch ? super.match(node, other) : false);
-		}
+
 		public boolean match(TagElement node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
@@ -1094,12 +1092,6 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		x1.setExpression(E1);
 		x1.statements().add(S1);
 		x1.statements().add(S2);
-		basicMatch(x1);
-	}
-	public void testSynchronizedStatement() {
-		SynchronizedStatement x1 = ast.newSynchronizedStatement();
-		x1.setExpression(E1);
-		x1.setBody(B1);
 		basicMatch(x1);
 	}
 	
