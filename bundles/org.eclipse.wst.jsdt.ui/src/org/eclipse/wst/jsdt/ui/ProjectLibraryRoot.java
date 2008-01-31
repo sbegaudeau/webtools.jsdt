@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.ui.packageview.LibraryContainer;
 public class ProjectLibraryRoot implements IAdaptable{
 	
 	private IJavaProject project;
-	private static final String LIBRARY_UI_DESC = "JavaScript Global Scope Libraries";
+	private static final String LIBRARY_UI_DESC = Messages.getString("ProjectLibraryRoot.0"); //$NON-NLS-1$
 
 	
 	public static final class WorkBenchAdapter implements IWorkbenchAdapter{
@@ -61,7 +61,7 @@ public class ProjectLibraryRoot implements IAdaptable{
 		 */
 		public Object getParent(Object o) {
 			// TODO Auto-generated method stub
-			System.out.println("Unimplemented method:WorkBenchAdapter.getParent");
+			System.out.println("Unimplemented method:WorkBenchAdapter.getParent"); //$NON-NLS-1$
 			return null;
 		}
 		
@@ -75,7 +75,7 @@ public class ProjectLibraryRoot implements IAdaptable{
 		return project;
 	}
 	public String getText() {
-		return "JavaScript Global Scope";
+		return ProjectLibraryRoot.LIBRARY_UI_DESC;
 	}
 	public Object[] getChildren() {
 	     if (!project.getProject().isOpen())

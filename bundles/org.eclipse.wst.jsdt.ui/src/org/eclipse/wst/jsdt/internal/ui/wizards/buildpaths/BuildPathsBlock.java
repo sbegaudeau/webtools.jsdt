@@ -1206,6 +1206,19 @@ public class BuildPathsBlock {
 		}
 	}
 	
+	public void showPage(int pageIndex) {
+		if (fTabFolder == null) {
+			fPageIndex= pageIndex;
+		} else {
+			fTabFolder.setSelection(pageIndex);
+			fCurrPage= (BuildPathBasePage)fTabFolder.getItem(pageIndex).getData();
+			fCurrPage.aboutToShow();
+				//BuildPathBasePage page= (BuildPathBasePage) fTabFolder.getItem(pageIndex).getData();
+			}	
+		updateUI();
+	}
+	
+	
 	public void addElement(IClasspathEntry entry) {
 		int pageIndex= getPageIndex(entry.getEntryKind());
 		if (fTabFolder == null) {

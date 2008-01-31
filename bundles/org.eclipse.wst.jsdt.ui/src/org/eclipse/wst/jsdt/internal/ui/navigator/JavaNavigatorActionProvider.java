@@ -44,7 +44,7 @@ public class JavaNavigatorActionProvider extends CommonActionProvider {
 
 	private JavaSearchActionGroup fSearchGroup;
 
-	private GenerateBuildPathActionGroup fBuildPathGroup;
+	//private GenerateBuildPathActionGroup fBuildPathGroup;
 
 	private GenerateActionGroup fGenerateGroup;
 
@@ -54,7 +54,7 @@ public class JavaNavigatorActionProvider extends CommonActionProvider {
 		if (fInViewPart) {
 			fOpenViewGroup.fillActionBars(actionBars);
 			fCCPGroup.fillActionBars(actionBars);
-			fBuildPathGroup.fillActionBars(actionBars);
+		//	fBuildPathGroup.fillActionBars(actionBars);
 			fGenerateGroup.fillActionBars(actionBars);
 			fSearchGroup.fillActionBars(actionBars);
 		}
@@ -64,7 +64,7 @@ public class JavaNavigatorActionProvider extends CommonActionProvider {
 		if (fInViewPart) {
 			fOpenViewGroup.fillContextMenu(menu);
 			fCCPGroup.fillContextMenu(menu);
-			fBuildPathGroup.fillContextMenu(menu);
+		//	fBuildPathGroup.fillContextMenu(menu);
 			fGenerateGroup.fillContextMenu(menu);
 			fSearchGroup.fillContextMenu(menu);
 		}
@@ -85,7 +85,7 @@ public class JavaNavigatorActionProvider extends CommonActionProvider {
 				fCCPGroup= new CCPActionGroup(viewPart);
 				fGenerateGroup= new GenerateActionGroup(viewPart);
 				fSearchGroup= new JavaSearchActionGroup(viewPart);
-				fBuildPathGroup= new GenerateBuildPathActionGroup(viewPart);
+				//fBuildPathGroup= new GenerateBuildPathActionGroup(viewPart);
 
 				fInViewPart= true;
 			}
@@ -99,7 +99,7 @@ public class JavaNavigatorActionProvider extends CommonActionProvider {
 			fCCPGroup.setContext(context);
 			fGenerateGroup.setContext(context);
 			fSearchGroup.setContext(context);
-			fBuildPathGroup.setContext(context);
+			//fBuildPathGroup.setContext(context);
 		}
 	}
 }

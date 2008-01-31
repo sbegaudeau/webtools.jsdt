@@ -55,7 +55,8 @@ public class SourceAttachmentPropertyPage extends PropertyPage implements IStatu
 	private IPackageFragmentRoot fRoot;
 	private IPath fContainerPath;
 	private IClasspathEntry fEntry;
-
+	public static final String PROP_ID= "org.eclipse.wst.jsdt.ui.propertyPages.SourceAttachmentPage" ; //$NON-NLS-1$
+	
 	public SourceAttachmentPropertyPage() {
 	}
 

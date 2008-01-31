@@ -59,6 +59,7 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 	
 	public static final Object DATA_REVEAL_ENTRY= "select_classpath_entry"; //$NON-NLS-1$
 	public static final Object DATA_REVEAL_ATTRIBUTE_KEY= "select_classpath_attribute_key"; //$NON-NLS-1$
+	public static final String DATA_PAGE_INDEX= "pageIndex"; //$NON-NLS-1$
 	
 	public static final Object DATA_BLOCK= "block_until_buildpath_applied"; //$NON-NLS-1$
 		
@@ -258,6 +259,13 @@ public class BuildPathsPropertyPage extends PropertyPage implements IStatusChang
 					fBuildPathsBlock.addElement((IClasspathEntry) entryToAdd);
 				}
 			}
+			
+			Object pageIndex = map.get(DATA_PAGE_INDEX);
+			
+			if(pageIndex instanceof Integer) {
+				fBuildPathsBlock.showPage(((Integer)pageIndex).intValue());
+			}
+			
 			fBlockOnApply= Boolean.TRUE.equals(map.get(DATA_BLOCK));
 		}
 	}

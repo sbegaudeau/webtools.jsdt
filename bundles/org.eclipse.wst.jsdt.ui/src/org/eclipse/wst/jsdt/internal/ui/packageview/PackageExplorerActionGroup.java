@@ -54,7 +54,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.ui.actions.CompositeActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.NewWizardsActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.actions.SelectAllAction;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.GenerateBuildPathActionGroup;
+//import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.GenerateBuildPathActionGroup;
 import org.eclipse.wst.jsdt.internal.ui.workingsets.ViewActionGroup;
 import org.eclipse.wst.jsdt.ui.IContextMenuConstants;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -114,7 +114,7 @@ class PackageExplorerActionGroup extends CompositeActionGroup {
 			new NewWizardsActionGroup(site),
 			fNavigateActionGroup= new NavigateActionGroup(fPart), 
 			new CCPActionGroup(fPart),
-            new GenerateBuildPathActionGroup(fPart),
+            /*new GenerateBuildPathActionGroup(fPart),*/
 			new GenerateActionGroup(fPart), 
 			fRefactorActionGroup= new RefactorActionGroup(fPart),
 			new ImportActionGroup(fPart),

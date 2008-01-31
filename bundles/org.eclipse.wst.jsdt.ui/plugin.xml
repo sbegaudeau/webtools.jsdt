@@ -617,7 +617,21 @@
       </page>
 -->
       <page
+            name="JavaScript"        
+            class="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
+            id="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage">
+         <enabledWhen>
+		     <adapt type="org.eclipse.core.resources.IProject">
+		          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.wst.jsdt.core.jsNature"/>
+		     </adapt>         
+         </enabledWhen>
+         <keywordReference id="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"/>
+      </page>
+
+
+      <page
             name="%buildPathPageName"        
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage"
             id="org.eclipse.wst.jsdt.ui.propertyPages.BuildPathsPropertyPage">
          <enabledWhen>
@@ -629,6 +643,7 @@
       </page>
       <page
             name="%codeStylePageName"
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.CodeStylePreferencePage"
             id="org.eclipse.wst.jsdt.ui.propertyPages.CodeStylePreferencePage">
          <enabledWhen>
@@ -688,6 +703,7 @@
       </page>
       <page
             name="%compliancePageName"
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.CompliancePreferencePage"
             id="org.eclipse.wst.jsdt.ui.propertyPages.CompliancePreferencePage">
          <enabledWhen>
@@ -747,6 +763,7 @@
       </page>
       <page
             name="%sourceAttachmentPageName"
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.SourceAttachmentPropertyPage"
             id="org.eclipse.wst.jsdt.ui.propertyPages.SourceAttachmentPage">
          <enabledWhen>
@@ -760,6 +777,7 @@
       </page>
       <page
             name="%javadocLocationPageName"
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.JavadocConfigurationPropertyPage"
             id="org.eclipse.wst.jsdt.ui.preferences.JavadocConfigurationPropertyPage0">
          <enabledWhen>
@@ -774,6 +792,7 @@
       <!-- can be merged again when bug 155422 is fixed --> 
       <page
             name="%javadocLocationPageName"
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.JavadocConfigurationPropertyPage"
             id="org.eclipse.wst.jsdt.ui.preferences.JavadocConfigurationPropertyPage1">
          <enabledWhen>
@@ -784,6 +803,7 @@
       </page>
       <page
             name="%nativeLibraryPageName"
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.NativeLibrariesPropertyPage"
             id="org.eclipse.wst.jsdt.ui.preferences.NativeLibrariesPropertyPage">
          <enabledWhen>
@@ -793,6 +813,7 @@
       
       <page
             name="%editorPageName"
+            category="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             class="org.eclipse.wst.jsdt.internal.ui.preferences.JavaEditorPropertyPage"
             id="org.eclipse.wst.jsdt.ui.propertyPages.JavaEditorPropertyPage">
          <enabledWhen>
@@ -6182,7 +6203,75 @@
             class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryClassPathContainerInitializer"
             id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
       </classpathContainerInitializer>
-   </extension>   
+   </extension>
+   
+   <!--  JSDT context menu contributions for the JavaScript Support object  -->
+   
+   
+   <extension
+         point="org.eclipse.ui.popupMenus">
+  		<objectContribution
+            objectClass="org.eclipse.wst.jsdt.ui.ProjectLibraryRoot"
+            adaptable="true"
+            id="org.eclipse.wst.jsdt.ui.javascript.support">
+            <menu
+               id="org.eclipse.wst.jsdt.ui.project.tools">
+            <separator
+               name="group0">
+            </separator>
+           <separator
+               name="group1">
+            </separator>
+         </menu>
+
+   		<action
+            class="org.eclipse.wst.jsdt.ui.JavaScriptSuperTypeAction"
+            label="Set Universal JavaScript Type"
+            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
+            enablesFor="1"
+            id="org.eclipse.wst.jsdt.internal.ui.configure.super.type">
+      	</action>
+      	<!--
+      	 <action
+            class="org.eclipse.wst.jsdt.internal.ui.SetupProjectsWizzard"
+            label="Add/Remove AJAX Toolkits"
+            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
+            enablesFor="1"
+            id="org.eclipse.wst.jsdt.internal.ui.configure.scope">
+      	</action>
+      	-->
+      	<action
+            class="org.eclipse.wst.jsdt.ui.JavaScriptSourceFoldersAction"
+            label="Edit Source Folders"
+            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
+            enablesFor="1"
+            id="org.eclipse.wst.jsdt.internal.ui.configure.source.folders">
+      	</action>     	
+         <action
+            class="org.eclipse.wst.jsdt.ui.JavaScriptLibrariesAction"
+            label="Configure Global Scope"
+            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
+            enablesFor="1"
+            id="org.eclipse.wst.jsdt.internal.ui.configure.scope">
+      	</action>
+        <action
+            class="org.eclipse.wst.jsdt.ui.JavaScriptLibrariesAction"
+            label="Properties"
+            menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group1"
+            enablesFor="1"
+            id="org.eclipse.wst.jsdt.internal.ui.configure.javascript.properties">
+      	</action>      	
+   		</objectContribution>
+   </extension>
+   
+   
+   
+   
+   
+   
+   
+   <!--  ENd menu  -->
+      
    <!-- UNCOMMENT to add a menu option for JSDT standalone setup on project -->
    <!-- 
    <extension
