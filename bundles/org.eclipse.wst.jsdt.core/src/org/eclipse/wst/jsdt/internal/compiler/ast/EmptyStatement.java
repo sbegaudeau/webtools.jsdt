@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -36,10 +35,6 @@ public class EmptyStatement extends Statement {
 			return false;
 		}
 		return super.complainIfUnreachable(flowInfo, scope, didAlreadyComplain);
-	}
-
-	public void generateCode(BlockScope currentScope, CodeStream codeStream){
-		// no bytecode, no need to check for reachability or recording source positions
 	}
 
 	public StringBuffer printStatement(int tab, StringBuffer output) {

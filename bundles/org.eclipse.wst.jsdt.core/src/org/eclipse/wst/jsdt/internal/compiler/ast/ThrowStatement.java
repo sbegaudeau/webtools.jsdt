@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -33,21 +32,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 	// need to check that exception thrown is actually caught somewhere
 	flowContext.checkExceptionHandlers(this.exceptionType, this, flowInfo, currentScope);
 	return FlowInfo.DEAD_END;
-}
-
-/**
- * Throw code generation
- *
- * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
- */
-public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-	if ((this.bits & ASTNode.IsReachable) == 0)
-		return;
-	int pc = codeStream.position;
-	this.exception.generateCode(currentScope, codeStream, true);
-	codeStream.athrow();
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 
 public StringBuffer printStatement(int indent, StringBuffer output) {

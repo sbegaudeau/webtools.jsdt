@@ -20,7 +20,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
@@ -218,83 +217,6 @@ public class MethodScope extends BlockScope {
 
 		methodBinding.modifiers = modifiers;
 	}
-
-	/* Compute variable positions in scopes given an initial position offset
-	 * ignoring unused local variables.
-	 *
-	 * Deal with arguments here, locals and subscopes are processed in BlockScope method
-	 */
-	public void computeLocalVariablePositions(int initOffset, CodeStream codeStream) {
-
-		boolean isReportingUnusedArgument = false;
-
-		if (referenceContext instanceof AbstractMethodDeclaration) {
-			AbstractMethodDeclaration methodDecl = (AbstractMethodDeclaration)referenceContext;
-			MethodBinding method = methodDecl.binding;
-			if (!(method.isAbstract()
-					|| (method.isImplementing() && !compilerOptions().reportUnusedParameterWhenImplementingAbstract)
-					|| (method.isOverriding() && !method.isImplementing() && !compilerOptions().reportUnusedParameterWhenOverridingConcrete)
-					|| method.isMain())) {
-				isReportingUnusedArgument = true;
-			}
-		}
-		this.offset = initOffset;
-		this.maxOffset = initOffset;
-
-		// manage arguments
-		int ilocal = 0, maxLocals = this.localIndex;
-		while (ilocal < maxLocals) {
-			LocalVariableBinding local = locals[ilocal];
-			if (local == null || ((local.tagBits & TagBits.IsArgument) == 0)) break; // done with arguments
-
-			// do not report fake used variable
-			if (isReportingUnusedArgument
-					&& local.useFlag == LocalVariableBinding.UNUSED
-					&& ((local.declaration.bits & ASTNode.IsLocalDeclarationReachable) != 0)) { // declaration is reachable
-				this.problemReporter().unusedArgument(local.declaration);
-			}
-
-			// record user-defined argument for attribute generation
-			codeStream.record(local);
-
-			// assign variable position
-			local.resolvedPosition = this.offset;
-
-			if ((local.type == TypeBinding.LONG) || (local.type == TypeBinding.DOUBLE)) {
-				this.offset += 2;
-			} else {
-				this.offset++;
-			}
-			// check for too many arguments/local variables
-			if (this.offset > 0xFF) { // no more than 255 words of arguments
-				this.problemReporter().noMoreAvailableSpaceForArgument(local, local.declaration);
-			}
-			ilocal++;
-		}
-
-		// sneak in extra argument before other local variables
-		if (extraSyntheticArguments != null) {
-			for (int iarg = 0, maxArguments = extraSyntheticArguments.length; iarg < maxArguments; iarg++){
-				SyntheticArgumentBinding argument = extraSyntheticArguments[iarg];
-				argument.resolvedPosition = this.offset;
-				if ((argument.type == TypeBinding.LONG) || (argument.type == TypeBinding.DOUBLE)){
-					this.offset += 2;
-				} else {
-					this.offset++;
-				}
-				if (this.offset > 0xFF) { // no more than 255 words of arguments
-					this.problemReporter().noMoreAvailableSpaceForArgument(argument, (ASTNode)this.referenceContext);
-				}
-			}
-		}
-		this.computeLocalVariablePositions(ilocal, this.offset, codeStream);
-	}
-
-	/* Error management:
-	 * 		keep null for all the errors that prevent the method to be created
-	 * 		otherwise return a correct method binding (but without the element
-	 *		that caused the problem) : ie : Incorrect thrown exception
-	 */
 
 	MethodBinding createMethod(InferredMethod inferredMethod,SourceTypeBinding declaringClass) {
         boolean isConstructor=inferredMethod.isConstructor;

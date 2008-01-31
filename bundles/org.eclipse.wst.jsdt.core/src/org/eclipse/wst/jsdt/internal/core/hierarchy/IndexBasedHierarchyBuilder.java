@@ -19,8 +19,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -36,13 +34,11 @@ import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObjectToInt;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
-import org.eclipse.wst.jsdt.internal.core.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.IPathRequestor;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
@@ -380,31 +376,7 @@ protected ICompilationUnit createCompilationUnitFromPath(Openable handle, IFile 
 	this.cuToHandle.put(unit, handle);
 	return unit;
 }
-protected IBinaryType createInfoFromClassFile(Openable classFile, IResource file) {
-	String documentPath = classFile.getPath().toString();
-	IBinaryType binaryType = (IBinaryType)this.binariesFromIndexMatches.get(documentPath);
-	if (binaryType != null) {
-		this.infoToHandle.put(binaryType, classFile);
-		return binaryType;
-	} else {
-		return super.createInfoFromClassFile(classFile, file);
-	}
-}
-protected IBinaryType createInfoFromClassFileInJar(Openable classFile) {
-	String filePath = (((ClassFile)classFile).getType().getFullyQualifiedName('$')).replace('.', '/') + SuffixConstants.SUFFIX_STRING_class;
-	IPackageFragmentRoot root = classFile.getPackageFragmentRoot();
-	IPath path = root.getPath();
-	// take the OS path for external jars, and the forward slash path for internal jars
-	String rootPath = path.getDevice() == null ? path.toString() : path.toOSString();
-	String documentPath = rootPath + IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR + filePath;
-	IBinaryType binaryType = (IBinaryType)this.binariesFromIndexMatches.get(documentPath);
-	if (binaryType != null) {
-		this.infoToHandle.put(binaryType, classFile);
-		return binaryType;
-	} else {
-		return super.createInfoFromClassFileInJar(classFile);
-	}
-}
+
 /**
  * Returns all of the possible subtypes of this type hierarchy.
  * Returns null if they could not be determine.

@@ -81,12 +81,10 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager.PerProjectInfo;
 import org.eclipse.wst.jsdt.internal.core.JavaProjectElementInfo.LookupCache;
 import org.eclipse.wst.jsdt.internal.core.builder.JavaBuilder;
-import org.eclipse.wst.jsdt.internal.core.eval.EvaluationContextWrapper;
 import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-import org.eclipse.wst.jsdt.internal.eval.EvaluationContext;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.osgi.service.prefs.BackingStoreException;
 import org.w3c.dom.Element;
@@ -2289,9 +2287,10 @@ public class JavaProject
 	 * @see IJavaProject#newEvaluationContext()
 	 */
 	public IEvaluationContext newEvaluationContext() {
-		EvaluationContext context = new EvaluationContext();
-		context.setLineSeparator(Util.getLineSeparator(null/*no existing source*/, this));
-		return new EvaluationContextWrapper(context, this);
+//		EvaluationContext context = new EvaluationContext();
+//		context.setLineSeparator(Util.getLineSeparator(null/*no existing source*/, this));
+//		return new EvaluationContextWrapper(context, this);
+		return null;
 	}
 
 	/*

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.core.builder;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
@@ -34,9 +33,6 @@ public static ClasspathLocation forLibrary(String libraryPathname, AccessRuleSet
 	return forLibrary(libraryPathname, 0, accessRuleSet);
 }
 
-static ClasspathLocation forLibrary(IFile library, AccessRuleSet accessRuleSet) {
-	return new ClasspathJar(library, accessRuleSet);
-}
 
 public abstract NameEnvironmentAnswer findClass(String binaryFileName, String qualifiedPackageName, String qualifiedBinaryFileName);
 

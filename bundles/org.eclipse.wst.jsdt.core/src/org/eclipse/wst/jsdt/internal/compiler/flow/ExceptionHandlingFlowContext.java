@@ -16,7 +16,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SubRoutineStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.ObjectCache;
+import org.eclipse.wst.jsdt.internal.compiler.util.ObjectCache;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;

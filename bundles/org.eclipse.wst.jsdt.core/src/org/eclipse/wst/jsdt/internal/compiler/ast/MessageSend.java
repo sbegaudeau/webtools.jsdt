@@ -15,7 +15,6 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -113,76 +112,6 @@ public void computeConversion(Scope scope, TypeBinding runtimeTimeType, TypeBind
 //		}
 //	}
 //	super.computeConversion(scope, runtimeTimeType, compileTimeType);
-}
-
-/**
- * MessageSend code generation
- *
- * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
- * @param valueRequired boolean
- */
-public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-
-//	int pc = codeStream.position;
-//
-//	// generate receiver/enclosing instance access
-//	boolean isStatic = this.codegenBinding.isStatic();
-//	if (isStatic) {
-//		receiver.generateCode(currentScope, codeStream, false);
-//		codeStream.recordPositionsFrom(pc, this.sourceStart);
-//	} else if ((bits & DepthMASK) != 0 && receiver.isImplicitThis()) { // outer access ?
-//		// outer method can be reached through emulation if implicit access
-//		ReferenceBinding targetType = currentScope.enclosingSourceType().enclosingTypeAt((bits & DepthMASK) >> DepthSHIFT);
-//		Object[] path = currentScope.getEmulationPath(targetType, true /*only exact match*/, false/*consider enclosing arg*/);
-//		codeStream.generateOuterAccess(path, this, targetType, currentScope);
-//	} else {
-//		receiver.generateCode(currentScope, codeStream, true);
-//		if (this.receiverGenericCast != null)
-//			codeStream.checkcast(this.receiverGenericCast);
-//		codeStream.recordPositionsFrom(pc, this.sourceStart);
-//
-//	}
-//	// generate arguments
-//	generateArguments(binding, arguments, currentScope, codeStream);
-//	// actual message invocation
-//	if (syntheticAccessor == null){
-//		if (isStatic){
-//			codeStream.invokestatic(this.codegenBinding);
-//		} else {
-//			if( (receiver.isSuper()) || this.codegenBinding.isPrivate()){
-//				codeStream.invokespecial(this.codegenBinding);
-//			} else {
-//				if (this.codegenBinding.declaringClass.isInterface()) { // interface or annotation type
-//					codeStream.invokeinterface(this.codegenBinding);
-//				} else {
-//					codeStream.invokevirtual(this.codegenBinding);
-//				}
-//			}
-//		}
-//	} else {
-//		codeStream.invokestatic(syntheticAccessor);
-//	}
-//	// operation on the returned value
-//	if (valueRequired){
-//		// implicit conversion if necessary
-//		if (this.valueCast != null)
-//			codeStream.checkcast(this.valueCast);
-//		codeStream.generateImplicitConversion(implicitConversion);
-//	} else {
-//		// pop return value if any
-//		switch(binding.returnType.id){
-//			case T_long :
-//			case T_double :
-//				codeStream.pop2();
-//				break;
-//			case T_void :
-//				break;
-//			default:
-//				codeStream.pop();
-//		}
-//	}
-//	codeStream.recordPositionsFrom(pc, (int)(this.nameSourcePosition >>> 32)); // highlight selector
 }
 
 /**

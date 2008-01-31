@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -54,16 +53,6 @@ public class WithStatement extends Statement {
 
 
 		return flowInfo;
-	}
-
-	/**
-	 * While code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
 	}
 
 	public void resolve(BlockScope parentScope) {

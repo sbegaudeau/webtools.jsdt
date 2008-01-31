@@ -19,7 +19,6 @@ import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.core.search.SearchRequestor;
-import org.eclipse.wst.jsdt.internal.core.search.indexing.BinaryIndexer;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.SourceIndexer;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
 
@@ -77,9 +76,10 @@ public class JavaSearchParticipant extends SearchParticipant {
 		String documentPath = document.getPath();
 		if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(documentPath)) {
 			new SourceIndexer(document).indexDocument();
-		} else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(documentPath)) {
-			new BinaryIndexer(document).indexDocument();
-		}
+		} 
+//		else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(documentPath)) {
+//			new BinaryIndexer(document).indexDocument();
+//		}
 	}
 
 	/* (non-Javadoc)

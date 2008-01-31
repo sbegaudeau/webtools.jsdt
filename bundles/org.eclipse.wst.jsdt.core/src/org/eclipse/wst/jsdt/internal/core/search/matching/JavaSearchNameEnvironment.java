@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
 import java.util.HashMap;
-import java.util.zip.ZipFile;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -29,10 +28,8 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.JavaModel;
-import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
-import org.eclipse.wst.jsdt.internal.core.builder.ClasspathJar;
 import org.eclipse.wst.jsdt.internal.core.builder.ClasspathLocation;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -88,15 +85,10 @@ private void computeClasspathLocations(IWorkspaceRoot workspaceRoot, JavaProject
 	int length = roots.length;
 	ClasspathLocation[] cpLocations = new ClasspathLocation[length];
 	int index = 0;
-	JavaModelManager manager = JavaModelManager.getJavaModelManager();
 	for (int i = 0; i < length; i++) {
 		PackageFragmentRoot root = (PackageFragmentRoot) roots[i];
 		IPath path = root.getPath();
 		try {
-			if (root.isArchive()) {
-				ZipFile zipFile = manager.getZipFile(path);
-				cpLocations[index++] = new ClasspathJar(zipFile, ((ClasspathEntry) root.getRawClasspathEntry()).getAccessRuleSet());
-			} else {
 				Object target = JavaModel.getTarget(workspaceRoot, path, false);
 				if (target == null) {
 					// target doesn't exist any longer
@@ -110,7 +102,6 @@ private void computeClasspathLocations(IWorkspaceRoot workspaceRoot, JavaProject
 				else
 					cpLocations[index++] = ClasspathLocation.forLibrary(path.toOSString(), ((ClasspathEntry) root.getRawClasspathEntry()).getAccessRuleSet());
 
-			}
 		} catch (CoreException e1) {
 			// problem opening zip file or getting root kind
 			// consider root corrupt and ignore

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import java.io.ByteArrayInputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -25,16 +23,11 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IJavaModelMarker;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
-import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
@@ -355,11 +348,6 @@ protected boolean findAffectedSourceFiles(IResourceDelta delta, ClasspathLocatio
 			if (p != null) {
 				IResourceDelta binaryDelta = delta.findMember(p);
 				if (binaryDelta != null) {
-					if (bLocation instanceof ClasspathJar) {
-						if (JavaBuilder.DEBUG)
-							System.out.println("ABORTING incremental build... found delta to jar/zip file"); //$NON-NLS-1$
-						return false; // do full build since jar file was changed (added/removed were caught as classpath change)
-					}
 					if (binaryDelta.getKind() == IResourceDelta.ADDED || binaryDelta.getKind() == IResourceDelta.REMOVED) {
 						if (JavaBuilder.DEBUG)
 							System.out.println("ABORTING incremental build... found added/removed binary folder"); //$NON-NLS-1$
@@ -787,92 +775,6 @@ protected void updateTasksFor(SourceFile sourceFile, CompilationResult result) t
 
 	JavaBuilder.removeTasksFor(sourceFile.resource);
 	storeTasksFor(sourceFile, tasks);
-}
-
-protected void writeClassFileBytes(byte[] bytes, IFile file, String qualifiedFileName, boolean isTopLevelType, SourceFile compilationUnit) throws CoreException {
-	// Before writing out the class file, compare it to the previous file
-	// If structural changes occurred then add dependent source files
-	if (file.exists()) {
-		if (writeClassFileCheck(file, qualifiedFileName, bytes) || compilationUnit.updateClassFile) { // see 46093
-			if (JavaBuilder.DEBUG)
-				System.out.println("Writing changed class file " + file.getName());//$NON-NLS-1$
-			if (!file.isDerived())
-				file.setDerived(true);
-			file.setContents(new ByteArrayInputStream(bytes), true, false, null);
-		} else if (JavaBuilder.DEBUG) {
-			System.out.println("Skipped over unchanged class file " + file.getName());//$NON-NLS-1$
-		}
-	} else {
-		if (isTopLevelType)
-			addDependentsOf(new Path(qualifiedFileName), true); // new type
-		if (JavaBuilder.DEBUG)
-			System.out.println("Writing new class file " + file.getName());//$NON-NLS-1$
-		try {
-			file.create(new ByteArrayInputStream(bytes), IResource.FORCE | IResource.DERIVED, null);
-		} catch (CoreException e) {
-			if (e.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS) {
-				IStatus status = e.getStatus();
-				if (status instanceof IResourceStatus) {
-					IPath oldFilePath = ((IResourceStatus) status).getPath();
-					char[] oldTypeName = oldFilePath.removeFileExtension().lastSegment().toCharArray();
-					char[][] previousTypeNames = newState.getDefinedTypeNamesFor(compilationUnit.typeLocator());
-					boolean fromSameFile = false;
-					if (previousTypeNames == null) {
-						fromSameFile = CharOperation.equals(compilationUnit.getMainTypeName(), oldTypeName);
-					} else {
-						for (int i = 0, l = previousTypeNames.length; i < l; i++) {
-							if (CharOperation.equals(previousTypeNames[i], oldTypeName)) {
-								fromSameFile = true;
-								break;
-							}
-						}
-					}
-					if (fromSameFile) {
-						// file is defined by the same compilationUnit, but won't be deleted until later so do it now
-						IFile collision = file.getParent().getFile(new Path(oldFilePath.lastSegment()));
-						collision.delete(true, false, null);
-						boolean success = false;
-						try {
-							file.create(new ByteArrayInputStream(bytes), IResource.FORCE | IResource.DERIVED, null);
-							success = true;
-						} catch (CoreException ignored) {
-							// ignore the second exception
-						}
-						if (success) return;
-					}
-				}
-				// catch the case that a type has been renamed and collides on disk with an as-yet-to-be-deleted type
-				throw new AbortCompilation(true, new AbortIncrementalBuildException(qualifiedFileName));
-			}
-			throw e; // rethrow
-		}
-	}
-}
-
-protected boolean writeClassFileCheck(IFile file, String fileName, byte[] newBytes) throws CoreException {
-	try {
-		byte[] oldBytes = Util.getResourceContentsAsByteArray(file);
-		notEqual : if (newBytes.length == oldBytes.length) {
-			for (int i = newBytes.length; --i >= 0;)
-				if (newBytes[i] != oldBytes[i]) break notEqual;
-			return false; // bytes are identical so skip them
-		}
-		URI location = file.getLocationURI();
-		if (location == null) return false; // unable to determine location of this class file
-		String filePath = location.getSchemeSpecificPart();
-		ClassFileReader reader = new ClassFileReader(oldBytes, filePath.toCharArray());
-		// ignore local types since they're only visible inside a single method
-		if (!(reader.isLocal() || reader.isAnonymous()) && reader.hasStructuralChanges(newBytes)) {
-			if (JavaBuilder.DEBUG)
-				System.out.println("Type has structural changes " + fileName); //$NON-NLS-1$
-			addDependentsOf(new Path(fileName), true);
-			this.newState.wasStructurallyChanged(fileName);
-		}
-	} catch (ClassFormatException e) {
-		addDependentsOf(new Path(fileName), true);
-		this.newState.wasStructurallyChanged(fileName);
-	}
-	return true;
 }
 
 public String toString() {

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -89,20 +88,6 @@ public class DoubleLiteral extends NumberLiteral {
 		}
 		value = doubleValue;
 		constant = DoubleConstant.fromValue(value);
-	}
-	/**
-	 * Code generation for the double literak
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 * @param valueRequired boolean
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-		int pc = codeStream.position;
-		if (valueRequired) {
-			codeStream.generateConstant(constant, implicitConversion);
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 	public TypeBinding literalType(BlockScope scope) {
 		return TypeBinding.DOUBLE;

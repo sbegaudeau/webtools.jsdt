@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -79,10 +78,6 @@ public class TypeParameter extends AbstractVariableDeclaration {
 			}
 		}
 		return output;
-	}
-
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-	    // nothing to do
 	}
 
 	public void traverse(ASTVisitor visitor, BlockScope scope) {

@@ -265,9 +265,6 @@ static State read(IProject project, DataInputStream in) throws IOException {
 			case EXTERNAL_JAR :
 				newState.binaryLocations[i] = ClasspathLocation.forLibrary(in.readUTF(), in.readLong(), readRestriction(in));
 				break;
-			case INTERNAL_JAR :
-				newState.binaryLocations[i] = ClasspathLocation.forLibrary(root.getFile(new Path(in.readUTF())), readRestriction(in));
-				break;
 			case LIBRARY :
 				newState.binaryLocations[i] = ClasspathLocation.forLibrary(in.readUTF(), readRestriction(in));
 		}

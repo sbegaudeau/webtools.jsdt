@@ -10,27 +10,16 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public abstract class Statement extends ProgramElement {
 
 	public abstract FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo);
 
-	/**
-	 * INTERNAL USE ONLY.
-	 * This is used to redirect inter-statements jumps.
-	 */
-	public void branchChainTo(BranchLabel label) {
-		// do nothing by default
-	}
 
 	// Report an error if necessary
 	public boolean complainIfUnreachable(FlowInfo flowInfo, BlockScope scope, boolean didAlreadyComplain) {
@@ -46,69 +35,6 @@ public abstract class Statement extends ProgramElement {
 		return false;
 	}
 
-	/**
-	 * Generate invocation arguments, considering varargs methods
-	 */
-	public void generateArguments(MethodBinding binding, Expression[] arguments, BlockScope currentScope, CodeStream codeStream) {
-
-		if (binding.isVarargs()) {
-			// 5 possibilities exist for a call to the vararg method foo(int i, int ... value) :
-			//      foo(1), foo(1, null), foo(1, 2), foo(1, 2, 3, 4) & foo(1, new int[] {1, 2})
-			TypeBinding[] params = binding.parameters;
-			int paramLength = params.length;
-			int varArgIndex = paramLength - 1;
-			for (int i = 0; i < varArgIndex; i++) {
-				arguments[i].generateCode(currentScope, codeStream, true);
-			}
-
-			ArrayBinding varArgsType = (ArrayBinding) params[varArgIndex]; // parameterType has to be an array type
-			ArrayBinding codeGenVarArgsType = (ArrayBinding) binding.parameters[varArgIndex].erasure();
-			int elementsTypeID = varArgsType.elementsType().id;
-			int argLength = arguments == null ? 0 : arguments.length;
-
-			if (argLength > paramLength) {
-				// right number but not directly compatible or too many arguments - wrap extra into array
-				// called with (argLength - lastIndex) elements : foo(1, 2) or foo(1, 2, 3, 4)
-				// need to gen elements into an array, then gen each remaining element into created array
-				codeStream.generateInlinedValue(argLength - varArgIndex);
-				codeStream.newArray(codeGenVarArgsType); // create a mono-dimensional array
-				for (int i = varArgIndex; i < argLength; i++) {
-					codeStream.dup();
-					codeStream.generateInlinedValue(i - varArgIndex);
-					arguments[i].generateCode(currentScope, codeStream, true);
-					codeStream.arrayAtPut(elementsTypeID, false);
-				}
-			} else if (argLength == paramLength) {
-				// right number of arguments - could be inexact - pass argument as is
-				TypeBinding lastType = arguments[varArgIndex].resolvedType;
-				if (lastType == TypeBinding.NULL
-					|| (varArgsType.dimensions() == lastType.dimensions()
-						&& lastType.isCompatibleWith(varArgsType))) {
-					// foo(1, new int[]{2, 3}) or foo(1, null) --> last arg is passed as-is
-					arguments[varArgIndex].generateCode(currentScope, codeStream, true);
-				} else {
-					// right number but not directly compatible or too many arguments - wrap extra into array
-					// need to gen elements into an array, then gen each remaining element into created array
-					codeStream.generateInlinedValue(1);
-					codeStream.newArray(codeGenVarArgsType); // create a mono-dimensional array
-					codeStream.dup();
-					codeStream.generateInlinedValue(0);
-					arguments[varArgIndex].generateCode(currentScope, codeStream, true);
-					codeStream.arrayAtPut(elementsTypeID, false);
-				}
-			} else { // not enough arguments - pass extra empty array
-				// scenario: foo(1) --> foo(1, new int[0])
-				// generate code for an empty array of parameterType
-				codeStream.generateInlinedValue(0);
-				codeStream.newArray(codeGenVarArgsType); // create a mono-dimensional array
-			}
-		} else if (arguments != null) { // standard generation for method arguments
-			for (int i = 0, max = arguments.length; i < max; i++)
-				arguments[i].generateCode(currentScope, codeStream, true);
-		}
-	}
-
-	public abstract void generateCode(BlockScope currentScope, CodeStream codeStream);
 
 	public boolean isEmptyBlock() {
 		return false;

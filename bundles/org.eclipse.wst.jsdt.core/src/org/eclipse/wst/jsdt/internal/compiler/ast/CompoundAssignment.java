@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -48,21 +47,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 	return  ((Reference) lhs).analyseAssignment(currentScope, flowContext, flowInfo, this, true).unconditionalInits();
 }
 
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-
-//		// various scenarii are possible, setting an array reference,
-//		// a field reference, a blank final field reference, a field of an enclosing instance or
-//		// just a local variable.
-//
-//		int pc = codeStream.position;
-//		 ((Reference) lhs).generateCompoundAssignment(currentScope, codeStream, this.expression, this.operator, this.preAssignImplicitConversion, valueRequired);
-//		if (valueRequired) {
-//			codeStream.generateImplicitConversion(this.implicitConversion);
-//		}
-//		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
-
-public int nullStatus(FlowInfo flowInfo) {
+	public int nullStatus(FlowInfo flowInfo) {
 	return FlowInfo.NON_NULL;
 	// we may have complained on checkNPE, but we avoid duplicate error
 }

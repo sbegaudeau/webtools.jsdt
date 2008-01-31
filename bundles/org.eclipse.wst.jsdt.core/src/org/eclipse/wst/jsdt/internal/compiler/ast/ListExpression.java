@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -59,10 +58,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 		flowInfo = this.expressions[i].analyseCode(currentScope, flowContext, flowInfo).unconditionalInits();
 	}
 	 return flowInfo;
-}
-
-
-public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
 }
 
 

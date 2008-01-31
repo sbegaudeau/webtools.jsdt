@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -100,78 +99,6 @@ public class QualifiedAllocationExpression extends AllocationExpression {
 	public Expression enclosingInstance() {
 
 		return this.enclosingInstance;
-	}
-
-	public void generateCode(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		boolean valueRequired) {
-
-		int pc = codeStream.position;
-		ReferenceBinding allocatedType = this.codegenBinding.declaringClass;
-		codeStream.new_(allocatedType);
-		boolean isUnboxing = (this.implicitConversion & TypeIds.UNBOXING) != 0;
-		if (valueRequired || isUnboxing) {
-			codeStream.dup();
-		}
-		// better highlight for allocation: display the type individually
-		if (this.type != null) { // null for enum constant body
-			codeStream.recordPositionsFrom(pc, this.type.sourceStart);
-		} else {
-			// push enum constant name and ordinal
-			codeStream.ldc(String.valueOf(this.enumConstant.name));
-			codeStream.generateInlinedValue(this.enumConstant.binding.id);
-		}
-		// handling innerclass instance allocation - enclosing instance arguments
-		if (allocatedType.isNestedType()) {
-			codeStream.generateSyntheticEnclosingInstanceValues(
-				currentScope,
-				allocatedType,
-				enclosingInstance(),
-				this);
-		}
-		// generate the arguments for constructor
-		generateArguments(this.binding, this.arguments, currentScope, codeStream);
-		// handling innerclass instance allocation - outer local arguments
-		if (allocatedType.isNestedType()) {
-			codeStream.generateSyntheticOuterArgumentValues(
-				currentScope,
-				allocatedType,
-				this);
-		}
-
-		// invoke constructor
-		if (this.syntheticAccessor == null) {
-			codeStream.invokespecial(this.codegenBinding);
-		} else {
-			// synthetic accessor got some extra arguments appended to its signature, which need values
-			for (int i = 0,
-				max = this.syntheticAccessor.parameters.length - this.codegenBinding.parameters.length;
-				i < max;
-				i++) {
-				codeStream.aconst_null();
-			}
-			codeStream.invokespecial(this.syntheticAccessor);
-		}
-		if (valueRequired) {
-			codeStream.generateImplicitConversion(implicitConversion);
-		} else if (isUnboxing) {
-			// conversion only generated if unboxing
-			codeStream.generateImplicitConversion(implicitConversion);
-			switch (postConversionType(currentScope).id) {
-				case T_long :
-				case T_double :
-					codeStream.pop2();
-					break;
-				default :
-					codeStream.pop();
-			}
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-
-		if (this.anonymousType != null) {
-			this.anonymousType.generateCode(currentScope, codeStream);
-		}
 	}
 
 	public boolean isSuperAccess() {

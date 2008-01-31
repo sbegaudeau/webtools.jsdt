@@ -17,7 +17,6 @@ import java.util.Iterator;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -194,14 +193,7 @@ public class CompilationUnitDeclaration
 		}
 		compilationResult.recoveryScannerData = null; // recovery is already done
 
-		ClassFile[] classFiles = compilationResult.getClassFiles();
-		for (int i = 0, max = classFiles.length; i < max; i++) {
-			// clear the classFile back pointer to the bindings
-			ClassFile classFile = classFiles[i];
-			// null out the classfile backpointer to a type binding
-			classFile.referenceBinding = null;
-			classFile.innerClassesBindings = null;
-		}
+
 	}
 	private void cleanUp(TypeDeclaration type) {
 		if (type.memberTypes != null) {
@@ -266,34 +258,6 @@ public class CompilationUnitDeclaration
 		return null;
 	}
 
-
-	/**
-	 * Bytecode generation
-	 */
-	public void generateCode() {
-
-		if (ignoreFurtherInvestigation) {
-			if (types != null) {
-				for (int i = 0, count = types.length; i < count; i++) {
-					types[i].ignoreFurtherInvestigation = true;
-					// propagate the flag to request problem type creation
-					types[i].generateCode(scope);
-				}
-			}
-			return;
-		}
-		if (this.isPackageInfo() && this.types != null && this.currentPackage.annotations != null) {
-			types[0].annotations = this.currentPackage.annotations;
-		}
-		try {
-			if (types != null) {
-				for (int i = 0, count = types.length; i < count; i++)
-					types[i].generateCode(scope);
-			}
-		} catch (AbortCompilationUnit e) {
-			// ignore
-		}
-	}
 
 	public char[] getFileName() {
 

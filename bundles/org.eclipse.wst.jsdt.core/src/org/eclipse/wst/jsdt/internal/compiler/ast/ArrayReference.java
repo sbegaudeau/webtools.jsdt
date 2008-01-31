@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -57,130 +56,7 @@ public FlowInfo analyseCode(
 	return position.analyseCode(currentScope, flowContext, flowInfo);
 }
 
-	public void generateAssignment(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		Assignment assignment,
-		boolean valueRequired) {
-
-		int pc = codeStream.position;
-		receiver.generateCode(currentScope, codeStream, true);
-		if (receiver instanceof CastExpression	// ((type[])null)[0]
-				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType);
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-		position.generateCode(currentScope, codeStream, true);
-		assignment.expression.generateCode(currentScope, codeStream, true);
-		codeStream.arrayAtPut(this.resolvedType.id, valueRequired);
-		if (valueRequired) {
-			codeStream.generateImplicitConversion(assignment.implicitConversion);
-		}
-	}
-
-	/**
-	 * Code generation for a array reference
-	 */
-	public void generateCode(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		boolean valueRequired) {
-
-		int pc = codeStream.position;
-		receiver.generateCode(currentScope, codeStream, true);
-		if (receiver instanceof CastExpression	// ((type[])null)[0]
-				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType);
-		}
-		position.generateCode(currentScope, codeStream, true);
-		codeStream.arrayAt(this.resolvedType.id);
-		// Generating code for the potential runtime type checking
-		if (valueRequired) {
-			codeStream.generateImplicitConversion(implicitConversion);
-		} else {
-			if (this.resolvedType == TypeBinding.LONG
-				|| this.resolvedType == TypeBinding.DOUBLE) {
-				codeStream.pop2();
-			} else {
-				codeStream.pop();
-			}
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
-
-	public void generateCompoundAssignment(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		Expression expression,
-		int operator,
-		int assignmentImplicitConversion,
-		boolean valueRequired) {
-
-		receiver.generateCode(currentScope, codeStream, true);
-		if (receiver instanceof CastExpression	// ((type[])null)[0]
-				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType);
-		}
-		position.generateCode(currentScope, codeStream, true);
-		codeStream.dup2();
-		codeStream.arrayAt(this.resolvedType.id);
-		int operationTypeID;
-		switch(operationTypeID = (implicitConversion & IMPLICIT_CONVERSION_MASK) >> 4) {
-			case T_JavaLangString :
-			case T_JavaLangObject :
-			case T_undefined :
-				codeStream.generateStringConcatenationAppend(currentScope, null, expression);
-				break;
-			default :
-				// promote the array reference to the suitable operation type
-				codeStream.generateImplicitConversion(implicitConversion);
-				// generate the increment value (will by itself  be promoted to the operation value)
-				if (expression == IntLiteral.One) { // prefix operation
-					codeStream.generateConstant(expression.constant, implicitConversion);
-				} else {
-					expression.generateCode(currentScope, codeStream, true);
-				}
-				// perform the operation
-				codeStream.sendOperator(operator, operationTypeID);
-				// cast the value back to the array reference type
-				codeStream.generateImplicitConversion(assignmentImplicitConversion);
-		}
-		codeStream.arrayAtPut(this.resolvedType.id, valueRequired);
-	}
-
-	public void generatePostIncrement(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		CompoundAssignment postIncrement,
-		boolean valueRequired) {
-
-		receiver.generateCode(currentScope, codeStream, true);
-		if (receiver instanceof CastExpression	// ((type[])null)[0]
-				&& ((CastExpression)receiver).innermostCastedExpression().resolvedType == TypeBinding.NULL){
-			codeStream.checkcast(receiver.resolvedType);
-		}
-		position.generateCode(currentScope, codeStream, true);
-		codeStream.dup2();
-		codeStream.arrayAt(this.resolvedType.id);
-		if (valueRequired) {
-			if ((this.resolvedType == TypeBinding.LONG)
-				|| (this.resolvedType == TypeBinding.DOUBLE)) {
-				codeStream.dup2_x2();
-			} else {
-				codeStream.dup_x2();
-			}
-		}
-		codeStream.generateImplicitConversion(implicitConversion);
-		codeStream.generateConstant(
-			postIncrement.expression.constant,
-			implicitConversion);
-		codeStream.sendOperator(postIncrement.operator, this.implicitConversion & COMPILE_TYPE_MASK);
-		codeStream.generateImplicitConversion(
-			postIncrement.preAssignImplicitConversion);
-		codeStream.arrayAtPut(this.resolvedType.id, false);
-	}
-
-public int nullStatus(FlowInfo flowInfo) {
+	public int nullStatus(FlowInfo flowInfo) {
 	return FlowInfo.UNKNOWN;
 }
 

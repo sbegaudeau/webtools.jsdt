@@ -13,14 +13,12 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -96,18 +94,6 @@ void checkAssignment(BlockScope scope, TypeBinding lhsType, TypeBinding rhsType)
 	}
 }
 
-public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	// various scenarii are possible, setting an array reference,
-	// a field reference, a blank final field reference, a field of an enclosing instance or
-	// just a local variable.
-
-	int pc = codeStream.position;
-	 ((Reference) lhs).generateAssignment(currentScope, codeStream, this, valueRequired);
-	// variable may have been optimized out
-	// the lhs is responsible to perform the implicitConversion generation for the assignment since optimized for unused local assignment.
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
-}
-
 public static Binding getDirectBinding(Expression someExpression) {
 	if ((someExpression.bits & ASTNode.IgnoreNoEffectAssignCheck) != 0) {
 		return null;
@@ -135,25 +121,7 @@ public static Binding getDirectBinding(Expression someExpression) {
 	return null;
 }
 
-FieldBinding getLastField(Expression someExpression) {
-    if (someExpression instanceof SingleNameReference) {
-        if ((someExpression.bits & RestrictiveFlagMASK) == Binding.FIELD) {
-            return (FieldBinding) ((SingleNameReference)someExpression).binding;
-        }
-    } else if (someExpression instanceof FieldReference) {
-        return ((FieldReference)someExpression).binding;
-    } else if (someExpression instanceof QualifiedNameReference) {
-        QualifiedNameReference qName = (QualifiedNameReference) someExpression;
-        if (qName.otherBindings == null) {
-        	if ((someExpression.bits & RestrictiveFlagMASK) == Binding.FIELD) {
-        		return (FieldBinding)qName.binding;
-        	}
-        } else {
-            return qName.otherBindings[qName.otherBindings.length - 1];
-        }
-    }
-    return null;
-}
+
 
 public int nullStatus(FlowInfo flowInfo) {
 	return this.expression.nullStatus(flowInfo);

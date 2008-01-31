@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -31,21 +30,6 @@ public class NullLiteral extends MagicLiteral {
 		constant = Constant.NotAConstant;
 	}
 
-	/**
-	 * Code generation for the null literal
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 * @param valueRequired boolean
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-		int pc = codeStream.position;
-		if (valueRequired) {
-			codeStream.aconst_null();
-			codeStream.generateImplicitConversion(this.implicitConversion);
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
 	public TypeBinding literalType(BlockScope scope) {
 		return TypeBinding.NULL;
 	}

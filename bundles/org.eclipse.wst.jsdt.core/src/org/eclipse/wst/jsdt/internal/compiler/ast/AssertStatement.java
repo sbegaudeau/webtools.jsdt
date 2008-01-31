@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.UnconditionalFlowInfo;
@@ -97,45 +95,6 @@ public class AssertStatement extends Statement {
 			// keep the merge from the initial code for the definite assignment
 			// analysis, tweak the null part to influence nulls downstream
 		}
-	}
-
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-
-		if (this.assertionSyntheticFieldBinding != null) {
-			BranchLabel assertionActivationLabel = new BranchLabel(codeStream);
-			codeStream.getstatic(this.assertionSyntheticFieldBinding);
-			codeStream.ifne(assertionActivationLabel);
-
-			BranchLabel falseLabel;
-			this.assertExpression.generateOptimizedBoolean(currentScope, codeStream, (falseLabel = new BranchLabel(codeStream)), null , true);
-			codeStream.newJavaLangAssertionError();
-			codeStream.dup();
-			if (exceptionArgument != null) {
-				exceptionArgument.generateCode(currentScope, codeStream, true);
-				codeStream.invokeJavaLangAssertionErrorConstructor(exceptionArgument.implicitConversion & 0xF);
-			} else {
-				codeStream.invokeJavaLangAssertionErrorDefaultConstructor();
-			}
-			codeStream.athrow();
-
-			// May loose some local variable initializations : affecting the local variable attributes
-			if (preAssertInitStateIndex != -1) {
-				codeStream.removeNotDefinitelyAssignedVariables(currentScope, preAssertInitStateIndex);
-			}
-			falseLabel.place();
-			assertionActivationLabel.place();
-		} else {
-			// May loose some local variable initializations : affecting the local variable attributes
-			if (preAssertInitStateIndex != -1) {
-				codeStream.removeNotDefinitelyAssignedVariables(currentScope, preAssertInitStateIndex);
-			}
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public void resolve(BlockScope scope) {

@@ -11,8 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -24,35 +22,6 @@ public FalseLiteral(int s , int e) {
 }
 public void computeConstant() {
 	constant = BooleanConstant.fromValue(false);
-}
-/**
- * Code generation for false literal
- *
- * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
- * @param valueRequired boolean
- */
-public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	int pc = codeStream.position;
-	if (valueRequired) {
-		codeStream.generateConstant(this.constant, this.implicitConversion);
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
-}
-public void generateOptimizedBoolean(BlockScope currentScope, CodeStream codeStream, BranchLabel trueLabel, BranchLabel falseLabel, boolean valueRequired) {
-
-	// falseLabel being not nil means that we will not fall through into the FALSE case
-
-	int pc = codeStream.position;
-	if (valueRequired) {
-		if (falseLabel != null) {
-			// implicit falling through the TRUE case
-			if (trueLabel == null) {
-				codeStream.goto_(falseLabel);
-			}
-		}
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 public TypeBinding literalType(BlockScope scope) {
 	return TypeBinding.BOOLEAN;

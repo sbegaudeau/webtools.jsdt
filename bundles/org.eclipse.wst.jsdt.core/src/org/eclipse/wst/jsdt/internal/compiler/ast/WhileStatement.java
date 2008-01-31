@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
@@ -25,7 +23,6 @@ public class WhileStatement extends Statement {
 
 	public Expression condition;
 	public Statement action;
-	private BranchLabel breakLabel, continueLabel;
 	int preCondInitStateIndex = -1;
 	int condIfTrueInitStateIndex = -1;
 	int mergedInitStateIndex = -1;
@@ -45,8 +42,6 @@ public class WhileStatement extends Statement {
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
 
-		breakLabel = new BranchLabel();
-		continueLabel = new BranchLabel();
 
 		Constant cst = this.condition.constant;
 		boolean isConditionTrue = cst != Constant.NotAConstant && cst.booleanValue() == true;
@@ -66,8 +61,7 @@ public class WhileStatement extends Statement {
 		condInfo = this.condition.analyseCode(
 				currentScope,
 				(condLoopContext =
-					new LoopingFlowContext(flowContext, flowInfo, this, null,
-						null, currentScope)),
+					new LoopingFlowContext(flowContext, flowInfo, this, currentScope)),
 				condInfo);
 
 		LoopingFlowContext loopingContext;
@@ -98,8 +92,6 @@ public class WhileStatement extends Statement {
 					flowContext,
 					flowInfo,
 					this,
-					breakLabel,
-					continueLabel,
 					currentScope);
 			if (isConditionFalse) {
 				actionInfo = FlowInfo.DEAD_END;
@@ -126,7 +118,6 @@ public class WhileStatement extends Statement {
 			if ((actionInfo.tagBits &
 					loopingContext.initsOnContinue.tagBits &
 					FlowInfo.UNREACHABLE) != 0) {
-				continueLabel = null;
 				exitBranch.addInitializationsFrom(condInfo.initsWhenFalse());
 			} else {
 				condLoopContext.complainOnDeferredFinalChecks(currentScope,
@@ -157,95 +148,6 @@ public class WhileStatement extends Statement {
 				!isConditionTrue /*while(true); unreachable(); */);
 //		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
-	}
-
-	/**
-	 * While code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-		Constant cst = this.condition.optimizedBooleanConstant();
-		boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
-		if (isConditionOptimizedFalse) {
-			condition.generateCode(currentScope, codeStream, false);
-			// May loose some local variable initializations : affecting the local variable attributes
-			if (mergedInitStateIndex != -1) {
-				codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-				codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-			}
-			codeStream.recordPositionsFrom(pc, this.sourceStart);
-			return;
-		}
-
-		breakLabel.initialize(codeStream);
-
-		// generate condition
-		if (continueLabel == null) {
-			// no need to reverse condition
-			if (condition.constant == Constant.NotAConstant) {
-				condition.generateOptimizedBoolean(
-					currentScope,
-					codeStream,
-					null,
-					breakLabel,
-					true);
-			}
-		} else {
-			continueLabel.initialize(codeStream);
-			if (!(((condition.constant != Constant.NotAConstant)
-				&& (condition.constant.booleanValue() == true))
-				|| (action == null)
-				|| action.isEmptyBlock())) {
-				int jumpPC = codeStream.position;
-				codeStream.goto_(continueLabel);
-				codeStream.recordPositionsFrom(jumpPC, condition.sourceStart);
-			}
-		}
-		// generate the action
-		BranchLabel actionLabel = new BranchLabel(codeStream);
-		if (action != null) {
-			actionLabel.tagBits |= BranchLabel.USED;
-			// Required to fix 1PR0XVS: LFRE:WINNT - Compiler: variable table for method appears incorrect
-			if (condIfTrueInitStateIndex != -1) {
-				// insert all locals initialized inside the condition into the action generated prior to the condition
-				codeStream.addDefinitelyAssignedVariables(
-					currentScope,
-					condIfTrueInitStateIndex);
-			}
-			actionLabel.place();
-			action.generateCode(currentScope, codeStream);
-			// May loose some local variable initializations : affecting the local variable attributes
-			if (preCondInitStateIndex != -1) {
-				codeStream.removeNotDefinitelyAssignedVariables(currentScope, preCondInitStateIndex);
-			}
-		} else {
-			actionLabel.place();
-		}
-		// output condition and branch back to the beginning of the repeated action
-		if (continueLabel != null) {
-			continueLabel.place();
-			condition.generateOptimizedBoolean(
-				currentScope,
-				codeStream,
-				actionLabel,
-				null,
-				true);
-		}
-
-		// May loose some local variable initializations : affecting the local variable attributes
-		if (mergedInitStateIndex != -1) {
-			codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-			codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-		}
-		breakLabel.place();
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public void resolve(BlockScope scope) {

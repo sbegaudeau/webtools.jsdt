@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -53,27 +52,6 @@ public class ClassLiteralAccess extends Expression {
 			syntheticField = sourceType.addSyntheticFieldForClassLiteral(targetType, currentScope);
 		}
 		return flowInfo;
-	}
-
-	/**
-	 * MessageSendDotClass code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 * @param valueRequired boolean
-	 */
-	public void generateCode(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		boolean valueRequired) {
-		int pc = codeStream.position;
-
-		// in interface case, no caching occurs, since cannot make a cache field for interface
-		if (valueRequired) {
-			codeStream.generateClassLiteralAccessForType(type.resolvedType, syntheticField);
-			codeStream.generateImplicitConversion(this.implicitConversion);
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {

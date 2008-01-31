@@ -56,10 +56,7 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
-import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
@@ -309,40 +306,6 @@ public boolean equals(Object o) {
 public boolean exists() {
 	return super.exists() && validateClassFile().isOK();
 }
-public boolean existsUsingJarTypeCache() {
-	if (getPackageFragmentRoot().isArchive()) {
-		JavaModelManager manager = JavaModelManager.getJavaModelManager();
-		IType type = getType();
-		Object info = manager.getInfo(type);
-		if (info == JavaModelCache.NON_EXISTING_JAR_TYPE_INFO)
-			return false;
-		else if (info != null)
-			return true;
-		// info is null
-		JavaElementInfo parentInfo = (JavaElementInfo) manager.getInfo(getParent());
-		if (parentInfo != null) {
-			// if parent is open, this class file must be in its children
-			IJavaElement[] children = parentInfo.getChildren();
-			for (int i = 0, length = children.length; i < length; i++) {
-				if (this.name.equals(((ClassFile) children[i]).name))
-					return true;
-			}
-			return false;
-		}
-		try {
-			info = getJarBinaryTypeInfo((PackageFragment) getParent());
-		} catch (CoreException e) {
-			// leave info null
-		} catch (IOException e) {
-			// leave info null
-		} catch (ClassFormatException e) {
-			// leave info null
-		}
-		manager.putJarTypeInfo(type, info == null ? JavaModelCache.NON_EXISTING_JAR_TYPE_INFO : info);
-		return info != null;
-	} else
-		return exists();
-}
 
 /**
  * Finds the deepest <code>IJavaElement</code> in the hierarchy of
@@ -383,52 +346,7 @@ public IType findPrimaryType() {
 public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelException {
 	return this.getType().getAttachedJavadoc(monitor);
 }
-/**
- * Returns the <code>ClassFileReader</code>specific for this IClassFile, based
- * on its underlying resource, or <code>null</code> if unable to create
- * the diet class file.
- * There are two cases to consider:<ul>
- * <li>a class file corresponding to an IFile resource</li>
- * <li>a class file corresponding to a zip entry in a JAR</li>
- * </ul>
- *
- * @exception JavaModelException when the IFile resource or JAR is not available
- * or when this class file is not present in the JAR
- */
-public IBinaryType getBinaryTypeInfo(IFile file) throws JavaModelException {
-	JavaElement pkg = (JavaElement) getParent();
-	if (pkg instanceof JarPackageFragment) {
-		try {
-			IBinaryType info = getJarBinaryTypeInfo((PackageFragment) pkg);
-			if (info == null) {
-				throw newNotPresentException();
-			}
-			return info;
-		} catch (ClassFormatException cfe) {
-			//the structure remains unknown
-			if (JavaCore.getPlugin().isDebugging()) {
-				cfe.printStackTrace(System.err);
-			}
-			return null;
-		} catch (IOException ioe) {
-			throw new JavaModelException(ioe, IJavaModelStatusConstants.IO_EXCEPTION);
-		} catch (CoreException e) {
-			if (e instanceof JavaModelException) {
-				throw (JavaModelException)e;
-			} else {
-				throw new JavaModelException(e);
-			}
-		}
-	} else {
-		byte[] contents = Util.getResourceContentsAsByteArray(file);
-		try {
-			return new ClassFileReader(contents, file.getFullPath().toString().toCharArray(), true/*fully initialize so as to not keep a reference to the byte array*/);
-		} catch (ClassFormatException cfe) {
-			//the structure remains unknown
-			return null;
-		}
-	}
-}
+
 
 public byte[] getBytes() throws JavaModelException {
 	JavaElement pkg = (JavaElement) getParent();
@@ -459,35 +377,11 @@ public byte[] getBytes() throws JavaModelException {
 		return Util.getResourceContentsAsByteArray(file);
 	}
 }
-private IBinaryType getJarBinaryTypeInfo(PackageFragment pkg) throws CoreException, IOException, ClassFormatException {
-	JarPackageFragmentRoot root = (JarPackageFragmentRoot) pkg.getParent();
-	ZipFile zip = null;
-	try {
-		zip = root.getJar();
-		String entryName = Util.concatWith(pkg.names, getElementName(), '/');
-		ZipEntry ze = zip.getEntry(entryName);
-		if (ze != null) {
-			byte contents[] = org.eclipse.wst.jsdt.internal.compiler.util.Util.getZipEntryByteContent(ze, zip);
-			String fileName = root.getHandleIdentifier() + IDependent.JAR_FILE_ENTRY_SEPARATOR + entryName;
-			return new ClassFileReader(contents, fileName.toCharArray(), true/*fully initialize so as to not keep a reference to the byte array*/);
-		}
-	} finally {
-		JavaModelManager.getJavaModelManager().closeZipFile(zip);
-	}
-	return null;
-}
 public IBuffer getBuffer() throws JavaModelException {
 	IStatus status = validateClassFile();
 	if (status.isOK()) {
 		return super.getBuffer();
 	} else {
-		// .class file not on classpath, create a new buffer to be nice (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=41444)
-		Object info = ((ClassFile) getClassFile()).getBinaryTypeInfo((IFile) getResource());
-		IBuffer buffer = openBuffer(null, info);
-		if (buffer != null && !(buffer instanceof NullBuffer))
-			return buffer;
-		if (status.getCode() == IJavaModelStatusConstants.ELEMENT_NOT_ON_CLASSPATH)
-			return null; // don't throw a JavaModelException to be able to open .class file outside the classpath (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=138507)
 		throw new JavaModelException((IJavaModelStatus) status);
 	}
 }

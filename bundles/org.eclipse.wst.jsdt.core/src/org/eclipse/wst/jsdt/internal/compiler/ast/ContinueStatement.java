@@ -48,7 +48,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 //	this.initStateIndex =
 //		currentScope.methodScope().recordInitializationStates(flowInfo);
 
-	targetLabel = targetContext.continueLabel();
+//	targetLabel = targetContext.continueLabel();
 	FlowContext traversedContext = flowContext;
 	int subCount = 0;
 	subroutines = new SubRoutineStatement[5];

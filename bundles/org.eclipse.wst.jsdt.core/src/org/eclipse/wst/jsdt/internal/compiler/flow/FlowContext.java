@@ -18,7 +18,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.LabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SubRoutineStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TryStatement;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
@@ -54,9 +53,7 @@ public FlowContext(FlowContext parent, ASTNode associatedNode) {
 	}
 }
 
-public BranchLabel breakLabel() {
-	return null;
-}
+
 
 public void checkExceptionHandlers(TypeBinding raisedException, ASTNode location, FlowInfo flowInfo, BlockScope scope) {
 	// LIGHT-VERSION OF THE EQUIVALENT WITH AN ARRAY OF EXCEPTIONS
@@ -283,9 +280,6 @@ public void checkExceptionHandlers(TypeBinding[] raisedExceptions, ASTNode locat
 	}
 }
 
-public BranchLabel continueLabel() {
-	return null;
-}
 
 /*
  * lookup through break labels

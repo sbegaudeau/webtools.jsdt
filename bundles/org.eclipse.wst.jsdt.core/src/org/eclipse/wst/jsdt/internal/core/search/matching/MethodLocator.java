@@ -521,17 +521,17 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 	IMethod method = null;
 	TypeBinding[] parameters = methodBinding.original().parameters;
 	int parameterLength = parameters.length;
-	if (isBinary) {
-		char[][] parameterTypes = new char[parameterLength][];
-		for (int i = 0; i<parameterLength; i++) {
-			char[] typeName = parameters[i].qualifiedSourceName();
-			for (int j=0, dim=parameters[i].dimensions(); j<dim; j++) {
-				typeName = CharOperation.concat(typeName, new char[] {'[', ']'});
-			}
-			parameterTypes[i] = typeName;
-		}
-		method = locator.createBinaryMethodHandle(type, methodBinding.selector, parameterTypes);
-	} else {
+//	if (isBinary) {
+//		char[][] parameterTypes = new char[parameterLength][];
+//		for (int i = 0; i<parameterLength; i++) {
+//			char[] typeName = parameters[i].qualifiedSourceName();
+//			for (int j=0, dim=parameters[i].dimensions(); j<dim; j++) {
+//				typeName = CharOperation.concat(typeName, new char[] {'[', ']'});
+//			}
+//			parameterTypes[i] = typeName;
+//		}
+//		method = locator.createBinaryMethodHandle(type, methodBinding.selector, parameterTypes);
+//	} else {
 		String[] parameterTypes = new String[parameterLength];
 		for (int i = 0; i  < parameterLength; i++) {
 			char[] typeName = parameters[i].shortReadableName();
@@ -541,7 +541,7 @@ protected void reportDeclaration(MethodBinding methodBinding, MatchLocator locat
 			parameterTypes[i] = Signature.createTypeSignature(typeName, false);
 		}
 		method = type.getMethod(new String(bindingSelector), parameterTypes);
-	}
+//	}
 	if (method == null || knownMethods.addIfNotIncluded(method) == null) return;
 
 	IResource resource = type.getResource();

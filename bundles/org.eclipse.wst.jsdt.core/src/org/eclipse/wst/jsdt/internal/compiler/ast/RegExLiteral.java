@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -34,17 +33,6 @@ public class RegExLiteral extends Literal {
 	public void computeConstant() {
 
 		constant = StringConstant.fromValue(String.valueOf(source));
-	}
-
-	/**
-	 * Code generation for string literal
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-
-		int pc = codeStream.position;
-		if (valueRequired)
-			codeStream.ldc(constant.stringValue());
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public TypeBinding literalType(BlockScope scope) {

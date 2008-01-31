@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.compiler.flow;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Reference;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
@@ -26,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
  */
 public class LoopingFlowContext extends SwitchFlowContext {
 
-	public BranchLabel continueLabel;
 	public UnconditionalFlowInfo initsOnContinue = FlowInfo.DEAD_END;
 	private UnconditionalFlowInfo upstreamNullFlowInfo;
 	private LoopingFlowContext innerFlowContexts[] = null;
@@ -50,13 +48,10 @@ public class LoopingFlowContext extends SwitchFlowContext {
 		FlowContext parent,
 		FlowInfo upstreamNullFlowInfo,
 		ASTNode associatedNode,
-		BranchLabel breakLabel,
-		BranchLabel continueLabel,
 		Scope associatedScope) {
-		super(parent, associatedNode, breakLabel);
+		super(parent, associatedNode);
 		preemptNullDiagnostic = true;
 			// children will defer to this, which may defer to its own parent
-		this.continueLabel = continueLabel;
 		this.associatedScope = associatedScope;
 		this.upstreamNullFlowInfo = upstreamNullFlowInfo.unconditionalCopy();
 	}
@@ -254,9 +249,7 @@ public void complainOnDeferredNullChecks(BlockScope scope, FlowInfo callerFlowIn
 	}
 }
 
-	public BranchLabel continueLabel() {
-		return continueLabel;
-	}
+
 
 	public String individualToString() {
 		StringBuffer buffer = new StringBuffer("Looping flow context"); //$NON-NLS-1$

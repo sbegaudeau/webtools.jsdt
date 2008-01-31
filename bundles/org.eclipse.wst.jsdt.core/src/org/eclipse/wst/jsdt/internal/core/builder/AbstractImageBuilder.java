@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.builder;
 
-import java.io.ByteArrayInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,15 +23,12 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
-import org.eclipse.core.resources.IResourceStatus;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IJavaModelMarker;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.ISourceRange;
-import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaConventions;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
@@ -41,7 +37,6 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
@@ -51,7 +46,6 @@ import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
-import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
@@ -161,74 +155,15 @@ public void acceptResult(CompilationResult result) {
 			if (!problemSourceFiles.contains(compilationUnit))
 				problemSourceFiles.add(compilationUnit);
 
-		IType mainType = null;
-		String mainTypeName = null;
 		String typeLocator = compilationUnit.typeLocator();
-		ClassFile[] classFiles = result.getClassFiles();
-		int length = classFiles.length;
-		ArrayList duplicateTypeNames = null;
-		ArrayList definedTypeNames = new ArrayList(length);
-		for (int i = 0; i < length; i++) {
-			ClassFile classFile = classFiles[i];
-
-			char[][] compoundName = classFile.getCompoundName();
-			char[] typeName = compoundName[compoundName.length - 1];
-			boolean isNestedType = classFile.enclosingClassFile != null;
-
-			// Look for a possible collision, if one exists, report an error but do not write the class file
-			if (isNestedType) {
-				String qualifiedTypeName = new String(classFile.outerMostEnclosingClassFile().fileName());
-				if (newState.isDuplicateLocator(qualifiedTypeName, typeLocator))
-					continue;
-			} else {
-				String qualifiedTypeName = new String(classFile.fileName()); // the qualified type name "p1/p2/A"
-				if (newState.isDuplicateLocator(qualifiedTypeName, typeLocator)) {
-					if (duplicateTypeNames == null)
-						duplicateTypeNames = new ArrayList();
-					duplicateTypeNames.add(compoundName);
-					if (mainType == null) {
-						try {
-							mainTypeName = compilationUnit.initialTypeName; // slash separated qualified name "p1/p1/A"
-							mainType = javaBuilder.javaProject.findType(mainTypeName.replace('/', '.'));
-						} catch (JavaModelException e) {
-							// ignore
-						}
-					}
-					IType type;
-					if (qualifiedTypeName.equals(mainTypeName)) {
-						type = mainType;
-					} else {
-						String simpleName = qualifiedTypeName.substring(qualifiedTypeName.lastIndexOf('/')+1);
-						type = mainType == null ? null : mainType.getCompilationUnit().getType(simpleName);
-					}
-					createProblemFor(compilationUnit.resource, type, Messages.bind(Messages.build_duplicateClassFile, new String(typeName)), JavaCore.ERROR);
-					continue;
-				}
-				newState.recordLocatorForType(qualifiedTypeName, typeLocator);
-				if (!qualifiedTypeName.equals(compilationUnit.initialTypeName))
-					acceptSecondaryType(classFile);
-			}
-			try {
-				definedTypeNames.add(writeClassFile(classFile, compilationUnit, !isNestedType));
-			} catch (CoreException e) {
-				Util.log(e, "JavaBuilder handling CoreException"); //$NON-NLS-1$
-				if (e.getStatus().getCode() == IResourceStatus.CASE_VARIANT_EXISTS)
-					createProblemFor(compilationUnit.resource, null, Messages.bind(Messages.build_classFileCollision, e.getMessage()), JavaCore.ERROR);
-				else
-					createProblemFor(compilationUnit.resource, null, Messages.build_inconsistentClassFile, JavaCore.ERROR);
-			}
-		}
 		if (result.hasAnnotations && this.filesWithAnnotations != null) // only initialized if an annotation processor is attached
 			this.filesWithAnnotations.add(compilationUnit);
 
-		finishedWith(typeLocator, result, compilationUnit.getMainTypeName(), definedTypeNames, duplicateTypeNames);
+		finishedWith(typeLocator, result, compilationUnit.getMainTypeName(), null, null);
 		notifier.compiled(compilationUnit);
 	}
 }
 
-protected void acceptSecondaryType(ClassFile classFile) {
-	// noop
-}
 
 protected void addAllSourceFiles(final ArrayList sourceFiles) throws CoreException {
 	for (int i = 0, l = sourceLocations.length; i < l; i++) {
@@ -803,38 +738,4 @@ protected void updateTasksFor(SourceFile sourceFile, CompilationResult result) t
 	storeTasksFor(sourceFile, tasks);
 }
 
-protected char[] writeClassFile(ClassFile classFile, SourceFile compilationUnit, boolean isTopLevelType) throws CoreException {
-	String fileName = new String(classFile.fileName()); // the qualified type name "p1/p2/A"
-	IPath filePath = new Path(fileName);
-	IContainer outputFolder = compilationUnit.sourceLocation.binaryFolder;
-	IContainer container = outputFolder;
-	if (filePath.segmentCount() > 1) {
-		container = createFolder(filePath.removeLastSegments(1), outputFolder);
-		filePath = new Path(filePath.lastSegment());
-	}
-
-	IFile file = container.getFile(filePath.addFileExtension(SuffixConstants.EXTENSION_class));
-	writeClassFileBytes(classFile.getBytes(), file, fileName, isTopLevelType, compilationUnit);
-	if (classFile.isShared) {
-		this.compiler.lookupEnvironment.classFilePool.release(classFile);
-	}
-	// answer the name of the class file as in Y or Y$M
-	return filePath.lastSegment().toCharArray();
-}
-
-protected void writeClassFileBytes(byte[] bytes, IFile file, String qualifiedFileName, boolean isTopLevelType, SourceFile compilationUnit) throws CoreException {
-	if (file.exists()) {
-		// Deal with shared output folders... last one wins... no collision cases detected
-		if (JavaBuilder.DEBUG)
-			System.out.println("Writing changed class file " + file.getName());//$NON-NLS-1$
-		if (!file.isDerived())
-			file.setDerived(true);
-		file.setContents(new ByteArrayInputStream(bytes), true, false, null);
-	} else {
-		// Default implementation just writes out the bytes for the new class file...
-		if (JavaBuilder.DEBUG)
-			System.out.println("Writing new class file " + file.getName());//$NON-NLS-1$
-		file.create(new ByteArrayInputStream(bytes), IResource.FORCE | IResource.DERIVED, null);
-	}
-}
 }

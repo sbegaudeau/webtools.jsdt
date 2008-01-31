@@ -1650,13 +1650,13 @@ public class ClasspathEntry implements IClasspathEntry {
 				if (path != null && path.isAbsolute() && !path.isEmpty()) {
 					IPath sourceAttachment = entry.getSourceAttachmentPath();
 					Object target = JavaModel.getTarget(workspaceRoot, path, true);
-					if (target != null && !JavaCore.IGNORE.equals(project.getOption(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, true))) {
-						long projectTargetJDK = CompilerOptions.versionToJdkLevel(project.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
-						long libraryJDK = Util.getJdkLevel(target);
-						if (libraryJDK != 0 && libraryJDK > projectTargetJDK) {
-							return new JavaModelStatus(IJavaModelStatusConstants.INCOMPATIBLE_JDK_LEVEL, project, path, CompilerOptions.versionFromJdkLevel(libraryJDK));
-						}
-					}
+//					if (target != null && !JavaCore.IGNORE.equals(project.getOption(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, true))) {
+//						long projectTargetJDK = CompilerOptions.versionToJdkLevel(project.getOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, true));
+//						long libraryJDK = Util.getJdkLevel(target);
+//						if (libraryJDK != 0 && libraryJDK > projectTargetJDK) {
+//							return new JavaModelStatus(IJavaModelStatusConstants.INCOMPATIBLE_JDK_LEVEL, project, path, CompilerOptions.versionFromJdkLevel(libraryJDK));
+//						}
+//					}
 					if (target instanceof IResource){
 						IResource resolvedResource = (IResource) target;
 						switch(resolvedResource.getType()){

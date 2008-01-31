@@ -192,24 +192,24 @@ private void computeClasspathLocations(
 				if (target instanceof IResource) {
 					IResource resource = (IResource) target;
 					ClasspathLocation bLocation = null;
-					if (resource instanceof IFile) {
-						if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
-							continue nextEntry;
-						AccessRuleSet accessRuleSet =
-							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
-								? null
-								: entry.getAccessRuleSet();
-						bLocation = ClasspathLocation.forLibrary((IFile) resource, accessRuleSet);
-					} else if (resource instanceof IContainer) {
-						AccessRuleSet accessRuleSet =
-							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
-							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
-								? null
-								: entry.getAccessRuleSet();
-						bLocation = ClasspathLocation.forBinaryFolder((IContainer) target, false, accessRuleSet);	 // is library folder not output folder
-					}
-					bLocations.add(bLocation);
+//					if (resource instanceof IFile) {
+//						if (!(org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(path.lastSegment())))
+//							continue nextEntry;
+//						AccessRuleSet accessRuleSet =
+//							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
+//							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
+//								? null
+//								: entry.getAccessRuleSet();
+//						bLocation = ClasspathLocation.forLibrary((IFile) resource, accessRuleSet);
+//					} else if (resource instanceof IContainer) {
+//						AccessRuleSet accessRuleSet =
+//							(JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, true))
+//							&& JavaCore.IGNORE.equals(javaProject.getOption(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, true)))
+//								? null
+//								: entry.getAccessRuleSet();
+//						bLocation = ClasspathLocation.forBinaryFolder((IContainer) target, false, accessRuleSet);	 // is library folder not output folder
+//					}
+//					bLocations.add(bLocation);
 					if (binaryLocationsPerProject != null) { // normal builder mode
 						IProject p = resource.getProject(); // can be the project being built
 						ClasspathLocation[] existingLocations = (ClasspathLocation[]) binaryLocationsPerProject.get(p);

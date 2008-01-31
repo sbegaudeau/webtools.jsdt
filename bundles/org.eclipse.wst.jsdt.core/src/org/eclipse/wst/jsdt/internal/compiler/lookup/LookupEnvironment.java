@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFilePool;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -54,7 +53,6 @@ public class LookupEnvironment implements ProblemReasons, TypeConstants {
 	public CompilerOptions globalOptions;
 	public ProblemReporter problemReporter;
 
-	public ClassFilePool classFilePool;
 
 	// indicate in which step on the compilation we are.
 	// step 1 : build the reference binding
@@ -93,7 +91,6 @@ public LookupEnvironment(ITypeRequestor typeRequestor, CompilerOptions globalOpt
 	this.uniqueParameterizedGenericMethodBindings = new SimpleLookupTable(3);
 	this.uniqueAnnotationBindings = new SimpleLookupTable(3);
 	this.accessRestrictions = new HashMap(3);
-	this.classFilePool = ClassFilePool.newInstance();
 }
 
 /**
@@ -1335,7 +1332,6 @@ public void reset() {
 	this.lastCompletedUnitIndex = -1;
 	this.unitBeingCompleted = null; // in case AbortException occurred
 
-	this.classFilePool.reset();
 	// name environment has a longer life cycle, and must be reset in
 	// the code which created it.
 	this.acceptedCompilationUnits.clear();

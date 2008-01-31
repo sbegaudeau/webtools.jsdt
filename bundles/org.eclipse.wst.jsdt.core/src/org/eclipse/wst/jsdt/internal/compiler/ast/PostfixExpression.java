@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 public class PostfixExpression extends CompoundAssignment {
@@ -20,26 +19,6 @@ public PostfixExpression(Expression lhs, Expression expression, int operator, in
 	super(lhs, expression, operator, pos);
 	this.sourceStart = lhs.sourceStart;
 	this.sourceEnd = pos;
-}
-
-/**
- * Code generation for PostfixExpression
- *
- * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
- * @param valueRequired boolean
- */
-public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	// various scenarii are possible, setting an array reference,
-	// a field reference, a blank final field reference, a field of an enclosing instance or
-	// just a local variable.
-
-	int pc = codeStream.position;
-	 ((Reference) this.lhs).generatePostIncrement(currentScope, codeStream, this, valueRequired);
-	if (valueRequired) {
-		codeStream.generateImplicitConversion(this.implicitConversion);
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 
 public String operatorToString() {

@@ -12,14 +12,12 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
@@ -85,38 +83,6 @@ public FlowInfo analyseCode(MethodScope initializationScope, FlowContext flowCon
 		flowInfo.markAsDefinitelyAssigned(this.binding);
 	}
 	return flowInfo;
-}
-
-/**
- * Code generation for a field declaration:
- *	   standard assignment to a field
- *
- * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
- */
-public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-	if ((this.bits & IsReachable) == 0) {
-		return;
-	}
-	// do not generate initialization code if final and static (constant is then
-	// recorded inside the field itself).
-	int pc = codeStream.position;
-	boolean isStatic;
-	if (this.initialization != null
-		&& !((isStatic = this.binding.isStatic()) && this.binding.constant() != Constant.NotAConstant)) {
-		// non-static field, need receiver
-		if (!isStatic)
-			codeStream.aload_0();
-		// generate initialization value
-		this.initialization.generateCode(currentScope, codeStream, true);
-		// store into field
-		if (isStatic) {
-			codeStream.putstatic(this.binding);
-		} else {
-			codeStream.putfield(this.binding);
-		}
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 
 /**

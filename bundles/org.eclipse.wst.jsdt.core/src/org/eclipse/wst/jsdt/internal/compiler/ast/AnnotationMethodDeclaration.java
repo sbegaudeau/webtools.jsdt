@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -29,12 +28,7 @@ public class AnnotationMethodDeclaration extends MethodDeclaration {
 		super(compilationResult);
 	}
 
-	public void generateCode(ClassFile classFile) {
-		classFile.generateMethodInfoHeader(this.binding);
-		int methodAttributeOffset = classFile.contentsOffset;
-		int attributeNumber = classFile.generateMethodInfoAttribute(this.binding, this);
-		classFile.completeMethodInfo(methodAttributeOffset, attributeNumber);
-	}
+
 
 	public boolean isAnnotationMethod() {
 

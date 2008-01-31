@@ -98,12 +98,14 @@ public FileSystem(String[] classpathNames, String[] initialFileNames, String enc
 	int counter = 0;
 	for (int i = 0; i < classpathSize; i++) {
 		Classpath classpath = getClasspath(classpathNames[i], encoding, null);
-		try {
-			classpath.initialize();
-			this.classpaths[counter++] = classpath;
-		} catch (IOException e) {
-			// ignore
-		}
+		if (classpath!=null) {
+			try {
+				classpath.initialize();
+				this.classpaths[counter++] = classpath;
+			} catch (IOException e) {
+				// ignore
+			}
+		}		
 	}
 	if (counter != classpathSize) {
 		System.arraycopy(this.classpaths, 0, (this.classpaths = new Classpath[counter]), 0, counter);
@@ -139,33 +141,34 @@ static Classpath getClasspath(String classpathName, String encoding,
 	File file = new File(convertPathSeparators(classpathName));
 	if (file.isDirectory()) {
 		if (file.exists()) {
-			result = new ClasspathDirectory(file, encoding,
-					isSourceOnly ? ClasspathLocation.SOURCE :
-						ClasspathLocation.SOURCE | ClasspathLocation.BINARY,
-					accessRuleSet,
-					destinationPath == null || destinationPath == Main.NONE ?
-						destinationPath : // keep == comparison valid
-						convertPathSeparators(destinationPath));
+//			result = new ClasspathDirectory(file, encoding,
+//					isSourceOnly ? ClasspathLocation.SOURCE :
+//						ClasspathLocation.SOURCE | ClasspathLocation.BINARY,
+//					accessRuleSet,
+//					destinationPath == null || destinationPath == Main.NONE ?
+//						destinationPath : // keep == comparison valid
+//						convertPathSeparators(destinationPath));
 		}
 	} else {
 		String lowercaseClasspathName = classpathName.toLowerCase();
-		if (lowercaseClasspathName.endsWith(SUFFIX_STRING_jar)
-				|| lowercaseClasspathName.endsWith(SUFFIX_STRING_zip)) {
-			if (isSourceOnly) {
-				// source only mode
-				result = new ClasspathSourceJar(file, true, accessRuleSet,
-					encoding,
-					destinationPath == null || destinationPath == Main.NONE ?
-						destinationPath : // keep == comparison valid
-						convertPathSeparators(destinationPath));
-			} else {
-				// class file only mode
-				if (destinationPath == null) {
-					result = new ClasspathJar(file, true, accessRuleSet, null);
-				}
-			}
-		}
-		else if (lowercaseClasspathName.endsWith(SUFFIX_STRING_java))
+//		if (lowercaseClasspathName.endsWith(SUFFIX_STRING_jar)
+//				|| lowercaseClasspathName.endsWith(SUFFIX_STRING_zip)) {
+//			if (isSourceOnly) {
+//				// source only mode
+//				result = new ClasspathSourceJar(file, true, accessRuleSet,
+//					encoding,
+//					destinationPath == null || destinationPath == Main.NONE ?
+//						destinationPath : // keep == comparison valid
+//						convertPathSeparators(destinationPath));
+//			} else {
+//				// class file only mode
+//				if (destinationPath == null) {
+//					result = new ClasspathJar(file, true, accessRuleSet, null);
+//				}
+//			}
+//		}
+//		else 
+			if (lowercaseClasspathName.endsWith(SUFFIX_STRING_java))
 		{
 			result=new ClasspathFile(file, encoding,accessRuleSet,destinationPath == null || destinationPath == Main.NONE ?
 						destinationPath : // keep == comparison valid
@@ -188,14 +191,14 @@ private void initializeKnownFileNames(String[] initialFileNames) {
 			fileName = CharOperation.subarray(fileName, 0, lastIndexOf);
 		}
 		CharOperation.replace(fileName, '\\', '/');
-		for (int j = 0; j < classpaths.length; j++){
-			char[] matchCandidate = this.classpaths[j].normalizedPath();
-			if (this.classpaths[j] instanceof  ClasspathDirectory &&
-					CharOperation.prefixEquals(matchCandidate, fileName) &&
-					(matchingPathName == null ||
-							matchCandidate.length < matchingPathName.length))
-				matchingPathName = matchCandidate;
-		}
+//		for (int j = 0; j < classpaths.length; j++){
+//			char[] matchCandidate = this.classpaths[j].normalizedPath();
+//			if (this.classpaths[j] instanceof  ClasspathDirectory &&
+//					CharOperation.prefixEquals(matchCandidate, fileName) &&
+//					(matchingPathName == null ||
+//							matchCandidate.length < matchingPathName.length))
+//				matchingPathName = matchCandidate;
+//		}
 		if (matchingPathName == null) {
 			this.knownFileNames.add(new String(fileName)); // leave as is...
 		}
@@ -240,9 +243,7 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 		String qb2 = qualifiedBinaryFileName.replace('/', File.separatorChar);
 		for (int i = 0, length = this.classpaths.length; i < length; i++) {
 			Classpath p = this.classpaths[i];
-			NameEnvironmentAnswer answer = (p instanceof ClasspathJar)
-				? p.findClass(typeName, qualifiedPackageName, qualifiedBinaryFileName, asBinaryOnly)
-				: p.findClass(typeName, qp2, qb2, asBinaryOnly);
+			NameEnvironmentAnswer answer = p.findClass(typeName, qp2, qb2, asBinaryOnly);
 			if (answer != null) {
 				if (!answer.ignoreIfBetter()) {
 					if (answer.isBetter(suggestedAnswer))
@@ -323,9 +324,7 @@ public char[][][] findTypeNames(char[][] packageName) {
 		} else {
 			for (int i = 0, length = this.classpaths.length; i < length; i++) {
 				Classpath p = this.classpaths[i];
-				char[][][] answers = (p instanceof ClasspathJar)
-					? p.findTypeNames(qualifiedPackageName)
-					: p.findTypeNames(qualifiedPackageName2);
+				char[][][] answers =p.findTypeNames(qualifiedPackageName2);
 				if (answers != null) {
 					// concat with previous answers
 					if (result == null) {
@@ -368,7 +367,7 @@ public boolean isPackage(char[][] compoundName, char[] packageName) {
 	} else {
 		for (int i = 0, length = this.classpaths.length; i < length; i++) {
 			Classpath p = this.classpaths[i];
-			if ((p instanceof ClasspathJar) ? p.isPackage(qualifiedPackageName) : p.isPackage(qp2))
+			if ( p.isPackage(qp2))
 				return true;
 		}
 	}

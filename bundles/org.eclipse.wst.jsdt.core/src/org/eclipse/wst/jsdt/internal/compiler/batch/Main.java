@@ -46,7 +46,6 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.internal.compiler.AbstractAnnotationProcessorManager;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
@@ -3209,7 +3208,7 @@ public ICompilerRequestor getBatchRequestor() {
 					System.exit(-1);
 				}
 			}
-			outputClassFiles(compilationResult);
+//			outputClassFiles(compilationResult);
 			Main.this.logger.endLoggingSource();
 		}
 	};
@@ -3316,66 +3315,6 @@ protected void initialize(PrintWriter outWriter,
 		this.didSpecifyTarget = false;
 	}
 	this.classNames = null;
-}
-// Dump classfiles onto disk for all compilation units that where successful
-// and do not carry a -d none spec, either directly or inherited from Main.
-public void outputClassFiles(CompilationResult unitResult) {
-	if (!((unitResult == null) || (unitResult.hasErrors() && !this.proceedOnError))) {
-		ClassFile[] classFiles = unitResult.getClassFiles();
-		String currentDestinationPath = null;
-		boolean generateClasspathStructure = false;
-		CompilationUnit compilationUnit =
-			(CompilationUnit) unitResult.compilationUnit;
-		if (compilationUnit.destinationPath == null) {
-			if (this.destinationPath == null) {
-				currentDestinationPath =
-					extractDestinationPathFromSourceFile(unitResult);
-			} else if (this.destinationPath != NONE) {
-				currentDestinationPath = this.destinationPath;
-				generateClasspathStructure = true;
-			} // else leave currentDestinationPath null
-		} else if (compilationUnit.destinationPath != NONE) {
-			currentDestinationPath = compilationUnit.destinationPath;
-			generateClasspathStructure = true;
-		} // else leave currentDestinationPath null
-		if (currentDestinationPath != null) {
-			for (int i = 0, fileCount = classFiles.length; i < fileCount; i++) {
-				// retrieve the key and the corresponding classfile
-				ClassFile classFile = classFiles[i];
-				char[] filename = classFile.fileName();
-				int length = filename.length;
-				char[] relativeName = new char[length + 6];
-				System.arraycopy(filename, 0, relativeName, 0, length);
-				System.arraycopy(SuffixConstants.SUFFIX_class, 0, relativeName, length, 6);
-				CharOperation.replace(relativeName, '/', File.separatorChar);
-				String relativeStringName = new String(relativeName);
-				try {
-					if (this.compilerOptions.verbose)
-						this.out.println(
-							Messages.bind(
-								Messages.compilation_write,
-								new String[] {
-									String.valueOf(this.exportedClassFilesCounter+1),
-									relativeStringName
-								}));
-					ClassFile.writeToDisk(
-						generateClasspathStructure,
-						currentDestinationPath,
-						relativeStringName,
-						classFile);
-					LookupEnvironment env = this.batchCompiler.lookupEnvironment;
-					if (classFile.isShared) env.classFilePool.release(classFile);
-					this.logger.logClassFile(
-						generateClasspathStructure,
-						currentDestinationPath,
-						relativeStringName);
-					this.exportedClassFilesCounter++;
-				} catch (IOException e) {
-					this.logger.logNoClassFileCreated(currentDestinationPath, relativeStringName, e);
-				}
-			}
-		}
-	}
 }
 
 /*

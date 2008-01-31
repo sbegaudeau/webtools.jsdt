@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.zip.ZipFile;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -25,12 +24,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
@@ -86,10 +83,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
 import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
@@ -134,8 +128,6 @@ import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.LocalVariable;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.Openable;
-import org.eclipse.wst.jsdt.internal.core.PackageFragment;
-import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
 import org.eclipse.wst.jsdt.internal.core.SourceMapper;
 import org.eclipse.wst.jsdt.internal.core.SourceMethod;
@@ -385,39 +377,6 @@ private static HashMap workingCopiesThatCanSeeFocus(org.eclipse.wst.jsdt.core.IC
 	return result;
 }
 
-public static ClassFileReader classFileReader(IType type) {
-	IClassFile classFile = type.getClassFile();
-	JavaModelManager manager = JavaModelManager.getJavaModelManager();
-	if (classFile.isOpen())
-		return (ClassFileReader) manager.getInfo(type);
-
-	PackageFragment pkg = (PackageFragment) type.getPackageFragment();
-	IPackageFragmentRoot root = (IPackageFragmentRoot) pkg.getParent();
-	try {
-		if (!root.isArchive())
-			return Util.newClassFileReader(type.getResource());
-
-		ZipFile zipFile = null;
-		try {
-			IPath zipPath = root.getPath();
-			if (JavaModelManager.ZIP_ACCESS_VERBOSE)
-				System.out.println("(" + Thread.currentThread() + ") [MatchLocator.classFileReader()] Creating ZipFile on " + zipPath); //$NON-NLS-1$	//$NON-NLS-2$
-			zipFile = manager.getZipFile(zipPath);
-			String classFileName = classFile.getElementName();
-			String path = Util.concatWith(pkg.names, classFileName, '/');
-			return ClassFileReader.read(zipFile, path);
-		} finally {
-			manager.closeZipFile(zipFile);
-		}
-	} catch (ClassFormatException e) {
-		// invalid class file: return null
-	} catch (CoreException e) {
-		// cannot read class file: return null
-	} catch (IOException e) {
-		// cannot read class file: return null
-	}
-	return null;
-}
 
 public static SearchPattern createAndPattern(final SearchPattern leftPattern, final SearchPattern rightPattern) {
 	return new AndPattern(0/*no kind*/, 0/*no rule*/) {
@@ -667,38 +626,6 @@ protected IJavaElement createHandle(AbstractMethodDeclaration method, IJavaEleme
 	return createMethodHandle(parent, new String(methodName), parameterTypeSignatures);
 }
 /*
- * Create binary method handle
- */
-IMethod createBinaryMethodHandle(IType type, char[] methodSelector, char[][] argumentTypeNames) {
-	ClassFileReader reader = MatchLocator.classFileReader(type);
-	if (reader != null) {
-		IBinaryMethod[] methods = reader.getMethods();
-		if (methods != null) {
-			int argCount = argumentTypeNames == null ? 0 : argumentTypeNames.length;
-			nextMethod : for (int i = 0, methodsLength = methods.length; i < methodsLength; i++) {
-				IBinaryMethod binaryMethod = methods[i];
-				char[] selector = binaryMethod.isConstructor() ? type.getElementName().toCharArray() : binaryMethod.getSelector();
-				if (CharOperation.equals(selector, methodSelector)) {
-					char[] signature = binaryMethod.getGenericSignature();
-					if (signature == null) signature = binaryMethod.getMethodDescriptor();
-					char[][] parameterTypes = Signature.getParameterTypes(signature);
-					if (argCount != parameterTypes.length) continue nextMethod;
-					if (argumentTypeNames != null) {
-						for (int j = 0; j < argCount; j++) {
-							char[] parameterTypeName = ClassFileMatchLocator.convertClassFileFormat(parameterTypes[j]);
-							if (!CharOperation.endsWith(Signature.toCharArray(Signature.getTypeErasure(parameterTypeName)), CharOperation.replaceOnCopy(argumentTypeNames[j], '$', '.')))
-								continue nextMethod;
-							parameterTypes[j] = parameterTypeName;
-						}
-					}
-					return (IMethod) createMethodHandle(type, new String(selector), CharOperation.toStrings(parameterTypes));
-				}
-			}
-		}
-	}
-	return null;
-}
-/*
  * Create method handle.
  * Store occurences for create handle to retrieve possible duplicate ones.
  */
@@ -924,33 +851,34 @@ protected IBinaryType getBinaryInfo(ClassFile classFile, IResource resource) thr
 		return (IBinaryType) binaryType.getElementInfo(); // reuse the info from the java model cache
 
 	// create a temporary info
-	IBinaryType info;
-	try {
-		PackageFragment pkg = (PackageFragment) classFile.getParent();
-		PackageFragmentRoot root = (PackageFragmentRoot) pkg.getParent();
-		if (root.isArchive()) {
-			// class file in a jar
-			String classFileName = classFile.getElementName();
-			String classFilePath = Util.concatWith(pkg.names, classFileName, '/');
-			ZipFile zipFile = null;
-			try {
-				zipFile = ((JarPackageFragmentRoot) root).getJar();
-				info = ClassFileReader.read(zipFile, classFilePath);
-			} finally {
-				JavaModelManager.getJavaModelManager().closeZipFile(zipFile);
-			}
-		} else {
-			// class file in a directory
-			info = Util.newClassFileReader(resource);
-		}
-		if (info == null) throw binaryType.newNotPresentException();
-		return info;
-	} catch (ClassFormatException e) {
-		//e.printStackTrace();
-		return null;
-	} catch (java.io.IOException e) {
-		throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
-	}
+//	IBinaryType info;
+//	try {
+//		PackageFragment pkg = (PackageFragment) classFile.getParent();
+//		PackageFragmentRoot root = (PackageFragmentRoot) pkg.getParent();
+//		if (root.isArchive()) {
+//			// class file in a jar
+//			String classFileName = classFile.getElementName();
+//			String classFilePath = Util.concatWith(pkg.names, classFileName, '/');
+//			ZipFile zipFile = null;
+//			try {
+//				zipFile = ((JarPackageFragmentRoot) root).getJar();
+//				info = ClassFileReader.read(zipFile, classFilePath);
+//			} finally {
+//				JavaModelManager.getJavaModelManager().closeZipFile(zipFile);
+//			}
+//		} else {
+//			// class file in a directory
+//			info = Util.newClassFileReader(resource);
+//		}
+//		if (info == null) throw binaryType.newNotPresentException();
+//		return info;
+//	} catch (ClassFormatException e) {
+//		//e.printStackTrace();
+//		return null;
+//	} catch (java.io.IOException e) {
+//		throw new JavaModelException(e, IJavaModelStatusConstants.IO_EXCEPTION);
+//	}
+	return null;
 }
 protected IType getFocusType() {
 	return this.scope instanceof HierarchyScope ? ((HierarchyScope) this.scope).focusType : null;

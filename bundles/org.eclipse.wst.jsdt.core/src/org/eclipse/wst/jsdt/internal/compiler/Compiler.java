@@ -681,10 +681,6 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 
 		unit.analyseCode();
 
-		/* BC- might want to comment the next two out.  They don't seem applicable for JS. */
-		// flow analysis
-		// code generation
-		unit.generateCode();
 
 		// reference info
 		if (options.produceReferenceInfo && unit.scope != null)

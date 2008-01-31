@@ -10,13 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public abstract class Reference extends Expression  {
 /**
@@ -35,40 +32,4 @@ public FieldBinding fieldBinding() {
 	//  (ref.bits & BindingIds.FIELD != 0)()
 	return null ;
 }
-public void fieldStore(CodeStream codeStream, FieldBinding fieldBinding, MethodBinding syntheticWriteAccessor, boolean valueRequired) {
-	int pc = codeStream.position;
-	if (fieldBinding.isStatic()) {
-		if (valueRequired) {
-			if ((fieldBinding.type == TypeBinding.LONG) || (fieldBinding.type == TypeBinding.DOUBLE)) {
-				codeStream.dup2();
-			} else {
-				codeStream.dup();
-			}
-		}
-		if (syntheticWriteAccessor == null) {
-			codeStream.putstatic(fieldBinding);
-		} else {
-			codeStream.invokestatic(syntheticWriteAccessor);
-		}
-	} else { // Stack:  [owner][new field value]  ---> [new field value][owner][new field value]
-		if (valueRequired) {
-			if ((fieldBinding.type == TypeBinding.LONG) || (fieldBinding.type == TypeBinding.DOUBLE)) {
-				codeStream.dup2_x1();
-			} else {
-				codeStream.dup_x1();
-			}
-		}
-		if (syntheticWriteAccessor == null) {
-			codeStream.putfield(fieldBinding);
-		} else {
-			codeStream.invokestatic(syntheticWriteAccessor);
-		}
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
-}
-public abstract void generateAssignment(BlockScope currentScope, CodeStream codeStream, Assignment assignment, boolean valueRequired);
-
-public abstract void generateCompoundAssignment(BlockScope currentScope, CodeStream codeStream, Expression expression, int operator, int assignmentImplicitConversion, boolean valueRequired);
-
-public abstract void generatePostIncrement(BlockScope currentScope, CodeStream codeStream, CompoundAssignment postIncrement, boolean valueRequired);
 }

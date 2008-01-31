@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -89,52 +88,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			//AccModifierProblem | AccAlternateModifierProblem -> visibility problem"
 
 			modifiers = (modifiers & ~ExtraCompilerModifiers.AccAlternateModifierProblem) | ExtraCompilerModifiers.AccModifierProblem;
-	}
-
-	/**
-	 * Code generation for a local declaration:
-	 *	i.e.&nbsp;normal assignment to a local variable + unused variable handling
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		// even if not reachable, variable must be added to visible if allocated (28298)
-		if (binding.resolvedPosition != -1) {
-			codeStream.addVisibleLocalVariable(binding);
-		}
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-
-		// something to initialize?
-		generateInit: {
-			if (this.initialization == null)
-				break generateInit;
-			// forget initializing unused or final locals set to constant value (final ones are inlined)
-			if (binding.resolvedPosition < 0) {
-				if (initialization.constant != Constant.NotAConstant)
-					break generateInit;
-				// if binding unused generate then discard the value
-				initialization.generateCode(currentScope, codeStream, false);
-				break generateInit;
-			}
-			initialization.generateCode(currentScope, codeStream, true);
-			// 26903, need extra cast to store null in array local var
-			if (binding.type.isArrayType()
-				&& (initialization.resolvedType == TypeBinding.NULL	// arrayLoc = null
-					|| ((initialization instanceof CastExpression)	// arrayLoc = (type[])null
-						&& (((CastExpression)initialization).innermostCastedExpression().resolvedType == TypeBinding.NULL)))){
-				codeStream.checkcast(binding.type);
-			}
-			codeStream.store(binding, false);
-			if ((this.bits & ASTNode.FirstAssignmentToLocal) != 0) {
-				/* Variable may have been initialized during the code initializing it
-					e.g. int i = (i = 1);
-				*/
-				binding.recordInitializationStartPC(codeStream.position);
-			}
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	/**

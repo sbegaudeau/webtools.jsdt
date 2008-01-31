@@ -12,10 +12,8 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
@@ -43,23 +41,6 @@ public class Initializer extends FieldDeclaration {
 		FlowInfo flowInfo) {
 
 		return block.analyseCode(currentScope, flowContext, flowInfo);
-	}
-
-	/**
-	 * Code generation for a non-static initializer:
-	 *    standard block code gen
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-		block.generateCode(currentScope, codeStream);
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	/**

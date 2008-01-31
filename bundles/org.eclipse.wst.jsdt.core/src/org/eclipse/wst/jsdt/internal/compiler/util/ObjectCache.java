@@ -8,19 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.internal.compiler.codegen;
+package org.eclipse.wst.jsdt.internal.compiler.util;
 
-public class LongCache {
-	public long keyTable[];
+public class ObjectCache {
+	public Object keyTable[];
 	public int valueTable[];
 	int elementSize;
 	int threshold;
 /**
- * Constructs a new, empty hashtable. A default capacity and
- * load factor is used. Note that the hashtable will automatically
- * grow when it gets full.
+ * Constructs a new, empty hashtable. A default capacity is used.
+ * Note that the hashtable will automatically grow when it gets full.
  */
-public LongCache() {
+public ObjectCache() {
 	this(13);
 }
 /**
@@ -29,10 +28,10 @@ public LongCache() {
  * @param initialCapacity int
  *  the initial number of buckets
  */
-public LongCache(int initialCapacity) {
+public ObjectCache(int initialCapacity) {
 	this.elementSize = 0;
-	this.threshold = (int) (initialCapacity * 0.66);
-	this.keyTable = new long[initialCapacity];
+	this.threshold = (int) (initialCapacity * 0.66f);
+	this.keyTable = new Object[initialCapacity];
 	this.valueTable = new int[initialCapacity];
 }
 /**
@@ -40,19 +39,19 @@ public LongCache(int initialCapacity) {
  */
 public void clear() {
 	for (int i = this.keyTable.length; --i >= 0;) {
-		this.keyTable[i] = 0;
+		this.keyTable[i] = null;
 		this.valueTable[i] = 0;
 	}
 	this.elementSize = 0;
 }
 /** Returns true if the collection contains an element for the key.
  *
- * @param key <CODE>long</CODE> the key that we are looking for
+ * @param key char[] the key that we are looking for
  * @return boolean
  */
-public boolean containsKey(long key) {
-	int index = hash(key), length = this.keyTable.length;
-	while ((this.keyTable[index] != 0) || ((this.keyTable[index] == 0) &&(this.valueTable[index] != 0))) {
+public boolean containsKey(Object key) {
+	int index = hashCode(key), length = this.keyTable.length;
+	while (this.keyTable[index] != null) {
 		if (this.keyTable[index] == key)
 			return true;
 		if (++index == length) {
@@ -61,25 +60,44 @@ public boolean containsKey(long key) {
 	}
 	return false;
 }
-/**
- * Return a hashcode for the value of the key parameter.
- * @param key long
- * @return int the hash code corresponding to the key value
+/** Gets the object associated with the specified key in the
+ * hashtable.
+ * @param key <CODE>char[]</CODE> the specified key
+ * @return int the element for the key or -1 if the key is not
+ *  defined in the hash table.
  */
-public int hash(long key) {
-	return ((int) key & 0x7FFFFFFF) % this.keyTable.length;
+public int get(Object key) {
+	int index = hashCode(key), length = this.keyTable.length;
+	while (this.keyTable[index] != null) {
+		if (this.keyTable[index] == key)
+			return this.valueTable[index];
+		if (++index == length) {
+			index = 0;
+		}
+	}
+	return -1;
+}
+/**
+ * Return the hashcode for the key parameter
+ *
+ * @param key org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding
+ * @return int
+ */
+public int hashCode(Object key) {
+	return (key.hashCode() & 0x7FFFFFFF) % this.keyTable.length;
 }
 /**
  * Puts the specified element into the hashtable, using the specified
  * key.  The element may be retrieved by doing a get() with the same key.
+ * The key and the element cannot be null.
  *
- * @param key <CODE>long</CODE> the specified key in the hashtable
+ * @param key <CODE>Object</CODE> the specified key in the hashtable
  * @param value <CODE>int</CODE> the specified element
- * @return int value
+ * @return int the old value of the key, or -1 if it did not have one.
  */
-public int put(long key, int value) {
-	int index = hash(key), length = this.keyTable.length;
-	while ((this.keyTable[index] != 0) || ((this.keyTable[index] == 0) && (this.valueTable[index] != 0))) {
+public int put(Object key, int value) {
+	int index = hashCode(key), length = this.keyTable.length;
+	while (this.keyTable[index] != null) {
 		if (this.keyTable[index] == key)
 			return this.valueTable[index] = value;
 		if (++index == length) {
@@ -90,36 +108,9 @@ public int put(long key, int value) {
 	this.valueTable[index] = value;
 
 	// assumes the threshold is never equal to the size of the table
-	if (++this.elementSize > this.threshold) {
+	if (++this.elementSize > this.threshold)
 		rehash();
-	}
 	return value;
-}
-/**
- * Puts the specified element into the hashtable, using the specified
- * key.  The element may be retrieved by doing a get() with the same key.
- *
- * @param key <CODE>long</CODE> the specified key in the hashtable
- * @param value <CODE>int</CODE> the specified element
- * @return int value
- */
-public int putIfAbsent(long key, int value) {
-	int index = hash(key), length = this.keyTable.length;
-	while ((this.keyTable[index] != 0) || ((this.keyTable[index] == 0) && (this.valueTable[index] != 0))) {
-		if (this.keyTable[index] == key)
-			return this.valueTable[index];
-		if (++index == length) {
-			index = 0;
-		}
-	}
-	this.keyTable[index] = key;
-	this.valueTable[index] = value;
-
-	// assumes the threshold is never equal to the size of the table
-	if (++this.elementSize > this.threshold) {
-		rehash();
-	}
-	return -value; // negative when added, assumes value is > 0
 }
 /**
  * Rehashes the content of the table into a bigger table.
@@ -127,14 +118,11 @@ public int putIfAbsent(long key, int value) {
  * size exceeds the threshold.
  */
 private void rehash() {
-	LongCache newHashtable = new LongCache(this.keyTable.length * 2);
-	for (int i = this.keyTable.length; --i >= 0;) {
-		long key = this.keyTable[i];
-		int value = this.valueTable[i];
-		if ((key != 0) || ((key == 0) && (value != 0))) {
-			newHashtable.put(key, value);
-		}
-	}
+	ObjectCache newHashtable = new ObjectCache(this.keyTable.length * 2);
+	for (int i = this.keyTable.length; --i >= 0;)
+		if (this.keyTable[i] != null)
+			newHashtable.put(this.keyTable[i], this.valueTable[i]);
+
 	this.keyTable = newHashtable.keyTable;
 	this.valueTable = newHashtable.valueTable;
 	this.threshold = newHashtable.threshold;
@@ -157,7 +145,7 @@ public String toString() {
 	StringBuffer buf = new StringBuffer();
 	buf.append("{"); //$NON-NLS-1$
 	for (int i = 0; i < max; ++i) {
-		if ((this.keyTable[i] != 0) || ((this.keyTable[i] == 0) && (this.valueTable[i] != 0))) {
+		if (this.keyTable[i] != null) {
 			buf.append(this.keyTable[i]).append("->").append(this.valueTable[i]); //$NON-NLS-1$
 		}
 		if (i < max) {

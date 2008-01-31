@@ -44,7 +44,6 @@ import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.RecoveryScannerData;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
@@ -231,11 +230,6 @@ public CategorizedProblem[] getAllProblems() {
 	return allProblems;
 }
 
-public ClassFile[] getClassFiles() {
-	ClassFile[] classFiles = new ClassFile[this.compiledTypes.size()];
-	this.compiledTypes.values().toArray(classFiles);
-	return classFiles;
-}
 
 /**
  * Answer the initial compilation unit corresponding to the present compilation result
@@ -412,16 +406,7 @@ public void record(CategorizedProblem newProblem, ReferenceContext referenceCont
 		this.hasSyntaxError = true;
 }
 
-/**
- * For now, remember the compiled type using its compound name.
- */
-public void record(char[] typeName, ClassFile classFile) {
-    SourceTypeBinding sourceType = classFile.referenceBinding;
-    if (!sourceType.isLocalType() && sourceType.isHierarchyInconsistent()) {
-        this.hasInconsistentToplevelHierarchies = true;
-    }
-	this.compiledTypes.put(typeName, classFile);
-}
+
 
 public void recordSuppressWarnings(long irritant, int scopeStart, int scopeEnd) {
 	if (this.suppressWarningIrritants == null) {

@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.flow;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 /**
@@ -23,8 +22,8 @@ public class LabelFlowContext extends SwitchFlowContext {
 
 	public char[] labelName;
 
-public LabelFlowContext(FlowContext parent, ASTNode associatedNode, char[] labelName, BranchLabel breakLabel, BlockScope scope) {
-	super(parent, associatedNode, breakLabel);
+public LabelFlowContext(FlowContext parent, ASTNode associatedNode, char[] labelName, BlockScope scope) {
+	super(parent, associatedNode);
 	this.labelName = labelName;
 	checkLabelValidity(scope);
 }

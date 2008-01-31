@@ -13,10 +13,8 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
@@ -513,100 +511,6 @@ public TypeDeclaration declarationOfType(char[][] typeName) {
 		}
 	}
 	return null;
-}
-
-/**
- * Generic bytecode generation for type
- */
-public void generateCode(ClassFile enclosingClassFile) {
-	if ((this.bits & ASTNode.HasBeenGenerated) != 0)
-		return;
-	this.bits |= ASTNode.HasBeenGenerated;
-	if (this.ignoreFurtherInvestigation) {
-		if (this.binding == null)
-			return;
-		ClassFile.createProblemType(
-			this,
-			this.scope.referenceCompilationUnit().compilationResult);
-		return;
-	}
-	try {
-		// create the result for a compiled type
-		ClassFile classFile = ClassFile.getNewInstance(this.binding);
-		classFile.initialize(this.binding, enclosingClassFile, false);
-		if (this.binding.isMemberType()) {
-			classFile.recordInnerClasses(this.binding);
-		} else if (this.binding.isLocalType()) {
-			enclosingClassFile.recordInnerClasses(this.binding);
-			classFile.recordInnerClasses(this.binding);
-		}
-
-		// generate all fiels
-		classFile.addFieldInfos();
-
-		if (this.memberTypes != null) {
-			for (int i = 0, max = this.memberTypes.length; i < max; i++) {
-				TypeDeclaration memberType = this.memberTypes[i];
-				classFile.recordInnerClasses(memberType.binding);
-				memberType.generateCode(this.scope, classFile);
-			}
-		}
-		// generate all methods
-		classFile.setForMethodInfos();
-		if (this.methods != null) {
-			for (int i = 0, max = this.methods.length; i < max; i++) {
-				this.methods[i].generateCode(this.scope, classFile);
-			}
-		}
-		// generate all synthetic and abstract methods
-		classFile.addSpecialMethods();
-
-		if (this.ignoreFurtherInvestigation) { // trigger problem type generation for code gen errors
-			throw new AbortType(this.scope.referenceCompilationUnit().compilationResult, null);
-		}
-
-		// finalize the compiled type result
-		classFile.addAttributes();
-		this.scope.referenceCompilationUnit().compilationResult.record(
-			this.binding.constantPoolName(),
-			classFile);
-	} catch (AbortType e) {
-		if (this.binding == null)
-			return;
-		ClassFile.createProblemType(
-			this,
-			this.scope.referenceCompilationUnit().compilationResult);
-	}
-}
-
-/**
- * Bytecode generation for a local inner type (API as a normal statement code gen)
- */
-public void generateCode(BlockScope blockScope, CodeStream codeStream) {
-	if ((this.bits & ASTNode.IsReachable) == 0) {
-		return;
-	}
-	if ((this.bits & ASTNode.HasBeenGenerated) != 0) return;
-	int pc = codeStream.position;
-	if (this.binding != null) ((NestedTypeBinding) this.binding).computeSyntheticArgumentSlotSizes();
-	generateCode(codeStream.classFile);
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
-}
-
-/**
- * Bytecode generation for a member inner type
- */
-public void generateCode(ClassScope classScope, ClassFile enclosingClassFile) {
-	if ((this.bits & ASTNode.HasBeenGenerated) != 0) return;
-	if (this.binding != null) ((NestedTypeBinding) this.binding).computeSyntheticArgumentSlotSizes();
-	generateCode(enclosingClassFile);
-}
-
-/**
- * Bytecode generation for a package member
- */
-public void generateCode(CompilationUnitScope unitScope) {
-	generateCode((ClassFile) null);
 }
 
 public boolean hasErrors() {

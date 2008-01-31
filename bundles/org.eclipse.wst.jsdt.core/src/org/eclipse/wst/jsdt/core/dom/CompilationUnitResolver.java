@@ -851,8 +851,6 @@ class CompilationUnitResolver extends Compiler {
 				// flow analysis
 				if (analyzeCode) unit.analyseCode();
 
-				// code generation
-				if (generateCode) unit.generateCode();
 			}
 			if (this.unitsToProcess != null) this.unitsToProcess[0] = null; // release reference to processed unit declaration
 			this.requestor.acceptResult(unit.compilationResult.tagAsAccepted());

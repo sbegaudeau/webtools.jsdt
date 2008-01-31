@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CaseLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -27,7 +25,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 public class CaseStatement extends Statement {
 
 	public Expression constantExpression;
-	public CaseLabel targetLabel;
 	public boolean isEnumConstant;
 
 	public CaseStatement(Expression constantExpression, int sourceEnd, int sourceStart) {
@@ -62,19 +59,6 @@ public class CaseStatement extends Statement {
 		return output.append(';');
 	}
 
-	/**
-	 * Case code generation
-	 *
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-		targetLabel.place();
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
 
 	/**
 	 * No-op : should use resolveCase(...) instead.

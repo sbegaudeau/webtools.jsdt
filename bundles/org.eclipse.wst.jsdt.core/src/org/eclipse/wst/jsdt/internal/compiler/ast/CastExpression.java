@@ -12,7 +12,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -350,43 +349,6 @@ public class CastExpression extends Expression {
 			tagAsUnnecessaryCast(scope, castType);
 		}
 		return true;
-	}
-
-	/**
-	 * Cast expression code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 * @param valueRequired boolean
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-
-		int pc = codeStream.position;
-		boolean needRuntimeCheckcast = (this.bits & GenerateCheckcast) != 0;
-		if (constant != Constant.NotAConstant) {
-			if (valueRequired || needRuntimeCheckcast) { // Added for: 1F1W9IG: IVJCOM:WINNT - Compiler omits casting check
-				codeStream.generateConstant(constant, implicitConversion);
-				if (needRuntimeCheckcast) {
-					codeStream.checkcast(this.resolvedType);
-				}
-				if (!valueRequired) {
-					// the resolveType cannot be double or long
-					codeStream.pop();
-				}
-			}
-			codeStream.recordPositionsFrom(pc, this.sourceStart);
-			return;
-		}
-		expression.generateCode(currentScope, codeStream, valueRequired || needRuntimeCheckcast);
-		if (needRuntimeCheckcast && this.expression.postConversionType(currentScope) != this.resolvedType) { // no need to issue a checkcast if already done as genericCast
-			codeStream.checkcast(this.resolvedType);
-		}
-		if (valueRequired) {
-			codeStream.generateImplicitConversion(implicitConversion);
-		} else if (needRuntimeCheckcast) {
-			codeStream.pop();
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public Expression innermostCastedExpression(){

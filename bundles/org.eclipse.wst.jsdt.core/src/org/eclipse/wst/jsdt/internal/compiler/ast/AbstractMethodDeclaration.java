@@ -14,27 +14,22 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilationUnit;
@@ -188,119 +183,7 @@ public abstract class AbstractMethodDeclaration
 		return this.compilationResult;
 	}
 
-	/**
-	 * Bytecode generation for a method
-	 * @param classScope
-	 * @param classFile
-	 */
-	public void generateCode(ClassScope classScope, ClassFile classFile) {
 
-		int problemResetPC = 0;
-		classFile.codeStream.wideMode = false; // reset wideMode to false
-		if (this.ignoreFurtherInvestigation) {
-			// method is known to have errors, dump a problem method
-			if (this.binding == null)
-				return; // handle methods with invalid signature or duplicates
-			int problemsLength;
-			CategorizedProblem[] problems =
-				this.scope.referenceCompilationUnit().compilationResult.getProblems();
-			CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-			System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-			classFile.addProblemMethod(this, this.binding, problemsCopy);
-			return;
-		}
-		// regular code generation
-		try {
-			problemResetPC = classFile.contentsOffset;
-			this.generateCode(classFile);
-		} catch (AbortMethod e) {
-			// a fatal error was detected during code generation, need to restart code gen if possible
-			if (e.compilationResult == CodeStream.RESTART_IN_WIDE_MODE) {
-				// a branch target required a goto_w, restart code gen in wide mode.
-				try {
-					classFile.contentsOffset = problemResetPC;
-					classFile.methodCount--;
-					classFile.codeStream.wideMode = true; // request wide mode
-					this.generateCode(classFile); // restart method generation
-				} catch (AbortMethod e2) {
-					int problemsLength;
-					CategorizedProblem[] problems =
-						this.scope.referenceCompilationUnit().compilationResult.getAllProblems();
-					CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-					System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-					classFile.addProblemMethod(this, this.binding, problemsCopy, problemResetPC);
-				}
-			} else {
-				// produce a problem method accounting for this fatal error
-				int problemsLength;
-				CategorizedProblem[] problems =
-					this.scope.referenceCompilationUnit().compilationResult.getAllProblems();
-				CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-				System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-				classFile.addProblemMethod(this, this.binding, problemsCopy, problemResetPC);
-			}
-		}
-	}
-
-	public void generateCode(ClassFile classFile) {
-
-		classFile.generateMethodInfoHeader(this.binding);
-		int methodAttributeOffset = classFile.contentsOffset;
-		int attributeNumber = classFile.generateMethodInfoAttribute(this.binding);
-		if ((!this.binding.isNative()) && (!this.binding.isAbstract())) {
-			int codeAttributeOffset = classFile.contentsOffset;
-			classFile.generateCodeAttributeHeader();
-			CodeStream codeStream = classFile.codeStream;
-			codeStream.reset(this, classFile);
-			// initialize local positions
-			this.scope.computeLocalVariablePositions(this.binding.isStatic() ? 0 : 1, codeStream);
-
-			// arguments initialization for local variable debug attributes
-			if (this.arguments != null) {
-				for (int i = 0, max = this.arguments.length; i < max; i++) {
-					LocalVariableBinding argBinding;
-					codeStream.addVisibleLocalVariable(argBinding = this.arguments[i].binding);
-					argBinding.recordInitializationStartPC(0);
-				}
-			}
-			if (this.statements != null) {
-				for (int i = 0, max = this.statements.length; i < max; i++)
-					this.statements[i].generateCode(this.scope, codeStream);
-			}
-			if (this.needFreeReturn) {
-				codeStream.return_();
-			}
-			// local variable attributes
-			codeStream.exitUserScope(this.scope);
-			codeStream.recordPositionsFrom(0, this.declarationSourceEnd);
-			classFile.completeCodeAttribute(codeAttributeOffset);
-			attributeNumber++;
-		} else {
-			checkArgumentsSize();
-		}
-		classFile.completeMethodInfo(methodAttributeOffset, attributeNumber);
-
-		// if a problem got reported during code gen, then trigger problem method creation
-		if (this.ignoreFurtherInvestigation) {
-			throw new AbortMethod(this.scope.referenceCompilationUnit().compilationResult, null);
-		}
-	}
-
-	private void checkArgumentsSize() {
-		TypeBinding[] parameters = this.binding.parameters;
-		int size = 1; // an abstact method or a native method cannot be static
-		for (int i = 0, max = parameters.length; i < max; i++) {
-			TypeBinding parameter = parameters[i];
-			if (parameter == TypeBinding.LONG || parameter == TypeBinding.DOUBLE) {
-				size += 2;
-			} else {
-				size++;
-			}
-			if (size > 0xFF) {
-				this.scope.problemReporter().noMoreAvailableSpaceForArgument(this.scope.locals[i], this.scope.locals[i].declaration);
-			}
-		}
-	}
 
 	public boolean hasErrors() {
 		return this.ignoreFurtherInvestigation;
@@ -533,9 +416,6 @@ public abstract class AbstractMethodDeclaration
 
 
 
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-	}
 
 	public void resolve(BlockScope scope) {
 		this.resolve((Scope)scope);

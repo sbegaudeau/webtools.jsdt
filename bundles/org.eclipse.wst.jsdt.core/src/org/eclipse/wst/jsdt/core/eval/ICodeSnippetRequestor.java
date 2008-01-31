@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.core.eval;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.wst.jsdt.internal.eval.EvaluationConstants;
 
 /**
  * A code snippet requestor implements a callback interface for installing
@@ -31,32 +30,32 @@ public interface ICodeSnippetRequestor {
 	 * The prefix of fields that represent the local variables in a snippet
 	 * class.
 	 */
-	public static final String LOCAL_VAR_PREFIX = new String(EvaluationConstants.LOCAL_VAR_PREFIX);
+	public static final String LOCAL_VAR_PREFIX = "val$";
 
 	/**
 	 * The name of the field that represent 'this' in a snippet class
 	 * instance.
 	 */
-	public static final String DELEGATE_THIS = new String(EvaluationConstants.DELEGATE_THIS);
+	public static final String DELEGATE_THIS = "val$this";
 
 	/**
 	 * The name of the instance method in the snippet class that runs the code
 	 * snippet.
 	 */
-	public static final String RUN_METHOD = EvaluationConstants.RUN_METHOD;
+	public static final String RUN_METHOD = "run";
 
 	/**
 	 * The name of the field (of type <code>java.lang.Object</code>) on the code
 	 * snippet instance that contains the returned value.
 	 */
-	public static final String RESULT_VALUE_FIELD = EvaluationConstants.RESULT_VALUE_FIELD;
+	public static final String RESULT_VALUE_FIELD = "resultValue";
 
 	/**
 	 * The field of type java.lang.Class on the code snippet instance that contains the type of the returned value.
 	 * The name of the field (of type <code>java.lang.Class</code>) on the code
 	 * snippet instance that contains the runtime type of the returned value.
 	 */
-	public static final String RESULT_TYPE_FIELD = EvaluationConstants.RESULT_TYPE_FIELD;
+	public static final String RESULT_TYPE_FIELD = "resultType";
 
 	/*
 	 * REPORTING A PROBLEM OF COMPILATION IN THE CODE SNIPPET

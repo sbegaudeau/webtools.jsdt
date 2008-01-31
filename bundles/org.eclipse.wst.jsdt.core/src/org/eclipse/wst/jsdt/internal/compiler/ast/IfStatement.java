@@ -11,8 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -168,100 +166,6 @@ public class IfStatement extends Statement {
 		}
 		}
 		return null;
-	}
-
-	/**
-	 * If code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((this.bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-		BranchLabel endifLabel = new BranchLabel(codeStream);
-
-		// optimizing the then/else part code gen
-		Constant cst;
-		boolean hasThenPart =
-			!(((cst = this.condition.optimizedBooleanConstant()) != Constant.NotAConstant
-					&& cst.booleanValue() == false)
-				|| this.thenStatement == null
-				|| this.thenStatement.isEmptyBlock());
-		boolean hasElsePart =
-			!((cst != Constant.NotAConstant && cst.booleanValue() == true)
-				|| this.elseStatement == null
-				|| this.elseStatement.isEmptyBlock());
-		if (hasThenPart) {
-			BranchLabel falseLabel = null;
-			// generate boolean condition
-			this.condition.generateOptimizedBoolean(
-				currentScope,
-				codeStream,
-				null,
-				hasElsePart ? (falseLabel = new BranchLabel(codeStream)) : endifLabel,
-				true/*cst == Constant.NotAConstant*/);
-			// May loose some local variable initializations : affecting the local variable attributes
-			if (thenInitStateIndex != -1) {
-				codeStream.removeNotDefinitelyAssignedVariables(currentScope, thenInitStateIndex);
-				codeStream.addDefinitelyAssignedVariables(currentScope, thenInitStateIndex);
-			}
-			// generate then statement
-			this.thenStatement.generateCode(currentScope, codeStream);
-			// jump around the else statement
-			if (hasElsePart) {
-				if (!thenExit) {
-					this.thenStatement.branchChainTo(endifLabel);
-					int position = codeStream.position;
-					codeStream.goto_(endifLabel);
-					//goto is tagged as part of the thenAction block
-					codeStream.updateLastRecordedEndPC((this.thenStatement instanceof Block) ? ((Block) this.thenStatement).scope : currentScope, position);
-					// generate else statement
-				}
-				// May loose some local variable initializations : affecting the local variable attributes
-				if (elseInitStateIndex != -1) {
-					codeStream.removeNotDefinitelyAssignedVariables(
-						currentScope,
-						elseInitStateIndex);
-					codeStream.addDefinitelyAssignedVariables(currentScope, elseInitStateIndex);
-				}
-				if (falseLabel != null) falseLabel.place();
-				this.elseStatement.generateCode(currentScope, codeStream);
-			}
-		} else if (hasElsePart) {
-			// generate boolean condition
-			this.condition.generateOptimizedBoolean(
-				currentScope,
-				codeStream,
-				endifLabel,
-				null,
-				true/*cst == Constant.NotAConstant*/);
-			// generate else statement
-			// May loose some local variable initializations : affecting the local variable attributes
-			if (elseInitStateIndex != -1) {
-				codeStream.removeNotDefinitelyAssignedVariables(
-					currentScope,
-					elseInitStateIndex);
-				codeStream.addDefinitelyAssignedVariables(currentScope, elseInitStateIndex);
-			}
-			this.elseStatement.generateCode(currentScope, codeStream);
-		} else {
-			// generate condition side-effects
-			this.condition.generateCode(currentScope, codeStream, false);
-			codeStream.recordPositionsFrom(pc, this.sourceStart);
-		}
-		// May loose some local variable initializations : affecting the local variable attributes
-		if (mergedInitStateIndex != -1) {
-			codeStream.removeNotDefinitelyAssignedVariables(
-				currentScope,
-				mergedInitStateIndex);
-			codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-		}
-		endifLabel.place();
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public StringBuffer printStatement(int indent, StringBuffer output) {

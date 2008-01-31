@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
@@ -44,9 +42,6 @@ public class ForeachStatement extends Statement {
 	private TypeBinding iteratorReceiverType;
 	private TypeBinding collectionElementType;
 
-	// loop labels
-	private BranchLabel breakLabel;
-	private BranchLabel continueLabel;
 
 	public BlockScope scope;
 
@@ -76,9 +71,8 @@ public class ForeachStatement extends Statement {
 		FlowContext flowContext,
 		FlowInfo flowInfo) {
 		// initialize break and continue labels
-		breakLabel = new BranchLabel();
-		continueLabel = new BranchLabel();
-
+		boolean isContinue=true;
+		
 		// process the element variable and collection
 		this.collection.checkNPE(currentScope, flowContext, flowInfo);
 		flowInfo = this.elementVariable.analyseCode(scope, flowContext, flowInfo);
@@ -91,8 +85,7 @@ public class ForeachStatement extends Statement {
 
 		// process the action
 		LoopingFlowContext loopingContext =
-			new LoopingFlowContext(flowContext, flowInfo, this, breakLabel,
-				continueLabel, scope);
+			new LoopingFlowContext(flowContext, flowInfo, this, scope);
 		UnconditionalFlowInfo actionInfo =
 			condInfo.nullInfoLessUnconditionalCopy();
 		actionInfo.markAsDefinitelyUnknown(this.elementVariable.binding);
@@ -112,7 +105,7 @@ public class ForeachStatement extends Statement {
 			// TODO (maxime) no need to test when false: can optimize (same for action being unreachable above)
 			if ((actionInfo.tagBits & loopingContext.initsOnContinue.tagBits &
 					FlowInfo.UNREACHABLE) != 0) {
-				continueLabel = null;
+				isContinue = false;
 			} else {
 				actionInfo = actionInfo.mergedWith(loopingContext.initsOnContinue);
 				loopingContext.complainOnDeferredFinalChecks(scope, actionInfo);
@@ -133,7 +126,7 @@ public class ForeachStatement extends Statement {
 				if (!hasEmptyAction
 						|| this.elementVariable.binding.resolvedPosition != -1) {
 					this.collectionVariable.useFlag = LocalVariableBinding.USED;
-					if (this.continueLabel != null) {
+					if (isContinue) {
 					this.indexVariable.useFlag = LocalVariableBinding.USED;
 					this.maxVariable.useFlag = LocalVariableBinding.USED;
 					}
@@ -158,177 +151,6 @@ public class ForeachStatement extends Statement {
 				true /*for(;;){}while(true); unreachable(); */);
 //		mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 		return mergedInfo;
-	}
-
-	/**
-	 * For statement code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-//
-//		if ((bits & IsReachable) == 0) {
-//			return;
-//		}
-//		int pc = codeStream.position;
-//		final boolean hasEmptyAction = this.action == null
-//			|| this.action.isEmptyBlock()
-//			|| ((this.action.bits & IsUsefulEmptyStatement) != 0);
-//
-//		if (hasEmptyAction
-//				&& this.elementVariable.binding.resolvedPosition == -1
-//				&& this.kind == ARRAY) {
-//			collection.generateCode(scope, codeStream, false);
-//			codeStream.exitUserScope(scope);
-//			if (mergedInitStateIndex != -1) {
-//				codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//				codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//			}
-//			codeStream.recordPositionsFrom(pc, this.sourceStart);
-//			return;
-//		}
-//
-//		// generate the initializations
-//		switch(this.kind) {
-//			case ARRAY :
-//				collection.generateCode(scope, codeStream, true);
-//				codeStream.store(this.collectionVariable, false);
-//				codeStream.iconst_0();
-//				codeStream.store(this.indexVariable, false);
-//				codeStream.load(this.collectionVariable);
-//				codeStream.arraylength();
-//				codeStream.store(this.maxVariable, false);
-//				break;
-//			case RAW_ITERABLE :
-//			case GENERIC_ITERABLE :
-//				collection.generateCode(scope, codeStream, true);
-//				// declaringClass.iterator();
-//				MethodBinding iteratorMethodBinding =
-//					new MethodBinding(
-//							ClassFileConstants.AccPublic,
-//							"iterator".toCharArray(),//$NON-NLS-1$
-//							scope.getJavaUtilIterator(),
-//							Binding.NO_PARAMETERS,
-//							Binding.NO_EXCEPTIONS,
-//							(ReferenceBinding) this.iteratorReceiverType.erasure());
-//				if (this.iteratorReceiverType.isInterface()) {
-//					codeStream.invokeinterface(iteratorMethodBinding);
-//				} else {
-//					codeStream.invokevirtual(iteratorMethodBinding);
-//				}
-//				codeStream.store(this.indexVariable, false);
-//				break;
-//		}
-//		// label management
-//		BranchLabel actionLabel = new BranchLabel(codeStream);
-//		actionLabel.tagBits |= BranchLabel.USED;
-//		BranchLabel conditionLabel = new BranchLabel(codeStream);
-//		conditionLabel.tagBits |= BranchLabel.USED;
-//		breakLabel.initialize(codeStream);
-//		if (this.continueLabel != null) {
-//			this.continueLabel.initialize(codeStream);
-//			this.continueLabel.tagBits |= BranchLabel.USED;
-//		}
-//		// jump over the actionBlock
-//		codeStream.goto_(conditionLabel);
-//
-//		// generate the loop action
-//		actionLabel.place();
-//
-//		// generate the loop action
-//		switch(this.kind) {
-//			case ARRAY :
-//				if (this.elementVariable.binding.resolvedPosition != -1) {
-//					codeStream.load(this.collectionVariable);
-//					codeStream.load(this.indexVariable);
-//					codeStream.arrayAt(this.collectionElementType.id);
-//					if (this.elementVariableImplicitWidening != -1) {
-//						codeStream.generateImplicitConversion(this.elementVariableImplicitWidening);
-//					}
-//					codeStream.store(this.elementVariable.binding, false);
-//					codeStream.addVisibleLocalVariable(this.elementVariable.binding);
-//					if (this.postCollectionInitStateIndex != -1) {
-//						codeStream.addDefinitelyAssignedVariables(
-//							currentScope,
-//							this.postCollectionInitStateIndex);
-//					}
-//				}
-//				break;
-//			case RAW_ITERABLE :
-//			case GENERIC_ITERABLE :
-//				codeStream.load(this.indexVariable);
-//				codeStream.invokeJavaUtilIteratorNext();
-//				if (this.elementVariable.binding.type.id != T_JavaLangObject) {
-//					if (this.elementVariableImplicitWidening != -1) {
-//						codeStream.checkcast(this.collectionElementType);
-//						codeStream.generateImplicitConversion(this.elementVariableImplicitWidening);
-//					} else {
-//						codeStream.checkcast(this.elementVariable.binding.type);
-//					}
-//				}
-//				if (this.elementVariable.binding.resolvedPosition == -1) {
-//					codeStream.pop();
-//				} else {
-//					codeStream.store(this.elementVariable.binding, false);
-//					codeStream.addVisibleLocalVariable(this.elementVariable.binding);
-//					if (this.postCollectionInitStateIndex != -1) {
-//						codeStream.addDefinitelyAssignedVariables(
-//							currentScope,
-//							this.postCollectionInitStateIndex);
-//					}
-//				}
-//				break;
-//		}
-//
-//		if (!hasEmptyAction) {
-//			this.action.generateCode(scope, codeStream);
-//		}
-//		codeStream.removeVariable(this.elementVariable.binding);
-//		if (this.postCollectionInitStateIndex != -1) {
-//			codeStream.removeNotDefinitelyAssignedVariables(currentScope, this.postCollectionInitStateIndex);
-//		}
-//		// continuation point
-//		if (this.continueLabel != null) {
-//			this.continueLabel.place();
-//			int continuationPC = codeStream.position;
-//			// generate the increments for next iteration
-//			switch(this.kind) {
-//				case ARRAY :
-//					if (hasEmptyAction && this.elementVariable.binding.resolvedPosition == -1) break;
-//					codeStream.iinc(this.indexVariable.resolvedPosition, 1);
-//					break;
-//				case RAW_ITERABLE :
-//				case GENERIC_ITERABLE :
-//					break;
-//			}
-//			codeStream.recordPositionsFrom(continuationPC, this.elementVariable.sourceStart);
-//		}
-//		// generate the condition
-//		conditionLabel.place();
-//		int conditionPC = codeStream.position;
-//		switch(this.kind) {
-//			case ARRAY :
-//				codeStream.load(this.indexVariable);
-//				codeStream.load(this.maxVariable);
-//				codeStream.if_icmplt(actionLabel);
-//				break;
-//			case RAW_ITERABLE :
-//			case GENERIC_ITERABLE :
-//				codeStream.load(this.indexVariable);
-//				codeStream.invokeJavaUtilIteratorHasNext();
-//				codeStream.ifne(actionLabel);
-//				break;
-//		}
-//		codeStream.recordPositionsFrom(conditionPC, this.elementVariable.sourceStart);
-//
-//		codeStream.exitUserScope(scope);
-//		if (mergedInitStateIndex != -1) {
-//			codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//			codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//		}
-//		breakLabel.place();
-//		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public StringBuffer printStatement(int indent, StringBuffer output) {

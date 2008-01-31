@@ -11,8 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.LoopingFlowContext;
@@ -26,7 +24,6 @@ public class DoStatement extends Statement {
 	public Expression condition;
 	public Statement action;
 
-	private BranchLabel breakLabel, continueLabel;
 
 	// for local variables table attributes
 	int mergedInitStateIndex = -1;
@@ -42,15 +39,11 @@ public DoStatement(Expression condition, Statement action, int s, int e) {
 }
 
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
-	this.breakLabel = new BranchLabel();
-	this.continueLabel = new BranchLabel();
 	LoopingFlowContext loopingContext =
 		new LoopingFlowContext(
 			flowContext,
 			flowInfo,
 			this,
-			this.breakLabel,
-			this.continueLabel,
 			currentScope);
 
 	Constant cst = this.condition.constant;
@@ -61,6 +54,9 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 
 	int previousMode = flowInfo.reachMode();
 
+	boolean isContinue=true;
+	
+	
 	UnconditionalFlowInfo actionInfo = flowInfo.nullInfoLessUnconditionalCopy();
 	// we need to collect the contribution to nulls of the coming paths through the
 	// loop, be they falling through normally or branched to break, continue labels
@@ -74,7 +70,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		if ((actionInfo.tagBits &
 				loopingContext.initsOnContinue.tagBits &
 				FlowInfo.UNREACHABLE) != 0) {
-			this.continueLabel = null;
+			isContinue = false;
 		}
 	}
 	/* Reset reach mode, to address following scenario.
@@ -89,12 +85,11 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		this.condition.analyseCode(
 			currentScope,
 			(condLoopContext =
-				new LoopingFlowContext(flowContext,	flowInfo, this, null,
-					null, currentScope)),
+				new LoopingFlowContext(flowContext,	flowInfo, this, currentScope)),
 			(this.action == null
 				? actionInfo
 				: (actionInfo.mergedWith(loopingContext.initsOnContinue))).copy());
-	if (!isConditionOptimizedFalse && this.continueLabel != null) {
+	if (!isConditionOptimizedFalse && isContinue) {
 		loopingContext.complainOnDeferredFinalChecks(currentScope, condInfo);
 		condLoopContext.complainOnDeferredFinalChecks(currentScope, condInfo);
 		loopingContext.complainOnDeferredNullChecks(currentScope,
@@ -120,59 +115,6 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			!isConditionTrue /*do{}while(true); unreachable(); */);
 //	this.mergedInitStateIndex = currentScope.methodScope().recordInitializationStates(mergedInfo);
 	return mergedInfo;
-}
-
-/**
- * Do statement code generation
- *
- */
-public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-	if ((this.bits & ASTNode.IsReachable) == 0) {
-		return;
-	}
-	int pc = codeStream.position;
-
-	// labels management
-	BranchLabel actionLabel = new BranchLabel(codeStream);
-	if (this.action != null) actionLabel.tagBits |= BranchLabel.USED;
-	actionLabel.place();
-	this.breakLabel.initialize(codeStream);
-	boolean hasContinueLabel = this.continueLabel != null;
-	if (hasContinueLabel) {
-		this.continueLabel.initialize(codeStream);
-	}
-
-	// generate action
-	if (this.action != null) {
-		this.action.generateCode(currentScope, codeStream);
-	}
-	// continue label (135602)
-	if (hasContinueLabel) {
-		this.continueLabel.place();
-	}
-	// generate condition
-	Constant cst = this.condition.optimizedBooleanConstant();
-	boolean isConditionOptimizedFalse = cst != Constant.NotAConstant && cst.booleanValue() == false;
-	if (isConditionOptimizedFalse){
-		this.condition.generateCode(currentScope, codeStream, false);
-	} else if (hasContinueLabel) {
-		this.condition.generateOptimizedBoolean(
-			currentScope,
-			codeStream,
-			actionLabel,
-			null,
-			true);
-	}
-	// May loose some local variable initializations : affecting the local variable attributes
-	if (this.mergedInitStateIndex != -1) {
-		codeStream.removeNotDefinitelyAssignedVariables(currentScope, this.mergedInitStateIndex);
-		codeStream.addDefinitelyAssignedVariables(currentScope, this.mergedInitStateIndex);
-	}
-	if (this.breakLabel.forwardReferenceCount() > 0) {
-		this.breakLabel.place();
-	}
-
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 
 public StringBuffer printStatement(int indent, StringBuffer output) {

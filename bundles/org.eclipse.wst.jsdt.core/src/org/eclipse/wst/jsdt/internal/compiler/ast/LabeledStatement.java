@@ -11,8 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.LabelFlowContext;
@@ -22,7 +20,6 @@ public class LabeledStatement extends Statement {
 
 	public Statement statement;
 	public char[] label;
-	public BranchLabel targetLabel;
 	public int labelEnd;
 
 	// for local variables table attributes
@@ -62,7 +59,6 @@ public class LabeledStatement extends Statement {
 								flowContext,
 								this,
 								label,
-								(targetLabel = new BranchLabel()),
 								currentScope)),
 						flowInfo)).tagBits & FlowInfo.UNREACHABLE) != 0) {
 				if ((labelContext.initsOnBreak.tagBits & FlowInfo.UNREACHABLE) == 0) {
@@ -88,35 +84,6 @@ public class LabeledStatement extends Statement {
 
 		// return statement.concreteStatement(); // for supporting nested labels:   a:b:c: someStatement (see 21912)
 		return statement;
-	}
-
-	/**
-	 * Code generation for labeled statement
-	 *
-	 * may not need actual source positions recording
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-		if (targetLabel != null) {
-			targetLabel.initialize(codeStream);
-			if (statement != null) {
-				statement.generateCode(currentScope, codeStream);
-			}
-			targetLabel.place();
-		}
-		// May loose some local variable initializations : affecting the local variable attributes
-		if (mergedInitStateIndex != -1) {
-			codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-			codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public StringBuffer printStatement(int tab, StringBuffer output) {

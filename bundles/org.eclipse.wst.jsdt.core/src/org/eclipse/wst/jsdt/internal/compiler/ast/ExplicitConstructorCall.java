@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -101,66 +100,6 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 		}
 	}
 
-	/**
-	 * Constructor call code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		try {
-			((MethodScope) currentScope).isConstructorCall = true;
-
-			int pc = codeStream.position;
-			codeStream.aload_0();
-
-			ReferenceBinding targetType = this.codegenBinding.declaringClass;
-
-			// special name&ordinal argument generation for enum constructors
-			if (targetType.erasure().id == T_JavaLangEnum || targetType.isEnum()) {
-				codeStream.aload_1(); // pass along name param as name arg
-				codeStream.iload_2(); // pass along ordinal param as ordinal arg
-			}
-			// handling innerclass constructor invocation
-			// handling innerclass instance allocation - enclosing instance arguments
-			if (targetType.isNestedType()) {
-				codeStream.generateSyntheticEnclosingInstanceValues(
-					currentScope,
-					targetType,
-					(this.bits & ASTNode.DiscardEnclosingInstance) != 0 ? null : qualification,
-					this);
-			}
-			// generate arguments
-			generateArguments(binding, arguments, currentScope, codeStream);
-
-			// handling innerclass instance allocation - outer local arguments
-			if (targetType.isNestedType()) {
-				codeStream.generateSyntheticOuterArgumentValues(
-					currentScope,
-					targetType,
-					this);
-			}
-			if (syntheticAccessor != null) {
-				// synthetic accessor got some extra arguments appended to its signature, which need values
-				for (int i = 0,
-					max = syntheticAccessor.parameters.length - this.codegenBinding.parameters.length;
-					i < max;
-					i++) {
-					codeStream.aconst_null();
-				}
-				codeStream.invokespecial(syntheticAccessor);
-			} else {
-				codeStream.invokespecial(this.codegenBinding);
-			}
-			codeStream.recordPositionsFrom(pc, this.sourceStart);
-		} finally {
-			((MethodScope) currentScope).isConstructorCall = false;
-		}
-	}
 	/**
 	 * @see org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite#genericTypeArguments()
 	 */

@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -79,10 +78,6 @@ public void build() {
 	}
 }
 
-protected void acceptSecondaryType(ClassFile classFile) {
-	if (this.secondaryTypes != null)
-		this.secondaryTypes.add(classFile.fileName());
-}
 
 //protected void cleanOutputFolders(boolean copyBack) throws CoreException {
 //	boolean deleteAll = JavaCore.CLEAN.equals(

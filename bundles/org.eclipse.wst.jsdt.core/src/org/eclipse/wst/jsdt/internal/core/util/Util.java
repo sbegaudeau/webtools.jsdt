@@ -15,18 +15,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.URI;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourceAttributes;
@@ -36,7 +32,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.Status;
@@ -72,8 +67,6 @@ import org.eclipse.wst.jsdt.core.util.IMethodInfo;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
@@ -701,22 +694,7 @@ public class Util {
 		Assert.isTrue(i != -1);
 		return sig.substring(i+1);
 	}
-	private static IFile findFirstClassFile(IFolder folder) {
-		try {
-			IResource[] members = folder.members();
-			for (int i = 0, max = members.length; i < max; i++) {
-				IResource member = members[i];
-				if (member.getType() == IResource.FOLDER) {
-					return findFirstClassFile((IFolder)member);
-				} else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(member.getName())) {
-					return (IFile) member;
-				}
-			}
-		} catch (CoreException e) {
-			// ignore
-		}
-		return null;
-	}
+
 
 	/**
 	 * Finds the first line separator used by the given text.
@@ -820,65 +798,6 @@ public class Util {
 		}
 		return JAVA_LIKE_EXTENSIONS;
 	}
-	/**
-	 * Get the jdk level of this root.
-	 * The value can be:
-	 * <ul>
-	 * <li>major<<16 + minor : see predefined constants on ClassFileConstants </li>
-	 * <li><code>0</null> if the root is a source package fragment root or if a Java model exception occured</li>
-	 * </ul>
-	 * Returns the jdk level
-	 */
-	public static long getJdkLevel(Object targetLibrary) {
-		try {
-			ClassFileReader reader = null;
-			if (targetLibrary instanceof IFolder) {
-				IFile classFile = findFirstClassFile((IFolder) targetLibrary); // only internal classfolders are allowed
-				if (classFile != null)
-					reader = Util.newClassFileReader(classFile);
-			} else {
-				// root is a jar file or a zip file
-				ZipFile jar = null;
-				try {
-					IPath path = null;
-					if (targetLibrary instanceof IResource) {
-						path = ((IResource)targetLibrary).getFullPath();
-					} else if (targetLibrary instanceof File){
-						File f = (File) targetLibrary;
-						if (!f.isDirectory()) {
-							path = new Path(((File)targetLibrary).getPath());
-						}
-					}
-					if (path != null) {
-						jar = JavaModelManager.getJavaModelManager().getZipFile(path);
-						for (Enumeration e= jar.entries(); e.hasMoreElements();) {
-							ZipEntry member= (ZipEntry) e.nextElement();
-							String entryName= member.getName();
-							if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(entryName)) {
-								reader = ClassFileReader.read(jar, entryName);
-								break;
-							}
-						}
-					}
-				} catch (CoreException e) {
-					// ignore
-				} finally {
-					JavaModelManager.getJavaModelManager().closeZipFile(jar);
-				}
-			}
-			if (reader != null) {
-				return reader.getVersion();
-			}
-		} catch (CoreException e) {
-			// ignore
-		} catch(ClassFormatException e) {
-			// ignore
-		} catch(IOException e) {
-			// ignore
-		}
-		return 0;
-	}
-
 	/**
 	 * Returns the substring of the given file name, ending at the start of a
 	 * Java like extension. The entire file name is returned if it doesn't end
@@ -1507,17 +1426,6 @@ public class Util {
 			message,
 			e);
 		JavaCore.getPlugin().getLog().log(status);
-	}
-
-	public static ClassFileReader newClassFileReader(IResource resource) throws CoreException, ClassFormatException, IOException {
-		InputStream in = null;
-		try {
-			in = ((IFile) resource).getContents(true);
-			return ClassFileReader.read(in, resource.getFullPath().toString());
-		} finally {
-			if (in != null)
-				in.close();
-		}
 	}
 
 	/**

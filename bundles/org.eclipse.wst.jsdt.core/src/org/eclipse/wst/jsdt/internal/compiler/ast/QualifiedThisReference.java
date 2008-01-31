@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -47,32 +46,6 @@ public class QualifiedThisReference extends ThisReference {
 		boolean valueRequired) {
 
 		return flowInfo;
-	}
-
-	/**
-	 * Code generation for QualifiedThisReference
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 * @param valueRequired boolean
-	 */
-	public void generateCode(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		boolean valueRequired) {
-
-		int pc = codeStream.position;
-		if (valueRequired) {
-			if ((bits & DepthMASK) != 0) {
-				Object[] emulationPath =
-					currentScope.getEmulationPath(this.currentCompatibleType, true /*only exact match*/, false/*consider enclosing arg*/);
-				codeStream.generateOuterAccess(emulationPath, this, this.currentCompatibleType, currentScope);
-			} else {
-				// nothing particular after all
-				codeStream.aload_0();
-			}
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
 	}
 
 	public TypeBinding resolveType(BlockScope scope) {

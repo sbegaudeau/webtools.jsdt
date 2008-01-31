@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.LongConstant;
@@ -94,20 +93,6 @@ public void computeConstant() {
 		}
 	}
 	constant = LongConstant.fromValue(computedValue);
-}
-/**
- * Code generation for long literal
- *
- * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
- * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
- * @param valueRequired boolean
- */
-public void generateCode(BlockScope currentScope, CodeStream codeStream, boolean valueRequired) {
-	int pc = codeStream.position;
-	if (valueRequired) {
-		codeStream.generateConstant(constant, implicitConversion);
-	}
-	codeStream.recordPositionsFrom(pc, this.sourceStart);
 }
 public TypeBinding literalType(BlockScope scope) {
 	return TypeBinding.LONG;

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Wildcard;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.ConstantPool;
 
 /*
  * Converts a binding key into a signature
@@ -35,6 +34,9 @@ public class KeyToSignature extends BindingKeyParser {
 	private int mainTypeStart = -1;
 	private int mainTypeEnd;
 	private int typeSigStart = -1;
+	
+	public static final char[] ObjectSignature = "Ljava/lang/Object;".toCharArray(); //$NON-NLS-1$
+
 
 	public KeyToSignature(BindingKeyParser parser) {
 		super(parser);
@@ -249,7 +251,7 @@ public class KeyToSignature extends BindingKeyParser {
 			for (int i = 0; i < length; i++) {
 				char[] typeParameterSig = Signature.createTypeParameterSignature(
 						(char[]) this.typeParameters.get(i),
-						new char[][]{ ConstantPool.ObjectSignature });
+						new char[][]{ ObjectSignature });
 				typeParametersSig.append(typeParameterSig);
 				// TODO (jerome) add type parameter bounds in binding key
 			}

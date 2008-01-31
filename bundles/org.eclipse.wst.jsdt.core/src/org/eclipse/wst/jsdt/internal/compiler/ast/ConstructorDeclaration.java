@@ -12,13 +12,9 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import java.util.ArrayList;
 
-import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -26,16 +22,11 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.InitializationFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.NestedTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticArgumentBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
@@ -185,178 +176,6 @@ public void analyseCode(ClassScope classScope, InitializationFlowContext initial
 		constructorContext.complainIfUnusedExceptionHandlers(this);
 	} catch (AbortMethod e) {
 		this.ignoreFurtherInvestigation = true;
-	}
-}
-
-/**
- * Bytecode generation for a constructor
- *
- * @param classScope org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope
- * @param classFile org.eclipse.wst.jsdt.internal.compiler.codegen.ClassFile
- */
-public void generateCode(ClassScope classScope, ClassFile classFile) {
-	int problemResetPC = 0;
-	if (this.ignoreFurtherInvestigation) {
-		if (this.binding == null)
-			return; // Handle methods with invalid signature or duplicates
-		int problemsLength;
-		CategorizedProblem[] problems =
-			this.scope.referenceCompilationUnit().compilationResult.getProblems();
-		CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-		System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-		classFile.addProblemConstructor(this, this.binding, problemsCopy);
-		return;
-	}
-	try {
-		problemResetPC = classFile.contentsOffset;
-		this.internalGenerateCode(classScope, classFile);
-	} catch (AbortMethod e) {
-		if (e.compilationResult == CodeStream.RESTART_IN_WIDE_MODE) {
-			// a branch target required a goto_w, restart code gen in wide mode.
-			try {
-				classFile.contentsOffset = problemResetPC;
-				classFile.methodCount--;
-				classFile.codeStream.wideMode = true; // request wide mode
-				this.internalGenerateCode(classScope, classFile); // restart method generation
-			} catch (AbortMethod e2) {
-				int problemsLength;
-				CategorizedProblem[] problems =
-					this.scope.referenceCompilationUnit().compilationResult.getAllProblems();
-				CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-				System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-				classFile.addProblemConstructor(this, this.binding, problemsCopy, problemResetPC);
-			}
-		} else {
-			int problemsLength;
-			CategorizedProblem[] problems =
-				this.scope.referenceCompilationUnit().compilationResult.getAllProblems();
-			CategorizedProblem[] problemsCopy = new CategorizedProblem[problemsLength = problems.length];
-			System.arraycopy(problems, 0, problemsCopy, 0, problemsLength);
-			classFile.addProblemConstructor(this, this.binding, problemsCopy, problemResetPC);
-		}
-	}
-}
-
-public void generateSyntheticFieldInitializationsIfNecessary(MethodScope methodScope, CodeStream codeStream, ReferenceBinding declaringClass) {
-	if (!declaringClass.isNestedType()) return;
-
-	NestedTypeBinding nestedType = (NestedTypeBinding) declaringClass;
-
-	SyntheticArgumentBinding[] syntheticArgs = nestedType.syntheticEnclosingInstances();
-	for (int i = 0, max = syntheticArgs == null ? 0 : syntheticArgs.length; i < max; i++) {
-		SyntheticArgumentBinding syntheticArg;
-		if ((syntheticArg = syntheticArgs[i]).matchingField != null) {
-			codeStream.aload_0();
-			codeStream.load(syntheticArg);
-			codeStream.putfield(syntheticArg.matchingField);
-		}
-	}
-	syntheticArgs = nestedType.syntheticOuterLocalVariables();
-	for (int i = 0, max = syntheticArgs == null ? 0 : syntheticArgs.length; i < max; i++) {
-		SyntheticArgumentBinding syntheticArg;
-		if ((syntheticArg = syntheticArgs[i]).matchingField != null) {
-			codeStream.aload_0();
-			codeStream.load(syntheticArg);
-			codeStream.putfield(syntheticArg.matchingField);
-		}
-	}
-}
-
-private void internalGenerateCode(ClassScope classScope, ClassFile classFile) {
-	classFile.generateMethodInfoHeader(this.binding);
-	int methodAttributeOffset = classFile.contentsOffset;
-	int attributeNumber = classFile.generateMethodInfoAttribute(this.binding);
-	if ((!this.binding.isNative()) && (!this.binding.isAbstract())) {
-
-		TypeDeclaration declaringType = classScope.referenceContext;
-		int codeAttributeOffset = classFile.contentsOffset;
-		classFile.generateCodeAttributeHeader();
-		CodeStream codeStream = classFile.codeStream;
-		codeStream.reset(this, classFile);
-
-		// initialize local positions - including initializer scope.
-		ReferenceBinding declaringClass = this.binding.declaringClass;
-
-		int enumOffset = declaringClass.isEnum() ? 2 : 0; // String name, int ordinal
-		int argSlotSize = 1 + enumOffset; // this==aload0
-
-		if (declaringClass.isNestedType()){
-			NestedTypeBinding nestedType = (NestedTypeBinding) declaringClass;
-			this.scope.extraSyntheticArguments = nestedType.syntheticOuterLocalVariables();
-			this.scope.computeLocalVariablePositions(// consider synthetic arguments if any
-				nestedType.enclosingInstancesSlotSize + 1 + enumOffset,
-				codeStream);
-			argSlotSize += nestedType.enclosingInstancesSlotSize;
-			argSlotSize += nestedType.outerLocalVariablesSlotSize;
-		} else {
-			this.scope.computeLocalVariablePositions(1 + enumOffset,  codeStream);
-		}
-
-		if (this.arguments != null) {
-			for (int i = 0, max = this.arguments.length; i < max; i++) {
-				// arguments initialization for local variable debug attributes
-				LocalVariableBinding argBinding;
-				codeStream.addVisibleLocalVariable(argBinding = this.arguments[i].binding);
-				argBinding.recordInitializationStartPC(0);
-				TypeBinding argType;
-				if ((argType = argBinding.type) == TypeBinding.LONG || (argType == TypeBinding.DOUBLE)) {
-					argSlotSize += 2;
-				} else {
-					argSlotSize++;
-				}
-			}
-		}
-
-		MethodScope initializerScope = declaringType.initializerScope;
-		initializerScope.computeLocalVariablePositions(argSlotSize, codeStream); // offset by the argument size (since not linked to method scope)
-
-		boolean needFieldInitializations = this.constructorCall == null || this.constructorCall.accessMode != ExplicitConstructorCall.This;
-
-		// post 1.4 target level, synthetic initializations occur prior to explicit constructor call
-		boolean preInitSyntheticFields = this.scope.compilerOptions().targetJDK >= ClassFileConstants.JDK1_4;
-
-		if (needFieldInitializations && preInitSyntheticFields){
-			generateSyntheticFieldInitializationsIfNecessary(this.scope, codeStream, declaringClass);
-		}
-		// generate constructor call
-		if (this.constructorCall != null) {
-			this.constructorCall.generateCode(this.scope, codeStream);
-		}
-		// generate field initialization - only if not invoking another constructor call of the same class
-		if (needFieldInitializations) {
-			if (!preInitSyntheticFields){
-				generateSyntheticFieldInitializationsIfNecessary(this.scope, codeStream, declaringClass);
-			}
-			// generate user field initialization
-			if (declaringType.fields != null) {
-				for (int i = 0, max = declaringType.fields.length; i < max; i++) {
-					FieldDeclaration fieldDecl;
-					if (!(fieldDecl = declaringType.fields[i]).isStatic()) {
-						fieldDecl.generateCode(initializerScope, codeStream);
-					}
-				}
-			}
-		}
-		// generate statements
-		if (this.statements != null) {
-			for (int i = 0, max = this.statements.length; i < max; i++) {
-				this.statements[i].generateCode(this.scope, codeStream);
-			}
-		}
-		if (this.needFreeReturn) {
-			codeStream.return_();
-		}
-		// local variable attributes
-		codeStream.exitUserScope(this.scope);
-		codeStream.recordPositionsFrom(0, this.bodyEnd);
-		classFile.completeCodeAttribute(codeAttributeOffset);
-		attributeNumber++;
-	}
-	classFile.completeMethodInfo(methodAttributeOffset, attributeNumber);
-
-	// if a problem got reported during code gen, then trigger problem method creation
-	if (this.ignoreFurtherInvestigation) {
-		throw new AbortMethod(this.scope.referenceCompilationUnit().compilationResult, null);
 	}
 }
 

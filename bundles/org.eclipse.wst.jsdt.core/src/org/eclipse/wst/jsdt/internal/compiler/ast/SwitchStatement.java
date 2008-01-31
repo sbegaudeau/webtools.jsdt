@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.SwitchFlowContext;
@@ -30,7 +28,6 @@ public class SwitchStatement extends Statement {
 	public Statement[] statements;
 	public BlockScope scope;
 	public int explicitDeclarations;
-	public BranchLabel breakLabel;
 	public CaseStatement[] cases;
 	public CaseStatement defaultCase;
 	public int blockStart;
@@ -57,7 +54,7 @@ public class SwitchStatement extends Statement {
 	    try {
 			flowInfo = expression.analyseCode(currentScope, flowContext, flowInfo);
 			SwitchFlowContext switchContext =
-				new SwitchFlowContext(flowContext, this, (breakLabel = new BranchLabel()));
+				new SwitchFlowContext(flowContext, this);
 
 			// analyse the block by considering specially the case/default statements (need to bind them
 			// to the entry point)
@@ -127,129 +124,6 @@ public class SwitchStatement extends Statement {
 	    } finally {
 	        if (this.scope != null) this.scope.enclosingCase = null; // no longer inside switch case block
 	    }
-	}
-
-	/**
-	 * Switch code generation
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-//
-//	    try {
-//			if ((bits & IsReachable) == 0) {
-//				return;
-//			}
-//			int pc = codeStream.position;
-//
-//			// prepare the labels and constants
-//			this.breakLabel.initialize(codeStream);
-//			CaseLabel[] caseLabels = new CaseLabel[this.caseCount];
-//			boolean needSwitch = this.caseCount != 0;
-//			for (int i = 0; i < caseCount; i++) {
-//				cases[i].targetLabel = (caseLabels[i] = new CaseLabel(codeStream));
-//				caseLabels[i].tagBits |= BranchLabel.USED;
-//			}
-//			CaseLabel defaultLabel = new CaseLabel(codeStream);
-//			if (needSwitch) defaultLabel.tagBits |= BranchLabel.USED;
-//			if (defaultCase != null) {
-//				defaultCase.targetLabel = defaultLabel;
-//			}
-//
-//			final TypeBinding resolvedType = this.expression.resolvedType;
-//			if (resolvedType.isEnum()) {
-//				if (needSwitch) {
-//					// go through the translation table
-//					codeStream.invokestatic(this.synthetic);
-//					expression.generateCode(currentScope, codeStream, true);
-//					// get enum constant ordinal()
-//					codeStream.invokeEnumOrdinal(resolvedType.constantPoolName());
-//					codeStream.iaload();
-//				} else {
-//					// no need to go through the translation table
-//					expression.generateCode(currentScope, codeStream, false);
-//				}
-//			} else {
-//				// generate expression
-//				expression.generateCode(currentScope, codeStream, needSwitch); // value required (switch without cases)
-//			}
-//			// generate the appropriate switch table/lookup bytecode
-//			if (needSwitch) {
-//				int[] sortedIndexes = new int[this.caseCount];
-//				// we sort the keys to be able to generate the code for tableswitch or lookupswitch
-//				for (int i = 0; i < caseCount; i++) {
-//					sortedIndexes[i] = i;
-//				}
-//				int[] localKeysCopy;
-//				System.arraycopy(this.constants, 0, (localKeysCopy = new int[this.caseCount]), 0, this.caseCount);
-//				CodeStream.sort(localKeysCopy, 0, this.caseCount - 1, sortedIndexes);
-//
-//				int max = localKeysCopy[this.caseCount - 1];
-//				int min = localKeysCopy[0];
-//				if ((long) (caseCount * 2.5) > ((long) max - (long) min)) {
-//
-//					// work-around 1.3 VM bug, if max>0x7FFF0000, must use lookup bytecode
-//					// see http://dev.eclipse.org/bugs/show_bug.cgi?id=21557
-//					if (max > 0x7FFF0000 && currentScope.compilerOptions().complianceLevel < ClassFileConstants.JDK1_4) {
-//						codeStream.lookupswitch(defaultLabel, this.constants, sortedIndexes, caseLabels);
-//
-//					} else {
-//						codeStream.tableswitch(
-//							defaultLabel,
-//							min,
-//							max,
-//							this.constants,
-//							sortedIndexes,
-//							caseLabels);
-//					}
-//				} else {
-//					codeStream.lookupswitch(defaultLabel, this.constants, sortedIndexes, caseLabels);
-//				}
-//				codeStream.updateLastRecordedEndPC(this.scope, codeStream.position);
-//			}
-//
-//			// generate the switch block statements
-//			int caseIndex = 0;
-//			if (this.statements != null) {
-//				for (int i = 0, maxCases = this.statements.length; i < maxCases; i++) {
-//					Statement statement = this.statements[i];
-//					if ((caseIndex < this.caseCount) && (statement == this.cases[caseIndex])) { // statements[i] is a case
-//						this.scope.enclosingCase = this.cases[caseIndex]; // record entering in a switch case block
-//						if (preSwitchInitStateIndex != -1) {
-//							codeStream.removeNotDefinitelyAssignedVariables(currentScope, preSwitchInitStateIndex);
-//						}
-//						caseIndex++;
-//					} else {
-//						if (statement == this.defaultCase) { // statements[i] is a case or a default case
-//							this.scope.enclosingCase = this.defaultCase; // record entering in a switch case block
-//							if (preSwitchInitStateIndex != -1) {
-//								codeStream.removeNotDefinitelyAssignedVariables(currentScope, preSwitchInitStateIndex);
-//							}
-//						}
-//					}
-//					statement.generateCode(scope, codeStream);
-//				}
-//			}
-//			// May loose some local variable initializations : affecting the local variable attributes
-//			if (mergedInitStateIndex != -1) {
-//				codeStream.removeNotDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//				codeStream.addDefinitelyAssignedVariables(currentScope, mergedInitStateIndex);
-//			}
-//			if (scope != currentScope) {
-//				codeStream.exitUserScope(this.scope);
-//			}
-//			// place the trailing labels (for break and default case)
-//			this.breakLabel.place();
-//			if (defaultCase == null) {
-//				// we want to force an line number entry to get an end position after the switch statement
-//				codeStream.recordPositionsFrom(codeStream.position, this.sourceEnd, true);
-//				defaultLabel.place();
-//			}
-//			codeStream.recordPositionsFrom(pc, this.sourceStart);
-//	    } finally {
-//	        if (this.scope != null) this.scope.enclosingCase = null; // no longer inside switch case block
-//	    }
 	}
 
 	public StringBuffer printStatement(int indent, StringBuffer output) {
@@ -385,18 +259,5 @@ public class SwitchStatement extends Statement {
 		visitor.endVisit(this, blockScope);
 	}
 
-	/**
-	 * Dispatch the call on its last statement.
-	 */
-	public void branchChainTo(BranchLabel label) {
 
-		// in order to improve debug attributes for stepping (11431)
-		// we want to inline the jumps to #breakLabel which already got
-		// generated (if any), and have them directly branch to a better
-		// location (the argument label).
-		// we know at this point that the breakLabel already got placed
-		if (this.breakLabel.forwardReferenceCount() > 0) {
-			label.becomeDelegateFor(this.breakLabel);
-		}
-	}
 }

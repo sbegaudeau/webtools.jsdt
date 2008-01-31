@@ -12,8 +12,6 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.BranchLabel;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -47,26 +45,6 @@ public class Block extends Statement {
 		}
 		return flowInfo;
 	}
-	/**
-	 * Code generation for a block
-	 */
-	public void generateCode(BlockScope currentScope, CodeStream codeStream) {
-
-		if ((bits & IsReachable) == 0) {
-			return;
-		}
-		int pc = codeStream.position;
-		if (statements != null) {
-			for (int i = 0, max = statements.length; i < max; i++) {
-				statements[i].generateCode(scope, codeStream);
-			}
-		} // for local variable debug attributes
-		if (scope != currentScope) { // was really associated with its own scope
-			codeStream.exitUserScope(scope);
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
-
 	public boolean isEmptyBlock() {
 
 		return statements == null;
@@ -132,15 +110,6 @@ public class Block extends Statement {
 			}
 		}
 		visitor.endVisit(this, blockScope);
-	}
-
-	/**
-	 * Dispatch the call on its last statement.
-	 */
-	public void branchChainTo(BranchLabel label) {
-		 if (this.statements != null) {
-		 	this.statements[statements.length - 1].branchChainTo(label);
-		 }
 	}
 
 }

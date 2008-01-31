@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
-import org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -54,29 +53,6 @@ public FlowInfo analyseCode(
 	return expression.analyseCode(currentScope, flowContext, flowInfo).
 			unconditionalInits();
 }
-
-	/**
-	 * Code generation for instanceOfExpression
-	 *
-	 * @param currentScope org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope
-	 * @param codeStream org.eclipse.wst.jsdt.internal.compiler.codegen.CodeStream
-	 * @param valueRequired boolean
-	*/
-	public void generateCode(
-		BlockScope currentScope,
-		CodeStream codeStream,
-		boolean valueRequired) {
-
-		int pc = codeStream.position;
-		expression.generateCode(currentScope, codeStream, true);
-		codeStream.instance_of(type.resolvedType);
-		if (valueRequired) {
-			codeStream.generateImplicitConversion(implicitConversion);
-		} else {
-			codeStream.pop();
-		}
-		codeStream.recordPositionsFrom(pc, this.sourceStart);
-	}
 
 	public StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output) {
 
