@@ -15,6 +15,7 @@ import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicErrorTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicParserTests;
+import org.eclipse.wst.jsdt.core.tests.compiler.regression.BasicResolveTests;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.InferTypesTests;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
@@ -36,6 +37,7 @@ public static Test suite() {
 	standardTests.add(BasicParserTests.class);
 //	standardTests.add(BasicErrorTests.class);
 	standardTests.add(InferTypesTests.class);
+	standardTests.add(BasicResolveTests.class);
 	//	// add all javadoc tests
 //	for (int i=0, l=JavadocTest.ALL_CLASSES.size(); i<l; i++) {
 //		standardTests.add(JavadocTest.ALL_CLASSES.get(i));

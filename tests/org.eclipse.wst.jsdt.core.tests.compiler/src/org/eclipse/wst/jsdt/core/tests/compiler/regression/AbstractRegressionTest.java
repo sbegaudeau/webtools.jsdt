@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -48,7 +47,6 @@ import org.eclipse.wst.jsdt.internal.compiler.SourceJavadocParser;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.batch.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.batch.FileSystem;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -59,7 +57,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchParticipant;
-import org.eclipse.wst.jsdt.internal.core.search.indexing.BinaryIndexer;
+import org.eclipse.wst.jsdt.internal.core.search.indexing.SourceIndexer;
 import org.eclipse.wst.jsdt.internal.infer.InferEngine;
 import org.eclipse.wst.jsdt.internal.infer.InferOptions;
 
@@ -335,7 +333,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			}
 		};
 		SearchDocument document = participant.getDocument(new File(classFilePath).getPath());
-		BinaryIndexer indexer = new BinaryIndexer(document) {
+		SourceIndexer indexer = new SourceIndexer(document) {
 			protected void addIndexEntry(char[] category, char[] key) {
 				references.append(category);
 				references.append('/');
@@ -348,25 +346,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 		return computedReferences;
 	}
 	
-	protected ClassFileReader getClassFileReader(String fileName, String className) {
-		File classFile = new File(fileName);
-		if (!classFile.exists()) {
-			assertTrue(".class file doesn't exist", false);
-		}
-		try {
-			FileInputStream stream = new FileInputStream(classFile);
-			ClassFileReader reader = ClassFileReader.read(stream, className + ".class", true);
-			stream.close();
-			return reader;
-		} catch (org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException e) {
-			e.printStackTrace();
-			assertTrue("ClassFormatException", false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			assertTrue("IOException", false);
-		}
-		return null;
-	}
+
 
 	protected INameEnvironment[] getClassLibs() {
 		String encoding = (String)getCompilerOptions().get(CompilerOptions.OPTION_Encoding);

@@ -21,10 +21,6 @@ import junit.framework.Test;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryField;
-import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryMethod;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 public class GenericTypeSignatureTest extends AbstractRegressionTest {
@@ -292,235 +288,235 @@ public class GenericTypeSignatureTest extends AbstractRegressionTest {
 		
 	}
 	
-	public void test006() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X <T> {\n" + 
-			"    protected T t;\n" + 
-			"    X(T t) {\n" +
-			"        this.t = t;\n" + 
-			"    }\n" + 
-			"	T foo(T t1) {\n" + 
-			"		return t1;\n" + 
-			"    }\n" + 
-			"	T field;\n" +
-			"    public static void main(String[] args) {\n" + 
-			"        System.out.print(\"SUCCESS\");\n" + 
-			"    }\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Ljava/lang/Object;", new String(classFileReader.getGenericSignature()));
-			
-			IBinaryField[] fields = classFileReader.getFields();
-			assertNotNull("No fields", fields);
-			assertEquals("Wrong size", 2, fields.length);
-			assertEquals("Wrong name", "field", new String(fields[1].getName()));
-			char[] signature = fields[1].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "TT;", new String(signature));
-
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[1].getSelector()));
-			signature = methods[1].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "(TT;)TT;", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
-
-	public void test007() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X <T> {\n" + 
-			"    protected T t;\n" + 
-			"    X(T t) {\n" +
-			"        this.t = t;\n" + 
-			"    }\n" + 
-			"	T foo(X<T> x1) {\n" + 
-			"		return x1.t;\n" + 
-			"    }\n" + 
-			"	X<T> field;\n" +
-			"    public static void main(String[] args) {\n" + 
-			"        System.out.print(\"SUCCESS\");\n" + 
-			"    }\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Ljava/lang/Object;", new String(classFileReader.getGenericSignature()));
-			
-			IBinaryField[] fields = classFileReader.getFields();
-			assertNotNull("No fields", fields);
-			assertEquals("Wrong size", 2, fields.length);
-			assertEquals("Wrong name", "field", new String(fields[1].getName()));
-			char[] signature = fields[1].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "LX<TT;>;", new String(signature));
-
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[1].getSelector()));
-			signature = methods[1].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "(LX<TT;>;)TT;", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
-
-	public void test008() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X  <T> {\n" + 
-			"	T newInstance() throws IllegalAccessException {\n" + 
-			"	    return null;\n" + 
-			"	}\n" + 
-			"    public static void main(String[] args) {\n" + 
-			"        System.out.print(\"SUCCESS\");\n" + 
-			"    }\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "newInstance", new String(methods[1].getSelector()));
-			char[] signature = methods[1].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "()TT;", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
+//	public void test006() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X <T> {\n" + 
+//			"    protected T t;\n" + 
+//			"    X(T t) {\n" +
+//			"        this.t = t;\n" + 
+//			"    }\n" + 
+//			"	T foo(T t1) {\n" + 
+//			"		return t1;\n" + 
+//			"    }\n" + 
+//			"	T field;\n" +
+//			"    public static void main(String[] args) {\n" + 
+//			"        System.out.print(\"SUCCESS\");\n" + 
+//			"    }\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Ljava/lang/Object;", new String(classFileReader.getGenericSignature()));
+//			
+//			IBinaryField[] fields = classFileReader.getFields();
+//			assertNotNull("No fields", fields);
+//			assertEquals("Wrong size", 2, fields.length);
+//			assertEquals("Wrong name", "field", new String(fields[1].getName()));
+//			char[] signature = fields[1].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "TT;", new String(signature));
+//
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[1].getSelector()));
+//			signature = methods[1].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "(TT;)TT;", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
+//
+//	public void test007() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X <T> {\n" + 
+//			"    protected T t;\n" + 
+//			"    X(T t) {\n" +
+//			"        this.t = t;\n" + 
+//			"    }\n" + 
+//			"	T foo(X<T> x1) {\n" + 
+//			"		return x1.t;\n" + 
+//			"    }\n" + 
+//			"	X<T> field;\n" +
+//			"    public static void main(String[] args) {\n" + 
+//			"        System.out.print(\"SUCCESS\");\n" + 
+//			"    }\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Ljava/lang/Object;", new String(classFileReader.getGenericSignature()));
+//			
+//			IBinaryField[] fields = classFileReader.getFields();
+//			assertNotNull("No fields", fields);
+//			assertEquals("Wrong size", 2, fields.length);
+//			assertEquals("Wrong name", "field", new String(fields[1].getName()));
+//			char[] signature = fields[1].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "LX<TT;>;", new String(signature));
+//
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[1].getSelector()));
+//			signature = methods[1].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "(LX<TT;>;)TT;", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
+//
+//	public void test008() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X  <T> {\n" + 
+//			"	T newInstance() throws IllegalAccessException {\n" + 
+//			"	    return null;\n" + 
+//			"	}\n" + 
+//			"    public static void main(String[] args) {\n" + 
+//			"        System.out.print(\"SUCCESS\");\n" + 
+//			"    }\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "newInstance", new String(methods[1].getSelector()));
+//			char[] signature = methods[1].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "()TT;", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	
-	public void test009() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X<T> {\n" + 
-			"class MX<U> {\n" + 
-			"}\n" + 
-			" \n" + 
-			"public static void main(String[] args) {\n" + 
-			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
-			"}\n" + 
-			"void foo(X<String>.MX<Thread> mx) {\n" + 
-			"   System.out.println(\"SUCCESS\");\n" + 
-			"}\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
-			char[] signature = methods[2].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "(LX<Ljava/lang/String;>.MX<Ljava/lang/Thread;>;)V", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
+//	public void test009() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X<T> {\n" + 
+//			"class MX<U> {\n" + 
+//			"}\n" + 
+//			" \n" + 
+//			"public static void main(String[] args) {\n" + 
+//			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
+//			"}\n" + 
+//			"void foo(X<String>.MX<Thread> mx) {\n" + 
+//			"   System.out.println(\"SUCCESS\");\n" + 
+//			"}\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
+//			char[] signature = methods[2].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "(LX<Ljava/lang/String;>.MX<Ljava/lang/Thread;>;)V", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	
-	public void test010() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X<T> {\n" + 
-			"class MX<U> {\n" + 
-			"}\n" + 
-			" \n" + 
-			"public static void main(String[] args) {\n" + 
-			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
-			"}\n" + 
-			"void foo(X.MX mx) {\n" + 
-			"   System.out.println(\"SUCCESS\");\n" + 
-			"}\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
-			char[] signature = methods[2].getGenericSignature();
-			assertNull("Unexpected generic signature", signature);
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
+//	public void test010() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X<T> {\n" + 
+//			"class MX<U> {\n" + 
+//			"}\n" + 
+//			" \n" + 
+//			"public static void main(String[] args) {\n" + 
+//			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
+//			"}\n" + 
+//			"void foo(X.MX mx) {\n" + 
+//			"   System.out.println(\"SUCCESS\");\n" + 
+//			"}\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
+//			char[] signature = methods[2].getGenericSignature();
+//			assertNull("Unexpected generic signature", signature);
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	
-	public void test011() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X<T> {\n" + 
-			"  class MX<U> {\n" + 
-			"  }\n" + 
-			"\n" + 
-			"  public static void main(String[] args) {\n" + 
-			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
-			"  }\n" + 
-			"  void foo(X<String>.MX<?> mx) {\n" + 
-			"	System.out.println(\"SUCCESS\");\n" + 
-			"  }\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
-			char[] signature = methods[2].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "(LX<Ljava/lang/String;>.MX<*>;)V", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
+//	public void test011() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X<T> {\n" + 
+//			"  class MX<U> {\n" + 
+//			"  }\n" + 
+//			"\n" + 
+//			"  public static void main(String[] args) {\n" + 
+//			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
+//			"  }\n" + 
+//			"  void foo(X<String>.MX<?> mx) {\n" + 
+//			"	System.out.println(\"SUCCESS\");\n" + 
+//			"  }\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
+//			char[] signature = methods[2].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "(LX<Ljava/lang/String;>.MX<*>;)V", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	
 	// WORK check whether needed or not
 	/*
@@ -552,331 +548,331 @@ public class GenericTypeSignatureTest extends AbstractRegressionTest {
 		}
 	}
 
-	public void test012() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X<T> {\n" + 
-			"  class MX<U> {\n" + 
-			"  }\n" + 
-			"\n" + 
-			"  public static void main(String[] args) {\n" + 
-			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
-			"  }\n" + 
-			"  void foo(X.MX mx) {			// no signature\n" + 
-			"	System.out.println(\"SUCCESS\");\n" + 
-			"  }\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
+//	public void test012() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X<T> {\n" + 
+//			"  class MX<U> {\n" + 
+//			"  }\n" + 
+//			"\n" + 
+//			"  public static void main(String[] args) {\n" + 
+//			"    new X<Thread>().foo(new X<String>().new MX<Thread>());\n" + 
+//			"  }\n" + 
+//			"  void foo(X.MX mx) {			// no signature\n" + 
+//			"	System.out.println(\"SUCCESS\");\n" + 
+//			"  }\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//	
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
+//			assertNull("Wrong signature", methods[2].getGenericSignature());
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
-			assertNull("Wrong signature", methods[2].getGenericSignature());
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
-	
-	public void test013() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"import java.util.ArrayList;\n" + 
-			"\n" + 
-			"public class X<T> {\n" + 
-			"	\n" + 
-			"	public static void main(String[] args) {\n" + 
-			"		System.out.println(\"SUCCESS\");\n" + 
-			"	}\n" + 
-			"	public <U> void foo(ArrayList<U> arr) {\n" + 
-			"		for (U e : arr) {\n" + 
-			"			System.out.println(e);\n" + 
-			"		}\n" + 
-			"	}\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
-			char[] signature = methods[2].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "<U:Ljava/lang/Object;>(Ljava/util/ArrayList<TU;>;)V", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
+//	public void test013() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"import java.util.ArrayList;\n" + 
+//			"\n" + 
+//			"public class X<T> {\n" + 
+//			"	\n" + 
+//			"	public static void main(String[] args) {\n" + 
+//			"		System.out.println(\"SUCCESS\");\n" + 
+//			"	}\n" + 
+//			"	public <U> void foo(ArrayList<U> arr) {\n" + 
+//			"		for (U e : arr) {\n" + 
+//			"			System.out.println(e);\n" + 
+//			"		}\n" + 
+//			"	}\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
+//			char[] signature = methods[2].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "<U:Ljava/lang/Object;>(Ljava/util/ArrayList<TU;>;)V", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	// 59983 - incorrect signature for List<X>
-	public void test014() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"import java.util.ArrayList;\n" + 
-			"import java.util.List;\n" + 
-			"public class X {\n" + 
-			"	private List<X> games = new ArrayList<X>();\n" + 
-			"	public static void main(String[] args) {\n" + 
-			"		System.out.println(\"SUCCESS\");\n" + 
-			"	}\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryField[] fields = classFileReader.getFields();
-			assertNotNull("No fields", fields);
-			assertEquals("Wrong size", 1, fields.length);
-			assertEquals("Wrong name", "games", new String(fields[0].getName()));
-			char[] signature = fields[0].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "Ljava/util/List<LX;>;", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
+//	public void test014() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"import java.util.ArrayList;\n" + 
+//			"import java.util.List;\n" + 
+//			"public class X {\n" + 
+//			"	private List<X> games = new ArrayList<X>();\n" + 
+//			"	public static void main(String[] args) {\n" + 
+//			"		System.out.println(\"SUCCESS\");\n" + 
+//			"	}\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryField[] fields = classFileReader.getFields();
+//			assertNotNull("No fields", fields);
+//			assertEquals("Wrong size", 1, fields.length);
+//			assertEquals("Wrong name", "games", new String(fields[0].getName()));
+//			char[] signature = fields[0].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "Ljava/util/List<LX;>;", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	// 65953 - incorrect signature for generic interface
-	public void test015() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public interface X<T> {\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			char[] signature = classFileReader.getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Ljava/lang/Object;", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}	
+//	public void test015() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public interface X<T> {\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			char[] signature = classFileReader.getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "<T:Ljava/lang/Object;>Ljava/lang/Object;", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}	
 	// 70975 - invalid signature for method with array of type variables
-	public void test016() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"import java.util.ArrayList;\n" + 
-			"\n" + 
-			"public class X<T> {\n" + 
-			"	\n" + 
-			"	public static void main(String[] args) {\n" + 
-			"		System.out.println(\"SUCCESS\");\n" + 
-			"	}\n" + 
-			"	public <U> void foo(U[] arr) {\n" + 
-			"	}\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
-			char[] signature = methods[2].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "<U:Ljava/lang/Object;>([TU;)V", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}	
-	public void test017() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X<T> {\n" + 
-			"  static class MX<U> {\n" + 
-			"  }\n" + 
-			"\n" + 
-			"  public static void main(String[] args) {\n" + 
-			"    new X<Thread>().foo(new MX<Thread>());\n" + 
-			"  }\n" + 
-			"  void foo(X.MX<?> mx) {\n" + 
-			"	System.out.println(\"SUCCESS\");\n" + 
-			"  }\n" + 
-			"}",
-		};
-		this.runConformTest(
-			testsSource,
-			"SUCCESS");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 3, methods.length);
-			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
-			char[] signature = methods[2].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "(LX$MX<*>;)V", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}	
-	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=98322
-	public void test018() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X<K extends X.Key> {\n" + 
-			"    public abstract static class Key {\n" + 
-			"         public abstract String getName();\n" + 
-			"    }\n" + 
-			"    public class Holder {}\n" + 
-			"    \n" + 
-			"    void baz(X<K>.Holder h) {} // (LX<TK;>.Holder;)V\n" + 
-			"    void bar(X.Holder h) {} // n/a\n" + 
-			"    void foo(X<Key>.Holder h) {} // (LX<LX$Key;>.Holder;)V\n" + 
-			"}\n",
-		};
-		this.runConformTest(
-			testsSource,
-			"");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 4, methods.length);
-
-			assertEquals("Wrong name", "baz", new String(methods[1].getSelector()));
-			char[] signature = methods[1].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "(LX<TK;>.Holder;)V", new String(signature));
-
-			assertEquals("Wrong name", "bar", new String(methods[2].getSelector()));
-			signature = methods[2].getGenericSignature();
-			assertNull("No signature", signature);
-
-			assertEquals("Wrong name", "foo", new String(methods[3].getSelector()));
-			signature = methods[3].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "(LX<LX$Key;>.Holder;)V", new String(signature));
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}	
-	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=100293
-	public void test019() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public class X<K extends X.Key> {\n" + 
-			"    public abstract static class Key {\n" + 
-			"         public abstract String getName();\n" + 
-			"    }\n" + 
-			"    public class Holder {}\n" + 
-			"    \n" + 
-			"    X<K>.Holder foo() { return null; }\n" + 
-			"    \n" + 
-			"    static void bar() {\n" + 
-			"    	Object o = new X<Key>().foo();\n" + 
-			"    	class Local<U> {\n" + 
-			"    		X<Key>.Holder field;\n" + 
-			"    		Local<String> foo1() { return null; }\n" + 
-			"    		Local<U> foo2() { return null; }\n" + 
-			"    		Local foo3() { return null; }\n" + 
-			"    	}\n" + 
-			"    }\n" + 
-			"}\n",
-		};
-		this.runConformTest(
-			testsSource,
-			"");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X$1Local.class");
-			IBinaryField[] fields = classFileReader.getFields();
-			assertNotNull("No fields", fields);
-			assertEquals("Wrong size", 1, fields.length);
-
-			assertEquals("Wrong name", "field", new String(fields[0].getName()));
-			char[] signature = fields[0].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "LX<LX$Key;>.Holder;", new String(signature));
-
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 4, methods.length);
-
-			assertEquals("Wrong name", "foo1", new String(methods[1].getSelector()));
-			signature = methods[1].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "()LX$1Local<Ljava/lang/String;>;", new String(signature));
-
-			assertEquals("Wrong name", "foo2", new String(methods[2].getSelector()));
-			signature = methods[2].getGenericSignature();
-			assertNotNull("No signature", signature);
-			assertEquals("Wrong signature", "()LX$1Local<TU;>;", new String(signature));
-
-			assertEquals("Wrong name", "foo3", new String(methods[3].getSelector()));
-			signature = methods[3].getGenericSignature();
-			assertNull("No signature", signature);
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
-	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=160132 - variation
-	public void test020() {
-		final String[] testsSource = new String[] {
-			"X.java",
-			"public interface X<E extends Object & X.Entry> {\n" + 
-			"  interface Entry {\n" + 
-			"    interface Internal extends Entry {\n" + 
-			"      Internal createEntry();\n" + 
-			"    }\n" + 
-			"  }\n" + 
-			"}\n",
-		};
-		this.runConformTest(
-			testsSource,
-			"");
-
-		try {
-			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X$Entry$Internal.class");
-			IBinaryMethod[] methods = classFileReader.getMethods();
-			assertNotNull("No methods", methods);
-			assertEquals("Wrong size", 1, methods.length);
-			assertEquals("Wrong name", "createEntry", new String(methods[0].getSelector()));
-			char[] signature = methods[0].getGenericSignature();
-			assertNull("Unexpected signature", signature); // no generic signature should have been produced
-		} catch (ClassFormatException e) {
-			assertTrue(false);
-		} catch (IOException e) {
-			assertTrue(false);
-		}
-	}
+//	public void test016() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"import java.util.ArrayList;\n" + 
+//			"\n" + 
+//			"public class X<T> {\n" + 
+//			"	\n" + 
+//			"	public static void main(String[] args) {\n" + 
+//			"		System.out.println(\"SUCCESS\");\n" + 
+//			"	}\n" + 
+//			"	public <U> void foo(U[] arr) {\n" + 
+//			"	}\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
+//			char[] signature = methods[2].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "<U:Ljava/lang/Object;>([TU;)V", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}	
+//	public void test017() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X<T> {\n" + 
+//			"  static class MX<U> {\n" + 
+//			"  }\n" + 
+//			"\n" + 
+//			"  public static void main(String[] args) {\n" + 
+//			"    new X<Thread>().foo(new MX<Thread>());\n" + 
+//			"  }\n" + 
+//			"  void foo(X.MX<?> mx) {\n" + 
+//			"	System.out.println(\"SUCCESS\");\n" + 
+//			"  }\n" + 
+//			"}",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"SUCCESS");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 3, methods.length);
+//			assertEquals("Wrong name", "foo", new String(methods[2].getSelector()));
+//			char[] signature = methods[2].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "(LX$MX<*>;)V", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}	
+//	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=98322
+//	public void test018() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X<K extends X.Key> {\n" + 
+//			"    public abstract static class Key {\n" + 
+//			"         public abstract String getName();\n" + 
+//			"    }\n" + 
+//			"    public class Holder {}\n" + 
+//			"    \n" + 
+//			"    void baz(X<K>.Holder h) {} // (LX<TK;>.Holder;)V\n" + 
+//			"    void bar(X.Holder h) {} // n/a\n" + 
+//			"    void foo(X<Key>.Holder h) {} // (LX<LX$Key;>.Holder;)V\n" + 
+//			"}\n",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 4, methods.length);
+//
+//			assertEquals("Wrong name", "baz", new String(methods[1].getSelector()));
+//			char[] signature = methods[1].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "(LX<TK;>.Holder;)V", new String(signature));
+//
+//			assertEquals("Wrong name", "bar", new String(methods[2].getSelector()));
+//			signature = methods[2].getGenericSignature();
+//			assertNull("No signature", signature);
+//
+//			assertEquals("Wrong name", "foo", new String(methods[3].getSelector()));
+//			signature = methods[3].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "(LX<LX$Key;>.Holder;)V", new String(signature));
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}	
+//	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=100293
+//	public void test019() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public class X<K extends X.Key> {\n" + 
+//			"    public abstract static class Key {\n" + 
+//			"         public abstract String getName();\n" + 
+//			"    }\n" + 
+//			"    public class Holder {}\n" + 
+//			"    \n" + 
+//			"    X<K>.Holder foo() { return null; }\n" + 
+//			"    \n" + 
+//			"    static void bar() {\n" + 
+//			"    	Object o = new X<Key>().foo();\n" + 
+//			"    	class Local<U> {\n" + 
+//			"    		X<Key>.Holder field;\n" + 
+//			"    		Local<String> foo1() { return null; }\n" + 
+//			"    		Local<U> foo2() { return null; }\n" + 
+//			"    		Local foo3() { return null; }\n" + 
+//			"    	}\n" + 
+//			"    }\n" + 
+//			"}\n",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X$1Local.class");
+//			IBinaryField[] fields = classFileReader.getFields();
+//			assertNotNull("No fields", fields);
+//			assertEquals("Wrong size", 1, fields.length);
+//
+//			assertEquals("Wrong name", "field", new String(fields[0].getName()));
+//			char[] signature = fields[0].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "LX<LX$Key;>.Holder;", new String(signature));
+//
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 4, methods.length);
+//
+//			assertEquals("Wrong name", "foo1", new String(methods[1].getSelector()));
+//			signature = methods[1].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "()LX$1Local<Ljava/lang/String;>;", new String(signature));
+//
+//			assertEquals("Wrong name", "foo2", new String(methods[2].getSelector()));
+//			signature = methods[2].getGenericSignature();
+//			assertNotNull("No signature", signature);
+//			assertEquals("Wrong signature", "()LX$1Local<TU;>;", new String(signature));
+//
+//			assertEquals("Wrong name", "foo3", new String(methods[3].getSelector()));
+//			signature = methods[3].getGenericSignature();
+//			assertNull("No signature", signature);
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
+//	//https://bugs.eclipse.org/bugs/show_bug.cgi?id=160132 - variation
+//	public void test020() {
+//		final String[] testsSource = new String[] {
+//			"X.java",
+//			"public interface X<E extends Object & X.Entry> {\n" + 
+//			"  interface Entry {\n" + 
+//			"    interface Internal extends Entry {\n" + 
+//			"      Internal createEntry();\n" + 
+//			"    }\n" + 
+//			"  }\n" + 
+//			"}\n",
+//		};
+//		this.runConformTest(
+//			testsSource,
+//			"");
+//
+//		try {
+//			ClassFileReader classFileReader = ClassFileReader.read(OUTPUT_DIR + File.separator + "X$Entry$Internal.class");
+//			IBinaryMethod[] methods = classFileReader.getMethods();
+//			assertNotNull("No methods", methods);
+//			assertEquals("Wrong size", 1, methods.length);
+//			assertEquals("Wrong name", "createEntry", new String(methods[0].getSelector()));
+//			char[] signature = methods[0].getGenericSignature();
+//			assertNull("Unexpected signature", signature); // no generic signature should have been produced
+//		} catch (ClassFormatException e) {
+//			assertTrue(false);
+//		} catch (IOException e) {
+//			assertTrue(false);
+//		}
+//	}
 	
 }

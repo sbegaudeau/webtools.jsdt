@@ -13,17 +13,28 @@ package org.eclipse.wst.jsdt.core.tests.model;
 import java.io.IOException;
 
 import junit.framework.Test;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.dom.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMember;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.ISourceRange;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * TO DO:
@@ -956,35 +967,35 @@ public void testRootPath10() throws JavaModelException {
 	this.attachSource(root, null, null); // detach source
 	root.close();
 }
-/**
- * http://bugs.eclipse.org/bugs/show_bug.cgi?id=35965
- */
-public void testRootPath11() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
-	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/test4.jar"));
-	this.attachSource(root, "/AttachSourceTests/test4_src.zip", null);
-	
-	IClassFile cf = root.getPackageFragment("P1").getClassFile("D.class");
-	assertSourceEquals(
-		"Unexpected source for class file P1.D",
-		"package P1;\n" +
-		"\n" +
-		"public class D {}",
-		cf.getSource());
-
-	cf = root.getPackageFragment("P1.p2").getClassFile("A.class");
-	assertSourceEquals(
-		"Unexpected source for class file P1.p2.A",
-		"package P1.p2;\n" +
-		"\n" +
-		"public class A {}",
-		cf.getSource());	
-
-	assertTrue("Not a binary root", root.getKind() == IPackageFragmentRoot.K_BINARY);
-	assertEquals("wrong jdk level", ClassFileConstants.JDK1_2, Util.getJdkLevel(root.getResource()));
-	this.attachSource(root, null, null); // detach source
-	root.close();
-}
+///**
+// * http://bugs.eclipse.org/bugs/show_bug.cgi?id=35965
+// */
+//public void testRootPath11() throws JavaModelException {
+//	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+//	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/test4.jar"));
+//	this.attachSource(root, "/AttachSourceTests/test4_src.zip", null);
+//	
+//	IClassFile cf = root.getPackageFragment("P1").getClassFile("D.class");
+//	assertSourceEquals(
+//		"Unexpected source for class file P1.D",
+//		"package P1;\n" +
+//		"\n" +
+//		"public class D {}",
+//		cf.getSource());
+//
+//	cf = root.getPackageFragment("P1.p2").getClassFile("A.class");
+//	assertSourceEquals(
+//		"Unexpected source for class file P1.p2.A",
+//		"package P1.p2;\n" +
+//		"\n" +
+//		"public class A {}",
+//		cf.getSource());	
+//
+//	assertTrue("Not a binary root", root.getKind() == IPackageFragmentRoot.K_BINARY);
+//	assertEquals("wrong jdk level", ClassFileConstants.JDK1_2, Util.getJdkLevel(root.getResource()));
+//	this.attachSource(root, null, null); // detach source
+//	root.close();
+//}
 /**
  * Attach a jar with a source attachement that is itself. The jar contains 2 root paths for the same class file.
  * (regression test for bug 74014 prefix path for source attachements - automatic detection does not seem to work)

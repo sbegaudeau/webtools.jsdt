@@ -16,18 +16,38 @@ import java.io.IOException;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceDescription;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.core.IAccessRule;
+import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IClasspathEntry;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IType;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.UserLibrary;
 import org.eclipse.wst.jsdt.internal.core.UserLibraryManager;
-import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class JavaProjectTests extends ModifyingResourceTests {
 public JavaProjectTests(String name) {
@@ -1180,14 +1200,14 @@ public void testSourceMethodCorrespondingResource() throws JavaModelException {
 	IResource corr= methods[0].getCorrespondingResource();
 	assertTrue("incorrect corresponding resource", corr == null);
 }
-/**
- * Test the jdklevel of the package fragment root
- */
-public void testJdkLevelRoot() throws JavaModelException {
-	IPackageFragmentRoot root= getPackageFragmentRoot("JavaProjectLibTests", "lib/");
-	assertEquals("wrong type", IPackageFragmentRoot.K_BINARY, root.getKind());
-	assertEquals("wrong jdk level", ClassFileConstants.JDK1_1, Util.getJdkLevel(root.getResource()));
-}
+///**
+// * Test the jdklevel of the package fragment root
+// */
+//public void testJdkLevelRoot() throws JavaModelException {
+//	IPackageFragmentRoot root= getPackageFragmentRoot("JavaProjectLibTests", "lib/");
+//	assertEquals("wrong type", IPackageFragmentRoot.K_BINARY, root.getKind());
+//	assertEquals("wrong jdk level", ClassFileConstants.JDK1_1, Util.getJdkLevel(root.getResource()));
+//}
 /**
  * Test User Library preference. External jar file referenced in library entry does not exist.
  * It does not need to as we only test the preference value...

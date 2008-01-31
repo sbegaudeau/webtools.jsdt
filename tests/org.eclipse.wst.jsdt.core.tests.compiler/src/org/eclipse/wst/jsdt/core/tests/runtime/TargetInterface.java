@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.runtime;
 
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
-import java.io.*;
-import java.net.*;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 /**
  * This is the interface to the target VM. It connects to an IDEInterface on the target side 
  * using TCP/IO to send request for code snippet evaluation and to get the result back.
@@ -143,49 +144,5 @@ boolean isConnected() {
 /**
  * Sends the given class definitions to the target for loading and (if specified) for running.
  */
-public void sendClasses(boolean mustRun, ClassFile[] classes) throws TargetException {
-	if (DEBUG) {
-		for (int i = 0; i < classes.length; i++) {
-			String className = new String(classes[i].fileName()).replace('/', '\\') + ".class";
-			if ((i == 0) && (className.indexOf("CodeSnippet") != -1)) {
-				codeSnippetClassName = className;
-				try {
-					ClassFile.writeToDisk(true, "d:\\eval\\snippets", className, classes[0]);
-				} catch(IOException e) {
-				}
-			} else {
-				String dirName;
-				if (className.startsWith("java")) {
-					dirName = "d:\\eval\\" + LocalVMLauncher.BOOT_CLASSPATH_DIRECTORY;
-				} else {
-					dirName = "d:\\eval\\" + LocalVMLauncher.REGULAR_CLASSPATH_DIRECTORY;
-				}
-				try {
-					ClassFile.writeToDisk(true, dirName, className, classes[i]);
-				} catch(IOException e) {
-				}
-			}
-		}
-	} else {
-		if (TIMING) {
-			this.sentTime = System.currentTimeMillis();
-		}
-		if (!isConnected()) {
-			throw new TargetException("Connection to the target VM has been lost");
-		}
-		try {
-			DataOutputStream out = new DataOutputStream(this.socket.getOutputStream());
-			out.writeBoolean(mustRun);
-			out.writeInt(classes.length);
-			for (int i = 0; i < classes.length; i++) {
-				byte[] classDefinition = classes[i].getBytes();
-				out.writeInt(classDefinition.length);
-				out.write(classDefinition);
-			}
-		} catch (IOException e) {
-			// The socket has likely been closed on the other end. So the code snippet runner has stopped.
-			this.disconnect();
-		}
-	}
-}
+
 }

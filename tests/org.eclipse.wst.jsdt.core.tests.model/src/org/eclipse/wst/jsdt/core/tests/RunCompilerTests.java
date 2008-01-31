@@ -31,7 +31,7 @@ public static Class[] getAllTestClasses() {
 	return new Class[] {
 		org.eclipse.wst.jsdt.core.tests.compiler.regression.TestAll.class,
 		org.eclipse.wst.jsdt.core.tests.compiler.parser.TestAll.class,
-		org.eclipse.wst.jsdt.core.tests.eval.TestAll.class,
+//		org.eclipse.wst.jsdt.core.tests.eval.TestAll.class,
 	};
 }
 public static Test suite() {

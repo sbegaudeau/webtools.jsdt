@@ -10,14 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Hashtable;
 
 import junit.framework.Assert;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
-import org.eclipse.wst.jsdt.internal.compiler.ClassFile;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ICompilerRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
@@ -87,27 +84,9 @@ public void acceptResult(CompilationResult compilationResult) {
 		}
 		problemLog += buffer.toString();
 	}
-	outputClassFiles(compilationResult);
 	if (this.clientRequestor != null) {
 		this.clientRequestor.acceptResult(compilationResult);
 	}
 }
-protected void outputClassFiles(CompilationResult unitResult) {
 
-	if ((unitResult != null) && (!unitResult.hasErrors() || generateOutput)) {
-		ClassFile[]classFiles = unitResult.getClassFiles();
-		if (outputPath != null) {
-			for (int i = 0, fileCount = classFiles.length; i < fileCount; i++) {
-				// retrieve the key and the corresponding classfile
-				ClassFile classFile = classFiles[i];
-				String relativeName = 
-					new String(classFile.fileName()).replace('/', File.separatorChar) + ".class";
-				try {
-					ClassFile.writeToDisk(true, outputPath, relativeName, classFile);
-				} catch(IOException e) {
-				}
-			}
-		}
-	}
-}
 }

@@ -11,7 +11,6 @@
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -20,8 +19,6 @@ import junit.framework.Test;
 
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileReader;
-import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 public class AnnotationTest extends AbstractComparableTest {
@@ -3265,52 +3262,6 @@ public class AnnotationTest extends AbstractComparableTest {
 			"");	
 	}
 	
-	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=82136
-	public void test105() {
-		this.runConformTest(
-			new String[] {
-				"Property.java",
-				"import java.lang.annotation.Documented;\n" +
-				"import java.lang.annotation.Retention;\n" +
-				"import java.lang.annotation.RetentionPolicy;\n" +
-				"\n" +
-				"@Documented\n" +
-				"@Retention(RetentionPolicy.RUNTIME)\n" +
-				"public @interface Property\n" +
-				"{\n" +
-				"  String property();\n" +
-				"  String identifier() default \"\";\n" +
-				"}",
-				"Properties.java",
-				"import java.lang.annotation.Documented;\n" +
-				"import java.lang.annotation.Retention;\n" +
-				"import java.lang.annotation.RetentionPolicy;\n" +
-				"\n" +
-				"@Documented\n" +
-				"@Retention(RetentionPolicy.RUNTIME)\n" +
-				"public @interface Properties {\n" +
-				"  Property[] value();\n" +
-				"}",
-				"X.java",
-				"@Properties({\n" +
-				"  @Property(property = \"prop\", identifier = \"someIdentifier\"),\n" +
-				"  @Property(property = \"type\")\n" +
-				"})\n" +
-				"public interface X {\n" +
-				"  void setName();\n" +
-				"  String getName();\n" +
-				"}"
-			},
-			"");	
-			try {
-				byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(new File(OUTPUT_DIR + File.separator  +"X.class"));
-				new ClassFileReader(classFileBytes, "X.java".toCharArray(), true);
-			} catch (ClassFormatException e) {
-				assertTrue("ClassFormatException", false);
-			} catch (IOException e) {
-				assertTrue("IOException", false);
-			}
-	}
     
     // https://bugs.eclipse.org/bugs/show_bug.cgi?id=83939
     public void test106() {
