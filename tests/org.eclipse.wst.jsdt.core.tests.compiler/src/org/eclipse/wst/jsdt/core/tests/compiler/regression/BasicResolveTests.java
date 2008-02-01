@@ -753,6 +753,23 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		);
 	}
 
+	
+
+	public void test053()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function funccall(pp){}\n"+ 
+						"funccall({\n"+ 
+						"meth : function(){  \n" +
+						"  var c=this.i; },\n" +
+						" i : 1 \n" +
+						"});\n"+
+						"" 
+				},
+				""
+		);
+	}
 
 		
 }
