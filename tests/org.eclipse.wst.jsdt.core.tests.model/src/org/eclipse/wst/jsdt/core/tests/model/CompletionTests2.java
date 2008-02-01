@@ -40,6 +40,40 @@ import junit.framework.*;
 
 public class CompletionTests2 extends ModifyingResourceTests implements RelevanceConstants {
 	
+	public static final String DEFUALT_JSDTSCOPE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+												  "<classpath>\n" + 
+												   "       <classpathentry kind=\"src\" path=\"\"/>\n" + 
+												   "       <classpathentry kind=\"con\" path=\"org.eclipse.wst.jsdt.launching.JRE_CONTAINER\"/>\n"+
+												   "       <classpathentry kind=\"output\" path=\"\"/>\n"+
+												   "</classpath>";
+	/* 
+		.project = DEFAULT_PROJECT_LEFT + project name + DEFAULT_PROJECT_RIGHT;
+	*/
+	public static final String DEFAULT_PROJECT_LEFT = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
+													  "<projectDescription>\n" + 
+													  "     <name>";
+		
+		
+	public static final String DEFAULT_PROJECT_RIGHT ="</name>\n" + 
+													  "     <comment></comment>\n" +
+													  "     <projects>\n" +
+													  "     </projects>\n"+
+													  "     <buildSpec>\n"+
+													  "     	<buildCommand>\n"+
+													  "            <name>org.eclipse.wst.jsdt.core.javascriptValidator</name>\n"+
+													  "               <arguments>\n"+
+													  "               </arguments>\n"+
+													  "         </buildCommand>\n"+
+													  "     </buildSpec>\n"+
+													  "     <natures>\n"+
+													  "       <nature>org.eclipse.wst.jsdt.core.jsNature</nature>\n"+
+													  "     </natures>\n" +
+													  "</projectDescription>";
+
+	
+		
+		
+		
 	public static class CompletionContainerInitializer implements ContainerInitializer.ITestInitializer {
 		
 		public static class DefaultContainer implements IClasspathContainer {
@@ -189,43 +223,52 @@ public void testBug29832() throws Exception {
 //			null);
 
 		// create P1
-		IFile f = getFile("/Completion/lib.jar");
+	//	IFile f = getFile("/Completion/lib.jar");
+		IFile f = getFile("/Completion/ZZZ.js");
+		
+		
 		IJavaProject p = this.createJavaProject(
 			"P1",
+			new String[]{"/"},
 			new String[]{},
-			new String[]{"JCL_LIB"},
 			 "");
-		this.createFile("/P1/lib.jar", f.getContents());
-		this.addLibraryEntry(p, "/P1/lib.jar", true);
+		IFile libFile = this.createFile("/P1/ZZZ.js", f.getContents());
+		this.addLibraryEntry(p, libFile.getLocation().toString(), true);
 		
 		// create P2
 		this.createJavaProject(
 			"P2",
-			new String[]{"src"},
-			new String[]{"JCL_LIB"},
+			new String[]{"/"},
+			new String[]{},
 			new String[]{"/P1"},
 			"bin");
 		this.createFile(
-			"/P2/src/X.js",
-			"public class X {\n"+
-			"  ZZZ z;\n"+
+			"/P2/X.js",
+			"function testZZZClass {\n"+
+			"  var z = new ZZZ();\n"+
+			"  z;\n" +
 			"}");
 		
 		waitUntilIndexesReady();
 		
 		// do completion
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "X.js");
+		ICompilationUnit cu= getCompilationUnit("P2", "", "", "X.js");
 		
 		String str = cu.getSource();
-		String completeBehind = "ZZZ";
+		String completeBehind = "z";
 		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
 		cu.codeComplete(cursorLocation, requestor);
 
+//		assertEquals(
+//			"element:ZZZ    completion:pz.ZZZ    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED),
+//			requestor.getResults());
 		assertEquals(
-			"element:ZZZ    completion:pz.ZZZ    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED),
-			requestor.getResults());
-		
+					"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED+R_UNQUALIFIED) + "\n"+
+					"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
+					"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
+					"element:z    completion:z    relevance:"+ (R_DEFAULT+R_RESOLVED+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED),
+					requestor.getResults());
 		
 		// delete P1
 		p.getProject().delete(true, false, null);
@@ -233,41 +276,45 @@ public void testBug29832() throws Exception {
 		// create P1
 		File dest = getWorkspaceRoot().getLocation().toFile();
 		File pro = this.createDirectory(dest, "P1");
+		File proSet = this.createDirectory(pro,".settings");
 		
-		this.createFile(pro, ".classpath", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<classpath>\n" +
-			"    <classpathentry kind=\"src\" path=\"src\"/>\n" +
-			"    <classpathentry kind=\"var\" path=\"JCL_LIB\" sourcepath=\"JCL_SRC\" rootpath=\"JCL_SRCROOT\"/>\n" +
-			"    <classpathentry kind=\"output\" path=\"bin\"/>\n" +
-			"</classpath>");
+		this.createFile(proSet, ".jsdtscope", DEFUALT_JSDTSCOPE);
+					
+					
+//					"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//			"<classpath>\n" +
+//			"    <classpathentry kind=\"src\" path=\"\"/>\n" +
+//			"    <classpathentry kind=\"var\" path=\"JCL_LIB\" sourcepath=\"JCL_SRC\" rootpath=\"JCL_SRCROOT\"/>\n" +
+//			"    <classpathentry kind=\"output\" path=\"bin\"/>\n" +
+//			"</classpath>");
 			
-		this.createFile(pro, ".project", 
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<projectDescription>\n" +
-			"	<name>org.eclipse.wst.jsdt.core</name>\n" +
-			"	<comment></comment>\n" +
-			"	<projects>\n" +
-			"	</projects>\n" +
-			"	<buildSpec>\n" +
-			"		<buildCommand>\n" +
-			"			<name>org.eclipse.wst.jsdt.core.javabuilder</name>\n" +
-			"			<arguments>\n" +
-			"			</arguments>\n" +
-			"		</buildCommand>\n" +
-			"	</buildSpec>\n" +
-			"	<natures>\n" +
-			"		<nature>org.eclipse.wst.jsdt.core.javanature</nature>\n" +
-			"	</natures>\n" +
-			"</projectDescription>");
+		this.createFile(pro, ".project", DEFAULT_PROJECT_LEFT + "org.eclipse.wst.jsdt.core" + DEFAULT_PROJECT_RIGHT);
+//			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//			"<projectDescription>\n" +
+//			"	<name>org.eclipse.wst.jsdt.core</name>\n" +
+//			"	<comment></comment>\n" +
+//			"	<projects>\n" +
+//			"	</projects>\n" +
+//			"	<buildSpec>\n" +
+//			"		<buildCommand>\n" +
+//			"			<name>org.eclipse.wst.jsdt.core.javabuilder</name>\n" +
+//			"			<arguments>\n" +
+//			"			</arguments>\n" +
+//			"		</buildCommand>\n" +
+//			"	</buildSpec>\n" +
+//			"	<natures>\n" +
+//			"		<nature>org.eclipse.wst.jsdt.core.javanature</nature>\n" +
+//			"	</natures>\n" +
+//			"</projectDescription>");
 		
-		File src = this.createDirectory(pro, "src");
+		//File src = this.createDirectory(pro, "src");
 		
-		File pz = this.createDirectory(src, "pz");
-		
-		this.createFile(pz, "ZZZ.js",
-			"package pz;\n" +
-			"public class ZZZ {\n" +
-			"}");
+		//File pz = this.createDirectory(src, "pz");
+
+		this.createFile(pro,"ZZZ.js","function testZZZClass {\n"+
+										"  var z = new ZZZ();\n"+
+										"  z;\n" +
+										"}");
 		
 		final IProject project = getWorkspaceRoot().getProject("P1");
 		IWorkspaceRunnable populate = new IWorkspaceRunnable() {
@@ -286,7 +333,7 @@ public void testBug29832() throws Exception {
 		cu.codeComplete(cursorLocation, requestor);
 
 		assertEquals(
-			"element:ZZZ    completion:pz.ZZZ    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED),
+			"element:z    completion:z    relevance:"+(R_DEFAULT+R_RESOLVED+R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED),
 			requestor.getResults());
 	} finally {
 		this.deleteProject("P1");
@@ -305,51 +352,54 @@ public void testBug33560() throws Exception {
 //			null);
 
 		// create P1
-		IFile f = getFile("/Completion/lib.jar");
+		//IFile f = getFile("/Completion/lib.jar");
+		IFile f = getFile("/Completion/ZZZ.js");
 		IJavaProject p = this.createJavaProject(
-			"P1",
-			new String[]{},
-			new String[]{"JCL_LIB"},
-			 "");
-		this.createFile("/P1/lib.jar", f.getContents());
-		this.addLibraryEntry(p, "/P1/lib.jar", true);
+					"P1",
+					new String[]{"/"},
+					new String[]{},
+					 "");;
+					 IFile libFile = this.createFile("/P1/ZZZ.js", f.getContents());
+						this.addLibraryEntry(p, libFile.getLocation().toString(), true);
 		
 		// create P2
-		this.createJavaProject(
-			"P2",
-			new String[]{"src"},
-			new String[]{"JCL_LIB"},
-			new String[]{"/P1"},
-			new boolean[]{true},
-			"bin");
+						this.createJavaProject(
+									"P2",
+									new String[]{"/"},
+									new String[]{},
+									new String[]{"/P1"},
+									"bin");
 					
 		// create P3
-		this.createJavaProject(
-			"P3",
-			new String[]{"src"},
-			new String[]{"JCL_LIB"},
-			new String[]{"/P2"},
-			"bin");
-		this.createFile(
-			"/P3/src/X.js",
-			"public class X {\n"+
-			"  ZZZ z;\n"+
-			"}");
+						this.createJavaProject(
+									"P3",
+									new String[]{"/"},
+									new String[]{},
+									new String[]{"/P1"},
+									"bin");
+						this.createFile(
+									"/P3/X.js",
+									"function testZZZClass {\n"+
+									"  var z = new ZZZ();\n"+
+									"  z;\n" +
+									"}");
 		
 		waitUntilIndexesReady();
 		
 		// do completion
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "X.js");
+		ICompilationUnit cu= getCompilationUnit("P3", "", "", "X.js");
 		
 		String str = cu.getSource();
-		String completeBehind = "ZZZ";
+		String completeBehind = "z";
 		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
 		cu.codeComplete(cursorLocation, requestor);
-
 		assertEquals(
-			"element:ZZZ    completion:pz.ZZZ    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED),
-			requestor.getResults());
+		"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED+R_UNQUALIFIED) + "\n"+
+		"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
+		"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
+		"element:z    completion:z    relevance:"+ (R_DEFAULT+R_RESOLVED+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED),
+		requestor.getResults());
 		
 		
 		// delete P1
@@ -358,41 +408,43 @@ public void testBug33560() throws Exception {
 		// create P1
 		File dest = getWorkspaceRoot().getLocation().toFile();
 		File pro = this.createDirectory(dest, "P1");
+		File proSet = this.createDirectory(pro,".settings");
 		
-		this.createFile(pro, ".classpath", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<classpath>\n" +
-			"    <classpathentry kind=\"src\" path=\"src\"/>\n" +
-			"    <classpathentry kind=\"var\" path=\"JCL_LIB\" sourcepath=\"JCL_SRC\" rootpath=\"JCL_SRCROOT\"/>\n" +
-			"    <classpathentry kind=\"output\" path=\"bin\"/>\n" +
-			"</classpath>");
-			
-		this.createFile(pro, ".project", 
-			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			"<projectDescription>\n" +
-			"	<name>org.eclipse.wst.jsdt.core</name>\n" +
-			"	<comment></comment>\n" +
-			"	<projects>\n" +
-			"	</projects>\n" +
-			"	<buildSpec>\n" +
-			"		<buildCommand>\n" +
-			"			<name>org.eclipse.wst.jsdt.core.javabuilder</name>\n" +
-			"			<arguments>\n" +
-			"			</arguments>\n" +
-			"		</buildCommand>\n" +
-			"	</buildSpec>\n" +
-			"	<natures>\n" +
-			"		<nature>org.eclipse.wst.jsdt.core.javanature</nature>\n" +
-			"	</natures>\n" +
-			"</projectDescription>");
-		
+		this.createFile(proSet, ".jsdtscope", DEFUALT_JSDTSCOPE);
+//		this.createFile(pro, ".classpath", "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//			"<classpath>\n" +
+//			"    <classpathentry kind=\"src\" path=\"src\"/>\n" +
+//			"    <classpathentry kind=\"var\" path=\"JCL_LIB\" sourcepath=\"JCL_SRC\" rootpath=\"JCL_SRCROOT\"/>\n" +
+//			"    <classpathentry kind=\"output\" path=\"bin\"/>\n" +
+//			"</classpath>");
+		this.createFile(pro, ".project", DEFAULT_PROJECT_LEFT + "org.eclipse.wst.jsdt.core" + DEFAULT_PROJECT_RIGHT);
+//		this.createFile(pro, ".project", 
+//			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+//			"<projectDescription>\n" +
+//			"	<name>org.eclipse.wst.jsdt.core</name>\n" +
+//			"	<comment></comment>\n" +
+//			"	<projects>\n" +
+//			"	</projects>\n" +
+//			"	<buildSpec>\n" +
+//			"		<buildCommand>\n" +
+//			"			<name>org.eclipse.wst.jsdt.core.javabuilder</name>\n" +
+//			"			<arguments>\n" +
+//			"			</arguments>\n" +
+//			"		</buildCommand>\n" +
+//			"	</buildSpec>\n" +
+//			"	<natures>\n" +
+//			"		<nature>org.eclipse.wst.jsdt.core.javanature</nature>\n" +
+//			"	</natures>\n" +
+//			"</projectDescription>");
+//		
 		File src = this.createDirectory(pro, "src");
 		
 		File pz = this.createDirectory(src, "pz");
 		
-		this.createFile(pz, "ZZZ.js",
-			"package pz;\n" +
-			"public class ZZZ {\n" +
-			"}");
+		this.createFile(pro,"ZZZ.js","function testZZZClass {\n"+
+					"  var z = new ZZZ();\n"+
+					"  z;\n" +
+					"}");
 		
 		final IProject project = getWorkspaceRoot().getProject("P1");
 		IWorkspaceRunnable populate = new IWorkspaceRunnable() {
@@ -411,9 +463,9 @@ public void testBug33560() throws Exception {
 		cu.codeComplete(cursorLocation, requestor);
 
 		assertEquals(
-			"element:ZZZ    completion:pz.ZZZ    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED),
-			requestor.getResults());
-	} finally {
+					"element:z    completion:z    relevance:"+(R_DEFAULT+R_RESOLVED+R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED),
+					requestor.getResults());
+		} finally {
 		this.deleteProject("P1");
 		this.deleteProject("P2");
 		this.deleteProject("P3");

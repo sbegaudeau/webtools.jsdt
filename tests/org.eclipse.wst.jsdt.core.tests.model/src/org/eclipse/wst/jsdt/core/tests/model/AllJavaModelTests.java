@@ -94,7 +94,7 @@ private static Class[] getAllTestClasses() {
 //		SelectionJavadocModelTests.class,
 //
 //		// Support for completion tests
-//		RunCompletionModelTests.class,
+		RunCompletionModelTests.class,
 //		
 //		// Prefix and suffix tests
 //		NamingConventionTests.class,

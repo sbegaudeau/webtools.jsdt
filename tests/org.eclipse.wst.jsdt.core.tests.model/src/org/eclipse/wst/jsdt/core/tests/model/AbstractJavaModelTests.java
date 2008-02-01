@@ -970,12 +970,20 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				addJavaNature(projectName);
 				
 				// create classpath entries 
+				
 				IProject project = getWorkspaceRoot().getProject(projectName);
 				IPath projectPath = project.getFullPath();
 				int sourceLength = sourceFolders == null ? 0 : sourceFolders.length;
 				int libLength = libraries == null ? 0 : libraries.length;
 				int projectLength = projects == null ? 0 : projects.length;
-				IClasspathEntry[] entries = new IClasspathEntry[sourceLength+libLength+projectLength];
+				/* 
+				 * 
+				 * Default JRE entry
+				 */
+				
+				
+				
+				IClasspathEntry[] entries = new IClasspathEntry[sourceLength+libLength+projectLength+1];
 				for (int i= 0; i < sourceLength; i++) {
 					IPath sourcePath = new Path(sourceFolders[i]);
 					int segmentCount = sourcePath.segmentCount();
@@ -1036,6 +1044,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 							outputPath == null ? null : projectPath.append(outputPath)
 						);
 				}
+				
+		
+				
 				for (int i= 0; i < libLength; i++) {
 					String lib = libraries[i];
 					if (lib.startsWith("JCL")) {
@@ -1150,6 +1161,15 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				
 				// set classpath and output location
 				IJavaProject javaProject = JavaCore.create(project);
+				
+				
+				
+				
+				/* ensure system.js entry */
+				IClasspathEntry jreEntry = JavaCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.launching.JRE_CONTAINER"));
+				entries[entries.length-1] = jreEntry;
+				
+				
 				javaProject.setRawClasspath(entries, projectPath.append(outputPath), null);
 				
 				// set compliance level options
@@ -1164,7 +1184,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				result[0] = javaProject;
 			}
 		};
-		getWorkspace().run(create, null);	
+	
+		getWorkspace().run(create, null);
+		
+		
 		return result[0];
 	}
 	/*

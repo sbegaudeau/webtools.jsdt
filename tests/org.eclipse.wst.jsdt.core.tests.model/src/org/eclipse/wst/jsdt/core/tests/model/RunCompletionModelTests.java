@@ -26,33 +26,33 @@ public class RunCompletionModelTests extends junit.framework.TestCase {
 	public final static List COMPLETION_SUITES = new ArrayList();
 	static {
 		if (!ONLY_JAVADOC) {
-			COMPLETION_SUITES.add(CompletionTests.class);
-			COMPLETION_SUITES.add(CompletionTests_1_5.class);
-			COMPLETION_SUITES.add(CompletionContextTests.class);
-			COMPLETION_SUITES.add(CompletionContextTests_1_5.class);
-			COMPLETION_SUITES.add(CompletionWithMissingTypesTests.class);
-			COMPLETION_SUITES.add(CompletionWithMissingTypesTests_1_5.class);
-			COMPLETION_SUITES.add(SnippetCompletionContextTests.class);
+			if(false) COMPLETION_SUITES.add(CompletionTests.class);
+			//COMPLETION_SUITES.add(CompletionTests_1_5.class);
+			if(false) COMPLETION_SUITES.add(CompletionContextTests.class);
+			//COMPLETION_SUITES.add(CompletionContextTests_1_5.class);
+			if(false) COMPLETION_SUITES.add(CompletionWithMissingTypesTests.class);
+			//COMPLETION_SUITES.add(CompletionWithMissingTypesTests_1_5.class);
+			if(false) COMPLETION_SUITES.add(SnippetCompletionContextTests.class);
 		}
-		COMPLETION_SUITES.add(JavadocTypeCompletionModelTest.class);
-		COMPLETION_SUITES.add(JavadocFieldCompletionModelTest.class);
-		COMPLETION_SUITES.add(JavadocMethodCompletionModelTest.class);
-		COMPLETION_SUITES.add(JavadocPackageCompletionModelTest.class);
-		COMPLETION_SUITES.add(JavadocTextCompletionModelTest.class);
-		COMPLETION_SUITES.add(JavadocBugsCompletionModelTest.class);
-		COMPLETION_SUITES.add(JavadocCompletionContextTests.class);
-		COMPLETION_SUITES.add(JavadocCompletionContextTests_1_5.class);
+		if(false) COMPLETION_SUITES.add(JavadocTypeCompletionModelTest.class);
+		if(false) COMPLETION_SUITES.add(JavadocFieldCompletionModelTest.class);
+		if(false) COMPLETION_SUITES.add(JavadocMethodCompletionModelTest.class);
+		if(false) COMPLETION_SUITES.add(JavadocPackageCompletionModelTest.class);
+		if(false) COMPLETION_SUITES.add(JavadocTextCompletionModelTest.class);
+		if(false) COMPLETION_SUITES.add(JavadocBugsCompletionModelTest.class);
+		if(false) COMPLETION_SUITES.add(JavadocCompletionContextTests.class);
+		if(false) COMPLETION_SUITES.add(JavadocCompletionContextTests_1_5.class);
 	}
 
 	public static Class[] getTestClasses() {
 		int size = COMPLETION_SUITES.size();
 		if (!ONLY_JAVADOC) {
-			Class[] testClasses = new Class[size+4];
+			Class[] testClasses = new Class[size+1];
 			COMPLETION_SUITES.toArray(testClasses);
 			testClasses[size] = CompletionTests2.class;
-			testClasses[size+1] = CompletionWithMissingTypesTests2.class;
-			testClasses[size+2] = SnippetCompletionTests.class;
-			testClasses[size+3] = SnippetCompletionTests_1_5.class;
+			if(false) testClasses[size+1] = CompletionWithMissingTypesTests2.class;
+			if(false) testClasses[size+2] = SnippetCompletionTests.class;
+			if(false) testClasses[size+3] = SnippetCompletionTests_1_5.class;
 			return testClasses;
 		}
 		Class[] testClasses = new Class[size];
