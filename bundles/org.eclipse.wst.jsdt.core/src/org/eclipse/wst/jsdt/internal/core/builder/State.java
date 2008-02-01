@@ -164,6 +164,8 @@ boolean isKnownType(String qualifiedTypeName) {
 }
 
 void record(String typeLocator, char[][][] qualifiedRefs, char[][] simpleRefs, char[] mainTypeName, ArrayList typeNames) {
+	if (typeNames==null)
+		typeNames=new ArrayList();
 	if (typeNames.size() == 1 && CharOperation.equals(mainTypeName, (char[]) typeNames.get(0))) {
 		references.put(typeLocator, new ReferenceCollection(qualifiedRefs, simpleRefs));
 	} else {
