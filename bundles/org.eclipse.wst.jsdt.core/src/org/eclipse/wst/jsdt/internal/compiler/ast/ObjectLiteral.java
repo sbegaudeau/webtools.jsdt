@@ -6,12 +6,14 @@ import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
+import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 
 public class ObjectLiteral extends Expression {
 
 	public ObjectLiteralField [] fields;
-
+	public InferredType inferredType;
+	
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (fields==null || fields.length==0)
 		{

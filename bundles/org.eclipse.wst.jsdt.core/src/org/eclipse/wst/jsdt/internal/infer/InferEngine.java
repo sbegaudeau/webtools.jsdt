@@ -450,6 +450,8 @@ public class InferEngine extends ASTVisitor {
 	 */
 	private InferredType createAnonymousType( ObjectLiteral objLit ) {
 
+		if (objLit.inferredType!=null)
+			return objLit.inferredType;
 		//char[] cs = String.valueOf(this.anonymousCount2++).toCharArray();
 		char [] loc = (String.valueOf( objLit.sourceStart ) + '_' + String.valueOf( objLit.sourceEnd )).toCharArray();
 		char []name = CharOperation.concat( ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
@@ -818,40 +820,41 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	private void populateType(InferredType type, ObjectLiteral objLit) {
-		if( objLit.fields != null ){
-			for (int i = 0; i < objLit.fields.length; i++) {
-				ObjectLiteralField field = objLit.fields[i];
+		if (objLit.inferredType==null) {
+			objLit.inferredType=type;
+			if (objLit.fields != null) {
+				for (int i = 0; i < objLit.fields.length; i++) {
+					ObjectLiteralField field = objLit.fields[i];
 
-				char [] name=null;
-				int nameStart=-1;
+					char[] name = null;
+					int nameStart = -1;
 
+					if (field.fieldName instanceof SingleNameReference) {
+						SingleNameReference singleNameReference = (SingleNameReference) field.fieldName;
+						name = singleNameReference.token;
+						nameStart = singleNameReference.sourceStart;
+					} else
+						continue; //not supporting this case right now
 
-				if (field.fieldName instanceof SingleNameReference)
-				{
-					SingleNameReference singleNameReference=(SingleNameReference)field.fieldName;
-					name=singleNameReference.token;
-					nameStart=singleNameReference.sourceStart;
-				}
-				else
-					continue; //not supporting this case right now
+					//need to build the members of the annonymous inferred type
+					if (field.initializer instanceof FunctionExpression) {
+						FunctionExpression functionExpression = (FunctionExpression) field.initializer;
+						InferredMember method = type.addMethod(name,
+								functionExpression.methodDeclaration, false);
+						method.nameStart = nameStart;
 
-				//need to build the members of the annonymous inferred type
-				if (field.initializer instanceof FunctionExpression) {
-					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
-				    InferredMember method = type.addMethod(name, functionExpression.methodDeclaration,false);
-				    method.nameStart = nameStart;
+					} else //attribute
+					{
+						InferredAttribute attribute = type.addAttribute(name,
+								field.fieldName);
+						attribute.nameStart = nameStart;
 
-				}
-				else	//attribute
-				{
-					InferredAttribute attribute = type.addAttribute(name, field.fieldName);
-					attribute.nameStart = nameStart;
-
-					//@GINO: recursion might not be the best idea
-					attribute.type = getTypeOf( field.initializer );
+						//@GINO: recursion might not be the best idea
+						attribute.type = getTypeOf(field.initializer);
+					}
 				}
 			}
-		}
+		}		
 	}
 
 	public void endVisit(Assignment assignment, BlockScope scope) {
@@ -1000,7 +1003,7 @@ public class InferEngine extends ASTVisitor {
 		if (field.javaDoc!=null)
 		{
 			Javadoc javaDoc = field.javaDoc;
-			InferredType inClass=null;
+			InferredType inClass=this.currentContext.currentType;
 			char [] name=null;
 			int nameStart=-1;
 			InferredType returnType=null;
@@ -1013,7 +1016,8 @@ public class InferEngine extends ASTVisitor {
  			}
 			if (javaDoc.memberOf!=null)
 			{
-				inClass= this.addType(javaDoc.memberOf.getSimpleTypeName());
+				char[] typeName = javaDoc.memberOf.getSimpleTypeName();
+				convertAnonymousTypeToNamed(inClass,typeName);
 				inClass.isDefinition=true;
 			}
 			if (javaDoc.returnType!=null)
@@ -1054,6 +1058,18 @@ public class InferEngine extends ASTVisitor {
 
 
 		}
+	}
+
+	private void convertAnonymousTypeToNamed(InferredType inClass, char[] typeName) {
+		if (inClass.isAnonymous)
+		{
+			inClass.isAnonymous=false;
+			compUnit.inferredTypesHash.removeKey(inClass.name);
+			inClass.name=typeName;
+			compUnit.inferredTypesHash.put(typeName,inClass);
+
+		}
+	
 	}
 
 	protected boolean isMatch(Expression expr,String [] names, int index)
@@ -1296,4 +1312,17 @@ public class InferEngine extends ASTVisitor {
 		return Util.getTypeName( expression );
 	}
 
+	public boolean visit(ObjectLiteral literal, BlockScope scope) {
+		if (this.passNumber==1 && literal.inferredType==null)
+			createAnonymousType(literal);
+		pushContext();
+		this.currentContext.currentType=literal.inferredType;
+		return true;
+	}
+
+	public void endVisit(ObjectLiteral literal, BlockScope scope) {
+		popContext();
+	}
+	
+	
 }

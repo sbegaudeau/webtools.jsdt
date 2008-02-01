@@ -647,6 +647,8 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			if (scope instanceof MethodScope) {
 				MethodScope methodScope = (MethodScope) scope;
 				inMethod = methodScope.referenceMethod();
+				if (inMethod.inferredMethod!=null && inMethod.inferredMethod.inType!=null && inMethod.inferredMethod.inType.binding!=null)
+					return inMethod.inferredMethod.inType.binding;
 			}
 			else if (scope instanceof CompilationUnitScope) {
 				CompilationUnitScope compilationUnitScope = (CompilationUnitScope) scope;
