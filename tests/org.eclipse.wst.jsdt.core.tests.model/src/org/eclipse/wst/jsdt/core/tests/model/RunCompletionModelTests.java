@@ -26,11 +26,13 @@ public class RunCompletionModelTests extends junit.framework.TestCase {
 	public final static List COMPLETION_SUITES = new ArrayList();
 	static {
 		if (!ONLY_JAVADOC) {
-			if(false) COMPLETION_SUITES.add(CompletionTests.class);
+			COMPLETION_SUITES.add(CompletionTests.class);
+			COMPLETION_SUITES.add(CompletionTests2.class);
 			//COMPLETION_SUITES.add(CompletionTests_1_5.class);
 			if(false) COMPLETION_SUITES.add(CompletionContextTests.class);
 			//COMPLETION_SUITES.add(CompletionContextTests_1_5.class);
 			if(false) COMPLETION_SUITES.add(CompletionWithMissingTypesTests.class);
+			if(false) COMPLETION_SUITES.add(CompletionWithMissingTypesTests2.class);
 			//COMPLETION_SUITES.add(CompletionWithMissingTypesTests_1_5.class);
 			if(false) COMPLETION_SUITES.add(SnippetCompletionContextTests.class);
 		}
@@ -45,19 +47,19 @@ public class RunCompletionModelTests extends junit.framework.TestCase {
 	}
 
 	public static Class[] getTestClasses() {
-		int size = COMPLETION_SUITES.size();
-		if (!ONLY_JAVADOC) {
-			Class[] testClasses = new Class[size+1];
-			COMPLETION_SUITES.toArray(testClasses);
-			testClasses[size] = CompletionTests2.class;
-			if(false) testClasses[size+1] = CompletionWithMissingTypesTests2.class;
-			if(false) testClasses[size+2] = SnippetCompletionTests.class;
-			if(false) testClasses[size+3] = SnippetCompletionTests_1_5.class;
-			return testClasses;
-		}
-		Class[] testClasses = new Class[size];
-		COMPLETION_SUITES.toArray(testClasses);
-		return testClasses;
+//		int size = COMPLETION_SUITES.size();
+//		if (!ONLY_JAVADOC) {
+//			Class[] testClasses = new Class[size+1];
+//			COMPLETION_SUITES.toArray(testClasses);
+//			testClasses[size] = CompletionTests2.class;
+//			testClasses[size+1] = CompletionWithMissingTypesTests2.class;
+//			if(false) testClasses[size+2] = SnippetCompletionTests.class;
+//			if(false) testClasses[size+3] = SnippetCompletionTests_1_5.class;
+//			return testClasses;
+//		}
+//		Class[] testClasses = new Class[size];
+		return  (Class[])COMPLETION_SUITES.toArray(new Class[COMPLETION_SUITES.size()]);
+		//return testClasses;
 	}
 
 	public RunCompletionModelTests(String name) {
