@@ -655,22 +655,22 @@ public class InferTypesTests extends AbstractRegressionTest {
 		}
 		
 
-//		/*
-//		 * Static member on built-in
-//		 */
-//		public void test076() {
-//			CompilationUnitDeclaration declaration = this.runInferTest(
-//				"Object.foo = \"\";" +
-//				"Object.bar = function(){" +
-//				"  return \"\";" +
-//				"}",
-//				"X.js",
-//				"",
-//				getDefaultOptions()
-//				
-//			 );
-//		}
-//		
+		/*
+		 * Static member on built-in
+		 */
+		public void test081() {
+			CompilationUnitDeclaration declaration = this.runInferTest(
+				"String.foo = \"\";" +
+				"String.bar = function(){" +
+				"  return \"\";" +
+				"}",
+				"X.js",
+				"class String extends Object{\n  static String foo;\n  static String bar()\n}\n",
+				getDefaultOptions()
+				
+			 );
+		}
+		
 //		/*
 //		 * Dynamic extend built-in through prototype
 //		 */
