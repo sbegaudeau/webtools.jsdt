@@ -55,6 +55,23 @@ public class InferEngine extends ASTVisitor {
 	public  InferredType ObjectType=new InferredType(InferredType.OBJECT_NAME);
 	public  InferredType GlobalType=new InferredType(InferredType.GLOBAL_NAME);
 
+	
+	public static HashtableOfObject WellKnownTypes=new HashtableOfObject();
+	{
+		WellKnownTypes.put(InferredType.OBJECT_NAME,null);
+		WellKnownTypes.put(InferredType.ARRAY_NAME,null);
+		WellKnownTypes.put(new char[]{'S','t','r','i','n','g'},null);
+		WellKnownTypes.put(new char[]{'N','u','m','b','e','r'},null);
+		WellKnownTypes.put(new char[]{'B','o','o','l','e','a','n'},null);
+		WellKnownTypes.put(new char[]{'F','u','n','c','t','i','o','n'},null);
+		WellKnownTypes.put(new char[]{'D','a','t','e'},null);
+		WellKnownTypes.put(new char[]{'M','a','t','h'},null);
+		WellKnownTypes.put(new char[]{'R','e','g','E','x','p'},null);
+		WellKnownTypes.put(new char[]{'E','r','r','o','r'},null);
+	}
+	
+	
+	
 	protected InferredType inferredGlobal=null;
 
 	static final char[] CONSTRUCTOR_ID={'c','o','n','s','t','r','u','c','t','o','r'};
@@ -1238,6 +1255,17 @@ public class InferEngine extends ASTVisitor {
 				//search the defined types in the context
 				type = compUnit.findInferredType( possibleTypeName );
 
+				if (type==null)
+				{
+					if (WellKnownTypes.containsKey(possibleTypeName))
+					{
+						type = addType(possibleTypeName);
+						type.isDefinition=true;
+					}
+					 
+				}
+				
+				
 				/*
 				 * There is no match for a type with the name, check if the name refers to
 				 * var decl and return its type
