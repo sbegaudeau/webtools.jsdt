@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -76,7 +76,7 @@ public class CompletionTests2 extends ModifyingResourceTests implements Relevanc
 		
 	public static class CompletionContainerInitializer implements ContainerInitializer.ITestInitializer {
 		
-		public static class DefaultContainer implements IClasspathContainer {
+		public static class DefaultContainer implements IJsGlobalScopeContainer {
 			char[][] libPaths;
 			boolean[] areExported;
 			String[] forbiddenReferences;
@@ -117,13 +117,13 @@ public class CompletionTests2 extends ModifyingResourceTests implements Relevanc
 				return "Test container";
 			}
 			public int getKind() {
-				return IClasspathContainer.K_APPLICATION;
+				return IJsGlobalScopeContainer.K_APPLICATION;
 			}
 			public IPath getPath() {
 				return new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER");
 			}
 			/* (non-Javadoc)
-			 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+			 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 			 */
 			public String[] resolvedLibraryImport(String a) {
 				return new String[] {a};
@@ -158,10 +158,10 @@ public class CompletionTests2 extends ModifyingResourceTests implements Relevanc
 		public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 			if (containerValues == null) return;
 			try {
-				JavaCore.setClasspathContainer(
+				JavaCore.setJsGlobalScopeContainer(
 					containerPath, 
 					new IJavaProject[] {project},
-					new IClasspathContainer[] {(IClasspathContainer)containerValues.get(project.getElementName())}, 
+					new IJsGlobalScopeContainer[] {(IJsGlobalScopeContainer)containerValues.get(project.getElementName())}, 
 					null);
 			} catch (CoreException e) {
 				this.exception = e;

@@ -127,7 +127,7 @@ public void testApplicationLibrairiesClasspathVariable() throws CoreException {
  * Ensures that a Java search scope with APPLICATION_LIBRARIES only is correct
  * (classpath container case)
  */
-public void testApplicationLibrairiesClasspathContainer() throws CoreException {
+public void testApplicationLibrairiesJsGlobalScopeContainer() throws CoreException {
 	try {
 		ContainerInitializer.setInitializer(new ClasspathInitializerTests.DefaultContainerInitializer(new String[] {"P", "/P/lib.jar"}));
 		IJavaProject project = createJavaProject("P", new String[] {}, new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, "");
@@ -151,7 +151,7 @@ public void testSystemLibraries() throws CoreException {
 			protected DefaultContainer newContainer(char[][] libPaths) {
 				return new DefaultContainer(libPaths) {
 					public int getKind() {
-						return IClasspathContainer.K_SYSTEM;
+						return IJsGlobalScopeContainer.K_SYSTEM;
 					}
 				};
 			}

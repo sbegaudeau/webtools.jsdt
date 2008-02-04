@@ -31,8 +31,8 @@
 	</extension>		
 
 	<!-- Classpath container initializer -->
-	<extension point = "org.eclipse.wst.jsdt.core.classpathContainerInitializer">
-		<classpathContainerInitializer
+	<extension point = "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+		<JsGlobalScopeContainerInitializer
 			id="org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"
 			class="org.eclipse.wst.jsdt.core.tests.model.ContainerInitializer"/>
 	</extension>

@@ -9,7 +9,7 @@ public class X {
 				+ "} with values: " //$NON-NLS-1$
 				+ (org.eclipse.wst.jsdt.internal.compiler.util.Util.toString(respectiveContainers, 
 						new org.eclipse.wst.jsdt.internal.compiler.util.Util.Displayable(){ 
-							public String displayString(Object o) { return ((IClasspathContainer) o).getDescription(); }
+							public String displayString(Object o) { return ((IJsGlobalScopeContainer) o).getDescription(); }
 						}))
 					);
 		}

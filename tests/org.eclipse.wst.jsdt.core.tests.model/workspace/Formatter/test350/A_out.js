@@ -16,7 +16,7 @@ if (JavaModelManager.CP_RESOLVE_VERBOSE) {
 									respectiveContainers,
 									new org.eclipse.wst.jsdt.internal.compiler.util.Util.Displayable() {
 										public String displayString(Object o) {
-											return ((IClasspathContainer) o)
+											return ((IJsGlobalScopeContainer) o)
 													.getDescription();
 										}
 									})));

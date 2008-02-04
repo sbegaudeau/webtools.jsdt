@@ -20,7 +20,7 @@ import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
-import org.eclipse.wst.jsdt.internal.core.UserLibraryClasspathContainer;
+import org.eclipse.wst.jsdt.internal.core.UserLibraryJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.core.UserLibraryManager;
 
 import junit.framework.Test;
@@ -51,7 +51,7 @@ public static class DefaultVariableInitializer implements VariablesInitializer.I
 
 public static class DefaultContainerInitializer implements ContainerInitializer.ITestInitializer {
 	
-	public static class DefaultContainer implements IClasspathContainer {
+	public static class DefaultContainer implements IJsGlobalScopeContainer {
 		char[][] libPaths;
 		public DefaultContainer(char[][] libPaths) {
 			this.libPaths = libPaths;
@@ -73,13 +73,13 @@ public static class DefaultContainerInitializer implements ContainerInitializer.
 			return "Test container";
 		}
 		public int getKind() {
-			return IClasspathContainer.K_APPLICATION;
+			return IJsGlobalScopeContainer.K_APPLICATION;
 		}
 		public IPath getPath() {
 			return new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER");
 		}
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 		 */
 		public String[] resolvedLibraryImport(String a) {
 			return new String[] {a};
@@ -112,10 +112,10 @@ public static class DefaultContainerInitializer implements ContainerInitializer.
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		if (containerValues == null) return;
 		try {
-			JavaCore.setClasspathContainer(
+			JavaCore.setJsGlobalScopeContainer(
 				containerPath, 
 				new IJavaProject[] {project},
-				new IClasspathContainer[] {(IClasspathContainer)containerValues.get(project.getElementName())}, 
+				new IJsGlobalScopeContainer[] {(IJsGlobalScopeContainer)containerValues.get(project.getElementName())}, 
 				null);
 		} catch (CoreException e) {
 			this.exception = e;
@@ -132,10 +132,10 @@ public class NullContainerInitializer implements ContainerInitializer.ITestIniti
 	}
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		hasRun = true;
-		JavaCore.setClasspathContainer(
+		JavaCore.setJsGlobalScopeContainer(
 			containerPath, 
 			new IJavaProject[] {project}, 
-			new IClasspathContainer[] { null }, 
+			new IJsGlobalScopeContainer[] { null }, 
 			null);
 	}
 }
@@ -785,8 +785,8 @@ public void testContainerInitializer15() throws CoreException {
 				new String[] {}, 
 				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
 				"");
-		IClasspathContainer classpathContainer = JavaCore.getClasspathContainer(new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"), p1);
-		assertClasspathEquals(classpathContainer.getClasspathEntries(), "");
+		IJsGlobalScopeContainer JsGlobalScopeContainer = JavaCore.getJsGlobalScopeContainer(new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"), p1);
+		assertClasspathEquals(JsGlobalScopeContainer.getClasspathEntries(), "");
 	} finally {
 		stopDeltas();
 		deleteProject("P1");
@@ -1249,11 +1249,11 @@ public void testVariableInitializerBug172207() throws CoreException {
 public void testUserLibraryInitializer1() throws CoreException {
 	try {
 		// Create new user library "SWT"
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(JavaCore.USER_LIBRARY_CONTAINER_ID);
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(JavaCore.USER_LIBRARY_CONTAINER_ID);
 		String libraryName = "SWT";
 		IPath containerPath = new Path(JavaCore.USER_LIBRARY_CONTAINER_ID);
-		UserLibraryClasspathContainer containerSuggestion = new UserLibraryClasspathContainer(libraryName);
-		initializer.requestClasspathContainerUpdate(containerPath.append(libraryName), null, containerSuggestion);
+		UserLibraryJsGlobalScopeContainer containerSuggestion = new UserLibraryJsGlobalScopeContainer(libraryName);
+		initializer.requestJsGlobalScopeContainerUpdate(containerPath.append(libraryName), null, containerSuggestion);
 
 		// Create java project
 		createJavaProject("p61872");

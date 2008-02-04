@@ -22,7 +22,7 @@ public class X {
 													new org.eclipse.wst.jsdt.internal.compiler.util.Util.Displayable() {
 														public String displayString(
 																Object o) {
-															return ((IClasspathContainer) o)
+															return ((IJsGlobalScopeContainer) o)
 																	.getDescription();
 														}
 													})));

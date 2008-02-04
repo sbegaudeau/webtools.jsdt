@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElementDelta;
@@ -57,7 +57,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaProject;
 
 public class ClasspathTests extends ModifyingResourceTests {
 
-	public class TestContainer implements IClasspathContainer {
+	public class TestContainer implements IJsGlobalScopeContainer {
 		IPath path;
 		IClasspathEntry[] entries;
 		TestContainer(IPath path, IClasspathEntry[] entries){
@@ -69,7 +69,7 @@ public class ClasspathTests extends ModifyingResourceTests {
 		public String getDescription() { return this.path.toString(); 	}
 		public int getKind() { return 0; }
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 		 */
 		public String[] resolvedLibraryImport(String a) {
 			return new String[] {a};
@@ -780,10 +780,10 @@ public void testClasspathValidation05() throws CoreException {
 			this.createJavaProject("P1", new String[] {"src1"}, "bin1"),
 		};
 
-		JavaCore.setClasspathContainer(
+		JavaCore.setJsGlobalScopeContainer(
 		new Path("container/default"), 
 			new IJavaProject[]{ p[0] },
-			new IClasspathContainer[] {
+			new IJsGlobalScopeContainer[] {
 				new TestContainer(new Path("container/default"),
 					new IClasspathEntry[]{
 						JavaCore.newSourceEntry(new Path("/P0/src0")),
@@ -2095,10 +2095,10 @@ public void testEmptyContainer() throws CoreException {
 		startDeltas();
 
 		// create container
-		JavaCore.setClasspathContainer(
+		JavaCore.setJsGlobalScopeContainer(
 			new Path("container/default"), 
 			new IJavaProject[]{ proj },
-			new IClasspathContainer[] {
+			new IJsGlobalScopeContainer[] {
 				new TestContainer(
 					new Path("container/default"),
 					new IClasspathEntry[] {}) 
@@ -2156,10 +2156,10 @@ public void testExportContainer() throws CoreException {
 		IJavaProject p1 = this.createJavaProject("P1", new String[] {""}, "");
 
 		// create container
-		JavaCore.setClasspathContainer(
+		JavaCore.setJsGlobalScopeContainer(
 			new Path("container/default"), 
 			new IJavaProject[]{ p1 },
-			new IClasspathContainer[] {
+			new IJsGlobalScopeContainer[] {
 				new TestContainer(
 					new Path("container/default"),
 					new IClasspathEntry[] {
@@ -2886,7 +2886,7 @@ public void testCycleDetectionThroughContainers() throws CoreException {
 			p[i] = this.createJavaProject(projectNames[i], new String[] {""}, "");
 		}
 
-		IClasspathContainer[] containers = new IClasspathContainer[]{ 
+		IJsGlobalScopeContainer[] containers = new IJsGlobalScopeContainer[]{ 
 			new TestContainer(
 				new Path("container0/default"), 
 				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[3].getPath()) }),
@@ -2928,22 +2928,22 @@ public void testCycleDetectionThroughContainers() throws CoreException {
 
 			// update container paths
 			if (i == p.length - 1){
-				JavaCore.setClasspathContainer(
+				JavaCore.setJsGlobalScopeContainer(
 					containers[0].getPath(),
 					new IJavaProject[]{ p[0] },
-					new IClasspathContainer[] { containers[0] },
+					new IJsGlobalScopeContainer[] { containers[0] },
 					null);
 
-				JavaCore.setClasspathContainer(
+				JavaCore.setJsGlobalScopeContainer(
 					containers[1].getPath(),
 					new IJavaProject[]{ p[2] },
-					new IClasspathContainer[] { containers[1] },
+					new IJsGlobalScopeContainer[] { containers[1] },
 					null);
 
-				JavaCore.setClasspathContainer(
+				JavaCore.setJsGlobalScopeContainer(
 					containers[2].getPath(),
 					new IJavaProject[]{ p[3] },
-					new IClasspathContainer[] { containers[2] },
+					new IJsGlobalScopeContainer[] { containers[2] },
 					null);
 			}
 			
@@ -2968,7 +2968,7 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 			p[i] = this.createJavaProject(projectNames[i], new String[] {""}, "");
 		}
 
-		class LocalTestContainer implements IClasspathContainer {
+		class LocalTestContainer implements IJsGlobalScopeContainer {
 			IPath path;
 			IClasspathEntry[] entries;
 			LocalTestContainer(IPath path, IClasspathEntry[] entries){
@@ -2980,14 +2980,14 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 			public String getDescription() { return null; 	}
 			public int getKind() { return 0; }
 			/* (non-Javadoc)
-			 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+			 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 			 */
 			public String[] resolvedLibraryImport(String a) {
 				return new String[] {a};
 			}
 		}
 
-		IClasspathContainer[] containers = new IClasspathContainer[]{ 
+		IJsGlobalScopeContainer[] containers = new IJsGlobalScopeContainer[]{ 
 			new LocalTestContainer(
 				new Path("container0/default"), 
 				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[3].getPath()) }),
@@ -3029,10 +3029,10 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 
 			// update same container path for multiple projects
 			if (i == p.length - 1){
-				JavaCore.setClasspathContainer(
+				JavaCore.setJsGlobalScopeContainer(
 					containers[0].getPath(),
 					new IJavaProject[]{ p[0], p[2], p[3] },
-					new IClasspathContainer[] { containers[0], containers[1], containers[2] },
+					new IJsGlobalScopeContainer[] { containers[0], containers[1], containers[2] },
 					null);
 			}
 			
@@ -3160,7 +3160,7 @@ public void testCycleDetection4() throws CoreException {
 					new Path("org.eclipse.wst.jsdt.core.tests.model.container/default"), 
 					new IClasspathEntry[] { JavaCore.newProjectEntry(new Path("/P1")) });
 				try {
-					JavaCore.setClasspathContainer(container.getPath(), new IJavaProject[] {getJavaProject("P2")}, new IClasspathContainer[] {container}, null);
+					JavaCore.setJsGlobalScopeContainer(container.getPath(), new IJavaProject[] {getJavaProject("P2")}, new IJsGlobalScopeContainer[] {container}, null);
 				} catch (JavaModelException e) {
 					e.printStackTrace();
 				}
@@ -3174,7 +3174,7 @@ public void testCycleDetection4() throws CoreException {
 			new Path("org.eclipse.wst.jsdt.core.tests.model.container/default"), 
 			new IClasspathEntry[] {});
 		IJavaProject p2 = createJavaProject("P2", new String[] {}, new String[] {container.getPath().toString()}, "");
-		JavaCore.setClasspathContainer(container.getPath(), new IJavaProject[] {p2}, new IClasspathContainer[] {container}, null);
+		JavaCore.setJsGlobalScopeContainer(container.getPath(), new IJavaProject[] {p2}, new IJsGlobalScopeContainer[] {container}, null);
 		waitForAutoBuild();
 		getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 		createFile("/P1/test.txt", "");

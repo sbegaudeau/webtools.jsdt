@@ -12,12 +12,12 @@ package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 
-public class ContainerInitializer extends ClasspathContainerInitializer {
+public class ContainerInitializer extends JsGlobalScopeContainerInitializer {
 	public static ITestInitializer initializer;
 	
 	public static interface ITestInitializer {
@@ -29,7 +29,7 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 		ContainerInitializer.initializer = initializer;
 	}
 	
-	public IClasspathContainer getFailureContainer(IPath containerPath, IJavaProject project) {
+	public IJsGlobalScopeContainer getFailureContainer(IPath containerPath, IJavaProject project) {
 		if (initializer == null || !initializer.allowFailureContainer()) return null;
 		return super.getFailureContainer(containerPath, project);
 	}
@@ -40,7 +40,7 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getLibraryLocation()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#getLibraryLocation()
 	 */
 	public LibraryLocation getLibraryLocation() {
 		return null;
