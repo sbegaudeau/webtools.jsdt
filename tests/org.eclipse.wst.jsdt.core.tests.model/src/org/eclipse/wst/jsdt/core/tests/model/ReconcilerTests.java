@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
-import org.eclipse.wst.jsdt.core.compiler.CompilationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.ReconcileContext;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -66,11 +66,11 @@ public class ReconcilerTests extends ModifyingResourceTests {
 		}		
 	}
 	
-	class ReconcileParticipant extends CompilationParticipant {
+	class ReconcileParticipant extends validationParticipant {
 		IJavaElementDelta delta;
 		org.eclipse.wst.jsdt.core.dom.CompilationUnit ast;
 		ReconcileParticipant() {
-			TestCompilationParticipant.PARTICIPANT = this;
+			TestvalidationParticipant.PARTICIPANT = this;
 		}
 		public boolean isActive(IJavaProject project) {
 			return true;
@@ -237,7 +237,7 @@ void setWorkingCopyContents(String contents) throws JavaModelException {
  * Cleanup after the previous test.
  */
 public void tearDown() throws Exception {
-	TestCompilationParticipant.PARTICIPANT = null;
+	TestvalidationParticipant.PARTICIPANT = null;
 	if (this.workingCopy != null) {
 		this.workingCopy.discardWorkingCopy();
 	}

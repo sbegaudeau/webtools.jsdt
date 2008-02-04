@@ -11,11 +11,11 @@
 package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.ClasspathVariableInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 
-public class VariablesInitializer extends ClasspathVariableInitializer {
+public class VariablesInitializer extends JsGlobalScopeVariableInitializer {
 
 	public static ITestInitializer initializer;
 	

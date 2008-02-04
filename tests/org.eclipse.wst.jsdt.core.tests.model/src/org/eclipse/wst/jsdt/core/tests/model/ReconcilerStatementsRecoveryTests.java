@@ -201,7 +201,7 @@ void setWorkingCopyContents(String contents) throws JavaModelException {
  * Cleanup after the previous test.
  */
 public void tearDown() throws Exception {
-	TestCompilationParticipant.PARTICIPANT = null;
+	TestvalidationParticipant.PARTICIPANT = null;
 	if (this.workingCopy != null) {
 		this.workingCopy.discardWorkingCopy();
 	}

@@ -2,32 +2,32 @@
 <?eclipse version="3.0"?>
 <plugin>
    	<!-- Classpath variable initializer -->
-	<extension point = "org.eclipse.wst.jsdt.core.classpathVariableInitializer">
-		<classpathVariableInitializer
+	<extension point = "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer">
+		<JsGlobalScopeVariableInitializer
 			variable="TEST_LIB"
 			class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"/>
-		<classpathVariableInitializer
+		<JsGlobalScopeVariableInitializer
 			variable="TEST_SRC"
 			class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"/>
-		<classpathVariableInitializer
+		<JsGlobalScopeVariableInitializer
 			variable="TEST_ROOT"
 			class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"/>
-  <classpathVariableInitializer
+  <JsGlobalScopeVariableInitializer
         class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"
-        deprecated="%classpathVariableInitializer.deprecated.0"
+        deprecated="%JsGlobalScopeVariableInitializer.deprecated.0"
         variable="TEST_DEPRECATED">
-  </classpathVariableInitializer>
-  <classpathVariableInitializer
+  </JsGlobalScopeVariableInitializer>
+  <JsGlobalScopeVariableInitializer
         class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"
         readOnly="true"
         variable="TEST_READ_ONLY">
-  </classpathVariableInitializer>
-  <classpathVariableInitializer
+  </JsGlobalScopeVariableInitializer>
+  <JsGlobalScopeVariableInitializer
         class="org.eclipse.wst.jsdt.core.tests.model.VariablesInitializer"
-        deprecated="%classpathVariableInitializer.deprecated.1"
+        deprecated="%JsGlobalScopeVariableInitializer.deprecated.1"
         readOnly="true"
         variable="TEST_DEPRECATED_READ_ONLY">
-  </classpathVariableInitializer>
+  </JsGlobalScopeVariableInitializer>
 	</extension>		
 
 	<!-- Classpath container initializer -->
@@ -53,15 +53,15 @@
 	</extension>
 	
 	<!-- Compilation participant -->
-	 <extension point="org.eclipse.wst.jsdt.core.compilationParticipant">
-	   <compilationParticipant
-          class="org.eclipse.wst.jsdt.core.tests.model.TestCompilationParticipant"
+	 <extension point="org.eclipse.wst.jsdt.core.validationParticipant">
+	   <validationParticipant
+          class="org.eclipse.wst.jsdt.core.tests.model.TestvalidationParticipant"
           createsProblems="true"
-          id="org.eclipse.wst.jsdt.core.tests.model.compilationparticipant"
+          id="org.eclipse.wst.jsdt.core.tests.model.validationParticipant"
           requiredSourceLevel="1.4"
           modifiesEnvironment="true">
        <requires id="non.existing"/>
-    </compilationParticipant>
+    </validationParticipant>
 	 </extension>
 	
 </plugin>
