@@ -3,13 +3,13 @@ package org.eclipse.wst.jsdt.core.compiler.libraries;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
 
 
-public class InternetExplorerLibInitializer extends ClasspathContainerInitializer implements IClasspathContainerInitialzerExtension {
+public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitialzerExtension {
 	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.InternetExplorer";
 	private static final String ContainerDescription = "Internet Explorer Support Library";
 	//private static final char[][] LIBRARY_FILE_NAMES = { { 'I','n','t','e','r','n','e','t','E','x','p','l','o','r','e','r','.','j','s' } };
@@ -62,7 +62,7 @@ public class InternetExplorerLibInitializer extends ClasspathContainerInitialize
 //		}
 		return ImageDescriptor.createFromFile(this.getClass(),"ie_small.gif");
 		//return ImageDescriptor.createFromFile(this.getClass(),"ie_small.gif");
-	//	System.out.println("Unimplemented method:BasicBrowserLibraryClassPathContainerInitializer.getImage");
+	//	System.out.println("Unimplemented method:BasicBrowserLibraryJsGlobalScopeContainerInitializer.getImage");
 		//return null;
 	}
 	public IPath getPath() {
@@ -71,15 +71,15 @@ public class InternetExplorerLibInitializer extends ClasspathContainerInitialize
 
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getKind()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getKind()
 	 */
 	public int getKind() {
 
 
-		return  IClasspathContainer.K_SYSTEM;	}
+		return  IJsGlobalScopeContainer.K_SYSTEM;	}
 
 
-	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
 		return true;
 
 

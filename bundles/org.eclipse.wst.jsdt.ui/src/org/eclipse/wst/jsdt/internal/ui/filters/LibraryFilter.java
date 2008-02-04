@@ -15,7 +15,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 
 
 /**
@@ -40,7 +40,7 @@ public class LibraryFilter extends ViewerFilter {
 				}
 				return false;
 			}
-		} else if (element instanceof ClassPathContainer.RequiredProjectWrapper) {
+		} else if (element instanceof JsGlobalScopeContainer.RequiredProjectWrapper) {
 			return false;
 		}
 		return true;

@@ -35,30 +35,30 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
 /**
   */
-public class ClasspathContainerSelectionPage extends WizardPage {
+public class JsGlobalScopeContainerSelectionPage extends WizardPage {
 
-	private static final String DIALOGSTORE_SECTION= "ClasspathContainerSelectionPage"; //$NON-NLS-1$
+	private static final String DIALOGSTORE_SECTION= "JsGlobalScopeContainerSelectionPage"; //$NON-NLS-1$
 	private static final String DIALOGSTORE_CONTAINER_IDX= "index"; //$NON-NLS-1$
 
 
-	private static class ClasspathContainerLabelProvider extends LabelProvider {
+	private static class JsGlobalScopeContainerLabelProvider extends LabelProvider {
 		public String getText(Object element) {
-			return ((ClasspathContainerDescriptor) element).getName();
+			return ((JsGlobalScopeContainerDescriptor) element).getName();
 		}
 	}
 
 	private ListViewer fListViewer;
-	private ClasspathContainerDescriptor[] fContainers;
+	private JsGlobalScopeContainerDescriptor[] fContainers;
 	private IDialogSettings fDialogSettings;
 
 	/**
-	 * Constructor for ClasspathContainerWizardPage.
+	 * Constructor for JsGlobalScopeContainerWizardPage.
 	 * @param containerPages
 	 */
-	protected ClasspathContainerSelectionPage(ClasspathContainerDescriptor[] containerPages) {
-		super("ClasspathContainerWizardPage"); //$NON-NLS-1$
-		setTitle(NewWizardMessages.ClasspathContainerSelectionPage_title); 
-		setDescription(NewWizardMessages.ClasspathContainerSelectionPage_description); 
+	protected JsGlobalScopeContainerSelectionPage(JsGlobalScopeContainerDescriptor[] containerPages) {
+		super("JsGlobalScopeContainerWizardPage"); //$NON-NLS-1$
+		setTitle(NewWizardMessages.JsGlobalScopeContainerSelectionPage_title); 
+		setDescription(NewWizardMessages.JsGlobalScopeContainerSelectionPage_description); 
 		setImageDescriptor(JavaPluginImages.DESC_WIZBAN_ADD_LIBRARY);
 
 		fContainers= containerPages;
@@ -77,7 +77,7 @@ public class ClasspathContainerSelectionPage extends WizardPage {
 	 */
 	public void createControl(Composite parent) {
 		fListViewer= new ListViewer(parent, SWT.SINGLE | SWT.BORDER);
-		fListViewer.setLabelProvider(new ClasspathContainerLabelProvider());
+		fListViewer.setLabelProvider(new JsGlobalScopeContainerLabelProvider());
 		fListViewer.setContentProvider(new ArrayContentProvider());
 		fListViewer.setComparator(new ViewerComparator());
 		fListViewer.setInput(Arrays.asList(fContainers));
@@ -112,15 +112,15 @@ public class ClasspathContainerSelectionPage extends WizardPage {
 	}
 
 
-	public ClasspathContainerDescriptor getSelected() {
+	public JsGlobalScopeContainerDescriptor getSelected() {
 		if (fListViewer != null) {
 			ISelection selection= fListViewer.getSelection();
-			return (ClasspathContainerDescriptor) SelectionUtil.getSingleElement(selection);
+			return (JsGlobalScopeContainerDescriptor) SelectionUtil.getSingleElement(selection);
 		}
 		return null;
 	}
 	
-	public ClasspathContainerDescriptor[] getContainers() {
+	public JsGlobalScopeContainerDescriptor[] getContainers() {
 		return fContainers;
 	}
 	

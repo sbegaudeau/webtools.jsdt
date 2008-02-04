@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -696,16 +696,16 @@ public final class JavaRuntime {
 //			IClasspathEntry entry = entries[i];
 //			switch (entry.getEntryKind()) {
 //				case IClasspathEntry.CPE_CONTAINER:
-//					IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+//					IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
 //					if (container != null) {
 //						switch (container.getKind()) {
-//							case IClasspathContainer.K_APPLICATION:
+//							case IJsGlobalScopeContainer.K_APPLICATION:
 //								// don't look at application entries
 //								break;
-//							case IClasspathContainer.K_DEFAULT_SYSTEM:
+//							case IJsGlobalScopeContainer.K_DEFAULT_SYSTEM:
 //								classpathEntries.add(newRuntimeContainerClasspathEntry(container.getPath(), IRuntimeClasspathEntry.STANDARD_CLASSES, project));
 //								break;	
-//							case IClasspathContainer.K_SYSTEM:
+//							case IJsGlobalScopeContainer.K_SYSTEM:
 //								classpathEntries.add(newRuntimeContainerClasspathEntry(container.getPath(), IRuntimeClasspathEntry.BOOTSTRAP_CLASSES, project));
 //								break;
 //						}						
@@ -1062,7 +1062,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 ////			// cannot resolve without entry or project context
 ////			return new IRuntimeClasspathEntry[0];
 ////		} 
-////		IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+////		IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
 ////		if (container == null) {
 ////			abort(MessageFormat.format(LaunchingMessages.JavaRuntime_Could_not_resolve_classpath_container___0__1, new String[]{entry.getPath().toString()}), null); 
 ////			// execution will not reach here - exception will be thrown
@@ -1071,13 +1071,13 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 ////		IClasspathEntry[] cpes = container.getClasspathEntries();
 ////		int property = -1;
 ////		switch (container.getKind()) {
-////			case IClasspathContainer.K_APPLICATION:
+////			case IJsGlobalScopeContainer.K_APPLICATION:
 ////				property = IRuntimeClasspathEntry.USER_CLASSES;
 ////				break;
-////			case IClasspathContainer.K_DEFAULT_SYSTEM:
+////			case IJsGlobalScopeContainer.K_DEFAULT_SYSTEM:
 ////				property = IRuntimeClasspathEntry.STANDARD_CLASSES;
 ////				break;	
-////			case IClasspathContainer.K_SYSTEM:
+////			case IJsGlobalScopeContainer.K_SYSTEM:
 ////				property = IRuntimeClasspathEntry.BOOTSTRAP_CLASSES;
 ////				break;
 ////		}			
@@ -1884,14 +1884,14 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 					resolver = getContainerResolver(entry.getPath().segment(0));
 					if (resolver != null) {
 						if (resolver.isVMInstallReference(entry)) {
-							IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+							IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
 							if (container != null) {
 								switch (container.getKind()) {
-									case IClasspathContainer.K_APPLICATION:
+									case IJsGlobalScopeContainer.K_APPLICATION:
 										break;
-									case IClasspathContainer.K_DEFAULT_SYSTEM:
+									case IJsGlobalScopeContainer.K_DEFAULT_SYSTEM:
 										return newRuntimeContainerClasspathEntry(entry.getPath(), IRuntimeClasspathEntry.STANDARD_CLASSES);
-									case IClasspathContainer.K_SYSTEM:
+									case IJsGlobalScopeContainer.K_SYSTEM:
 										return newRuntimeContainerClasspathEntry(entry.getPath(), IRuntimeClasspathEntry.BOOTSTRAP_CLASSES);
 								}
 							}
@@ -2335,7 +2335,7 @@ throw new org.eclipse.wst.jsdt.core.UnimplementedException();
 //				}
 //			}
 //			if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-//				IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
+//				IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
 //				if (container != null) {
 //					IClasspathEntry[] requiredProjects = processJavaLibraryPathEntries(project, collectRequired, container.getClasspathEntries(), entries);
 //					if (requiredProjects != null) {

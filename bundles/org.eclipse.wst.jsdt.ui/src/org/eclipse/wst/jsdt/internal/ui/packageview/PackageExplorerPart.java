@@ -263,7 +263,7 @@ public class PackageExplorerPart extends ViewPart
 		protected boolean evaluateExpandableWithFilters(Object parent) {
 			if (parent instanceof IJavaProject
 					|| parent instanceof ICompilationUnit || parent instanceof IClassFile
-					|| parent instanceof ClassPathContainer) {
+					|| parent instanceof JsGlobalScopeContainer) {
 				return false;
 			}
 			if (parent instanceof IPackageFragmentRoot && ((IPackageFragmentRoot) parent).isArchive()) {

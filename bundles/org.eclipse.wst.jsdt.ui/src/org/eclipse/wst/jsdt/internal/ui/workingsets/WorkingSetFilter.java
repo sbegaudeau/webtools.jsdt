@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer.RequiredProjectWrapper;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer.RequiredProjectWrapper;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaViewerFilter;
 
 /**
@@ -40,7 +40,7 @@ public class WorkingSetFilter extends JavaViewerFilter {
 				init((IResource) a);
 			} else if (a instanceof RequiredProjectWrapper) {
 				RequiredProjectWrapper wrapper= (RequiredProjectWrapper) a;
-				IJavaProject proj= wrapper.getParentClassPathContainer().getJavaProject();
+				IJavaProject proj= wrapper.getParentJsGlobalScopeContainer().getJavaProject();
 				// the project reference is treated like an internal JAR.
 				// that means it will only appear if the parent container project is in the working set
 				IResource fakeInternal= proj.getProject().getFile(wrapper.getProject().getElementName() + "-fake-jar.jar"); //$NON-NLS-1$

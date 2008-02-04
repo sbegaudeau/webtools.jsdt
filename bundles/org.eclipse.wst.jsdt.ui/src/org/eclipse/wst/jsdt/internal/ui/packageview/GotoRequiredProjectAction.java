@@ -30,8 +30,8 @@ class GotoRequiredProjectAction extends Action {
 	public void run() { 
 		IStructuredSelection selection= (IStructuredSelection)fPackageExplorer.getSite().getSelectionProvider().getSelection();
 		Object element= selection.getFirstElement();
-		if (element instanceof ClassPathContainer.RequiredProjectWrapper) {
-			ClassPathContainer.RequiredProjectWrapper wrapper= (ClassPathContainer.RequiredProjectWrapper) element;
+		if (element instanceof JsGlobalScopeContainer.RequiredProjectWrapper) {
+			JsGlobalScopeContainer.RequiredProjectWrapper wrapper= (JsGlobalScopeContainer.RequiredProjectWrapper) element;
 			fPackageExplorer.tryToReveal(wrapper.getProject());
 		}
 	}

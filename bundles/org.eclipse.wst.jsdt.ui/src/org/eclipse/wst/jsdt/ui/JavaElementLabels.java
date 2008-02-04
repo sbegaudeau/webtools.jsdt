@@ -18,10 +18,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -1276,11 +1276,11 @@ public class JavaElementLabels {
 	 * @throws JavaModelException Thrown when the resolving of the container failed.
 	 */
 	public static String getContainerEntryLabel(IPath containerPath, IJavaProject project) throws JavaModelException {
-		IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, project);
+		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, project);
 		if (container != null) {
 			return container.getDescription();
 		}
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
 		if (initializer != null) {
 			return initializer.getDescription(containerPath, project);
 		}

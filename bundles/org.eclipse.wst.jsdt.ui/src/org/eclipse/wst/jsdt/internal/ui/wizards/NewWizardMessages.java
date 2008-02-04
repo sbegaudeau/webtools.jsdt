@@ -492,19 +492,19 @@ public final class NewWizardMessages extends NLS {
 	public static String TypeRestrictionEntryDialog_kind_discourraged;
 	public static String TypeRestrictionEntryDialog_kind_non_accessible;
 	
-	public static String ClasspathContainerDefaultPage_title;
-	public static String ClasspathContainerDefaultPage_description;
-	public static String ClasspathContainerDefaultPage_path_label;
-	public static String ClasspathContainerDefaultPage_path_error_enterpath;
-	public static String ClasspathContainerDefaultPage_path_error_invalidpath;
-	public static String ClasspathContainerDefaultPage_path_error_needssegment;
-	public static String ClasspathContainerDefaultPage_path_error_alreadyexists;
-	public static String ClasspathContainerSelectionPage_title;
-	public static String ClasspathContainerSelectionPage_description;
-	public static String ClasspathContainerWizard_pagecreationerror_title;
-	public static String ClasspathContainerWizard_pagecreationerror_message;
-	public static String ClasspathContainerWizard_new_title;
-	public static String ClasspathContainerWizard_edit_title;
+	public static String JsGlobalScopeContainerDefaultPage_title;
+	public static String JsGlobalScopeContainerDefaultPage_description;
+	public static String JsGlobalScopeContainerDefaultPage_path_label;
+	public static String JsGlobalScopeContainerDefaultPage_path_error_enterpath;
+	public static String JsGlobalScopeContainerDefaultPage_path_error_invalidpath;
+	public static String JsGlobalScopeContainerDefaultPage_path_error_needssegment;
+	public static String JsGlobalScopeContainerDefaultPage_path_error_alreadyexists;
+	public static String JsGlobalScopeContainerSelectionPage_title;
+	public static String JsGlobalScopeContainerSelectionPage_description;
+	public static String JsGlobalScopeContainerWizard_pagecreationerror_title;
+	public static String JsGlobalScopeContainerWizard_pagecreationerror_message;
+	public static String JsGlobalScopeContainerWizard_new_title;
+	public static String JsGlobalScopeContainerWizard_edit_title;
 	
 	public static String FolderSelectionDialog_button;
 	public static String MultipleFolderSelectionDialog_button;

@@ -11,7 +11,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
@@ -21,6 +21,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -268,7 +269,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		//	ex.printStackTrace();
 		}
 		for(int i = 0;i<current.length;i++) {
-			ClasspathContainerInitializer init = JSDScopeUtil.getContainerInitializer(current[i].getPath());
+			JsGlobalScopeContainerInitializer init = JSDScopeUtil.getContainerInitializer(current[i].getPath());
 			for(int k=0;k<fileNames.length;k++) {
 				String[] newEntries = init.resolvedLibraryImport(fileNames[k]);
 				if(newEntries!=null && newEntries.length>0        ) {

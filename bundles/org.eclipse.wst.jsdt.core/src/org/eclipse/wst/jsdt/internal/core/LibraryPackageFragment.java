@@ -17,7 +17,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -155,14 +155,14 @@ public IClassFile getClassFile(String classFileName) {
 }
 public String getDisplayName() {
 	if(parent instanceof LibraryFragmentRoot) {
-		ClasspathContainerInitializer initializer = ((LibraryFragmentRoot)parent).getContainerInitializer();
+		JsGlobalScopeContainerInitializer initializer = ((LibraryFragmentRoot)parent).getContainerInitializer();
 		if(initializer==null) return getPath().removeLastSegments(1).toString();
 		String name = initializer.getDescription(getPath(), getJavaProject());
 		if(name!=null) return name;
 	}
 	return  parent.getPath().lastSegment();
 }
-public ClasspathContainerInitializer getContainerInitializer() {
+public JsGlobalScopeContainerInitializer getContainerInitializer() {
 	if(parent instanceof LibraryFragmentRoot) {
 		return ((LibraryFragmentRoot)parent).getContainerInitializer();
 	}

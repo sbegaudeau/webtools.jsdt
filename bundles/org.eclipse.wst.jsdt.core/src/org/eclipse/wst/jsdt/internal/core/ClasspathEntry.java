@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
@@ -110,9 +110,9 @@ public class ClasspathEntry implements IClasspathEntry {
 	 *		is computed by appending to <it>P</it> the segments of the returned
 	 *		path without the variable.</li>
 	 *  <li> A container entry (<code>CPE_CONTAINER</code>) - the first segment of the path is denoting
-	 *     the unique container identifier (for which a <code>ClasspathContainerInitializer</code> could be
+	 *     the unique container identifier (for which a <code>JsGlobalScopeContainerInitializer</code> could be
 	 * 	registered), and the remaining segments are used as additional hints for resolving the container entry to
-	 * 	an actual <code>IClasspathContainer</code>.</li>
+	 * 	an actual <code>IJsGlobalScopeContainer</code>.</li>
 	 */
 	public IPath path;
 
@@ -1567,7 +1567,7 @@ public class ClasspathEntry implements IClasspathEntry {
 			case IClasspathEntry.CPE_CONTAINER :
 				if (path != null && path.segmentCount() >= 1){
 					try {
-						IClasspathContainer container = JavaModelManager.getJavaModelManager().getClasspathContainer(path, project);
+						IJsGlobalScopeContainer container = JavaModelManager.getJavaModelManager().getJsGlobalScopeContainer(path, project);
 						// container retrieval is performing validation check on container entry kinds.
 						if (container == null){
 							return new JavaModelStatus(IJavaModelStatusConstants.CP_CONTAINER_PATH_UNBOUND, project, path);

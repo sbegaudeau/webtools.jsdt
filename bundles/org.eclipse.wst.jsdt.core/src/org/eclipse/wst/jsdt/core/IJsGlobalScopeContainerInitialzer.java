@@ -13,9 +13,9 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
  * @author childsb
  *
  */
-public interface IClasspathContainerInitialzer {
+public interface IJsGlobalScopeContainerInitialzer {
 	/**
-	 * Binds a classpath container to a <code>IClasspathContainer</code> for a given project,
+	 * Binds a classpath container to a <code>IJsGlobalScopeContainer</code> for a given project,
 	 * or silently fails if unable to do so.
 	 * <p>
 	 * A container is identified by a container path, which must be formed of two segments.
@@ -24,11 +24,11 @@ public interface IClasspathContainerInitialzer {
 	 * <p>
 	 * The initializer is invoked if a container path needs to be resolved for a given project, and no
 	 * value for it was recorded so far. The implementation of the initializer would typically set the
-	 * corresponding container using <code>JavaCore#setClasspathContainer</code>.
+	 * corresponding container using <code>JavaCore#setJsGlobalScopeContainer</code>.
 	 * <p>
 	 * A container initialization can be indirectly performed while attempting to resolve a project
 	 * classpath using <code>IJavaProject#getResolvedClasspath(</code>; or directly when using
-	 * <code>JavaCore#getClasspathContainer</code>. During the initialization process, any attempt
+	 * <code>JavaCore#getJsGlobalScopeContainer</code>. During the initialization process, any attempt
 	 * to further obtain the same container will simply return <code>null</code> so as to avoid an
 	 * infinite regression of initializations.
 	 * <p>
@@ -51,8 +51,8 @@ public interface IClasspathContainerInitialzer {
 	 * correct functioning of the Java model, the implementation should use
 	 * only the following Java model APIs:
 	 * <ul>
-	 * <li>{@link JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], org.eclipse.core.runtime.IProgressMonitor)}</li>
-	 * <li>{@link JavaCore#getClasspathContainer(IPath, IJavaProject)}</li>
+	 * <li>{@link JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)}</li>
+	 * <li>{@link JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)}</li>
 	 * <li>{@link JavaCore#create(org.eclipse.core.resources.IWorkspaceRoot)}</li>
 	 * <li>{@link JavaCore#create(org.eclipse.core.resources.IProject)}</li>
 	 * <li>{@link IJavaModel#getJavaProjects()}</li>
@@ -67,23 +67,23 @@ public interface IClasspathContainerInitialzer {
 	 *    This allows generic containers to be bound with project specific values.
 	 * @throws CoreException if an exception occurs during the initialization
 	 *
-	 * @see JavaCore#getClasspathContainer(IPath, IJavaProject)
-	 * @see JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], org.eclipse.core.runtime.IProgressMonitor)
-	 * @see IClasspathContainer
+	 * @see JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)
+	 * @see JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)
+	 * @see IJsGlobalScopeContainer
 	 */
 	public abstract void initialize(IPath containerPath, IJavaProject project) throws CoreException;
 
 	/**
 	 * Returns <code>true</code> if this container initializer can be requested to perform updates
 	 * on its own container values. If so, then an update request will be performed using
-	 * <code>ClasspathContainerInitializer#requestClasspathContainerUpdate</code>/
+	 * <code>JsGlobalScopeContainerInitializer#requestJsGlobalScopeContainerUpdate</code>/
 	 * <p>
 	 * @param containerPath the path of the container which requires to be updated
 	 * @param project the project for which the container is to be updated
 	 * @return returns <code>true</code> if the container can be updated
 	 * @since 2.1
 	 */
-	public abstract boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project);
+	public abstract boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project);
 
 	/**
 	 * Request a registered container definition to be updated according to a container suggestion. The container suggestion
@@ -93,28 +93,28 @@ public interface IClasspathContainerInitialzer {
 	 * <p>
 	 * IMPORTANT: In reaction to receiving an update request, a container initializer will update the corresponding
 	 * container definition (after reconciling changes) at its earliest convenience, using
-	 * <code>JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)</code>.
+	 * <code>JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], IProgressMonitor)</code>.
 	 * Until it does so, the update will not be reflected in the Java Model.
 	 * <p>
 	 * In order to anticipate whether the container initializer allows to update its containers, the predicate
-	 * <code>JavaCore#canUpdateClasspathContainer</code> should be used.
+	 * <code>JavaCore#canUpdateJsGlobalScopeContainer</code> should be used.
 	 * <p>
 	 * @param containerPath the path of the container which requires to be updated
 	 * @param project the project for which the container is to be updated
 	 * @param containerSuggestion a suggestion to update the corresponding container definition
-	 * @throws CoreException when <code>JavaCore#setClasspathContainer</code> would throw any.
-	 * @see JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], org.eclipse.core.runtime.IProgressMonitor)
-	 * @see ClasspathContainerInitializer#canUpdateClasspathContainer(IPath, IJavaProject)
+	 * @throws CoreException when <code>JavaCore#setJsGlobalScopeContainer</code> would throw any.
+	 * @see JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], org.eclipse.core.runtime.IProgressMonitor)
+	 * @see JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(IPath, IJavaProject)
 	 * @since 2.1
 	 */
-	public abstract void requestClasspathContainerUpdate(IPath containerPath, IJavaProject project, IClasspathContainer containerSuggestion)
+	public abstract void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaProject project, IJsGlobalScopeContainer containerSuggestion)
 			throws CoreException;
 
 	/**
 	 * Returns a readable description for a container path. A readable description for a container path can be
 	 * used for improving the display of references to container, without actually needing to resolve them.
 	 * A good implementation should answer a description consistent with the description of the associated
-	 * target container (see <code>IClasspathContainer.getDescription()</code>).
+	 * target container (see <code>IJsGlobalScopeContainer.getDescription()</code>).
 	 *
 	 * @param containerPath the path of the container which requires a readable description
 	 * @param project the project from which the container is referenced
@@ -125,7 +125,7 @@ public interface IClasspathContainerInitialzer {
 
 	/**
 	 * Returns a classpath container that is used after this initializer failed to bind a classpath container
-	 * to a <code>IClasspathContainer</code> for the given project. A non-<code>null</code>
+	 * to a <code>IJsGlobalScopeContainer</code> for the given project. A non-<code>null</code>
 	 * failure container indicates that there will be no more request to initialize the given container
 	 * for the given project.
 	 * <p>
@@ -139,7 +139,7 @@ public interface IClasspathContainerInitialzer {
 	 * @return the default failure container, or <code>null</code> if wishing to run the initializer again
 	 * @since 3.3
 	 */
-	public abstract IClasspathContainer getFailureContainer(final IPath containerPath, IJavaProject project);
+	public abstract IJsGlobalScopeContainer getFailureContainer(final IPath containerPath, IJavaProject project);
 
 	/**
 	 * Returns an object which identifies a container for comparison purpose. This allows

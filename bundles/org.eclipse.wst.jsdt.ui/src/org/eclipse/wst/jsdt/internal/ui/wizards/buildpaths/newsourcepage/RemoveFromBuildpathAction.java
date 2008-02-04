@@ -41,12 +41,12 @@ import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.newsourcepage.ClasspathModifierQueries.IRemoveLinkedFolderQuery;
 
-//SelectedElements iff enabled: IPackageFramgentRoot || IJavaProject || ClassPathContainer
+//SelectedElements iff enabled: IPackageFramgentRoot || IJavaProject || JsGlobalScopeContainer
 public class RemoveFromBuildpathAction extends BuildpathModifierAction {
 
 	private final IRunnableContext fContext;
@@ -91,7 +91,7 @@ public class RemoveFromBuildpathAction extends BuildpathModifierAction {
         } else if (elem instanceof IPackageFragmentRoot) {
             String name= ClasspathModifier.escapeSpecialChars(((IJavaElement)elem).getElementName());
         	return Messages.format(NewWizardMessages.PackageExplorerActionGroup_FormText_fromBuildpath, name);
-        } else if (elem instanceof ClassPathContainer) {
+        } else if (elem instanceof JsGlobalScopeContainer) {
         	return NewWizardMessages.PackageExplorerActionGroup_FormText_Default_FromBuildpath;
         }
         
@@ -112,7 +112,7 @@ public class RemoveFromBuildpathAction extends BuildpathModifierAction {
 				IPackageFragmentRoot root= (IPackageFragmentRoot)object;
 				project= root.getJavaProject();
 			} else {
-				ClassPathContainer container= (ClassPathContainer)object;
+				JsGlobalScopeContainer container= (JsGlobalScopeContainer)object;
 				project= container.getJavaProject();
 			}
 
@@ -135,7 +135,7 @@ public class RemoveFromBuildpathAction extends BuildpathModifierAction {
 							} else if (element instanceof IPackageFragmentRoot) {
 								toRemove[i]= CPListElement.createFromExisting(((IPackageFragmentRoot)element).getRawClasspathEntry(), project);
 							} else {
-								toRemove[i]= CPListElement.createFromExisting(((ClassPathContainer)element).getClasspathEntry(), project);
+								toRemove[i]= CPListElement.createFromExisting(((JsGlobalScopeContainer)element).getClasspathEntry(), project);
 							}
 	                        i++;
                         }
@@ -249,7 +249,7 @@ public class RemoveFromBuildpathAction extends BuildpathModifierAction {
 					if (entry != null && entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
 						return false;
 					}
-				} else if (element instanceof ClassPathContainer) {
+				} else if (element instanceof JsGlobalScopeContainer) {
 					return true;
 				} else {
 					return false;

@@ -26,13 +26,13 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.ui.wizards.BuildPathDialogAccess;
 
 /**
  * Action to open a dialog to configure classpath containers. Added as a <code>objectContribution</code>
- * to {@link ClassPathContainer}.
+ * to {@link JsGlobalScopeContainer}.
  */
 public class ConfigureContainerAction implements IObjectActionDelegate {
 
@@ -51,7 +51,7 @@ public class ConfigureContainerAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		if (fCurrentSelection instanceof IStructuredSelection) {
-			ClassPathContainer container= (ClassPathContainer) ((IStructuredSelection) fCurrentSelection).getFirstElement();
+			JsGlobalScopeContainer container= (JsGlobalScopeContainer) ((IStructuredSelection) fCurrentSelection).getFirstElement();
 			openWizard(container.getClasspathEntry(), container.getLabel(), container.getJavaProject());
 		}
 	}

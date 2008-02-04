@@ -16,17 +16,17 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
 public class CPUserLibraryElement {
 	
-	private  class UpdatedClasspathContainer implements IClasspathContainer {
+	private  class UpdatedJsGlobalScopeContainer implements IJsGlobalScopeContainer {
 				
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getClasspathEntries()
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getClasspathEntries()
 		 */
 		public IClasspathEntry[] getClasspathEntries() {
 			CPListElement[] children= getChildren();
@@ -38,28 +38,28 @@ public class CPUserLibraryElement {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getDescription()
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getDescription()
 		 */
 		public String getDescription() {
 			return getName();
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getKind()
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getKind()
 		 */
 		public int getKind() {
-			return isSystemLibrary() ? IClasspathContainer.K_SYSTEM : K_APPLICATION;
+			return isSystemLibrary() ? IJsGlobalScopeContainer.K_SYSTEM : K_APPLICATION;
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getPath()
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getPath()
 		 */
 		public IPath getPath() {
 			return CPUserLibraryElement.this.getPath();
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 		 */
 		public String[] resolvedLibraryImport(String a) {
 			// TODO Auto-generated method stub
@@ -72,7 +72,7 @@ public class CPUserLibraryElement {
 	private List fChildren;
 	private boolean fIsSystemLibrary;
 
-	public CPUserLibraryElement(String name, IClasspathContainer container, IJavaProject project) {
+	public CPUserLibraryElement(String name, IJsGlobalScopeContainer container, IJavaProject project) {
 		fName= name;
 		fChildren= new ArrayList();
 		if (container != null) {
@@ -85,7 +85,7 @@ public class CPUserLibraryElement {
 				//elem.setAttribute(CPListElement.JAVADOC, JavaUI.getLibraryJavadocLocation(curr.getPath()));
 				fChildren.add(elem);
 			}
-			fIsSystemLibrary= container.getKind() == IClasspathContainer.K_SYSTEM;
+			fIsSystemLibrary= container.getKind() == IJsGlobalScopeContainer.K_SYSTEM;
 		} else {
 			fIsSystemLibrary= false;
 		}
@@ -178,12 +178,12 @@ public class CPUserLibraryElement {
 		}
 	}
 	
-	public IClasspathContainer getUpdatedContainer() {
-		return new UpdatedClasspathContainer();
+	public IJsGlobalScopeContainer getUpdatedContainer() {
+		return new UpdatedJsGlobalScopeContainer();
 	}
 		
-	public boolean hasChanges(IClasspathContainer oldContainer) {
-		if (oldContainer == null || (oldContainer.getKind() == IClasspathContainer.K_SYSTEM) != fIsSystemLibrary) {
+	public boolean hasChanges(IJsGlobalScopeContainer oldContainer) {
+		if (oldContainer == null || (oldContainer.getKind() == IJsGlobalScopeContainer.K_SYSTEM) != fIsSystemLibrary) {
 			return true;
 		}
 		IClasspathEntry[] oldEntries= oldContainer.getClasspathEntries();

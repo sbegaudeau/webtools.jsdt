@@ -28,7 +28,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -45,9 +45,9 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListene
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IListAdapter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ListDialogField;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension2;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
 import com.ibm.icu.text.Collator;
@@ -55,7 +55,7 @@ import com.ibm.icu.text.Collator;
 /**
  *
  */
-public class UserLibraryWizardPage extends NewElementWizardPage implements IClasspathContainerPage, IClasspathContainerPageExtension, IClasspathContainerPageExtension2  {
+public class UserLibraryWizardPage extends NewElementWizardPage implements IJsGlobalScopeContainerPage, IJsGlobalScopeContainerPageExtension, IJsGlobalScopeContainerPageExtension2  {
 	
 	private CheckedListDialogField fLibrarySelector;
 	private CPUserLibraryElement fEditResult;
@@ -125,7 +125,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 			String curr= names[i];
 			IPath path= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(curr);
 			try {
-				IClasspathContainer container= JavaCore.getClasspathContainer(path, fProject);
+				IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(path, fProject);
 				CPUserLibraryElement elem= new CPUserLibraryElement(curr, container, fProject);
 				elements.add(elem);
 				if (!oldCheckedNames.isEmpty()) {
@@ -229,14 +229,14 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage#finish()
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage#finish()
 	 */
 	public boolean finish() {
 		return true;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage#getSelection()
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage#getSelection()
 	 */
 	public IClasspathEntry getSelection() {
 		if (fEditResult != null) {
@@ -246,7 +246,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2#getNewContainers()
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension2#getNewContainers()
 	 */
 	public IClasspathEntry[] getNewContainers() {
 		List selected= fLibrarySelector.getCheckedElements();
@@ -259,7 +259,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage#setSelection(org.eclipse.wst.jsdt.core.IClasspathEntry)
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage#setSelection(org.eclipse.wst.jsdt.core.IClasspathEntry)
 	 */
 	public void setSelection(IClasspathEntry containerEntry) {
 		fIsExported= containerEntry != null && containerEntry.isExported();
@@ -311,7 +311,7 @@ public class UserLibraryWizardPage extends NewElementWizardPage implements IClas
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension#initialize(org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IClasspathEntry[])
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension#initialize(org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IClasspathEntry[])
 	 */
 	public void initialize(IJavaProject project, IClasspathEntry[] currentEntries) {
 		for (int i= 0; i < currentEntries.length; i++) {

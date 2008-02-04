@@ -14,10 +14,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIMessages;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ColoredString.Style;
 import org.eclipse.wst.jsdt.launching.JavaRuntime;
 import org.eclipse.wst.jsdt.ui.JavaElementLabels;
@@ -72,8 +72,8 @@ public class ColoredJavaElementLabels {
 			return getElementLabel((IJavaElement) obj, flags);
 		} else if (obj instanceof IResource) {
 			return new ColoredString(((IResource) obj).getName());
-		} else if (obj instanceof ClassPathContainer) {
-			ClassPathContainer container= (ClassPathContainer) obj;
+		} else if (obj instanceof JsGlobalScopeContainer) {
+			JsGlobalScopeContainer container= (JsGlobalScopeContainer) obj;
 			return getContainerEntryLabel(container.getClasspathEntry().getPath(), container.getJavaProject());
 		}
 		return new ColoredString(JavaElementLabels.getTextLabel(obj, flags));
@@ -949,13 +949,13 @@ public class ColoredJavaElementLabels {
 	 */
 	public static ColoredString getContainerEntryLabel(IPath containerPath, IJavaProject project) {
 		try {
-			IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, project);
+			IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, project);
 			String description= null;
 			if (container != null) {
 				description= container.getDescription();
 			}
 			if (description == null) {
-				ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
+				JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
 				if (initializer != null) {
 					description= initializer.getDescription(containerPath, project);
 				}

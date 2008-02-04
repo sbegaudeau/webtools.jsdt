@@ -46,7 +46,7 @@ public class LibrarySuperType {
 	public boolean hasChildren() {
 		/* defined super type meeans I'm a child */
 		if(superTypeName!=null) return false;
-		ClasspathContainerInitializer init = getContainerInitializer();
+		JsGlobalScopeContainerInitializer init = getContainerInitializer();
 		if (init == null) return false;
 		String[] availableSuperTypes = init.containerSuperTypes();
 		return availableSuperTypes!=null && availableSuperTypes.length>0;
@@ -66,14 +66,14 @@ public class LibrarySuperType {
 		return getParent()==null;
 	}
 
-	public ClasspathContainerInitializer getContainerInitializer() {
+	public JsGlobalScopeContainerInitializer getContainerInitializer() {
 		return getContainerInitializer(cpEntry);
 	}
 
 	public IClasspathEntry[] getClasspathEntries() {
-		IClasspathContainer container=null;
+		IJsGlobalScopeContainer container=null;
 		try {
-			container = JavaCore.getClasspathContainer(this.cpEntry, this.javaProject);
+			container = JavaCore.getJsGlobalScopeContainer(this.cpEntry, this.javaProject);
 		} catch (JavaModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
@@ -84,7 +84,7 @@ public class LibrarySuperType {
 	}
 
 	private static LibrarySuperType[] getFlatLibrarySuperTypes(IPath classPathEntry, IJavaProject javaProject) {
-		ClasspathContainerInitializer init = getContainerInitializer(classPathEntry);
+		JsGlobalScopeContainerInitializer init = getContainerInitializer(classPathEntry);
 		if (init == null) return new LibrarySuperType[0];
 		String[] availableSuperTypes = init.containerSuperTypes();
 		LibrarySuperType[] libSupers = new LibrarySuperType[availableSuperTypes.length];
@@ -103,7 +103,7 @@ public class LibrarySuperType {
 	}
 
 	private String initLibraryName() {
-		ClasspathContainerInitializer init = getContainerInitializer();
+		JsGlobalScopeContainerInitializer init = getContainerInitializer();
 
 		/* parent node */
 		if(superTypeName==null) {
@@ -118,7 +118,7 @@ public class LibrarySuperType {
 	}
 
 	public String toString() {
-		//ClasspathContainerInitializer init = getContainerInitializer();
+		//JsGlobalScopeContainerInitializer init = getContainerInitializer();
 
 		/* parent node */
 		if(isParent()) {
@@ -174,9 +174,9 @@ public class LibrarySuperType {
 		return (IPackageFragment[])allFrags.toArray(new IPackageFragment[allFrags.size()]);
 	}
 
-	public static ClasspathContainerInitializer getContainerInitializer(IPath classPathEntry) {
+	public static JsGlobalScopeContainerInitializer getContainerInitializer(IPath classPathEntry) {
 		if(classPathEntry==null ) return null;
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(classPathEntry.segment(0));
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(classPathEntry.segment(0));
 		return initializer ;
 	}
 }

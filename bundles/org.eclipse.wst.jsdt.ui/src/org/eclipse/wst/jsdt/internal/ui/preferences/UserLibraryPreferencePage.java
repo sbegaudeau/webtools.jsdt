@@ -69,10 +69,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -776,7 +776,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		for (int i= 0; i < names.length; i++) {
 			IPath path= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(names[i]);
 			try {
-				IClasspathContainer container= JavaCore.getClasspathContainer(path, fDummyProject);
+				IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(path, fDummyProject);
 				elements.add(new CPUserLibraryElement(names[i], container, fDummyProject));
 			} catch (JavaModelException e) {
 				JavaPlugin.log(e);
@@ -913,16 +913,16 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 		monitor.beginTask(PreferencesMessages.UserLibraryPreferencePage_operation, len); 
 		MultiStatus multiStatus= new MultiStatus(JavaUI.ID_PLUGIN, IStatus.OK, PreferencesMessages.UserLibraryPreferencePage_operation_error, null); 
 		
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(JavaCore.USER_LIBRARY_CONTAINER_ID);
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(JavaCore.USER_LIBRARY_CONTAINER_ID);
 		IJavaProject jproject= fDummyProject;
 				
 		for (int i= 0; i < nExisting; i++) {
 			CPUserLibraryElement element= (CPUserLibraryElement) list.get(i);
 			IPath path= element.getPath();
-			if (newEntries.contains(element) || element.hasChanges(JavaCore.getClasspathContainer(path, jproject))) {
-				IClasspathContainer updatedContainer= element.getUpdatedContainer();
+			if (newEntries.contains(element) || element.hasChanges(JavaCore.getJsGlobalScopeContainer(path, jproject))) {
+				IJsGlobalScopeContainer updatedContainer= element.getUpdatedContainer();
 				try {
-					initializer.requestClasspathContainerUpdate(path, jproject, updatedContainer);
+					initializer.requestJsGlobalScopeContainerUpdate(path, jproject, updatedContainer);
 				} catch (CoreException e) {
 					multiStatus.add(e.getStatus());
 				}
@@ -936,7 +936,7 @@ public class UserLibraryPreferencePage extends PreferencePage implements IWorkbe
 			
 			IPath path= new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(name);
 			try {
-				initializer.requestClasspathContainerUpdate(path, jproject, null);
+				initializer.requestJsGlobalScopeContainerUpdate(path, jproject, null);
 			} catch (CoreException e) {
 				multiStatus.add(e.getStatus());
 			}

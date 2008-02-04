@@ -55,7 +55,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IScopeContext;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -2170,9 +2170,9 @@ public class JavaProject
 			IClasspathEntry rawEntry = rawClasspath[i];
 			switch (rawEntry.getEntryKind()) {
 				case IClasspathEntry.CPE_CONTAINER:
-					IClasspathContainer container;
+					IJsGlobalScopeContainer container;
 					try {
-						container = JavaCore.getClasspathContainer(rawEntry.getPath(), this);
+						container = JavaCore.getJsGlobalScopeContainer(rawEntry.getPath(), this);
 					} catch (JavaModelException e) {
 						break;
 					}
@@ -2569,7 +2569,7 @@ public class JavaProject
 						resolvedEntries.add(resolvedEntry);
 					break;
 				case IClasspathEntry.CPE_CONTAINER:
-					IClasspathContainer container = JavaCore.getClasspathContainer(rawEntry.getPath(), this);
+					IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(rawEntry.getPath(), this);
 					if (container == null)
 						break;
 					IClasspathEntry[] containerEntries = container.getClasspathEntries();
@@ -2654,7 +2654,7 @@ public class JavaProject
 						break;
 
 					case IClasspathEntry.CPE_CONTAINER :
-						IClasspathContainer container = JavaCore.getClasspathContainer(rawEntry.getPath(), this);
+						IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(rawEntry.getPath(), this);
 						if (container == null){
 							unresolvedEntryStatus = new JavaModelStatus(IJavaModelStatusConstants.CP_CONTAINER_PATH_UNBOUND, this, rawEntry.getPath());
 							break;

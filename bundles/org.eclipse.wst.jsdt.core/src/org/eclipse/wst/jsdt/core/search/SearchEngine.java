@@ -281,7 +281,7 @@ public class SearchEngine {
 	 *   or the ones that are coming from a classpath container with the K_APPLICATION kind)
 	 *   if IJavaSearchScope.APPLICATION_LIBRARIES is specified
 	 * - its system libraries (internal and external jars, class folders that are coming from an
-	 *   IClasspathContainer with the K_SYSTEM kind)
+	 *   IJsGlobalScopeContainer with the K_SYSTEM kind)
 	 *   if IJavaSearchScope.APPLICATION_LIBRARIES is specified
 	 * - its referenced projects (with their source folders and jars, recursively)
 	 *   if IJavaSearchScope.REFERENCED_PROJECTS is specified.

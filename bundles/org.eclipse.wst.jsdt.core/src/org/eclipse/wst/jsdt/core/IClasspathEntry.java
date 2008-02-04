@@ -79,10 +79,10 @@ import org.eclipse.core.runtime.IPath;
  *     container object.
  *     The container path is a formed by a first ID segment followed with extra segments,
  *     which can be used as additional hints for resolving this container reference. If no container was ever
- *     recorded for this container path onto this project (using {@link JavaCore#setClasspathContainer},
- * 	then a {@link ClasspathContainerInitializer} will be activated if any was registered for this
- * 	container ID onto the extension point "org.eclipse.wst.jsdt.core.classpathContainerInitializer".
- * 	A classpath container entry can be resolved explicitly using {@link JavaCore#getClasspathContainer}
+ *     recorded for this container path onto this project (using {@link JavaCore#setJsGlobalScopeContainer},
+ * 	then a {@link JsGlobalScopeContainerInitializer} will be activated if any was registered for this
+ * 	container ID onto the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
+ * 	A classpath container entry can be resolved explicitly using {@link JavaCore#getJsGlobalScopeContainer}
  * 	and the resulting container entries can contain any non-container entry. In particular, it may contain variable
  *     entries, which in turn needs to be resolved before being directly used.
  * 	<br> Also note that the container resolution APIs include an IJavaProject argument, so as to allow the same
@@ -111,7 +111,7 @@ import org.eclipse.core.runtime.IPath;
  * @see JavaCore#newVariableEntry(org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath)
  * @see JavaCore#newContainerEntry(org.eclipse.core.runtime.IPath)
  * @see ClasspathVariableInitializer
- * @see ClasspathContainerInitializer
+ * @see JsGlobalScopeContainerInitializer
  */
 public interface IClasspathEntry {
 
@@ -381,7 +381,7 @@ public interface IClasspathEntry {
 	 * 	is the name of the classpath container, which can be bound indirectly to a set of classpath
 	 * 	entries after resolution. The containerPath is a formed by a first ID segment followed with
 	 *     extra segments that can be used as additional hints for resolving this container
-	 * 	reference (also see {@link IClasspathContainer}).
+	 * 	reference (also see {@link IJsGlobalScopeContainer}).
 	 * </li>
 	 * </ul>
 	 *

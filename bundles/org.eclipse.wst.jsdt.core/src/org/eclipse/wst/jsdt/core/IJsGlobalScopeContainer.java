@@ -29,14 +29,14 @@ import org.eclipse.core.runtime.IPath;
  * In particular, a classpath container can neither reference further classpath containers or classpath variables.
  * <p>
  * Classpath container values are persisted locally to the workspace, but are not preserved from a
- * session to another. It is thus highly recommended to register a <code>ClasspathContainerInitializer</code>
- * for each referenced container (through the extension point "org.eclipse.wst.jsdt.core.ClasspathContainerInitializer").
+ * session to another. It is thus highly recommended to register a <code>JsGlobalScopeContainerInitializer</code>
+ * for each referenced container (through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer").
  * <p>
  * @see IClasspathEntry
  * @since 2.0
  */
 
-public interface IClasspathContainer {
+public interface IJsGlobalScopeContainer {
 
 	/**
 	 * Kind for a container mapping to an application library
@@ -120,8 +120,8 @@ public interface IClasspathContainer {
 	 * A container path is formed by a first ID segment followed with extra segments, which
 	 * can be used as additional hints for resolving to this container.
 	 * <p>
-	 * The container ID is also used to identify a<code>ClasspathContainerInitializer</code>
-	 * registered on the extension point "org.eclipse.wst.jsdt.core.classpathContainerInitializer", which can
+	 * The container ID is also used to identify a<code>JsGlobalScopeContainerInitializer</code>
+	 * registered on the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer", which can
 	 * be invoked if needing to resolve the container before it is explicitly set.
 	 * <p>
 	 * @return IPath - the container path that is associated with this container

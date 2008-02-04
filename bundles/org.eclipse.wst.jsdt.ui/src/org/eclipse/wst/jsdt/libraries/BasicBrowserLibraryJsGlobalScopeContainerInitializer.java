@@ -4,27 +4,27 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
-import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
 
-public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathContainerInitializer implements IClasspathContainer, IClasspathContainerInitialzerExtension {
+public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainer, IJsGlobalScopeContainerInitialzerExtension {
 	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary"; //$NON-NLS-1$
-	private static final String ContainerDescription = Messages.BasicBrowserLibraryClassPathContainerInitializer_ECMA3Browser;
-	private static final String FILE_DESCRIPTION0 = Messages.BasicBrowserLibraryClassPathContainerInitializer_ECMA3DOM;
-	private static final String FILE_DESCRIPTION1 = Messages.BasicBrowserLibraryClassPathContainerInitializer_CommonWebBrowser;
+	private static final String ContainerDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3Browser;
+	private static final String FILE_DESCRIPTION0 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3DOM;
+	private static final String FILE_DESCRIPTION1 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_CommonWebBrowser;
 	private static final char[][] LIBRARY_FILE_NAME = {
 														{ 'b', 'a', 's', 'e', 'B', 'r', 'o', 'w', 's', 'e', 'r', 'L', 'i', 'b', 'r', 'a', 'r', 'y', '.', 'j', 's' },
 														{'b','r','o','w','s','e','r','W','i','n','d','o','w','.','j','s'}
 													  };
-	private static final String LibraryDescription = Messages.BasicBrowserLibraryClassPathContainerInitializer_ECMA3BrowserLibrary;
+	private static final String LibraryDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3BrowserLibrary;
 	
 	class BasicLibLocation extends SystemLibraryLocation {
 		BasicLibLocation() {
@@ -32,7 +32,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 		}
 		
 		public char[][] getLibraryFileNames() {
-			return  BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME ;
+			return  BasicBrowserLibraryJsGlobalScopeContainerInitializer.LIBRARY_FILE_NAME ;
 		}
 	}
 	
@@ -52,58 +52,58 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
-	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
 		return true;
 		
 		
 	}
 
-	protected IClasspathContainer getContainer(IPath containerPath, IJavaProject project) {
+	protected IJsGlobalScopeContainer getContainer(IPath containerPath, IJavaProject project) {
 		return this;
 	}
 	
 	public String getDescription() {
-		return BasicBrowserLibraryClassPathContainerInitializer.LibraryDescription;
+		return BasicBrowserLibraryJsGlobalScopeContainerInitializer.LibraryDescription;
 	}
 	
 	public String getDescription(IPath containerPath, IJavaProject project) {
 		
 		if(containerPath==null) return null;
 		
-		IPath p1 = new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[0]));
-		IPath p2 = new Path(new String(BasicBrowserLibraryClassPathContainerInitializer.LIBRARY_FILE_NAME[1]));
+		IPath p1 = new Path(new String(BasicBrowserLibraryJsGlobalScopeContainerInitializer.LIBRARY_FILE_NAME[0]));
+		IPath p2 = new Path(new String(BasicBrowserLibraryJsGlobalScopeContainerInitializer.LIBRARY_FILE_NAME[1]));
 		IPath requestedContainerPath = new Path(containerPath.lastSegment());
 		if (requestedContainerPath.equals(p1)) {
-			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION0;
+			return BasicBrowserLibraryJsGlobalScopeContainerInitializer.FILE_DESCRIPTION0;
 		}else if (requestedContainerPath.equals(p2)) {
-			return BasicBrowserLibraryClassPathContainerInitializer.FILE_DESCRIPTION1;
+			return BasicBrowserLibraryJsGlobalScopeContainerInitializer.FILE_DESCRIPTION1;
 		}
-		return BasicBrowserLibraryClassPathContainerInitializer.ContainerDescription;
+		return BasicBrowserLibraryJsGlobalScopeContainerInitializer.ContainerDescription;
 	}
 	
 	public int getKind() {
-		return IClasspathContainer.K_SYSTEM;
+		return IJsGlobalScopeContainer.K_SYSTEM;
 	}
 	
 	public IPath getPath() {
-		return new Path(BasicBrowserLibraryClassPathContainerInitializer.CONTAINER_ID);
+		return new Path(BasicBrowserLibraryJsGlobalScopeContainerInitializer.CONTAINER_ID);
 	}
 	
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
-		JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { getContainer(containerPath, project) }, null);
+		JavaCore.setJsGlobalScopeContainer(containerPath, new IJavaProject[] { project }, new IJsGlobalScopeContainer[] { getContainer(containerPath, project) }, null);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#containerSuperTypes()
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#containerSuperTypes()
 	 */
 	public String[] containerSuperTypes() {
-		return new String[] {Messages.BasicBrowserLibraryClassPathContainerInitializer_Window};
+		return new String[] {Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_Window};
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension#getImage(org.eclipse.core.runtime.IPath, java.lang.String, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension#getImage(org.eclipse.core.runtime.IPath, java.lang.String, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public ImageDescriptor getImage(IPath containerPath, String element, IJavaProject project) {
 		if(containerPath==null ) {
@@ -121,7 +121,7 @@ public class BasicBrowserLibraryClassPathContainerInitializer extends ClasspathC
 		}
 		
 		return ImageDescriptor.createFromFile(this.getClass(),"rino.jpg"); //$NON-NLS-1$
-	//	System.out.println("Unimplemented method:BasicBrowserLibraryClassPathContainerInitializer.getImage");
+	//	System.out.println("Unimplemented method:BasicBrowserLibraryJsGlobalScopeContainerInitializer.getImage");
 		//return null;
 	}
 	

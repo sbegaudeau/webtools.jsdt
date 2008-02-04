@@ -32,7 +32,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -423,8 +423,8 @@ public class JavaSearchScopeFactory {
 			try {
 				IClasspathEntry entry= root.getRawClasspathEntry();
 				if (entry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-					IClasspathContainer container= JavaCore.getClasspathContainer(entry.getPath(), root.getJavaProject());
-					return container != null && container.getKind() == IClasspathContainer.K_DEFAULT_SYSTEM;
+					IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(entry.getPath(), root.getJavaProject());
+					return container != null && container.getKind() == IJsGlobalScopeContainer.K_DEFAULT_SYSTEM;
 				}
 				return false;
 			} catch (JavaModelException e) {

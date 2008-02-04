@@ -19,14 +19,14 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
@@ -217,7 +217,7 @@ public class CPListLabelProvider extends LabelProvider {
 		switch (cpentry.getEntryKind()) {
 			case IClasspathEntry.CPE_LIBRARY: {
 				
-				ClasspathContainerInitializer cpinit = cpentry.getContainerInitializer();
+				JsGlobalScopeContainerInitializer cpinit = cpentry.getContainerInitializer();
 				if(cpinit!=null) {
 					String displayText = cpinit.getDescription(cpentry.getPath(), cpentry.getJavaProject());
 					if(displayText!=null)
@@ -256,14 +256,14 @@ public class CPListLabelProvider extends LabelProvider {
 				return path.lastSegment();
 			case IClasspathEntry.CPE_CONTAINER:
 				try {
-					IClasspathContainer container= JavaCore.getClasspathContainer(path, cpentry.getJavaProject());
+					IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(path, cpentry.getJavaProject());
 					
 					if (container != null) {
 						
 						
 						return container.getDescription();
 					}
-					ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(path.segment(0));
+					JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(path.segment(0));
 					if (initializer != null) {
 						String description= initializer.getDescription(path, cpentry.getJavaProject());
 						return Messages.format(NewWizardMessages.CPListLabelProvider_unbound_library, description); 
@@ -322,11 +322,11 @@ public class CPListLabelProvider extends LabelProvider {
 	
 	private ImageDescriptor getCPListElementBaseImage(CPListElement cpentry) {
 		
-		ClasspathContainerInitializer init = cpentry.getContainerInitializer();
+		JsGlobalScopeContainerInitializer init = cpentry.getContainerInitializer();
 		
-		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+		if(init!=null && init instanceof IJsGlobalScopeContainerInitialzerExtension) {
 			IPath entPath = cpentry.getPath();
-			ImageDescriptor image = ((IClasspathContainerInitialzerExtension)init).getImage(init.getPath(), entPath.toString(), cpentry.getJavaProject());
+			ImageDescriptor image = ((IJsGlobalScopeContainerInitialzerExtension)init).getImage(init.getPath(), entPath.toString(), cpentry.getJavaProject());
 			if(image!=null) return image;
 		}
 		

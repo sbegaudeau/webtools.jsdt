@@ -21,7 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaElementDelta;
@@ -151,9 +151,9 @@ void add(JavaProject javaProject, IPath pathToAdd, int includeMask, HashSet visi
 						}
 						break;
 					case IClasspathEntry.CPE_CONTAINER:
-						IClasspathContainer container = JavaCore.getClasspathContainer(rawEntry.getPath(), javaProject);
+						IJsGlobalScopeContainer container = JavaCore.getJsGlobalScopeContainer(rawEntry.getPath(), javaProject);
 						if (container == null) break;
-						if ((container.getKind() == IClasspathContainer.K_APPLICATION && (includeMask & APPLICATION_LIBRARIES) != 0)
+						if ((container.getKind() == IJsGlobalScopeContainer.K_APPLICATION && (includeMask & APPLICATION_LIBRARIES) != 0)
 								|| (includeMask & SYSTEM_LIBRARIES) != 0) {
 							IPath path = entry.getPath();
 							if (pathToAdd == null || pathToAdd.equals(path)) {

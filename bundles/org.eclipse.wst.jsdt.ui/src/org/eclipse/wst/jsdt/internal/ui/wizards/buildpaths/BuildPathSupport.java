@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -136,12 +136,12 @@ public class BuildPathSupport {
 		return null;
 	}
 	
-	private static class UpdatedClasspathContainer implements IClasspathContainer {
+	private static class UpdatedJsGlobalScopeContainer implements IJsGlobalScopeContainer {
 
 		private IClasspathEntry[] fNewEntries;
-		private IClasspathContainer fOriginal;
+		private IJsGlobalScopeContainer fOriginal;
 
-		public UpdatedClasspathContainer(IClasspathContainer original, IClasspathEntry[] newEntries) {
+		public UpdatedJsGlobalScopeContainer(IJsGlobalScopeContainer original, IClasspathEntry[] newEntries) {
 			fNewEntries= newEntries;
 			fOriginal= original;
 		}
@@ -163,7 +163,7 @@ public class BuildPathSupport {
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 		 */
 		public String[] resolvedLibraryImport(String a) {
 				return null;
@@ -203,7 +203,7 @@ public class BuildPathSupport {
 	}
 
 	private static void updateContainerClasspath(IJavaProject jproject, IPath containerPath, IClasspathEntry newEntry, String[] changedAttributes, IProgressMonitor monitor) throws CoreException {
-		IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
+		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
 		if (container == null) {
 			throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, IStatus.ERROR, "Container " + containerPath + " cannot be resolved", null));  //$NON-NLS-1$//$NON-NLS-2$
 		}
@@ -241,12 +241,12 @@ public class BuildPathSupport {
 	 * @param newEntries The updated entries
 	 * @throws CoreException
 	 */
-	public static void requestContainerUpdate(IJavaProject jproject, IClasspathContainer container, IClasspathEntry[] newEntries) throws CoreException {
+	public static void requestContainerUpdate(IJavaProject jproject, IJsGlobalScopeContainer container, IClasspathEntry[] newEntries) throws CoreException {
 		IPath containerPath= container.getPath();
-		IClasspathContainer updatedContainer= new UpdatedClasspathContainer(container, newEntries);
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
+		IJsGlobalScopeContainer updatedContainer= new UpdatedJsGlobalScopeContainer(container, newEntries);
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
 		if (initializer != null) {
-			initializer.requestClasspathContainerUpdate(containerPath, jproject, updatedContainer);
+			initializer.requestJsGlobalScopeContainerUpdate(containerPath, jproject, updatedContainer);
 		}
 	}
 

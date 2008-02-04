@@ -82,11 +82,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
@@ -201,7 +201,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	public Map rootPathToAttachments = new HashMap();
 
 	public final static String CP_VARIABLE_PREFERENCES_PREFIX = JavaCore.PLUGIN_ID+".classpathVariable."; //$NON-NLS-1$
-	public final static String CP_CONTAINER_PREFERENCES_PREFIX = JavaCore.PLUGIN_ID+".classpathContainer."; //$NON-NLS-1$
+	public final static String CP_CONTAINER_PREFERENCES_PREFIX = JavaCore.PLUGIN_ID+".JsGlobalScopeContainer."; //$NON-NLS-1$
 	public final static String CP_ENTRY_IGNORE = "##<cp entry ignore>##"; //$NON-NLS-1$
 	public final static IPath CP_ENTRY_IGNORE_PATH = new Path(CP_ENTRY_IGNORE);
 	public final static String TRUE = "true"; //$NON-NLS-1$
@@ -216,7 +216,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	/**
 	 * Name of the extension point for contributing classpath container initializers
 	 */
-	public static final String CPCONTAINER_INITIALIZER_EXTPOINT_ID = "classpathContainerInitializer" ; //$NON-NLS-1$
+	public static final String CPCONTAINER_INITIALIZER_EXTPOINT_ID = "JsGlobalScopeContainerInitializer" ; //$NON-NLS-1$
 
 	/**
 	 * Name of the extension point for contributing a source code formatter
@@ -237,7 +237,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	 * Special value used for recognizing ongoing initialization and breaking initialization cycles
 	 */
 	public final static IPath VARIABLE_INITIALIZATION_IN_PROGRESS = new Path("Variable Initialization In Progress"); //$NON-NLS-1$
-	public final static IClasspathContainer CONTAINER_INITIALIZATION_IN_PROGRESS = new IClasspathContainer() {
+	public final static IJsGlobalScopeContainer CONTAINER_INITIALIZATION_IN_PROGRESS = new IJsGlobalScopeContainer() {
 		public IClasspathEntry[] getClasspathEntries() { return null; }
 		public String getDescription() { return "Container Initialization In Progress"; } //$NON-NLS-1$
 		public int getKind() { return 0; }
@@ -503,7 +503,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		}
 	}
 
-	public synchronized IClasspathContainer containerGet(IJavaProject project, IPath containerPath) {
+	public synchronized IJsGlobalScopeContainer containerGet(IJavaProject project, IPath containerPath) {
 		// check initialization in progress first
 		if (containerIsInitializationInProgress(project, containerPath)) {
 			return CONTAINER_INITIALIZATION_IN_PROGRESS;
@@ -513,15 +513,15 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		if (projectContainers == null){
 			return null;
 		}
-		IClasspathContainer container = (IClasspathContainer)projectContainers.get(containerPath);
+		IJsGlobalScopeContainer container = (IJsGlobalScopeContainer)projectContainers.get(containerPath);
 		return container;
 	}
 
-	public synchronized IClasspathContainer containerGetDefaultToPreviousSession(IJavaProject project, IPath containerPath) {
+	public synchronized IJsGlobalScopeContainer containerGetDefaultToPreviousSession(IJavaProject project, IPath containerPath) {
 		Map projectContainers = (Map)this.containers.get(project);
 		if (projectContainers == null)
 			return getPreviousSessionContainer(containerPath, project);
-		IClasspathContainer container = (IClasspathContainer)projectContainers.get(containerPath);
+		IJsGlobalScopeContainer container = (IJsGlobalScopeContainer)projectContainers.get(containerPath);
 		if (container == null)
 			return getPreviousSessionContainer(containerPath, project);
 		return container;
@@ -555,7 +555,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		projectInitializations.add(containerPath);
 	}
 
-	public synchronized void containerPut(IJavaProject project, IPath containerPath, IClasspathContainer container){
+	public synchronized void containerPut(IJavaProject project, IPath containerPath, IJsGlobalScopeContainer container){
 
 		// set/unset the initialization in progress
 		if (container == CONTAINER_INITIALIZATION_IN_PROGRESS) {
@@ -597,16 +597,16 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		this.containers.remove(project);
 	}
 
-	public boolean containerPutIfInitializingWithSameEntries(IPath containerPath, IJavaProject[] projects, IClasspathContainer[] respectiveContainers) {
+	public boolean containerPutIfInitializingWithSameEntries(IPath containerPath, IJavaProject[] projects, IJsGlobalScopeContainer[] respectiveContainers) {
 		int projectLength = projects.length;
 		if (projectLength != 1)
 			return false;
-		final IClasspathContainer container = respectiveContainers[0];
+		final IJsGlobalScopeContainer container = respectiveContainers[0];
 		IJavaProject project = projects[0];
 		// optimize only if initializing, otherwise we are in a regular setContainer(...) call
 		if (!containerIsInitializationInProgress(project, containerPath))
 			return false;
-		IClasspathContainer previousContainer = containerGetDefaultToPreviousSession(project, containerPath);
+		IJsGlobalScopeContainer previousContainer = containerGetDefaultToPreviousSession(project, containerPath);
 		if (container == null) {
 			if (previousContainer == null) {
 				containerPut(project, containerPath, null);
@@ -649,8 +649,8 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	private void verbose_missbehaving_container(
 			IPath containerPath,
 			IJavaProject[] projects,
-			IClasspathContainer[] respectiveContainers,
-			final IClasspathContainer container,
+			IJsGlobalScopeContainer[] respectiveContainers,
+			final IJsGlobalScopeContainer container,
 			final IClasspathEntry[] newEntries,
 			final IClasspathEntry[] oldEntries) {
 		Util.verbose(
@@ -1602,9 +1602,9 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		return false;
 	}
 
-	public IClasspathContainer getClasspathContainer(final IPath containerPath, final IJavaProject project) throws JavaModelException {
+	public IJsGlobalScopeContainer getJsGlobalScopeContainer(final IPath containerPath, final IJavaProject project) throws JavaModelException {
 
-		IClasspathContainer container = containerGet(project, containerPath);
+		IJsGlobalScopeContainer container = containerGet(project, containerPath);
 
 		if (container == null) {
 			if (batchContainerInitializations()) {
@@ -1907,10 +1907,10 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	 * session (i.e. it did not get serialized) but rather a summary of its entries recreated for CP initialization purpose.
 	 * As such it should not be stored into container caches.
 	 */
-	public IClasspathContainer getPreviousSessionContainer(IPath containerPath, IJavaProject project) {
+	public IJsGlobalScopeContainer getPreviousSessionContainer(IPath containerPath, IJavaProject project) {
 			Map previousContainerValues = (Map)this.previousSessionContainers.get(project);
 			if (previousContainerValues != null){
-			    IClasspathContainer previousContainer = (IClasspathContainer)previousContainerValues.get(containerPath);
+			    IJsGlobalScopeContainer previousContainer = (IJsGlobalScopeContainer)previousContainerValues.get(containerPath);
 			    if (previousContainer != null) {
 					if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
 						verbose_reentering_project_container_access(containerPath, project, previousContainer);
@@ -1920,7 +1920,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		    return null; // break cycle if none found
 	}
 
-	private void verbose_reentering_project_container_access(	IPath containerPath, IJavaProject project, IClasspathContainer previousContainer) {
+	private void verbose_reentering_project_container_access(	IPath containerPath, IJavaProject project, IJsGlobalScopeContainer previousContainer) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CPContainer INIT - reentering access to project container during its initialization, will see previous value\n"); //$NON-NLS-1$
 		buffer.append("	project: " + project.getElementName() + '\n'); //$NON-NLS-1$
@@ -2141,7 +2141,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	 * Initialize all container at the same time as the given container.
 	 * Return the container for the given path and project.
 	 */
-	private IClasspathContainer initializeAllContainers(IJavaProject javaProjectToInit, IPath containerToInit) throws JavaModelException {
+	private IJsGlobalScopeContainer initializeAllContainers(IJavaProject javaProjectToInit, IPath containerToInit) throws JavaModelException {
 		if (CP_RESOLVE_VERBOSE_ADVANCED)
 			verbose_batching_containers_initialization(javaProjectToInit, containerToInit);
 
@@ -2260,14 +2260,14 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			"	container path to init: " + containerToInit); //$NON-NLS-1$
 	}
 
-	IClasspathContainer initializeContainer(IJavaProject project, IPath containerPath) throws JavaModelException {
+	IJsGlobalScopeContainer initializeContainer(IJavaProject project, IPath containerPath) throws JavaModelException {
 
 		IProgressMonitor monitor = (IProgressMonitor) this.batchContainerInitializationsProgress.get();
 		if (monitor != null && monitor.isCanceled())
 			throw new OperationCanceledException();
 
-		IClasspathContainer container = null;
-		final ClasspathContainerInitializer initializer = JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
+		IJsGlobalScopeContainer container = null;
+		final JsGlobalScopeContainerInitializer initializer = JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
 		if (initializer != null){
 			if (CP_RESOLVE_VERBOSE)
 				verbose_triggering_container_initialization(project, containerPath, initializer);
@@ -2333,7 +2333,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 				verbose_container_value_after_initialization(project, containerPath, container);
 		} else {
 			// create a dummy initializer and get the default failure container
-			container = (new ClasspathContainerInitializer() {
+			container = (new JsGlobalScopeContainerInitializer() {
 				public void initialize(IPath path, IJavaProject javaProject) throws CoreException {
 					// not used
 				}
@@ -2355,7 +2355,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			"	container path: " + containerPath); //$NON-NLS-1$
 	}
 
-	private void verbose_container_value_after_initialization(IJavaProject project, IPath containerPath, IClasspathContainer container) {
+	private void verbose_container_value_after_initialization(IJavaProject project, IPath containerPath, IJsGlobalScopeContainer container) {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("CPContainer INIT - after resolution\n"); //$NON-NLS-1$
 		buffer.append("	project: " + project.getElementName() + '\n'); //$NON-NLS-1$
@@ -2375,7 +2375,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		Util.verbose(buffer.toString());
 	}
 
-	private void verbose_container_initialization_failed(IJavaProject project, IPath containerPath, IClasspathContainer container, ClasspathContainerInitializer initializer) {
+	private void verbose_container_initialization_failed(IJavaProject project, IPath containerPath, IJsGlobalScopeContainer container, JsGlobalScopeContainerInitializer initializer) {
 		if (container == CONTAINER_INITIALIZATION_IN_PROGRESS) {
 			Util.verbose(
 				"CPContainer INIT - FAILED (initializer did not initialize container)\n" + //$NON-NLS-1$
@@ -2392,7 +2392,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		}
 	}
 
-	private void verbose_triggering_container_initialization(IJavaProject project, IPath containerPath,  ClasspathContainerInitializer initializer) {
+	private void verbose_triggering_container_initialization(IJavaProject project, IPath containerPath,  JsGlobalScopeContainerInitializer initializer) {
 		Util.verbose(
 			"CPContainer INIT - triggering initialization\n" + //$NON-NLS-1$
 			"	project: " + project.getElementName() + '\n' + //$NON-NLS-1$
@@ -2652,8 +2652,8 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		}
 	}
 
-	private static final class PersistedClasspathContainer implements
-			IClasspathContainer {
+	private static final class PersistedJsGlobalScopeContainer implements
+			IJsGlobalScopeContainer {
 
 		private final IPath containerPath;
 
@@ -2661,7 +2661,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 
 		private final IJavaProject project;
 
-		PersistedClasspathContainer(IJavaProject project, IPath containerPath,
+		PersistedJsGlobalScopeContainer(IJavaProject project, IPath containerPath,
 				IClasspathEntry[] entries) {
 			super();
 			this.containerPath = containerPath;
@@ -2692,7 +2692,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		}
 
 		/* (non-Javadoc)
-		 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+		 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 		 */
 		public String[] resolvedLibraryImport(String a) {
 			return new String[] {a};
@@ -2840,7 +2840,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 					// but still read the container as it is is part of the file format
 					continue;
 
-				IClasspathContainer container = new PersistedClasspathContainer(project, path, entries);
+				IJsGlobalScopeContainer container = new PersistedJsGlobalScopeContainer(project, path, entries);
 
 				JavaModelManager.this.containerPut(project, path, container);
 
@@ -3076,7 +3076,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			}
 			if (entries != JavaProject.INVALID_CLASSPATH) {
 				final IClasspathEntry[] containerEntries = entries;
-				IClasspathContainer container = new IClasspathContainer() {
+				IJsGlobalScopeContainer container = new IJsGlobalScopeContainer() {
 					public IClasspathEntry[] getClasspathEntries() {
 						return containerEntries;
 					}
@@ -3332,7 +3332,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
     				for (iterator = projectContainers.entrySet().iterator(); iterator.hasNext();) {
     					Map.Entry entry = (Map.Entry) iterator.next();
     				    IPath containerPath = (IPath) entry.getKey();
-    				    IClasspathContainer container = (IClasspathContainer) entry.getValue();
+    				    IJsGlobalScopeContainer container = (IJsGlobalScopeContainer) entry.getValue();
     					String containerString = null;
     					try {
     						if (container == null) {
@@ -3491,7 +3491,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			for (Iterator i = containerMap.entrySet().iterator(); i.hasNext();) {
 				Entry entry = (Entry) i.next();
 				IPath path = (IPath) entry.getKey();
-				IClasspathContainer container = (IClasspathContainer) entry.getValue();
+				IJsGlobalScopeContainer container = (IJsGlobalScopeContainer) entry.getValue();
 				IClasspathEntry[] cpEntries = null;
 
 				if (container == null) {

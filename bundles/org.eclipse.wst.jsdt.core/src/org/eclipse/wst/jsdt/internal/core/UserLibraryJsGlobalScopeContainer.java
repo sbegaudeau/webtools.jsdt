@@ -12,18 +12,18 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
 /**
  *
  */
-public class UserLibraryClasspathContainer implements IClasspathContainer {
+public class UserLibraryJsGlobalScopeContainer implements IJsGlobalScopeContainer {
 
 	private String name;
 
-	public UserLibraryClasspathContainer(String libName) {
+	public UserLibraryJsGlobalScopeContainer(String libName) {
 		this.name= libName;
 	}
 
@@ -32,7 +32,7 @@ public class UserLibraryClasspathContainer implements IClasspathContainer {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getClasspathEntries()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getClasspathEntries()
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
 		UserLibrary library= getUserLibrary();
@@ -44,14 +44,14 @@ public class UserLibraryClasspathContainer implements IClasspathContainer {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getDescription()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getDescription()
 	 */
 	public String getDescription() {
 		return this.name;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getKind()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getKind()
 	 */
 	public int getKind() {
 		UserLibrary library= getUserLibrary();
@@ -62,14 +62,14 @@ public class UserLibraryClasspathContainer implements IClasspathContainer {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getPath()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getPath()
 	 */
 	public IPath getPath() {
 		return new Path(JavaCore.USER_LIBRARY_CONTAINER_ID).append(this.name);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 	 */
 	public String[] resolvedLibraryImport(String a) {
 		return new String[] {a};

@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -248,7 +248,7 @@ public class UserLibraryManager {
 			}
 			if (!affectedProjects.isEmpty()) {
 				IJavaProject[] affected= (IJavaProject[]) affectedProjects.toArray(new IJavaProject[affectedProjects.size()]);
-				IClasspathContainer[] containers= new IClasspathContainer[affected.length];
+				IJsGlobalScopeContainer[] containers= new IJsGlobalScopeContainer[affected.length];
 				if (!remove) {
 					// Previously, containers array only contained a null value. Then, user library classpath entry was first removed
 					// and then added a while after when post change delta event on .classpath file was fired...
@@ -256,13 +256,13 @@ public class UserLibraryManager {
 					// (see bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=61872)
 					// So now, instanciate a new user library classpath container instead which allow to refresh its content immediately
 					// as there's no classpath entry removal...
-					// Note that it works because equals(Object) method is not overridden for UserLibraryClasspathContainer.
+					// Note that it works because equals(Object) method is not overridden for UserLibraryJsGlobalScopeContainer.
 					// If it was, the update wouldn't happen while setting classpath container
-					// @see javaCore.setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
-					UserLibraryClasspathContainer container= new UserLibraryClasspathContainer(name);
+					// @see javaCore.setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], IProgressMonitor)
+					UserLibraryJsGlobalScopeContainer container= new UserLibraryJsGlobalScopeContainer(name);
 					containers[0] = container;
 				}
-				JavaCore.setClasspathContainer(containerPath, affected, containers, monitor == null ? null : new SubProgressMonitor(monitor, 1));
+				JavaCore.setJsGlobalScopeContainer(containerPath, affected, containers, monitor == null ? null : new SubProgressMonitor(monitor, 1));
 			}
 		} finally {
 			if (monitor != null) {

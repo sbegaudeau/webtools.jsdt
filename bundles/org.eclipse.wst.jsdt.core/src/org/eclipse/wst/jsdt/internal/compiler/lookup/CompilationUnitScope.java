@@ -249,7 +249,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 
 	/* may need to get the actual binding here */
 //	if(libSuperType!=null) {
-//		//ClasspathContainerInitializer cinit = libSuperType.getContainerInitializer();
+//		//JsGlobalScopeContainerInitializer cinit = libSuperType.getContainerInitializer();
 //		//IClasspathEntry[] entries = libSuperType.getClasspathEntries();
 //		IPackageFragment[] fragments = libSuperType.getPackageFragments();
 //		for(int i = 0;i<fragments.length;i++) {

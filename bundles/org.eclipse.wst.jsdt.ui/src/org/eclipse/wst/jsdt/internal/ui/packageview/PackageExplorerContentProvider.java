@@ -349,7 +349,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			IClasspathEntry classpathEntry= root.getRawClasspathEntry();
 			int entryKind= classpathEntry.getEntryKind();
 			if (entryKind == IClasspathEntry.CPE_CONTAINER) {
-				// all ClassPathContainers are added later 
+				// all JsGlobalScopeContainers are added later 
 			} else if (fShowLibrariesNode && (entryKind != IClasspathEntry.CPE_SOURCE) && entryKind!=IClasspathEntry.CPE_CONTAINER) {
 				addJARContainer= true;
 				projectPackageFragmentRoots.add(root);
@@ -376,7 +376,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 		for (int i= 0; i < rawClasspath.length; i++) {
 			IClasspathEntry classpathEntry= rawClasspath[i];
 			if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-				projectPackageFragmentRoots.add(new ClassPathContainer(project, classpathEntry));
+				projectPackageFragmentRoots.add(new JsGlobalScopeContainer(project, classpathEntry));
 			}	
 		}	
 		Object[] resources= project.getNonJavaResources();
@@ -539,7 +539,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				IClasspathEntry entry= root.getRawClasspathEntry();
 				int entryKind= entry.getEntryKind();
 				if (entryKind == IClasspathEntry.CPE_CONTAINER) {
-					return new ClassPathContainer(root.getJavaProject(), entry);
+					return new JsGlobalScopeContainer(root.getJavaProject(), entry);
 				} else if (fShowLibrariesNode && (entryKind == IClasspathEntry.CPE_LIBRARY || entryKind == IClasspathEntry.CPE_VARIABLE)) {
 					return new LibraryContainer(root.getJavaProject());
 				}

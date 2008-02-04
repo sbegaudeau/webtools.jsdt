@@ -3,13 +3,13 @@ package org.eclipse.wst.jsdt.core.compiler.libraries;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
 
 
-public class FireFoxLibInitializer extends ClasspathContainerInitializer implements IClasspathContainerInitialzerExtension {
+public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitialzerExtension {
 	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.FireFoxBrowserLibrary";
 	private static final String ContainerDescription = "FireFox Browser Support Library";
 	private static final char[][] LIBRARY_FILE_NAMES = {{'F', 'i', 'r', 'e', 'F', 'o', 'x', '2', '.', '0', '.', '0', '.', '3', '.', 'j', 's'}};
@@ -58,7 +58,7 @@ public class FireFoxLibInitializer extends ClasspathContainerInitializer impleme
 
 		return ImageDescriptor.createFromFile(this.getClass(), "FireFoxSmall.gif");
 		// System.out.println("Unimplemented
-		// method:BasicBrowserLibraryClassPathContainerInitializer.getImage");
+		// method:BasicBrowserLibraryJsGlobalScopeContainerInitializer.getImage");
 		// return null;
 	}
 
@@ -70,16 +70,16 @@ public class FireFoxLibInitializer extends ClasspathContainerInitializer impleme
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#getKind()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#getKind()
 	 */
 	public int getKind() {
 
 
-		return IClasspathContainer.K_SYSTEM;
+		return IJsGlobalScopeContainer.K_SYSTEM;
 	}
 
 
-	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
 		return true;
 
 

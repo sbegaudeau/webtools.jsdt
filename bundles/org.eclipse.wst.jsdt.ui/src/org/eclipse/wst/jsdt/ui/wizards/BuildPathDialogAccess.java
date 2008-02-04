@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.wst.jsdt.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ArchiveFileFilter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ClasspathContainerWizard;
+import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JsGlobalScopeContainerWizard;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.EditVariableEntryDialog;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JavadocLocationDialog;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.MultipleFolderSelectionDialog;
@@ -228,7 +228,7 @@ public final class BuildPathDialogAccess {
 	 * @param project The project the entry belongs to. The project does not have to exist and can also be <code>null</code>.
 	 * @param currentClasspath The class path entries currently selected to be set as the projects classpath. This can also
 	 * include the entry to be edited. The dialog uses these entries as information only (e.g. to avoid duplicate entries); The user still can make changes after the
-	 * the classpath container dialog has been closed. See {@link IClasspathContainerPageExtension} for
+	 * the classpath container dialog has been closed. See {@link IJsGlobalScopeContainerPageExtension} for
 	 * more information.
 	 * @return Returns the configured classpath container entry or <code>null</code> if the dialog has
 	 * been canceled by the user.
@@ -238,8 +238,8 @@ public final class BuildPathDialogAccess {
 			throw new IllegalArgumentException();
 		}
 		
-		ClasspathContainerWizard wizard= new ClasspathContainerWizard(initialEntry, project, currentClasspath);
-		if (ClasspathContainerWizard.openWizard(shell, wizard) == Window.OK) {
+		JsGlobalScopeContainerWizard wizard= new JsGlobalScopeContainerWizard(initialEntry, project, currentClasspath);
+		if (JsGlobalScopeContainerWizard.openWizard(shell, wizard) == Window.OK) {
 			IClasspathEntry[] created= wizard.getNewEntries();
 			if (created != null && created.length == 1) {
 				return created[0];
@@ -259,7 +259,7 @@ public final class BuildPathDialogAccess {
 	 * can also be <code>null</code>.
 	 * @param currentClasspath The class path entries currently selected to be set as the projects classpath. This can also
 	 * include the entry to be edited. The dialog uses these entries as information only; The user still can make changes after the
-	 * the classpath container dialog has been closed. See {@link IClasspathContainerPageExtension} for
+	 * the classpath container dialog has been closed. See {@link IJsGlobalScopeContainerPageExtension} for
 	 * more information.
 	 * @return Returns the selected classpath container entries or <code>null</code> if the dialog has
 	 * been canceled by the user.
@@ -269,8 +269,8 @@ public final class BuildPathDialogAccess {
 			throw new IllegalArgumentException();
 		}
 		
-		ClasspathContainerWizard wizard= new ClasspathContainerWizard((IClasspathEntry) null, project, currentClasspath);
-		if (ClasspathContainerWizard.openWizard(shell, wizard) == Window.OK) {
+		JsGlobalScopeContainerWizard wizard= new JsGlobalScopeContainerWizard((IClasspathEntry) null, project, currentClasspath);
+		if (JsGlobalScopeContainerWizard.openWizard(shell, wizard) == Window.OK) {
 			return wizard.getNewEntries();
 		}
 		return null;

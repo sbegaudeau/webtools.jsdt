@@ -365,7 +365,7 @@ public interface IJavaElement extends IAdaptable, ILookupScope{
 	 */// TODO (philippe) predicate shouldn't throw an exception
 	boolean isStructureKnown() throws JavaModelException;
 	/**
-	 * Returns a readable (non mangled) name.  In virtual elements this is derived from a ClassPathContainerInitializer
+	 * Returns a readable (non mangled) name.  In virtual elements this is derived from a JsGlobalScopeContainerInitializer
 	 *
 	 * @return a human friendly element name.
 	 */

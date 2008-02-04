@@ -14,17 +14,17 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 
 /**
- * Classpath container pages that implement <code>IClasspathContainerPage</code> can 
- * optionally implement <code>IClasspathContainerPageExtension</code> to get additional
+ * Classpath container pages that implement <code>IJsGlobalScopeContainerPage</code> can 
+ * optionally implement <code>IJsGlobalScopeContainerPageExtension</code> to get additional
  * information about the context when the page is opened. Method <code>initialize()</code>
- * is called before  <code>IClasspathContainerPage.setSelection</code>.
+ * is called before  <code>IJsGlobalScopeContainerPage.setSelection</code>.
  *
  * @since 2.1
  */
-public interface IClasspathContainerPageExtension {
+public interface IJsGlobalScopeContainerPageExtension {
 	
 	/**
-	 * Method <code>initialize()</code> is called before  <code>IClasspathContainerPage.setSelection</code>
+	 * Method <code>initialize()</code> is called before  <code>IJsGlobalScopeContainerPage.setSelection</code>
 	 * to give additional information about the context the classpath container entry is configured in. This information
 	 * only reflects the underlying dialogs current selection state. The user still can make changes after the
 	 * the classpath container pages has been closed or decide to cancel the operation.

@@ -5,8 +5,8 @@ import java.util.Map;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -168,13 +168,13 @@ protected boolean resourceExists() {
 	 */
 	public String getDisplayName() {
 
-		ClasspathContainerInitializer containerInitializer = getContainerInitializer();
+		JsGlobalScopeContainerInitializer containerInitializer = getContainerInitializer();
 		if(containerInitializer!=null) return containerInitializer.getDescription(getPath(), getJavaProject());
 		return super.getDisplayName();
 
 	}
 
-	public ClasspathContainerInitializer getContainerInitializer() {
+	public JsGlobalScopeContainerInitializer getContainerInitializer() {
 		IClasspathEntry fClassPathEntry=null;
 
 		try {
@@ -184,7 +184,7 @@ protected boolean resourceExists() {
 		if(fClassPathEntry==null) return null;
 
 
-		return  JavaCore.getClasspathContainerInitializer(fClassPathEntry.getPath().segment(0));
+		return  JavaCore.getJsGlobalScopeContainerInitializer(fClassPathEntry.getPath().segment(0));
 
 	}
 
@@ -200,13 +200,13 @@ protected boolean resourceExists() {
 			return fLangeRuntime[1];
 		}
 
-		ClasspathContainerInitializer init = getContainerInitializer();
+		JsGlobalScopeContainerInitializer init = getContainerInitializer();
 		if(init==null) {
 			fLangeRuntime[0]=true;
 			fLangeRuntime[1]=false;
 			return fLangeRuntime[1];
 		}
-		fLangeRuntime[1]= init.getKind()==IClasspathContainer.K_SYSTEM ||init.getKind()==IClasspathContainer.K_DEFAULT_SYSTEM ;
+		fLangeRuntime[1]= init.getKind()==IJsGlobalScopeContainer.K_SYSTEM ||init.getKind()==IJsGlobalScopeContainer.K_DEFAULT_SYSTEM ;
 		fLangeRuntime[0]=true;
 		return fLangeRuntime[1];
 	}

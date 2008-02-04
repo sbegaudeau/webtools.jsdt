@@ -19,7 +19,7 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
  * <p>
  * Clients should implement this interface and include the name of their 
  * class in an extension contributed to the jdt.ui's classpath container page 
- * extension point (named <code>org.eclipse.wst.jsdt.ui.classpathContainerPage
+ * extension point (named <code>org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage
  * </code>).
  * </p>
  * <p>
@@ -27,12 +27,12 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
  * <code>org.eclipse.jface.wizard.WizardPage</code>.
  * </p>
  * Clients implementing this interface may also implement
- * <code>IClasspathContainerPageExtension</code> to get additional context
+ * <code>IJsGlobalScopeContainerPageExtension</code> to get additional context
  * before this page is opened.
  *
  * @since 2.0
  */
-public interface IClasspathContainerPage extends IWizardPage {
+public interface IJsGlobalScopeContainerPage extends IWizardPage {
 	
 	/**
 	 * Called when the classpath container wizard is closed by selecting 

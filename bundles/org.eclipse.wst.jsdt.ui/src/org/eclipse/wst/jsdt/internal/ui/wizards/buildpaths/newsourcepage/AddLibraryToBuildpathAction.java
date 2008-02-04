@@ -39,11 +39,11 @@ import org.eclipse.wst.jsdt.internal.corext.buildpath.ClasspathModifier;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.CPListElement;
-import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ClasspathContainerWizard;
+import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JsGlobalScopeContainerWizard;
 
 //SelectedElements: IJavaProject && size == 1
 public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
@@ -90,7 +90,7 @@ public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
 			return;
 		}
 
-		ClasspathContainerWizard wizard= new ClasspathContainerWizard((IClasspathEntry) null, project, classpath) {
+		JsGlobalScopeContainerWizard wizard= new JsGlobalScopeContainerWizard((IClasspathEntry) null, project, classpath) {
 
 			/**
 			 * {@inheritDoc}
@@ -156,7 +156,7 @@ public class AddLibraryToBuildpathAction extends BuildpathModifierAction {
 
 						List result= new ArrayList(addedEntries.size());
 						for (int i= 0; i < addedEntries.size(); i++) {
-							result.add(new ClassPathContainer(project, selected[i]));
+							result.add(new JsGlobalScopeContainer(project, selected[i]));
 						}
 						selectAndReveal(new StructuredSelection(result));
 

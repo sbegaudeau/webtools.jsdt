@@ -9,8 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *     IBM Corporation - added support for requesting updates of a particular
  *                       container for generic container operations.
- * 						 - canUpdateClasspathContainer(IPath, IJavaProject)
- * 						 - requestClasspathContainerUpdate(IPath, IJavaProject, IClasspathContainer)
+ * 						 - canUpdateJsGlobalScopeContainer(IPath, IJavaProject)
+ * 						 - requestJsGlobalScopeContainerUpdate(IPath, IJavaProject, IJsGlobalScopeContainer)
  *     IBM Corporation - allow initializers to provide a readable description
  *                       of a container reference, ahead of actual resolution.
  * 						 - getDescription(IPath, IJavaProject)
@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
 /**
  * Abstract base implementation of all classpath container initializer.
  * Classpath variable containers are used in conjunction with the
- * "org.eclipse.wst.jsdt.core.classpathContainerInitializer" extension point.
+ * "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer" extension point.
  * <p>
  * Clients should subclass this class to implement a specific classpath
  * container initializer. The subclass must have a public 0-argument
@@ -45,10 +45,10 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
  * registered one will be invoked.
  *
  * @see IClasspathEntry
- * @see IClasspathContainer
+ * @see IJsGlobalScopeContainer
  * @since 2.0
  */
-public abstract class ClasspathContainerInitializer implements IClasspathContainerInitialzer,  IClasspathContainer {
+public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitialzer,  IJsGlobalScopeContainer {
 
 	/**
 	 * Status code indicating that an attribute is not supported.
@@ -75,36 +75,36 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
    /**
      * Creates a new classpath container initializer.
      */
-    public ClasspathContainerInitializer() {
+    public JsGlobalScopeContainerInitializer() {
     	// a classpath container initializer must have a public 0-argument constructor
     }
 
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
-		JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, new IClasspathContainer[] { getContainer(containerPath, project) }, null);
+		JavaCore.setJsGlobalScopeContainer(containerPath, new IJavaProject[] { project }, new IJsGlobalScopeContainer[] { getContainer(containerPath, project) }, null);
 	}
 
-	protected IClasspathContainer getContainer(IPath containerPath, IJavaProject project) {
+	protected IJsGlobalScopeContainer getContainer(IPath containerPath, IJavaProject project) {
 		return this;
 	}
     /* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#canUpdateJsGlobalScopeContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
-    public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
+    public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
     	if(project==null || containerPath==null) return true;
     	LibrarySuperType superType = project.getCommonSuperType();
     	return superType!=null && superType.getRawContainerPath().equals(getPath());
     }
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#requestClasspathContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IClasspathContainer)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#requestJsGlobalScopeContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer)
 	 */
-    public void requestClasspathContainerUpdate(IPath containerPath, IJavaProject project, IClasspathContainer containerSuggestion) throws CoreException {
+    public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
 
 		// By default, classpath container initializers do not accept updating containers
     }
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
     public String getDescription(IPath containerPath, IJavaProject project) {
 
@@ -113,12 +113,12 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
     }
 
     /* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getFailureContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#getFailureContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
-    public IClasspathContainer getFailureContainer(final IPath containerPath, IJavaProject project) {
+    public IJsGlobalScopeContainer getFailureContainer(final IPath containerPath, IJavaProject project) {
     	final String description = getDescription(containerPath, project);
     	return
-    		new IClasspathContainer() {
+    		new IJsGlobalScopeContainer() {
 				public IClasspathEntry[] getClasspathEntries() {
 					return new IClasspathEntry[0];
 				}
@@ -141,7 +141,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public Object getComparisonID(IPath containerPath, IJavaProject project) {
 
@@ -155,7 +155,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getHostPath(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#getHostPath(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public URI getHostPath(IPath path, IJavaProject project) {
 		return null;
@@ -218,7 +218,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 * </p><p>
 	 * If the subclass does not override this method, then the default behavior is
 	 * to return {@link IStatus#OK OK} if and only if the classpath container can
-	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
+	 * be updated (see {@link #canUpdateJsGlobalScopeContainer(IPath, IJavaProject)}).
 	 * </p>
 	 *
 	 * @param containerPath the path of the container which requires to be
@@ -230,7 +230,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 */
 	public IStatus getAccessRulesStatus(IPath containerPath, IJavaProject project) {
 
-		if (canUpdateClasspathContainer(containerPath, project)) {
+		if (canUpdateJsGlobalScopeContainer(containerPath, project)) {
 			return Status.OK_STATUS;
 		}
 		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
@@ -254,7 +254,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 * </p><p>
 	 * If the subclass does not override this method, then the default behavior is
 	 * to return {@link IStatus#OK OK} if and only if the classpath container can
-	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
+	 * be updated (see {@link #canUpdateJsGlobalScopeContainer(IPath, IJavaProject)}).
 	 * </p>
 	 *
 	 * @param containerPath the path of the container which requires to be
@@ -268,7 +268,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 */
 	public IStatus getAttributeStatus(IPath containerPath, IJavaProject project, String attributeKey) {
 
-		if (canUpdateClasspathContainer(containerPath, project)) {
+		if (canUpdateJsGlobalScopeContainer(containerPath, project)) {
 			return Status.OK_STATUS;
 		}
 		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
@@ -292,7 +292,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 * </p><p>
 	 * If the subclass does not override this method, then the default behavior is
 	 * to return {@link IStatus#OK OK} if and only if the classpath container can
-	 * be updated (see {@link #canUpdateClasspathContainer(IPath, IJavaProject)}).
+	 * be updated (see {@link #canUpdateJsGlobalScopeContainer(IPath, IJavaProject)}).
 	 * </p>
 	 *
 	 * @param containerPath the path of the container which requires to be
@@ -304,7 +304,7 @@ public abstract class ClasspathContainerInitializer implements IClasspathContain
 	 */
 	public IStatus getSourceAttachmentStatus(IPath containerPath, IJavaProject project) {
 
-		if (canUpdateClasspathContainer(containerPath, project)) {
+		if (canUpdateJsGlobalScopeContainer(containerPath, project)) {
 			return Status.OK_STATUS;
 		}
 		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);

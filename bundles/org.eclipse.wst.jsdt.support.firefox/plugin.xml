@@ -2,18 +2,18 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-   <extension point="org.eclipse.wst.jsdt.ui.classpathContainerPage">
-  	  <classpathContainerPage
-            name="%classpathContainerPage.name.0"
+   <extension point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
+  	  <JsGlobalScopeContainerPage
+            name="%JsGlobalScopeContainerPage.name.0"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.FireFoxLibraryWizardPage"
             id="org.eclipse.wst.jsdt.support.firefox">
-      </classpathContainerPage>
+      </JsGlobalScopeContainerPage>
    </extension>
    <extension
-      point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
+      point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+      <JsGlobalScopeContainerInitializer
             class="org.eclipse.wst.jsdt.core.compiler.libraries.FireFoxLibInitializer"
             id="org.eclipse.wst.jsdt.launching.FireFoxBrowserLibrary">
-      </classpathContainerInitializer>
+      </JsGlobalScopeContainerInitializer>
    </extension>
 </plugin>

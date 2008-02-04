@@ -3,18 +3,18 @@
 <schema targetNamespace="org.eclipse.wst.jsdt.core">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.wst.jsdt.core" id="classpathContainerInitializer" name="Includepath Container Initializers"/>
+         <meta.schema plugin="org.eclipse.wst.jsdt.core" id="JsGlobalScopeContainerInitializer" name="Includepath Container Initializers"/>
       </appInfo>
       <documentation>
          This extension point allows clients to contribute custom includepath container initializers, 
-      which are used to lazily bind classpath containers to instances of org.eclipse.wst.jsdt.core.IClasspathContainer.
+      which are used to lazily bind classpath containers to instances of org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer.
       </documentation>
    </annotation>
 
    <element name="extension">
       <complexType>
          <sequence>
-            <element ref="classpathContainerInitializer" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="JsGlobalScopeContainerInitializer" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -43,7 +43,7 @@
       </complexType>
    </element>
 
-   <element name="classpathContainerInitializer">
+   <element name="JsGlobalScopeContainerInitializer">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -56,10 +56,10 @@
             <annotation>
                <documentation>
                   the class that implements this container initializer.
-         This class must implement a public subclass of &lt;code&gt;org.eclipse.wst.jsdt.core.ClasspathContainerInitializer&lt;/code&gt; with a public 0-argument constructor.
+         This class must implement a public subclass of &lt;code&gt;org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer&lt;/code&gt; with a public 0-argument constructor.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.wst.jsdt.core.ClasspathContainerInitializer"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -80,9 +80,9 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         Example of a declaration of a &lt;code&gt;ClasspathContainerInitializer&lt;/code&gt; for a classpath container named &quot;JDK&quot;:  &lt;pre&gt;                                                                       
-&lt;extension point=&quot;org.eclipse.wst.jsdt.core.classpathContainerInitializer&quot;&gt;            
-   &lt;classpathContainerInitializer                                          
+         Example of a declaration of a &lt;code&gt;JsGlobalScopeContainerInitializer&lt;/code&gt; for a classpath container named &quot;JDK&quot;:  &lt;pre&gt;                                                                       
+&lt;extension point=&quot;org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer&quot;&gt;            
+   &lt;JsGlobalScopeContainerInitializer                                          
       id=&quot;JDK&quot;                                                        
       class=&quot;com.example.MyInitializer&quot;/&gt;                           
 &lt;/extension&gt;

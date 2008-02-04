@@ -55,7 +55,7 @@ public class ClasspathAttributeConfigurationDescriptors {
 				if (elem instanceof ClasspathAttributeConfiguration) {
 					fInstance= (ClasspathAttributeConfiguration) elem;
 				} else {
-					throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (page not of type IClasspathContainerPage): " + getKey(), null)); //$NON-NLS-1$
+					throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (page not of type IJsGlobalScopeContainerPage): " + getKey(), null)); //$NON-NLS-1$
 				}
 			}
 			return fInstance;

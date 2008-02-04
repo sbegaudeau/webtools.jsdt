@@ -21,46 +21,46 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.wst.jsdt.internal.ui.util.PixelConverter;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension2;
 
 
 /**
   */
-public class ClasspathContainerWizard extends Wizard {
+public class JsGlobalScopeContainerWizard extends Wizard {
 
-	private ClasspathContainerDescriptor fPageDesc;
+	private JsGlobalScopeContainerDescriptor fPageDesc;
 	private IClasspathEntry fEntryToEdit;
 
 	private IClasspathEntry[] fNewEntries;
-	private IClasspathContainerPage fContainerPage;
+	private IJsGlobalScopeContainerPage fContainerPage;
 	private IJavaProject fCurrProject;
 	private IClasspathEntry[] fCurrClasspath;
 	
-	private ClasspathContainerSelectionPage fSelectionWizardPage;
+	private JsGlobalScopeContainerSelectionPage fSelectionWizardPage;
 
 	/**
-	 * Constructor for ClasspathContainerWizard.
+	 * Constructor for JsGlobalScopeContainerWizard.
 	 * @param entryToEdit entry to edit
 	 * @param currProject current project
 	 * @param currEntries entries currently in classpath
 	 */
-	public ClasspathContainerWizard(IClasspathEntry entryToEdit, IJavaProject currProject, IClasspathEntry[] currEntries) {
+	public JsGlobalScopeContainerWizard(IClasspathEntry entryToEdit, IJavaProject currProject, IClasspathEntry[] currEntries) {
 		this(entryToEdit, null, currProject, currEntries);
 	}
 	
 	/**
-	 * Constructor for ClasspathContainerWizard.
+	 * Constructor for JsGlobalScopeContainerWizard.
 	 * @param pageDesc page description
 	 * @param currProject current project
 	 * @param currEntries entries currently in classpath
 	 */
-	public ClasspathContainerWizard(ClasspathContainerDescriptor pageDesc, IJavaProject currProject, IClasspathEntry[] currEntries) {
+	public JsGlobalScopeContainerWizard(JsGlobalScopeContainerDescriptor pageDesc, IJavaProject currProject, IClasspathEntry[] currEntries) {
 		this(null, pageDesc, currProject, currEntries);	
 	}
 
-	private ClasspathContainerWizard(IClasspathEntry entryToEdit, ClasspathContainerDescriptor pageDesc, IJavaProject currProject, IClasspathEntry[] currEntries) {
+	private JsGlobalScopeContainerWizard(IClasspathEntry entryToEdit, JsGlobalScopeContainerDescriptor pageDesc, IJavaProject currProject, IClasspathEntry[] currEntries) {
 		fEntryToEdit= entryToEdit;
 		fPageDesc= pageDesc;
 		fNewEntries= null;
@@ -70,9 +70,9 @@ public class ClasspathContainerWizard extends Wizard {
 		
 		String title;
 		if (entryToEdit == null) {
-			title= NewWizardMessages.ClasspathContainerWizard_new_title; 
+			title= NewWizardMessages.JsGlobalScopeContainerWizard_new_title; 
 		} else {
-			title= NewWizardMessages.ClasspathContainerWizard_edit_title; 
+			title= NewWizardMessages.JsGlobalScopeContainerWizard_edit_title; 
 		}
 		setWindowTitle(title);
 	}
@@ -87,8 +87,8 @@ public class ClasspathContainerWizard extends Wizard {
 	public boolean performFinish() {
 		if (fContainerPage != null) {
 			if (fContainerPage.finish()) {
-				if (fEntryToEdit == null && fContainerPage instanceof IClasspathContainerPageExtension2) {
-					fNewEntries= ((IClasspathContainerPageExtension2) fContainerPage).getNewContainers();
+				if (fEntryToEdit == null && fContainerPage instanceof IJsGlobalScopeContainerPageExtension2) {
+					fNewEntries= ((IJsGlobalScopeContainerPageExtension2) fContainerPage).getNewContainers();
 				} else {
 					IClasspathEntry entry= fContainerPage.getSelection();
 					fNewEntries= (entry != null) ? new IClasspathEntry[] { entry } : null;
@@ -107,27 +107,27 @@ public class ClasspathContainerWizard extends Wizard {
 			fContainerPage= getContainerPage(fPageDesc);
 			addPage(fContainerPage);			
 		} else if (fEntryToEdit == null) { // new entry: show selection page as first page
-			ClasspathContainerDescriptor[] containers= ClasspathContainerDescriptor.getDescriptors();
+			JsGlobalScopeContainerDescriptor[] containers= JsGlobalScopeContainerDescriptor.getDescriptors();
 
-			fSelectionWizardPage= new ClasspathContainerSelectionPage(containers);
+			fSelectionWizardPage= new JsGlobalScopeContainerSelectionPage(containers);
 			addPage(fSelectionWizardPage);
 
 			// add as dummy, will not be shown
-			fContainerPage= new ClasspathContainerDefaultPage();
+			fContainerPage= new JsGlobalScopeContainerDefaultPage();
 			addPage(fContainerPage);
 		} else { // fPageDesc == null && fEntryToEdit != null
-			ClasspathContainerDescriptor[] containers= ClasspathContainerDescriptor.getDescriptors();
-			ClasspathContainerDescriptor descriptor= findDescriptorPage(containers, fEntryToEdit);
+			JsGlobalScopeContainerDescriptor[] containers= JsGlobalScopeContainerDescriptor.getDescriptors();
+			JsGlobalScopeContainerDescriptor descriptor= findDescriptorPage(containers, fEntryToEdit);
 			fContainerPage= getContainerPage(descriptor);
 			addPage(fContainerPage);				
 		}
 		super.addPages();
 	}
 	
-	private IClasspathContainerPage getContainerPage(ClasspathContainerDescriptor pageDesc) {
-		IClasspathContainerPage containerPage= null;
+	private IJsGlobalScopeContainerPage getContainerPage(JsGlobalScopeContainerDescriptor pageDesc) {
+		IJsGlobalScopeContainerPage containerPage= null;
 		if (pageDesc != null) {
-			IClasspathContainerPage page= pageDesc.getPage();
+			IJsGlobalScopeContainerPage page= pageDesc.getPage();
 			if (page != null) {
 				return page; // if page is already created, avoid double initialization
 			}
@@ -140,14 +140,14 @@ public class ClasspathContainerWizard extends Wizard {
 		}
 
 		if (containerPage == null)	{
-			containerPage= new ClasspathContainerDefaultPage();
+			containerPage= new JsGlobalScopeContainerDefaultPage();
 			if (pageDesc != null) {
 				pageDesc.setPage(containerPage); // avoid creation next time
 			}
 		}
 
-		if (containerPage instanceof IClasspathContainerPageExtension) {
-			((IClasspathContainerPageExtension) containerPage).initialize(fCurrProject, fCurrClasspath);
+		if (containerPage instanceof IJsGlobalScopeContainerPageExtension) {
+			((IJsGlobalScopeContainerPageExtension) containerPage).initialize(fCurrProject, fCurrClasspath);
 		}
 
 		containerPage.setSelection(fEntryToEdit);
@@ -161,7 +161,7 @@ public class ClasspathContainerWizard extends Wizard {
 	public IWizardPage getNextPage(IWizardPage page) {
 		if (page == fSelectionWizardPage) {
 
-			ClasspathContainerDescriptor selected= fSelectionWizardPage.getSelected();
+			JsGlobalScopeContainerDescriptor selected= fSelectionWizardPage.getSelected();
 			fContainerPage= getContainerPage(selected);
 			
 			return fContainerPage;
@@ -170,13 +170,13 @@ public class ClasspathContainerWizard extends Wizard {
 	}
 	
 	private void handlePageCreationFailed(CoreException e) {
-		String title= NewWizardMessages.ClasspathContainerWizard_pagecreationerror_title; 
-		String message= NewWizardMessages.ClasspathContainerWizard_pagecreationerror_message; 
+		String title= NewWizardMessages.JsGlobalScopeContainerWizard_pagecreationerror_title; 
+		String message= NewWizardMessages.JsGlobalScopeContainerWizard_pagecreationerror_message; 
 		ExceptionHandler.handle(e, getShell(), title, message);
 	}
 	
 	
-	private ClasspathContainerDescriptor findDescriptorPage(ClasspathContainerDescriptor[] containers, IClasspathEntry entry) {
+	private JsGlobalScopeContainerDescriptor findDescriptorPage(JsGlobalScopeContainerDescriptor[] containers, IClasspathEntry entry) {
 		for (int i = 0; i < containers.length; i++) {
 			if (containers[i].canEdit(entry)) {
 				return containers[i];
@@ -190,7 +190,7 @@ public class ClasspathContainerWizard extends Wizard {
 	 */
 	public void dispose() {
 		if (fSelectionWizardPage != null) {
-			ClasspathContainerDescriptor[] descriptors= fSelectionWizardPage.getContainers();
+			JsGlobalScopeContainerDescriptor[] descriptors= fSelectionWizardPage.getContainers();
 			for (int i= 0; i < descriptors.length; i++) {
 				descriptors[i].dispose();
 			}
@@ -213,7 +213,7 @@ public class ClasspathContainerWizard extends Wizard {
 		return false;
 	}
 	
-	public static int openWizard(Shell shell, ClasspathContainerWizard wizard) {
+	public static int openWizard(Shell shell, JsGlobalScopeContainerWizard wizard) {
 		WizardDialog dialog= new WizardDialog(shell, wizard);
 		PixelConverter converter= new PixelConverter(JFaceResources.getDialogFont());
 		dialog.setMinimumPageSize(converter.convertWidthInCharsToPixels(70), converter.convertHeightInCharsToPixels(20));

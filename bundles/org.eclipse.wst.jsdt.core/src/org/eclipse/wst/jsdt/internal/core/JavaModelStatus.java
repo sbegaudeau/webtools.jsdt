@@ -15,8 +15,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModelStatus;
 import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
@@ -315,7 +315,7 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 
 				case CP_CONTAINER_PATH_UNBOUND:
 					IJavaProject javaProject = (IJavaProject)elements[0];
-					ClasspathContainerInitializer initializer = JavaCore.getClasspathContainerInitializer(this.path.segment(0));
+					JsGlobalScopeContainerInitializer initializer = JavaCore.getJsGlobalScopeContainerInitializer(this.path.segment(0));
 					String description = null;
 					if (initializer != null) description = initializer.getDescription(this.path, javaProject);
 					if (description == null) description = path.makeRelative().toString();
@@ -323,15 +323,15 @@ public class JavaModelStatus extends Status implements IJavaModelStatus, IJavaMo
 
 				case INVALID_CP_CONTAINER_ENTRY:
 					javaProject = (IJavaProject)elements[0];
-					IClasspathContainer container = null;
+					IJsGlobalScopeContainer container = null;
 					description = null;
 					try {
-						container = JavaCore.getClasspathContainer(path, javaProject);
+						container = JavaCore.getJsGlobalScopeContainer(path, javaProject);
 					} catch(JavaModelException e){
 						// project doesn't exist: ignore
 					}
 					if (container == null) {
-						 initializer = JavaCore.getClasspathContainerInitializer(path.segment(0));
+						 initializer = JavaCore.getJsGlobalScopeContainerInitializer(path.segment(0));
 						if (initializer != null) description = initializer.getDescription(path, javaProject);
 					} else {
 						description = container.getDescription();

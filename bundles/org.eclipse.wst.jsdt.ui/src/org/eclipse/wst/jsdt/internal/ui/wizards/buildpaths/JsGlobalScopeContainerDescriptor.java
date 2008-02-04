@@ -22,22 +22,22 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
 import org.eclipse.wst.jsdt.ui.JavaUI;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
 
 /**
   */
-public class ClasspathContainerDescriptor {
+public class JsGlobalScopeContainerDescriptor {
 
 	private IConfigurationElement fConfigElement;
-	private IClasspathContainerPage fPage;
+	private IJsGlobalScopeContainerPage fPage;
 
-	private static final String ATT_EXTENSION = "classpathContainerPage"; //$NON-NLS-1$
+	private static final String ATT_EXTENSION = "JsGlobalScopeContainerPage"; //$NON-NLS-1$
 
 	private static final String ATT_ID = "id"; //$NON-NLS-1$
 	private static final String ATT_NAME = "name"; //$NON-NLS-1$
 	private static final String ATT_PAGE_CLASS = "class"; //$NON-NLS-1$	
 
-	public ClasspathContainerDescriptor(IConfigurationElement configElement) throws CoreException {
+	public JsGlobalScopeContainerDescriptor(IConfigurationElement configElement) throws CoreException {
 		super();
 		fConfigElement = configElement;
 		fPage= null;
@@ -54,24 +54,24 @@ public class ClasspathContainerDescriptor {
 		}
 	}
 
-	public IClasspathContainerPage createPage() throws CoreException  {
+	public IJsGlobalScopeContainerPage createPage() throws CoreException  {
 		if (fPage == null) {
 			Object elem= CoreUtility.createExtension(fConfigElement, ATT_PAGE_CLASS);
-			if (elem instanceof IClasspathContainerPage) {
-				fPage= (IClasspathContainerPage) elem;
+			if (elem instanceof IJsGlobalScopeContainerPage) {
+				fPage= (IJsGlobalScopeContainerPage) elem;
 			} else {
 				String id= fConfigElement.getAttribute(ATT_ID);
-				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (page not of type IClasspathContainerPage): " + id, null)); //$NON-NLS-1$
+				throw new CoreException(new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, 0, "Invalid extension (page not of type IJsGlobalScopeContainerPage): " + id, null)); //$NON-NLS-1$
 			}
 		}
 		return fPage;
 	}
 	
-	public IClasspathContainerPage getPage() {
+	public IJsGlobalScopeContainerPage getPage() {
 		return fPage;
 	}
 	
-	public void setPage(IClasspathContainerPage page) {
+	public void setPage(IJsGlobalScopeContainerPage page) {
 		fPage= page;
 	}
 	
@@ -99,18 +99,18 @@ public class ClasspathContainerDescriptor {
 		return false;
 	}
 
-	public static ClasspathContainerDescriptor[] getDescriptors() {
+	public static JsGlobalScopeContainerDescriptor[] getDescriptors() {
 		ArrayList containers= new ArrayList();
 		
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry().getExtensionPoint(JavaUI.ID_PLUGIN, ATT_EXTENSION);
 		if (extensionPoint != null) {
-			ClasspathContainerDescriptor defaultPage= null;
-			String defaultPageName= ClasspathContainerDefaultPage.class.getName();
+			JsGlobalScopeContainerDescriptor defaultPage= null;
+			String defaultPageName= JsGlobalScopeContainerDefaultPage.class.getName();
 			
 			IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
 			for (int i = 0; i < elements.length; i++) {
 				try {
-					ClasspathContainerDescriptor curr= new ClasspathContainerDescriptor(elements[i]);					
+					JsGlobalScopeContainerDescriptor curr= new JsGlobalScopeContainerDescriptor(elements[i]);					
 					if (defaultPageName.equals(curr.getPageClass())) {
 						defaultPage= curr;
 					} else {
@@ -125,7 +125,7 @@ public class ClasspathContainerDescriptor {
 				containers.add(defaultPage);
 			}
 		}
-		return (ClasspathContainerDescriptor[]) containers.toArray(new ClasspathContainerDescriptor[containers.size()]);
+		return (JsGlobalScopeContainerDescriptor[]) containers.toArray(new JsGlobalScopeContainerDescriptor[containers.size()]);
 	}
 
 }

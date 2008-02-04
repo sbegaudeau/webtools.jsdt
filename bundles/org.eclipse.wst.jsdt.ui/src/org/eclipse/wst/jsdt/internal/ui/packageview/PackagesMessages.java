@@ -60,8 +60,8 @@ public final class PackagesMessages extends NLS {
 	public static String LayoutActionGroup_label;
 	public static String LayoutActionGroup_flatLayoutAction_label;
 	public static String LayoutActionGroup_hierarchicalLayoutAction_label;
-	public static String ClassPathContainer_unbound_label;
-	public static String ClassPathContainer_unknown_label;
+	public static String JsGlobalScopeContainer_unbound_label;
+	public static String JsGlobalScopeContainer_unknown_label;
 	public static String PackageExplorerPart_workspace;
 	public static String PackageExplorerPart_workingSetModel;
 

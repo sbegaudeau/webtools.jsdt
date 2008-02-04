@@ -2,18 +2,18 @@
 <?eclipse version="3.2"?>
 <plugin>
 
-   <extension point="org.eclipse.wst.jsdt.ui.classpathContainerPage">
-  	  <classpathContainerPage
-            name="%classpathContainerPage.name.0"
+   <extension point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
+  	  <JsGlobalScopeContainerPage
+            name="%JsGlobalScopeContainerPage.name.0"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.InternetExplorerLibraryWizardPage"
             id="org.eclipse.wst.jsdt.support.ie">
-      </classpathContainerPage>
+      </JsGlobalScopeContainerPage>
    </extension>
    <extension
-      point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
+      point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+      <JsGlobalScopeContainerInitializer
             class="org.eclipse.wst.jsdt.core.compiler.libraries.InternetExplorerLibInitializer"
             id="org.eclipse.wst.jsdt.launching.InternetExplorer">
-      </classpathContainerInitializer>
+      </JsGlobalScopeContainerInitializer>
 	</extension>
 </plugin>

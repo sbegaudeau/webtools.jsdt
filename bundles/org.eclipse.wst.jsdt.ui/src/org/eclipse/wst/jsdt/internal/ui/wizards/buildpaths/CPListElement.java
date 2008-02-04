@@ -23,10 +23,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
@@ -94,7 +94,7 @@ public class CPListElement {
 		fCachedEntry= null;
 		fParentContainer= parent;
 		
-		ClasspathContainerInitializer init = getContainerInitializer();
+		JsGlobalScopeContainerInitializer init = getContainerInitializer();
 		
 		boolean allowJsDoc = true;
 		
@@ -124,7 +124,7 @@ public class CPListElement {
 			case IClasspathEntry.CPE_CONTAINER:
 				//createAttributeElement(ACCESSRULES, new IAccessRule[0], true);
 				try {
-					IClasspathContainer container= JavaCore.getClasspathContainer(fPath, fProject);
+					IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(fPath, fProject);
 					if (container != null) {
 						IClasspathEntry[] entries= container.getClasspathEntries();
 						if (entries != null) { // invalid container implementation
@@ -401,12 +401,12 @@ public class CPListElement {
 	protected void attributeChanged(String key) {
 		fCachedEntry= null;
 	}
-	/* return ClasspathContainerInitializer (if it exists)
+	/* return JsGlobalScopeContainerInitializer (if it exists)
 	 * 
 	 */
-	public ClasspathContainerInitializer getContainerInitializer() {
+	public JsGlobalScopeContainerInitializer getContainerInitializer() {
 		if (fEntryKind == IClasspathEntry.CPE_CONTAINER && fProject != null) {
-			ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(fPath.segment(0));
+			JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(fPath.segment(0));
 			return initializer ;
 		}else if(fParentContainer !=null && fParentContainer instanceof CPListElement) {
 			return ((CPListElement)fParentContainer).getContainerInitializer();
@@ -417,8 +417,8 @@ public class CPListElement {
 	
 	private IStatus evaluateContainerChildStatus(CPListElementAttribute attrib) {
 		if (fProject != null) {
-			ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(fPath.segment(0));
-			if (initializer != null && initializer.canUpdateClasspathContainer(fPath, fProject)) {
+			JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(fPath.segment(0));
+			if (initializer != null && initializer.canUpdateJsGlobalScopeContainer(fPath, fProject)) {
 				if (attrib.isBuiltIn()) {
 					if (CPListElement.SOURCEATTACHMENT.equals(attrib.getKey())) {
 						return initializer.getSourceAttachmentStatus(fPath, fProject);
@@ -429,16 +429,16 @@ public class CPListElement {
 					return initializer.getAttributeStatus(fPath, fProject, attrib.getKey());
 				}
 			}
-			return new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, ClasspathContainerInitializer.ATTRIBUTE_READ_ONLY, "", null); //$NON-NLS-1$
+			return new Status(IStatus.ERROR, JavaUI.ID_PLUGIN, JsGlobalScopeContainerInitializer.ATTRIBUTE_READ_ONLY, "", null); //$NON-NLS-1$
 		}
 		return null;
 	}
 	
 	private boolean canUpdateContainer() {
 		if (fEntryKind == IClasspathEntry.CPE_CONTAINER && fProject != null) {
-			//ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(fPath.segment(0));
-			ClasspathContainerInitializer initializer=getContainerInitializer();
-			return (initializer != null && initializer.canUpdateClasspathContainer(fPath, fProject));
+			//JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(fPath.segment(0));
+			JsGlobalScopeContainerInitializer initializer=getContainerInitializer();
+			return (initializer != null && initializer.canUpdateJsGlobalScopeContainer(fPath, fProject));
 		}
 		return false;
 	}
@@ -582,7 +582,7 @@ public class CPListElement {
 		switch (curr.getEntryKind()) {
 			case IClasspathEntry.CPE_CONTAINER:
 				try {
-					isMissing= project != null && (JavaCore.getClasspathContainer(path, project) == null);
+					isMissing= project != null && (JavaCore.getJsGlobalScopeContainer(path, project) == null);
 				} catch (JavaModelException e) {
 					isMissing= true;
 				}

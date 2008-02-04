@@ -29,12 +29,12 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageFragmentRootContainer;
 import org.eclipse.wst.jsdt.internal.ui.preferences.BuildPathsPropertyPage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
 
-//SelectedElements iff enabled: (IJavaElement || ClassPathContainer || IAdaptable) && size == 1
+//SelectedElements iff enabled: (IJavaElement || JsGlobalScopeContainer || IAdaptable) && size == 1
 public class ConfigureBuildPathAction extends BuildpathModifierAction {
 
 	public ConfigureBuildPathAction(IWorkbenchSite site) {
@@ -72,7 +72,7 @@ public class ConfigureBuildPathAction extends BuildpathModifierAction {
 		} else if (firstElement instanceof PackageFragmentRootContainer) {
 			PackageFragmentRootContainer container= (PackageFragmentRootContainer) firstElement;
 			project= container.getJavaProject().getProject();
-			IClasspathEntry entry= container instanceof ClassPathContainer ? ((ClassPathContainer) container).getClasspathEntry() : JavaCore.newLibraryEntry(new Path("/x/y"), null, null); //$NON-NLS-1$
+			IClasspathEntry entry= container instanceof JsGlobalScopeContainer ? ((JsGlobalScopeContainer) container).getClasspathEntry() : JavaCore.newLibraryEntry(new Path("/x/y"), null, null); //$NON-NLS-1$
 			data.put(BuildPathsPropertyPage.DATA_REVEAL_ENTRY, entry);
 		} else {
 			project= ((IResource) ((IAdaptable) firstElement).getAdapter(IResource.class)).getProject();

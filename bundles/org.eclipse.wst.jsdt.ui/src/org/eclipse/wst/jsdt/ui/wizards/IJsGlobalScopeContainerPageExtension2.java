@@ -13,20 +13,20 @@ package org.eclipse.wst.jsdt.ui.wizards;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 
 /**
- * Classpath container pages that implement {@link IClasspathContainerPage} can 
- * optionally implement {@link IClasspathContainerPageExtension2} to return more
+ * Classpath container pages that implement {@link IJsGlobalScopeContainerPage} can 
+ * optionally implement {@link IJsGlobalScopeContainerPageExtension2} to return more
  * than one element when creating new containers. If implemented, the method {@link #getNewContainers()}
- * is used instead of the method {@link IClasspathContainerPage#getSelection() } to get the
- * newly selected containers. {@link IClasspathContainerPage#getSelection() } is still used
+ * is used instead of the method {@link IJsGlobalScopeContainerPage#getSelection() } to get the
+ * newly selected containers. {@link IJsGlobalScopeContainerPage#getSelection() } is still used
  * for edited elements.
  *
  * @since 3.0
  */
-public interface IClasspathContainerPageExtension2 {
+public interface IJsGlobalScopeContainerPageExtension2 {
 	
 	/**
-	 * Method {@link #getNewContainers()} is called instead of {@link IClasspathContainerPage#getSelection() }
-	 * to get the newly added containers. {@link IClasspathContainerPage#getSelection() } is still used
+	 * Method {@link #getNewContainers()} is called instead of {@link IJsGlobalScopeContainerPage#getSelection() }
+	 * to get the newly added containers. {@link IJsGlobalScopeContainerPage#getSelection() } is still used
 	 * to get the edited elements.
 	 * @return the classpath entries created on the page. All returned entries must be on kind
 	 * {@link IClasspathEntry#CPE_CONTAINER}

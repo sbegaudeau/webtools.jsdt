@@ -30,30 +30,30 @@ import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.StringDialogField;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
 /**
   */
-public class ClasspathContainerDefaultPage extends NewElementWizardPage implements IClasspathContainerPage, IClasspathContainerPageExtension {
+public class JsGlobalScopeContainerDefaultPage extends NewElementWizardPage implements IJsGlobalScopeContainerPage, IJsGlobalScopeContainerPageExtension {
 
 	private StringDialogField fEntryField;
 	private ArrayList fUsedPaths;
 
 	/**
-	 * Constructor for ClasspathContainerDefaultPage.
+	 * Constructor for JsGlobalScopeContainerDefaultPage.
 	 */
-	public ClasspathContainerDefaultPage() {
-		super("ClasspathContainerDefaultPage"); //$NON-NLS-1$
-		setTitle(NewWizardMessages.ClasspathContainerDefaultPage_title); 
-		setDescription(NewWizardMessages.ClasspathContainerDefaultPage_description); 
+	public JsGlobalScopeContainerDefaultPage() {
+		super("JsGlobalScopeContainerDefaultPage"); //$NON-NLS-1$
+		setTitle(NewWizardMessages.JsGlobalScopeContainerDefaultPage_title); 
+		setDescription(NewWizardMessages.JsGlobalScopeContainerDefaultPage_description); 
 		setImageDescriptor(JavaPluginImages.DESC_WIZBAN_ADD_LIBRARY);
 		
 		fUsedPaths= new ArrayList();
 		
 		fEntryField= new StringDialogField();
-		fEntryField.setLabelText(NewWizardMessages.ClasspathContainerDefaultPage_path_label); 
+		fEntryField.setLabelText(NewWizardMessages.JsGlobalScopeContainerDefaultPage_path_label); 
 		fEntryField.setDialogFieldListener(new IDialogFieldListener() {
 			public void dialogFieldChanged(DialogField field) {
 				validatePath();
@@ -66,15 +66,15 @@ public class ClasspathContainerDefaultPage extends NewElementWizardPage implemen
 		StatusInfo status= new StatusInfo();
 		String str= fEntryField.getText();
 		if (str.length() == 0) {
-			status.setError(NewWizardMessages.ClasspathContainerDefaultPage_path_error_enterpath); 
+			status.setError(NewWizardMessages.JsGlobalScopeContainerDefaultPage_path_error_enterpath); 
 		} else if (!Path.ROOT.isValidPath(str)) {
-			status.setError(NewWizardMessages.ClasspathContainerDefaultPage_path_error_invalidpath); 
+			status.setError(NewWizardMessages.JsGlobalScopeContainerDefaultPage_path_error_invalidpath); 
 		} else {
 			IPath path= new Path(str);
 			if (path.segmentCount() == 0) {
-				status.setError(NewWizardMessages.ClasspathContainerDefaultPage_path_error_needssegment); 
+				status.setError(NewWizardMessages.JsGlobalScopeContainerDefaultPage_path_error_needssegment); 
 			} else if (fUsedPaths.contains(path)) {
-				status.setError(NewWizardMessages.ClasspathContainerDefaultPage_path_error_alreadyexists); 
+				status.setError(NewWizardMessages.JsGlobalScopeContainerDefaultPage_path_error_alreadyexists); 
 			}
 		}
 		updateStatus(status);
@@ -100,21 +100,21 @@ public class ClasspathContainerDefaultPage extends NewElementWizardPage implemen
 	}
 
 	/* (non-Javadoc)
-	 * @see IClasspathContainerPage#finish()
+	 * @see IJsGlobalScopeContainerPage#finish()
 	 */
 	public boolean finish() {
 		return true;
 	}
 	
 	/* (non-Javadoc)
-	 * @see IClasspathContainerPage#getSelection()
+	 * @see IJsGlobalScopeContainerPage#getSelection()
 	 */
 	public IClasspathEntry getSelection() {
 		return JavaCore.newContainerEntry(new Path(fEntryField.getText()));
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension#initialize(org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IClasspathEntry)
+	 * @see org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension#initialize(org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IClasspathEntry)
 	 */
 	public void initialize(IJavaProject project, IClasspathEntry[] currentEntries) {
 		for (int i= 0; i < currentEntries.length; i++) {
@@ -126,7 +126,7 @@ public class ClasspathContainerDefaultPage extends NewElementWizardPage implemen
 	}		
 
 	/* (non-Javadoc)
-	 * @see IClasspathContainerPage#setSelection(IClasspathEntry)
+	 * @see IJsGlobalScopeContainerPage#setSelection(IClasspathEntry)
 	 */
 	public void setSelection(IClasspathEntry containerEntry) {
 		if (containerEntry != null) {

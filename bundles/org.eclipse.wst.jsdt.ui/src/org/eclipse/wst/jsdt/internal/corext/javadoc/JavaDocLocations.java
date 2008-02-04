@@ -44,7 +44,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -195,7 +195,7 @@ public class JavaDocLocations {
 
 	private static void convertContainer(IClasspathEntry entry, IJavaProject project, Map oldLocationMap) {
 		try {
-			IClasspathContainer container= JavaCore.getClasspathContainer(entry.getPath(), project);
+			IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(entry.getPath(), project);
 			if (container == null) {
 				return;
 			}
@@ -302,7 +302,7 @@ public class JavaDocLocations {
 	}
 	
 	private static IClasspathEntry getRealClasspathEntry(IJavaProject jproject, IPath containerPath, IPath libPath) throws JavaModelException {
-		IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
+		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
 		if (container != null) {
 			IClasspathEntry[] entries= container.getClasspathEntries();
 			for (int i= 0; i < entries.length; i++) {

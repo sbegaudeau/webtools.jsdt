@@ -20,7 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.JavaCore;
 
@@ -29,7 +29,7 @@ import com.ibm.icu.text.MessageFormat;
 /** 
  * JRE Container - resolves a classpath container variable to a JRE
  */
-public class JREContainer implements IClasspathContainer {
+public class JREContainer implements IJsGlobalScopeContainer {
 
 	/**
 	 * Corresponding JRE
@@ -137,14 +137,14 @@ public class JREContainer implements IClasspathContainer {
 	}
 	
 	/**
-	 * @see IClasspathContainer#getClasspathEntries()
+	 * @see IJsGlobalScopeContainer#getClasspathEntries()
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
 		return getClasspathEntries(fVMInstall);
 	}
 
 	/**
-	 * @see IClasspathContainer#getDescription()
+	 * @see IJsGlobalScopeContainer#getDescription()
 	 */
 	public String getDescription() {
 //		String environmentId = JavaRuntime.getExecutionEnvironmentId(getPath());
@@ -158,21 +158,21 @@ public class JREContainer implements IClasspathContainer {
 	}
 
 	/**
-	 * @see IClasspathContainer#getKind()
+	 * @see IJsGlobalScopeContainer#getKind()
 	 */
 	public int getKind() {
-		return IClasspathContainer.K_DEFAULT_SYSTEM;
+		return IJsGlobalScopeContainer.K_DEFAULT_SYSTEM;
 	}
 
 	/**
-	 * @see IClasspathContainer#getPath()
+	 * @see IJsGlobalScopeContainer#getPath()
 	 */
 	public IPath getPath() {
 		return fPath;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainer#resolvedLibraryImport(java.lang.String)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer#resolvedLibraryImport(java.lang.String)
 	 */
 	public String[] resolvedLibraryImport(String a) {
 		

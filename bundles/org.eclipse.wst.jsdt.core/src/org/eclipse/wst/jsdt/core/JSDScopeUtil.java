@@ -20,13 +20,13 @@ public class JSDScopeUtil {
 
 
 
-	public static ClasspathContainerInitializer getContainerInitializer(IPath classPathEntry) {
+	public static JsGlobalScopeContainerInitializer getContainerInitializer(IPath classPathEntry) {
 		if(classPathEntry==null ) return null;
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(classPathEntry.segment(0));
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(classPathEntry.segment(0));
 		return initializer ;
 	}
 
-	public IClasspathEntry[] getClasspathEntries(IClasspathContainer container) {
+	public IClasspathEntry[] getClasspathEntries(IJsGlobalScopeContainer container) {
 
 
 		if(container!=null) return	container.getClasspathEntries();
@@ -34,10 +34,10 @@ public class JSDScopeUtil {
 		return new IClasspathEntry[0];
 	}
 
-	public  IClasspathContainer getLibraryContainer(IPath cpEntry, IJavaProject javaProject) {
-		IClasspathContainer container=null;
+	public  IJsGlobalScopeContainer getLibraryContainer(IPath cpEntry, IJavaProject javaProject) {
+		IJsGlobalScopeContainer container=null;
 		try {
-			container = JavaCore.getClasspathContainer(cpEntry, javaProject);
+			container = JavaCore.getJsGlobalScopeContainer(cpEntry, javaProject);
 		} catch (JavaModelException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
@@ -45,7 +45,7 @@ public class JSDScopeUtil {
 		return	container;
 	}
 
-	public static ClasspathContainerInitializer findLibraryInitializer(IPath compUnitPath, IJavaProject javaProject) {
+	public static JsGlobalScopeContainerInitializer findLibraryInitializer(IPath compUnitPath, IJavaProject javaProject) {
 		IPackageFragmentRoot[] roots = new IPackageFragmentRoot[0];
 		try {
 			roots = javaProject.getAllPackageFragmentRoots();

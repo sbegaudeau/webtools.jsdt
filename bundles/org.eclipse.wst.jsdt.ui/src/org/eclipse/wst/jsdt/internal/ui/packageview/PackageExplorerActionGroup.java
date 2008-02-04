@@ -220,7 +220,7 @@ class PackageExplorerActionGroup extends CompositeActionGroup {
 		int size= selection.size();
 		Object element= selection.getFirstElement();
 		
-		if (element instanceof ClassPathContainer.RequiredProjectWrapper) 
+		if (element instanceof JsGlobalScopeContainer.RequiredProjectWrapper) 
 			menu.appendToGroup(IContextMenuConstants.GROUP_SHOW, fGotoRequiredProjectAction);
 		
 		addGotoMenu(menu, element, size);

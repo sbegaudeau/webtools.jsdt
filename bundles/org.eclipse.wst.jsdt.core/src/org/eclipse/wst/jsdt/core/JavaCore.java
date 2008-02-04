@@ -20,7 +20,7 @@
  *                                 CORE_JAVA_BUILD_CLEAN_OUTPUT_FOLDER
  *                                 CORE_JAVA_BUILD_RECREATE_MODIFIED_CLASS_FILES_IN_OUTPUT_FOLDER
  *                                 CLEAN
- *     IBM Corporation - added getClasspathContainerInitializer(String)
+ *     IBM Corporation - added getJsGlobalScopeContainerInitializer(String)
  *     IBM Corporation - added the following constants:
  *                                 CODEASSIST_ARGUMENT_PREFIXES
  *                                 CODEASSIST_ARGUMENT_SUFFIXES
@@ -1571,18 +1571,18 @@ public final class JavaCore extends Plugin {
 	 * <p>
 	 * The containerPath is a formed by a first ID segment followed with extra segments, which can be
 	 * used as additional hints for resolution. If no container was ever recorded for this container path
-	 * onto this project (using <code>setClasspathContainer</code>, then a
-	 * <code>ClasspathContainerInitializer</code> will be activated if any was registered for this container
-	 * ID onto the extension point "org.eclipse.wst.jsdt.core.classpathContainerInitializer".
+	 * onto this project (using <code>setJsGlobalScopeContainer</code>, then a
+	 * <code>JsGlobalScopeContainerInitializer</code> will be activated if any was registered for this container
+	 * ID onto the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
 	 * <p>
 	 * There is no assumption that the returned container must answer the exact same containerPath
-	 * when requested <code>IClasspathContainer#getPath</code>.
+	 * when requested <code>IJsGlobalScopeContainer#getPath</code>.
 	 * Indeed, the containerPath is just an indication for resolving it to an actual container object.
 	 * <p>
 	 * Classpath container values are persisted locally to the workspace, but
 	 * are not preserved from a session to another. It is thus highly recommended to register a
-	 * <code>ClasspathContainerInitializer</code> for each referenced container
-	 * (through the extension point "org.eclipse.wst.jsdt.core.ClasspathContainerInitializer").
+	 * <code>JsGlobalScopeContainerInitializer</code> for each referenced container
+	 * (through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer").
 	 * <p>
 	 * @param containerPath the name of the container, which needs to be resolved
 	 * @param project a specific project in which the container is being resolved
@@ -1591,15 +1591,15 @@ public final class JavaCore extends Plugin {
 	 * @exception JavaModelException if an exception occurred while resolving the container, or if the resolved container
 	 *   contains illegal entries (contains CPE_CONTAINER entries or null entries).
 	 *
-	 * @see ClasspathContainerInitializer
-	 * @see IClasspathContainer
-	 * @see #setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
+	 * @see JsGlobalScopeContainerInitializer
+	 * @see IJsGlobalScopeContainer
+	 * @see #setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], IProgressMonitor)
 	 * @since 2.0
 	 */
-	public static IClasspathContainer getClasspathContainer(IPath containerPath, IJavaProject project) throws JavaModelException {
+	public static IJsGlobalScopeContainer getJsGlobalScopeContainer(IPath containerPath, IJavaProject project) throws JavaModelException {
 
 	    JavaModelManager manager = JavaModelManager.getJavaModelManager();
-		IClasspathContainer container = manager.getClasspathContainer(containerPath, project);
+		IJsGlobalScopeContainer container = manager.getJsGlobalScopeContainer(containerPath, project);
 		if (container == JavaModelManager.CONTAINER_INITIALIZATION_IN_PROGRESS) {
 		    return manager.getPreviousSessionContainer(containerPath, project);
 		}
@@ -1609,20 +1609,20 @@ public final class JavaCore extends Plugin {
 	/**
 	 * Helper method finding the classpath container initializer registered for a given classpath container ID
 	 * or <code>null</code> if none was found while iterating over the contributions to extension point to
-	 * the extension point "org.eclipse.wst.jsdt.core.classpathContainerInitializer".
+	 * the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
 	 * <p>
 	 * A containerID is the first segment of any container path, used to identify the registered container initializer.
 	 * <p>
 	 * @param containerID - a containerID identifying a registered initializer
-	 * @return ClasspathContainerInitializer - the registered classpath container initializer or <code>null</code> if
+	 * @return JsGlobalScopeContainerInitializer - the registered classpath container initializer or <code>null</code> if
 	 * none was found.
 	 * @since 2.1
 	 */
-	public static ClasspathContainerInitializer getClasspathContainerInitializer(String containerID) {
+	public static JsGlobalScopeContainerInitializer getJsGlobalScopeContainerInitializer(String containerID) {
 		HashMap containerInitializersCache = JavaModelManager.getJavaModelManager().containerInitializersCache;
-		ClasspathContainerInitializer initializer = (ClasspathContainerInitializer) containerInitializersCache.get(containerID);
+		JsGlobalScopeContainerInitializer initializer = (JsGlobalScopeContainerInitializer) containerInitializersCache.get(containerID);
 		if (initializer == null) {
-			initializer = computeClasspathContainerInitializer(containerID);
+			initializer = computeJsGlobalScopeContainerInitializer(containerID);
 			if (initializer == null)
 				return null;
 			containerInitializersCache.put(containerID, initializer);
@@ -1630,7 +1630,7 @@ public final class JavaCore extends Plugin {
 		return initializer;
 	}
 
-	private static ClasspathContainerInitializer computeClasspathContainerInitializer(String containerID) {
+	private static JsGlobalScopeContainerInitializer computeJsGlobalScopeContainerInitializer(String containerID) {
 		Plugin jdtCorePlugin = JavaCore.getPlugin();
 		if (jdtCorePlugin == null) return null;
 
@@ -1647,8 +1647,8 @@ public final class JavaCore extends Plugin {
 							verbose_found_container_initializer(containerID, configurationElement);
 						try {
 							Object execExt = configurationElement.createExecutableExtension("class"); //$NON-NLS-1$
-							if (execExt instanceof ClasspathContainerInitializer){
-								return (ClasspathContainerInitializer)execExt;
+							if (execExt instanceof JsGlobalScopeContainerInitializer){
+								return (JsGlobalScopeContainerInitializer)execExt;
 							}
 						} catch(CoreException e) {
 							// executable extension could not be created: ignore this initializer
@@ -3093,7 +3093,7 @@ public final class JavaCore extends Plugin {
 	 * Variable source attachment path and root path are also resolved and recorded in the resulting classpath entry.
 	 * <p>
 	 * NOTE: This helper method does not handle classpath containers, for which should rather be used
-	 * <code>JavaCore#getClasspathContainer(IPath, IJavaProject)</code>.
+	 * <code>JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)</code>.
 	 * <p>
 	 *
 	 * @param entry the given variable entry
@@ -3582,7 +3582,7 @@ public final class JavaCore extends Plugin {
 	 * 	segments
 	 * @return a new container classpath entry
 	 *
-	 * @see JavaCore#getClasspathContainer(IPath, IJavaProject)
+	 * @see JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)
 	 * @since 2.0
 	 */
 	public static IClasspathEntry newContainerEntry(IPath containerPath) {
@@ -3605,8 +3605,8 @@ public final class JavaCore extends Plugin {
 	 *    projects in addition to the output location
 	 * @return a new container classpath entry
 	 *
-	 * @see JavaCore#getClasspathContainer(IPath, IJavaProject)
-	 * @see JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
+	 * @see JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)
+	 * @see JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], IProgressMonitor)
 	 * @since 2.0
 	 */
 	public static IClasspathEntry newContainerEntry(IPath containerPath, boolean isExported) {
@@ -3624,25 +3624,25 @@ public final class JavaCore extends Plugin {
 	 * <p>
 	 * A container entry allows to express indirect references to a set of libraries, projects and variable entries,
 	 * which can be interpreted differently for each Java project where it is used.
-	 * A classpath container entry can be resolved using <code>JavaCore.getResolvedClasspathContainer</code>,
-	 * and updated with <code>JavaCore.classpathContainerChanged</code>
+	 * A classpath container entry can be resolved using <code>JavaCore.getResolvedJsGlobalScopeContainer</code>,
+	 * and updated with <code>JavaCore.JsGlobalScopeContainerChanged</code>
 	 * <p>
-	 * A container is exclusively resolved by a <code>ClasspathContainerInitializer</code> registered onto the
-	 * extension point "org.eclipse.wst.jsdt.core.classpathContainerInitializer".
+	 * A container is exclusively resolved by a <code>JsGlobalScopeContainerInitializer</code> registered onto the
+	 * extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
 	 * <p>
 	 * A container path must be formed of at least one segment, where: <ul>
 	 * <li> the first segment is a unique ID identifying the target container, there must be a container initializer registered
-	 * 	onto this ID through the extension point  "org.eclipse.wst.jsdt.core.classpathContainerInitializer". </li>
+	 * 	onto this ID through the extension point  "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer". </li>
 	 * <li> the remaining segments will be passed onto the initializer, and can be used as additional
 	 * 	hints during the initialization phase. </li>
 	 * </ul>
 	 * <p>
-	 * Example of an ClasspathContainerInitializer for a classpath container denoting a default JDK container:
+	 * Example of an JsGlobalScopeContainerInitializer for a classpath container denoting a default JDK container:
 	 * <pre>
 	 * containerEntry = JavaCore.newContainerEntry(new Path("MyProvidedJDK/default"));
 	 *
 	 * &lt;extension
-	 *    point="org.eclipse.wst.jsdt.core.classpathContainerInitializer"&gt;
+	 *    point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer"&gt;
 	 *    &lt;containerInitializer
 	 *       id="MyProvidedJDK"
 	 *       class="com.example.MyInitializer"/&gt;
@@ -3682,8 +3682,8 @@ public final class JavaCore extends Plugin {
 	 *    projects in addition to the output location
 	 * @return a new container classpath entry
 	 *
-	 * @see JavaCore#getClasspathContainer(IPath, IJavaProject)
-	 * @see JavaCore#setClasspathContainer(IPath, IJavaProject[], IClasspathContainer[], IProgressMonitor)
+	 * @see JavaCore#getJsGlobalScopeContainer(IPath, IJavaProject)
+	 * @see JavaCore#setJsGlobalScopeContainer(IPath, IJavaProject[], IJsGlobalScopeContainer[], IProgressMonitor)
 	 * @see JavaCore#newContainerEntry(IPath, boolean)
 	 * @see JavaCore#newAccessRule(IPath, int)
 	 * @since 3.1
@@ -4521,7 +4521,7 @@ public final class JavaCore extends Plugin {
 		}
 	}
 	/**
-	 * Bind a container reference path to some actual containers (<code>IClasspathContainer</code>).
+	 * Bind a container reference path to some actual containers (<code>IJsGlobalScopeContainer</code>).
 	 * This API must be invoked whenever changes in container need to be reflected onto the JavaModel.
 	 * Containers can have distinct values in different projects, therefore this API considers a
 	 * set of projects with their respective containers.
@@ -4529,15 +4529,15 @@ public final class JavaCore extends Plugin {
 	 * <code>containerPath</code> is the path under which these values can be referenced through
 	 * container classpath entries (<code>IClasspathEntry#CPE_CONTAINER</code>). A container path
 	 * is formed by a first ID segment followed with extra segments, which can be used as additional hints
-	 * for the resolution. The container ID is used to identify a <code>ClasspathContainerInitializer</code>
-	 * registered on the extension point "org.eclipse.wst.jsdt.core.classpathContainerInitializer".
+	 * for the resolution. The container ID is used to identify a <code>JsGlobalScopeContainerInitializer</code>
+	 * registered on the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer".
 	 * <p>
 	 * There is no assumption that each individual container value passed in argument
 	 * (<code>respectiveContainers</code>) must answer the exact same path when requested
-	 * <code>IClasspathContainer#getPath</code>.
+	 * <code>IJsGlobalScopeContainer#getPath</code>.
 	 * Indeed, the containerPath is just an indication for resolving it to an actual container object. It can be
-	 * delegated to a <code>ClasspathContainerInitializer</code>, which can be activated through the extension
-	 * point "org.eclipse.wst.jsdt.core.ClasspathContainerInitializer").
+	 * delegated to a <code>JsGlobalScopeContainerInitializer</code>, which can be activated through the extension
+	 * point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer").
 	 * <p>
 	 * In reaction to changing container values, the JavaModel will be updated to reflect the new
 	 * state of the updated container. A combined Java element delta will be notified to describe the corresponding
@@ -4549,8 +4549,8 @@ public final class JavaCore extends Plugin {
 	 * <p>
 	 * Classpath container values are persisted locally to the workspace, but
 	 * are not preserved from a session to another. It is thus highly recommended to register a
-	 * <code>ClasspathContainerInitializer</code> for each referenced container
-	 * (through the extension point "org.eclipse.wst.jsdt.core.ClasspathContainerInitializer").
+	 * <code>JsGlobalScopeContainerInitializer</code> for each referenced container
+	 * (through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer").
 	 * <p>
 	 * Note: setting a container to <code>null</code> will cause it to be lazily resolved again whenever
 	 * its value is required. In particular, this will cause a registered initializer to be invoked
@@ -4561,12 +4561,12 @@ public final class JavaCore extends Plugin {
 	 * @param respectiveContainers - the set of respective containers for the affected projects
 	 * @param monitor a monitor to report progress
 	 * @throws JavaModelException
-	 * @see ClasspathContainerInitializer
-	 * @see #getClasspathContainer(IPath, IJavaProject)
-	 * @see IClasspathContainer
+	 * @see JsGlobalScopeContainerInitializer
+	 * @see #getJsGlobalScopeContainer(IPath, IJavaProject)
+	 * @see IJsGlobalScopeContainer
 	 * @since 2.0
 	 */
-	public static void setClasspathContainer(IPath containerPath, IJavaProject[] affectedProjects, IClasspathContainer[] respectiveContainers, IProgressMonitor monitor) throws JavaModelException {
+	public static void setJsGlobalScopeContainer(IPath containerPath, IJavaProject[] affectedProjects, IJsGlobalScopeContainer[] respectiveContainers, IProgressMonitor monitor) throws JavaModelException {
 		if (affectedProjects.length != respectiveContainers.length)
 			Assert.isTrue(false, "Projects and containers collections should have the same size"); //$NON-NLS-1$
 		SetContainerOperation operation = new SetContainerOperation(containerPath, affectedProjects, respectiveContainers);

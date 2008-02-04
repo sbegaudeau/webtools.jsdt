@@ -12,8 +12,8 @@ package org.eclipse.wst.jsdt.internal.core;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
@@ -22,10 +22,10 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 /**
  *
  */
-public class UserLibraryClasspathContainerInitializer extends ClasspathContainerInitializer {
+public class UserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer {
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#initialize(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#initialize(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
 		if (isUserLibraryContainer(containerPath)) {
@@ -33,8 +33,8 @@ public class UserLibraryClasspathContainerInitializer extends ClasspathContainer
 
 			UserLibrary entries= UserLibraryManager.getUserLibrary(userLibName);
 			if (entries != null) {
-				UserLibraryClasspathContainer container= new UserLibraryClasspathContainer(userLibName);
-				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, 	new IClasspathContainer[] { container }, null);
+				UserLibraryJsGlobalScopeContainer container= new UserLibraryJsGlobalScopeContainer(userLibName);
+				JavaCore.setJsGlobalScopeContainer(containerPath, new IJavaProject[] { project }, 	new IJsGlobalScopeContainer[] { container }, null);
 			}
 		}
 	}
@@ -44,20 +44,20 @@ public class UserLibraryClasspathContainerInitializer extends ClasspathContainer
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
-	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
 		return isUserLibraryContainer(containerPath);
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#requestClasspathContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IClasspathContainer)
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#requestJsGlobalScopeContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject, org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer)
 	 */
-	public void requestClasspathContainerUpdate(IPath containerPath, IJavaProject project, IClasspathContainer containerSuggestion) throws CoreException {
+	public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
 		if (isUserLibraryContainer(containerPath)) {
 			String name= containerPath.segment(1);
 			if (containerSuggestion != null) {
-				UserLibrary library= new UserLibrary(containerSuggestion.getClasspathEntries(), containerSuggestion.getKind() == IClasspathContainer.K_SYSTEM);
+				UserLibrary library= new UserLibrary(containerSuggestion.getClasspathEntries(), containerSuggestion.getKind() == IJsGlobalScopeContainer.K_SYSTEM);
 				UserLibraryManager.setUserLibrary(name, library, null); // should use a real progress monitor
 			} else {
 				UserLibraryManager.setUserLibrary(name, null, null); // should use a real progress monitor
@@ -66,7 +66,7 @@ public class UserLibraryClasspathContainerInitializer extends ClasspathContainer
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public String getDescription(IPath containerPath, IJavaProject project) {
 		if (isUserLibraryContainer(containerPath)) {
@@ -76,7 +76,7 @@ public class UserLibraryClasspathContainerInitializer extends ClasspathContainer
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.wst.jsdt.core.IJavaProject)
 	 */
 	public Object getComparisonID(IPath containerPath, IJavaProject project) {
 		return containerPath;

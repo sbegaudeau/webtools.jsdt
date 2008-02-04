@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
-import org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer;
+import org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.internal.ui.packageview.LibraryContainer;
 
 /**
@@ -114,7 +114,7 @@ public class ProjectLibraryRoot implements IAdaptable{
 			for (int i= 0; i < rawClasspath.length; i++) {
 				IClasspathEntry classpathEntry= rawClasspath[i];
 				if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-					projectPackageFragmentRoots.add(new ClassPathContainer(project, classpathEntry));
+					projectPackageFragmentRoots.add(new JsGlobalScopeContainer(project, classpathEntry));
 				}	
 			}	
 		 return projectPackageFragmentRoots.toArray();

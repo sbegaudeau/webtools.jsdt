@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -74,7 +74,7 @@ public class CPListElementAttribute {
 	 * @return Returns <code>true</code> if the attribute a on a container child and is not supported
 	 */
 	public boolean isNotSupported() {
-		return fStatus != null && fStatus.getCode() == ClasspathContainerInitializer.ATTRIBUTE_NOT_SUPPORTED;
+		return fStatus != null && fStatus.getCode() == JsGlobalScopeContainerInitializer.ATTRIBUTE_NOT_SUPPORTED;
 	}
 	
 	/**

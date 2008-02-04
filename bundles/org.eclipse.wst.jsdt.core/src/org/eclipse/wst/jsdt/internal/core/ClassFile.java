@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.CompletionRequestor;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClassFile;
@@ -920,7 +920,7 @@ public IType[] getTypes() throws JavaModelException {
 	public String getDisplayName() {
 		if(isVirtual()) {
 
-			ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+			JsGlobalScopeContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
 			if(init==null) return super.getDisplayName();
 			return init.getDescription(new Path(getElementName()), getJavaProject());
 		}
@@ -929,7 +929,7 @@ public IType[] getTypes() throws JavaModelException {
 
 	public URI getHostPath() {
 		if(isVirtual()) {
-			ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+			JsGlobalScopeContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
 			if(init!=null) return init.getHostPath(new Path(getElementName()), getJavaProject());
 		}
 		return null;
@@ -938,8 +938,8 @@ public IType[] getTypes() throws JavaModelException {
 		return null;
 		//return getJavaProject().getCommonSuperType();
 	}
-	public ClasspathContainerInitializer getContainerInitializer() {
-		ClasspathContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+	public JsGlobalScopeContainerInitializer getContainerInitializer() {
+		JsGlobalScopeContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
 		return init;
 	}
 }

@@ -7,7 +7,7 @@
    <extension-point id="javadocCompletionProcessor" name="%javadocCompletionProcessor" schema="schema/javadocCompletionProcessor.exsd"/>
    <extension-point id="quickFixProcessors" name="%quickFixProcessorExtensionPoint" schema="schema/quickFixProcessors.exsd"/>
    <extension-point id="quickAssistProcessors" name="%quickAssistProcessorExtensionPoint" schema="schema/quickAssistProcessors.exsd"/>
-   <extension-point id="classpathContainerPage" name="%classpathContainerPageExtensionPoint" schema="schema/classpathContainerPage.exsd"/>
+   <extension-point id="JsGlobalScopeContainerPage" name="%JsGlobalScopeContainerPageExtensionPoint" schema="schema/JsGlobalScopeContainerPage.exsd"/>
    <extension-point id="foldingStructureProviders" name="%foldingStructureProvidersExtensionPoint" schema="schema/foldingStructureProviders.exsd"/>
    <extension-point id="queryParticipants" name="%queryParticipantsExtensionPoint" schema="schema/queryParticipants.exsd"/>
    <extension-point id="javaCompletionProposalComputer" name="%javaCompletionProposalComputer" schema="schema/javaCompletionProposalComputer.exsd"/>
@@ -128,12 +128,12 @@
 
 
    <extension
-         point="org.eclipse.wst.jsdt.ui.classpathContainerPage">
-      <classpathContainerPage
-            name="%defaultClasspathContainerPage"
-            class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.ClasspathContainerDefaultPage"
+         point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
+      <JsGlobalScopeContainerPage
+            name="%defaultJsGlobalScopeContainerPage"
+            class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.JsGlobalScopeContainerDefaultPage"
             id="*">
-      </classpathContainerPage>
+      </JsGlobalScopeContainerPage>
    </extension>
    <extension
          point="org.eclipse.wst.jsdt.ui.classpathAttributeConfiguration">
@@ -5191,22 +5191,22 @@
 <!-- classpath container -->
    
    <extension
-         point="org.eclipse.wst.jsdt.ui.classpathContainerPage">
-      <classpathContainerPage
+         point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
+      <JsGlobalScopeContainerPage
             name="%userLibrary.name"
             class="org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.UserLibraryWizardPage"
             id="org.eclipse.wst.jsdt.USER_LIBRARY">
-      </classpathContainerPage>
+      </JsGlobalScopeContainerPage>
    </extension>
    
    <extension
          point="org.eclipse.ui.popupMenus">    
       <objectContribution
-            objectClass="org.eclipse.wst.jsdt.internal.ui.packageview.ClassPathContainer"
-            id="org.eclipse.wst.jsdt.ui.configure.classpathcontainer">
+            objectClass="org.eclipse.wst.jsdt.internal.ui.packageview.JsGlobalScopeContainer"
+            id="org.eclipse.wst.jsdt.ui.configure.JsGlobalScopeContainer">
          <action
-               label="%ConfigClasspathContainer.label"
-               tooltip="%ConfigClasspathContainer.tooltip"
+               label="%ConfigJsGlobalScopeContainer.label"
+               tooltip="%ConfigJsGlobalScopeContainer.tooltip"
                class="org.eclipse.wst.jsdt.internal.ui.actions.ConfigureContainerAction"
                menubarPath="additions"
                enablesFor="1"
@@ -6184,25 +6184,25 @@
    -->
    
    <extension
-         point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
+         point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+      <JsGlobalScopeContainerInitializer
             class="org.eclipse.wst.jsdt.launching.JREContainerInitializer"
             id="org.eclipse.wst.jsdt.launching.JRE_CONTAINER">
-      </classpathContainerInitializer>
+      </JsGlobalScopeContainerInitializer>
    </extension>   
-      <extension point="org.eclipse.wst.jsdt.ui.classpathContainerPage">
-  	  <classpathContainerPage
+      <extension point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
+  	  <JsGlobalScopeContainerPage
             name="%BaseWebBrowserLibrary"
             class="org.eclipse.wst.jsdt.ui.wizards.BaseLibraryWizardPage"
             id="org.eclipse.wst.jsdt.BASE">
-      </classpathContainerPage>
+      </JsGlobalScopeContainerPage>
    </extension>
     <extension
-      point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryClassPathContainerInitializer"
+      point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+      <JsGlobalScopeContainerInitializer
+            class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryJsGlobalScopeContainerInitializer"
             id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
-      </classpathContainerInitializer>
+      </JsGlobalScopeContainerInitializer>
    </extension>
    
    <!--  JSDT context menu contributions for the JavaScript Support object  -->

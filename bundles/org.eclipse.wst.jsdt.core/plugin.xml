@@ -27,9 +27,9 @@
 <!-- Extension Point: Initializers of Classpath Containers                               -->
 <!-- =================================================================================== -->
 
-<extension-point name="%classpathContainerInitializersName" 
-	id="classpathContainerInitializer" 
-	schema="schema/classpathContainerInitializer.exsd"/>
+<extension-point name="%JsGlobalScopeContainerInitializersName" 
+	id="JsGlobalScopeContainerInitializer" 
+	schema="schema/JsGlobalScopeContainerInitializer.exsd"/>
 
 <!-- =================================================================================== -->
 <!-- Extension Point: Formatter of Source Code                                           -->
@@ -153,11 +153,11 @@
 <!-- Extension: User Library Container                                                   -->
 <!-- =================================================================================== -->
 <extension
-      point="org.eclipse.wst.jsdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.eclipse.wst.jsdt.internal.core.UserLibraryClasspathContainerInitializer"
+      point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+      <JsGlobalScopeContainerInitializer
+            class="org.eclipse.wst.jsdt.internal.core.UserLibraryJsGlobalScopeContainerInitializer"
             id="org.eclipse.wst.jsdt.USER_LIBRARY">
-      </classpathContainerInitializer>
+      </JsGlobalScopeContainerInitializer>
    </extension>
 
 <!-- =================================================================================== -->

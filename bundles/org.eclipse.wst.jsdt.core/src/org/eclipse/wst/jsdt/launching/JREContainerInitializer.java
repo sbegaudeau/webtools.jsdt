@@ -13,8 +13,8 @@ package org.eclipse.wst.jsdt.launching;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
@@ -23,12 +23,12 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 /** 
  * Resolves a container for a JRE classpath container entry.
  */ 
-public class JREContainerInitializer extends ClasspathContainerInitializer {
+public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 	
 	public static final String JsECMA_NAME = LaunchingMessages.JREContainerInitializer_JsECMA_NAME;
 
 	/**
-	 * @see ClasspathContainerInitializer#initialize(IPath, IJavaProject)
+	 * @see JsGlobalScopeContainerInitializer#initialize(IPath, IJavaProject)
 	 */
 	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {		
 		int size = containerPath.segmentCount();
@@ -39,7 +39,7 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 				if (vm != null) {
 					container = new JREContainer(vm, containerPath);
 				}
-				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] {project}, new IClasspathContainer[] {container}, null);
+				JavaCore.setJsGlobalScopeContainer(containerPath, new IJavaProject[] {project}, new IJsGlobalScopeContainer[] {container}, null);
 			}
 		}
 	}
@@ -181,9 +181,9 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	/**
 	 * The container can be updated if it refers to an existing VM.
 	 * 
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#canUpdateJsGlobalScopeContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
 	 */
-	public boolean canUpdateClasspathContainer(IPath containerPath, IJavaProject project) {
+	public boolean canUpdateJsGlobalScopeContainer(IPath containerPath, IJavaProject project) {
 //		if (containerPath != null && containerPath.segmentCount() > 0) {
 //			if (JavaRuntime.JRE_CONTAINER.equals(containerPath.segment(0))) {
 //				return resolveVM(containerPath) != null;
@@ -193,9 +193,9 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	}
 
 	/**
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#requestClasspathContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject, org.eclipse.jdt.core.IClasspathContainer)
+	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#requestJsGlobalScopeContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject, org.eclipse.jdt.core.IJsGlobalScopeContainer)
 	 */
-	public void requestClasspathContainerUpdate(IPath containerPath, IJavaProject project, IClasspathContainer containerSuggestion) throws CoreException {
+	public void requestJsGlobalScopeContainerUpdate(IPath containerPath, IJavaProject project, IJsGlobalScopeContainer containerSuggestion) throws CoreException {
 //		IVMInstall vm = resolveVM(containerPath);
 //		if (vm == null) { 
 //			IStatus status = new Status(IStatus.ERROR, JavaPlugin.getPluginId(), IJavaLaunchConfigurationConstants.ERR_VM_INSTALL_DOES_NOT_EXIST, MessageFormat.format(LaunchingMessages.JREContainerInitializer_JRE_referenced_by_classpath_container__0__does_not_exist__1, new String[]{containerPath.toString()}), null); 
@@ -251,7 +251,7 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	}
 
 	/**
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+	 * @see org.eclipse.jdt.core.JsGlobalScopeContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
 	 */
 	public String getDescription(IPath containerPath, IJavaProject project) {
 		if(containerPath!=null && containerPath.lastSegment().equalsIgnoreCase("system.js")) return JsECMA_NAME; //$NON-NLS-1$
@@ -266,21 +266,21 @@ public class JREContainerInitializer extends ClasspathContainerInitializer {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.IClasspathContainerInitialzer#getLibraryLocation()
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#getLibraryLocation()
 	 */
 	public LibraryLocation getLibraryLocation() {
 		return new SystemLibraryLocation();
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#allowAttachJsDoc()
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#allowAttachJsDoc()
 	 */
 	public boolean allowAttachJsDoc() {
 		return false;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.ClasspathContainerInitializer#containerSuperTypes()
+	 * @see org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer#containerSuperTypes()
 	 */
 	public String[] containerSuperTypes() {
 		return new String[] {LaunchingMessages.JREContainerInitializer_Global,LaunchingMessages.JREContainerInitializer_Object,LaunchingMessages.JREContainerInitializer_Array};

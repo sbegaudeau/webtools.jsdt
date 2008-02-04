@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.internal.core;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
@@ -24,12 +24,12 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 
 	IPath containerPath;
 	IJavaProject[] affectedProjects;
-	IClasspathContainer[] respectiveContainers;
+	IJsGlobalScopeContainer[] respectiveContainers;
 
 	/*
 	 * Creates a new SetContainerOperation.
 	 */
-	public SetContainerOperation(IPath containerPath, IJavaProject[] affectedProjects, IClasspathContainer[] respectiveContainers) {
+	public SetContainerOperation(IPath containerPath, IJavaProject[] affectedProjects, IJsGlobalScopeContainer[] respectiveContainers) {
 		super(new IJavaElement[] {JavaModelManager.getJavaModelManager().getJavaModel()}, !ResourcesPlugin.getWorkspace().isTreeLocked());
 		this.containerPath = containerPath;
 		this.affectedProjects = affectedProjects;
@@ -60,7 +60,7 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 				if (isCanceled())
 					return;
 				JavaProject affectedProject = (JavaProject) this.affectedProjects[i];
-				IClasspathContainer newContainer = this.respectiveContainers[i];
+				IJsGlobalScopeContainer newContainer = this.respectiveContainers[i];
 				if (newContainer == null) newContainer = JavaModelManager.CONTAINER_INITIALIZATION_IN_PROGRESS; // 30920 - prevent infinite loop
 				boolean found = false;
 				if (JavaProject.hasJavaNature(affectedProject.getProject())){
@@ -78,7 +78,7 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 					manager.containerPut(affectedProject, this.containerPath, newContainer);
 					continue;
 				}
-				IClasspathContainer oldContainer = manager.containerGet(affectedProject, this.containerPath);
+				IJsGlobalScopeContainer oldContainer = manager.containerGet(affectedProject, this.containerPath);
 				if (oldContainer == JavaModelManager.CONTAINER_INITIALIZATION_IN_PROGRESS) {
 					oldContainer = null;
 				}
@@ -177,7 +177,7 @@ public class SetContainerOperation extends ChangeClasspathOperation {
 							buffer.append("<null>"); //$NON-NLS-1$
 							return buffer.toString();
 						}
-						IClasspathContainer container = (IClasspathContainer) o;
+						IJsGlobalScopeContainer container = (IJsGlobalScopeContainer) o;
 						buffer.append(container.getDescription());
 						buffer.append(" {\n"); //$NON-NLS-1$
 						IClasspathEntry[] entries = container.getClasspathEntries();

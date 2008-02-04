@@ -35,9 +35,9 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.RewriteSessionEditProcessor;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IField;
@@ -708,9 +708,9 @@ public final class JavaModelUtil {
 	 * @throws JavaModelException thrown if accessing the container failed
 	 */
 	public static IClasspathEntry getClasspathEntryToEdit(IJavaProject jproject, IPath containerPath, IPath libPath) throws JavaModelException {
-		IClasspathContainer container= JavaCore.getClasspathContainer(containerPath, jproject);
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerPath.segment(0));
-		if (container != null && initializer != null && initializer.canUpdateClasspathContainer(containerPath, jproject)) {
+		IJsGlobalScopeContainer container= JavaCore.getJsGlobalScopeContainer(containerPath, jproject);
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerPath.segment(0));
+		if (container != null && initializer != null && initializer.canUpdateJsGlobalScopeContainer(containerPath, jproject)) {
 			return findEntryInContainer(container, libPath);
 		}
 		return null; // attachment not possible
@@ -723,7 +723,7 @@ public final class JavaModelUtil {
 	 * @return IClasspathEntry A classpath entry from the container of
 	 * <code>null</code> if the container can not be modified.
 	 */
-	public static IClasspathEntry findEntryInContainer(IClasspathContainer container, IPath libPath) {
+	public static IClasspathEntry findEntryInContainer(IJsGlobalScopeContainer container, IPath libPath) {
 		IClasspathEntry[] entries= container.getClasspathEntries();
 		for (int i= 0; i < entries.length; i++) {
 			IClasspathEntry curr= entries[i];

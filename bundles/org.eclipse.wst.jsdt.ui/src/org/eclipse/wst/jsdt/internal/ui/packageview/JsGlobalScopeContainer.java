@@ -23,8 +23,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.eclipse.wst.jsdt.core.ClasspathContainerInitializer;
-import org.eclipse.wst.jsdt.core.IClasspathContainer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -32,24 +32,24 @@ import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.IClasspathContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
 /**
  * Representation of class path containers in Java UI.
  */
-public class ClassPathContainer extends PackageFragmentRootContainer {
+public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 
 	private IClasspathEntry fClassPathEntry;
-	private IClasspathContainer fContainer;
+	private IJsGlobalScopeContainer fContainer;
 
 	public static class RequiredProjectWrapper implements IAdaptable, IWorkbenchAdapter {
 
-		private final ClassPathContainer fParent;
+		private final JsGlobalScopeContainer fParent;
 		private final IJavaProject fProject;
 		
-		public RequiredProjectWrapper(ClassPathContainer parent, IJavaProject project) {
+		public RequiredProjectWrapper(JsGlobalScopeContainer parent, IJavaProject project) {
 			fParent= parent;
 			fProject= project;
 		}
@@ -58,7 +58,7 @@ public class ClassPathContainer extends PackageFragmentRootContainer {
 			return fProject; 
 		}
 		
-		public ClassPathContainer getParentClassPathContainer() {
+		public JsGlobalScopeContainer getParentJsGlobalScopeContainer() {
 			return fParent; 
 		}
 		
@@ -85,19 +85,19 @@ public class ClassPathContainer extends PackageFragmentRootContainer {
 		}
 	}
 
-	public ClassPathContainer(IJavaProject parent, IClasspathEntry entry) {
+	public JsGlobalScopeContainer(IJavaProject parent, IClasspathEntry entry) {
 		super(parent);
 		fClassPathEntry= entry;
 		try {
-			fContainer= JavaCore.getClasspathContainer(entry.getPath(), parent);
+			fContainer= JavaCore.getJsGlobalScopeContainer(entry.getPath(), parent);
 		} catch (JavaModelException e) {
 			fContainer= null;
 		}
 	}
 
 	public boolean equals(Object obj) {
-		if (obj instanceof ClassPathContainer) {
-			ClassPathContainer other = (ClassPathContainer)obj;
+		if (obj instanceof JsGlobalScopeContainer) {
+			JsGlobalScopeContainer other = (JsGlobalScopeContainer)obj;
 			if (getJavaProject().equals(other.getJavaProject()) &&
 				fClassPathEntry.equals(other.fClassPathEntry)) {
 				return true;	
@@ -142,10 +142,10 @@ public class ClassPathContainer extends PackageFragmentRootContainer {
 	}
 
 	public ImageDescriptor getImageDescriptor() {
-		ClasspathContainerInitializer init = JSDScopeUtil.getContainerInitializer(fClassPathEntry.getPath());
-		if(init!=null && init instanceof IClasspathContainerInitialzerExtension) {
+		JsGlobalScopeContainerInitializer init = JSDScopeUtil.getContainerInitializer(fClassPathEntry.getPath());
+		if(init!=null && init instanceof IJsGlobalScopeContainerInitialzerExtension) {
 			IPath entPath = fClassPathEntry.getPath();
-			ImageDescriptor image = ((IClasspathContainerInitialzerExtension)init).getImage(entPath, fClassPathEntry.toString(), super.getJavaProject());
+			ImageDescriptor image = ((IJsGlobalScopeContainerInitialzerExtension)init).getImage(entPath, fClassPathEntry.toString(), super.getJavaProject());
 			if(image!=null) return image;
 		}
 		return JavaPluginImages.DESC_OBJS_LIBRARY;
@@ -157,12 +157,12 @@ public class ClassPathContainer extends PackageFragmentRootContainer {
 		
 		IPath path= fClassPathEntry.getPath();
 		String containerId= path.segment(0);
-		ClasspathContainerInitializer initializer= JavaCore.getClasspathContainerInitializer(containerId);
+		JsGlobalScopeContainerInitializer initializer= JavaCore.getJsGlobalScopeContainerInitializer(containerId);
 		if (initializer != null) {
 			String description= initializer.getDescription(path, getJavaProject());
-			return Messages.format(PackagesMessages.ClassPathContainer_unbound_label, description); 
+			return Messages.format(PackagesMessages.JsGlobalScopeContainer_unbound_label, description); 
 		}
-		return Messages.format(PackagesMessages.ClassPathContainer_unknown_label, path.toString()); 
+		return Messages.format(PackagesMessages.JsGlobalScopeContainer_unknown_label, path.toString()); 
 	}
 	
 	public IClasspathEntry getClasspathEntry() {

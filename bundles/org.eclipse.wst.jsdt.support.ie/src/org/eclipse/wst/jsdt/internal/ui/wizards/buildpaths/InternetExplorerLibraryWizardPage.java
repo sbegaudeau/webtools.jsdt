@@ -11,9 +11,9 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.LayoutUtil;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPage;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension;
-import org.eclipse.wst.jsdt.ui.wizards.IClasspathContainerPageExtension2;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPage;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension;
+import org.eclipse.wst.jsdt.ui.wizards.IJsGlobalScopeContainerPageExtension2;
 import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 
 
@@ -21,7 +21,7 @@ import org.eclipse.wst.jsdt.ui.wizards.NewElementWizardPage;
 /**
  *
  */
-public class InternetExplorerLibraryWizardPage extends NewElementWizardPage implements IClasspathContainerPage, IClasspathContainerPageExtension, IClasspathContainerPageExtension2  {
+public class InternetExplorerLibraryWizardPage extends NewElementWizardPage implements IJsGlobalScopeContainerPage, IJsGlobalScopeContainerPageExtension, IJsGlobalScopeContainerPageExtension2  {
 
 	private static final String LIBRARY_FILE_NAME = "InternetExplorer.js";
 	private static final String CONTAINER_ID="org.eclipse.wst.jsdt.launching.InternetExplorer";
