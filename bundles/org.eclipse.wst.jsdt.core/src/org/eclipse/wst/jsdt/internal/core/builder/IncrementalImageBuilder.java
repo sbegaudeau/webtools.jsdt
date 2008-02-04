@@ -684,9 +684,9 @@ protected void finishedWith(String sourceLocator, CompilationResult result, char
 	super.finishedWith(sourceLocator, result, mainTypeName, definedTypeNames, duplicateTypeNames);
 }
 
-protected void processAnnotationResults(CompilationParticipantResult[] results) {
+protected void processAnnotationResults(validationParticipantResult[] results) {
 	for (int i = results.length; --i >= 0;) {
-		CompilationParticipantResult result = results[i];
+		validationParticipantResult result = results[i];
 		if (result == null) continue;
 
 		IFile[] deletedGeneratedFiles = result.deletedFiles;

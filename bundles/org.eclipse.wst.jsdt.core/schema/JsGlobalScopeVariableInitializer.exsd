@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.wst.jsdt.core">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.wst.jsdt.core" id="classpathVariableInitializer" name="Includepath Variable Initializers"/>
+         <meta.schema plugin="org.eclipse.wst.jsdt.core" id="JsGlobalScopeVariableInitializer" name="Includepath Variable Initializers"/>
       </appInfo>
       <documentation>
          This extension point allows clients to contribute custom includepath variable initializers, 
@@ -14,7 +14,7 @@
    <element name="extension">
       <complexType>
          <sequence>
-            <element ref="classpathVariableInitializer" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="JsGlobalScopeVariableInitializer" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -43,7 +43,7 @@
       </complexType>
    </element>
 
-   <element name="classpathVariableInitializer">
+   <element name="JsGlobalScopeVariableInitializer">
       <complexType>
          <attribute name="variable" type="string" use="required">
             <annotation>
@@ -56,10 +56,10 @@
             <annotation>
                <documentation>
                   the class that implements this variable initializer.
-         This class must implement a public subclass of &lt;code&gt;org.eclipse.wst.jsdt.core.ClasspathVariableInitializer&lt;/code&gt; with a public 0-argument constructor.
+         This class must implement a public subclass of &lt;code&gt;org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer&lt;/code&gt; with a public 0-argument constructor.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.wst.jsdt.core.ClasspathVariableInitializer"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -97,9 +97,9 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         Example of a declaration of a &lt;code&gt;ClasspathVariableInitializer&lt;/code&gt; for a classpath variable named &quot;FOO&quot;:  &lt;pre&gt;                                                                       
-&lt;extension point=&quot;org.eclipse.wst.jsdt.core.classpathVariableInitializer&quot;&gt;            
-   &lt;classpathVariableInitializer                                          
+         Example of a declaration of a &lt;code&gt;JsGlobalScopeVariableInitializer&lt;/code&gt; for a classpath variable named &quot;FOO&quot;:  &lt;pre&gt;                                                                       
+&lt;extension point=&quot;org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer&quot;&gt;            
+   &lt;JsGlobalScopeVariableInitializer                                          
       variable=&quot;FOO&quot;                                                        
       class=&quot;com.example.CPVInitializer&quot;/&gt;                           
 &lt;/extension&gt;

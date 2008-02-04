@@ -6,8 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    mkaufman@bea.com - initial API as ICompilationParticipant
- *    IBM - changed from interface ICompilationParticipant to abstract class CompilationParticipant
+ *    mkaufman@bea.com - initial API as IvalidationParticipant
+ *    IBM - changed from interface IvalidationParticipant to abstract class validationParticipant
  *    IBM - rewrote spec
  *
  *******************************************************************************/
@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
  * (for a working copy), etc.
  * <p>
  * Code that participates in the build should in general be implemented with a separate Builder,
- * rather than a CompilationParticipant. It is only necessary to use a CompilationParticipant if
+ * rather than a validationParticipant. It is only necessary to use a validationParticipant if
  * the build step needs to interact with the Java build, for instance by creating additional
  * Java source files that must themselves in turn be compiled.
  * <p>
@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
  * </p>
  * @since 3.2
  */
-public abstract class CompilationParticipant {
+public abstract class validationParticipant {
 
 public static int READY_FOR_BUILD = 1;
 public static int NEEDS_FULL_BUILD = 2;

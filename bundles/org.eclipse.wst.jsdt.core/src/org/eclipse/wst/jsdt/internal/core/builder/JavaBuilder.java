@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.compiler.CompilationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.JavaModel;
@@ -50,7 +50,7 @@ public class JavaBuilder extends IncrementalProjectBuilder {
 IProject currentProject;
 JavaProject javaProject;
 IWorkspaceRoot workspaceRoot;
-CompilationParticipant[] participants;
+validationParticipant[] participants;
 NameEnvironment nameEnvironment;
 SimpleLookupTable binaryLocationsPerProject; // maps a project to its binary resources (output folders, class folders, zip/jar files)
 public State lastState;
@@ -72,7 +72,7 @@ public static IMarker[] getProblemsFor(IResource resource) {
 	try {
 		if (resource != null && resource.exists()) {
 			IMarker[] markers = resource.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_INFINITE);
-			Set markerTypes = JavaModelManager.getJavaModelManager().compilationParticipants.managedMarkerTypes();
+			Set markerTypes = JavaModelManager.getJavaModelManager().validationParticipants.managedMarkerTypes();
 			if (markerTypes.isEmpty()) return markers;
 			ArrayList markerList = new ArrayList(5);
 			for (int i = 0, length = markers.length; i < length; i++) {
@@ -127,7 +127,7 @@ public static void removeProblemsFor(IResource resource) {
 			resource.deleteMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false, IResource.DEPTH_INFINITE);
 
 			// delete managed markers
-			Set markerTypes = JavaModelManager.getJavaModelManager().compilationParticipants.managedMarkerTypes();
+			Set markerTypes = JavaModelManager.getJavaModelManager().validationParticipants.managedMarkerTypes();
 			if (markerTypes.size() == 0) return;
 			Iterator iterator = markerTypes.iterator();
 			while (iterator.hasNext())
@@ -154,7 +154,7 @@ public static void removeProblemsAndTasksFor(IResource resource) {
 			resource.deleteMarkers(IJavaModelMarker.TASK_MARKER, false, IResource.DEPTH_INFINITE);
 
 			// delete managed markers
-			Set markerTypes = JavaModelManager.getJavaModelManager().compilationParticipants.managedMarkerTypes();
+			Set markerTypes = JavaModelManager.getJavaModelManager().validationParticipants.managedMarkerTypes();
 			if (markerTypes.size() == 0) return;
 			Iterator iterator = markerTypes.iterator();
 			while (iterator.hasNext())
@@ -593,10 +593,10 @@ private int initializeBuilder(int kind, boolean forBuild) throws CoreException {
 
 	if (forBuild) {
 		// cache the known participants for this project
-		this.participants = JavaModelManager.getJavaModelManager().compilationParticipants.getCompilationParticipants(this.javaProject);
+		this.participants = JavaModelManager.getJavaModelManager().validationParticipants.getvalidationParticipants(this.javaProject);
 		if (this.participants != null)
 			for (int i = 0, l = this.participants.length; i < l; i++)
-				if (this.participants[i].aboutToBuild(this.javaProject) == CompilationParticipant.NEEDS_FULL_BUILD)
+				if (this.participants[i].aboutToBuild(this.javaProject) == validationParticipant.NEEDS_FULL_BUILD)
 					kind = FULL_BUILD;
 
 		// Flush the existing external files cache if this is the beginning of a build cycle

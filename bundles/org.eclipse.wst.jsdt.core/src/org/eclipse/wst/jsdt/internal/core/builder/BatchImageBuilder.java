@@ -243,7 +243,7 @@ protected IResource findOriginalResource(IPath partialPath) {
 	return null;
 }
 
-protected void processAnnotationResults(CompilationParticipantResult[] results) {
+protected void processAnnotationResults(validationParticipantResult[] results) {
 	// to compile the compilation participant results, we need to incrementally recompile all affected types
 	// whenever the generated types are initially added or structurally changed
 	if (this.incrementalBuilder == null)

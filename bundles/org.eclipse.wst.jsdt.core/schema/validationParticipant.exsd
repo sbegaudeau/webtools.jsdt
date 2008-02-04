@@ -3,17 +3,17 @@
 <schema targetNamespace="org.eclipse.jdt.core">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.jdt.core" id="compilationParticipant" name="Compilation Participants"/>
+         <meta.schema plugin="org.eclipse.jdt.core" id="validationParticipant" name="Compilation Participants"/>
       </appInfo>
       <documentation>
-         This extension point allows clients to participate in the compilation process by receiving notifications at various stages of build and reconcile, via a org.eclipse.jdt.core.compiler.CompilationParticipant.
+         This extension point allows clients to participate in the compilation process by receiving notifications at various stages of build and reconcile, via a org.eclipse.jdt.core.compiler.validationParticipant.
       </documentation>
    </annotation>
 
    <element name="extension">
       <complexType>
          <sequence>
-            <element ref="compilationParticipant" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="validationParticipant" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -42,7 +42,7 @@
       </complexType>
    </element>
 
-   <element name="compilationParticipant">
+   <element name="validationParticipant">
       <annotation>
          <documentation>
             definition of a compilation participant. This definition allows to order participants. Participants are run by group. The group of participants that modify the environment is run first, then the group of participants that create problems is run, finally the group of other participants is run. Inside each group, participants are ordered using their &apos;requires&apos; attributes. If a &apos;requires&apos; attribute point to a participant that doesn&apos;t belong to the group, it is ignored.
@@ -56,10 +56,10 @@
          <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
-                  the class that implements this compilation participant. This class must implement a public subclass of &lt;code&gt;org.eclipse.jdt.core.compiler.CompilationParticipant&lt;/code&gt; with a public 0-argument constructor.
+                  the class that implements this compilation participant. This class must implement a public subclass of &lt;code&gt;org.eclipse.jdt.core.compiler.validationParticipant&lt;/code&gt; with a public 0-argument constructor.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.eclipse.jdt.core.compiler.CompilationParticipant"/>
+                  <meta.attribute kind="java" basedOn="org.eclipse.jdt.core.compiler.validationParticipant"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -142,17 +142,17 @@
          <meta.section type="examples"/>
       </appInfo>
       <documentation>
-         Example of a declaration of a &lt;code&gt;compilationParticipant&lt;/code&gt;:  &lt;pre&gt;                                                                       
+         Example of a declaration of a &lt;code&gt;validationParticipant&lt;/code&gt;:  &lt;pre&gt;                                                                       
 &lt;extension
       id=&quot;apt&quot;
       name=&quot;%annotationProcessingName&quot;
-      point=&quot;org.eclipse.jdt.core.compilationParticipant&quot;&gt;
-   &lt;compilationParticipant
-         class=&quot;org.eclipse.jdt.apt.core.internal.AptCompilationParticipant&quot;
+      point=&quot;org.eclipse.jdt.core.validationParticipant&quot;&gt;
+   &lt;validationParticipant
+         class=&quot;org.eclipse.jdt.apt.core.internal.AptvalidationParticipant&quot;
          id=&quot;APT&quot;
          requiredSourceLevel=&quot;1.5&quot;&gt;
       &lt;managedMarker markerType=&quot;org.eclipse.jdt.apt.core.compile.problem&quot;/&gt;
-   &lt;/compilationParticipant&gt;
+   &lt;/validationParticipant&gt;
 &lt;/extension&gt;
 &lt;/pre&gt;
       </documentation>

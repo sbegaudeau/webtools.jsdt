@@ -390,7 +390,7 @@ public Binding getBinding(char[][] compoundName, int mask, InvocationSite invoca
 	if (binding instanceof VariableBinding) return binding;
 	CompilationUnitScope unitScope = compilationUnitScope();
 	// in the problem case, we want to ensure we record the qualified dependency in case a type is added
-	// and we do not know that its package was also added (can happen with CompilationParticipants)
+	// and we do not know that its package was also added (can happen with validationParticipants)
 	unitScope.recordQualifiedReference(compoundName);
 	if (!binding.isValidBinding()) return binding;
 

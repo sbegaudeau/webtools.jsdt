@@ -242,7 +242,7 @@ protected void compile(SourceFile[] units) {
 		// will add files that have annotations in acceptResult() & then processAnnotations() before exitting this method
 		this.filesWithAnnotations.clear();
 
-	// notify CompilationParticipants which source files are about to be compiled
+	// notify validationParticipants which source files are about to be compiled
 	BuildContext[] participantResults = this.javaBuilder.participants == null ? null : notifyParticipants(units);
 	if (participantResults != null && participantResults.length > units.length) {
 		units = new SourceFile[participantResults.length];
@@ -495,10 +495,10 @@ protected BuildContext[] notifyParticipants(SourceFile[] unitsAboutToCompile) {
 		this.javaBuilder.participants[i].buildStarting(results, this instanceof BatchImageBuilder);
 
 	SimpleSet uniqueFiles = null;
-	CompilationParticipantResult[] toAdd = null;
+	validationParticipantResult[] toAdd = null;
 	int added = 0;
 	for (int i = results.length; --i >= 0;) {
-		CompilationParticipantResult result = results[i];
+		validationParticipantResult result = results[i];
 		if (result == null) continue;
 
 		IFile[] deletedGeneratedFiles = result.deletedFiles;
@@ -516,14 +516,14 @@ protected BuildContext[] notifyParticipants(SourceFile[] unitsAboutToCompile) {
 						uniqueFiles.add(unitsAboutToCompile[f]);
 				}
 				if (uniqueFiles.addIfNotIncluded(sourceFile) == sourceFile) {
-					CompilationParticipantResult newResult = new BuildContext(sourceFile);
+					validationParticipantResult newResult = new BuildContext(sourceFile);
 					// is there enough room to add all the addedGeneratedFiles.length ?
 					if (toAdd == null) {
-						toAdd = new CompilationParticipantResult[addedGeneratedFiles.length];
+						toAdd = new validationParticipantResult[addedGeneratedFiles.length];
 					} else {
 						int length = toAdd.length;
 						if (added == length)
-							System.arraycopy(toAdd, 0, toAdd = new CompilationParticipantResult[length + addedGeneratedFiles.length], 0, length);
+							System.arraycopy(toAdd, 0, toAdd = new validationParticipantResult[length + addedGeneratedFiles.length], 0, length);
 					}
 					toAdd[added++] = newResult;
 				}
@@ -539,7 +539,7 @@ protected BuildContext[] notifyParticipants(SourceFile[] unitsAboutToCompile) {
 	return results;
 }
 
-protected abstract void processAnnotationResults(CompilationParticipantResult[] results);
+protected abstract void processAnnotationResults(validationParticipantResult[] results);
 
 protected void processAnnotations(BuildContext[] results) {
 	boolean hasAnnotationProcessor = false;
@@ -549,7 +549,7 @@ protected void processAnnotations(BuildContext[] results) {
 
 	boolean foundAnnotations = this.filesWithAnnotations != null && this.filesWithAnnotations.elementSize > 0;
 	for (int i = results.length; --i >= 0;)
-		((CompilationParticipantResult) results[i]).reset(foundAnnotations && this.filesWithAnnotations.includes(results[i].sourceFile));
+		((validationParticipantResult) results[i]).reset(foundAnnotations && this.filesWithAnnotations.includes(results[i].sourceFile));
 
 	// even if no files have annotations, must still tell every annotation processor in case the file used to have them
 	for (int i = 0, l = this.javaBuilder.participants.length; i < l; i++)
@@ -558,7 +558,7 @@ protected void processAnnotations(BuildContext[] results) {
 	processAnnotationResults(results);
 }
 
-protected void recordParticipantResult(CompilationParticipantResult result) {
+protected void recordParticipantResult(validationParticipantResult result) {
 	// any added/changed/deleted generated files have already been taken care
 	// just record the problems and dependencies - do not expect there to be many
 	// must be called after we're finished with the compilation unit results but before incremental loop adds affected files
@@ -602,7 +602,7 @@ protected void storeProblemsFor(SourceFile sourceFile, CategorizedProblem[] prob
 	if (!this.keepStoringProblemMarkers) return; // only want the one error recorded on this source file
 
 	IResource resource = sourceFile.resource;
-	HashSet managedMarkerTypes = JavaModelManager.getJavaModelManager().compilationParticipants.managedMarkerTypes();
+	HashSet managedMarkerTypes = JavaModelManager.getJavaModelManager().validationParticipants.managedMarkerTypes();
 	for (int i = 0, l = problems.length; i < l; i++) {
 		CategorizedProblem problem = problems[i];
 		int id = problem.getID();

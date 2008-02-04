@@ -15,7 +15,7 @@ package org.eclipse.wst.jsdt.internal.core.builder;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 
-public class CompilationParticipantResult {
+public class validationParticipantResult {
 	protected SourceFile sourceFile;
 	protected boolean hasAnnotations; // only set during processAnnotations
 	protected IFile[] addedFiles; // added/changed generated source files that need to be compiled
@@ -23,7 +23,7 @@ public class CompilationParticipantResult {
 	protected CategorizedProblem[] problems; // new problems to report against this compilationUnit
 	protected String[] dependencies; // fully-qualified type names of any new dependencies, each name is of the form 'p1.p2.A.B'
 
-protected CompilationParticipantResult(SourceFile sourceFile) {
+protected validationParticipantResult(SourceFile sourceFile) {
 	this.sourceFile = sourceFile;
 	this.hasAnnotations = false;
 	this.addedFiles = null;

@@ -43,7 +43,7 @@ import org.eclipse.wst.jsdt.internal.core.ReconcileWorkingCopyOperation;
  * This class is not intended to be instanciated or subclassed by clients.
  * </p>
  *
- * @see CompilationParticipant#reconcile(ReconcileContext)
+ * @see validationParticipant#reconcile(ReconcileContext)
  * @since 3.2
  */
 public class ReconcileContext {

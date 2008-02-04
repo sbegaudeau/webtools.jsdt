@@ -14,7 +14,7 @@ package org.eclipse.wst.jsdt.core;
 /**
  * Abstract base implementation of all classpath variable initializers.
  * Classpath variable initializers are used in conjunction with the
- * "org.eclipse.wst.jsdt.core.classpathVariableInitializer" extension point.
+ * "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer" extension point.
  * <p>
  * Clients should subclass this class to implement a specific classpath
  * variable initializer. The subclass must have a public 0-argument
@@ -23,12 +23,12 @@ package org.eclipse.wst.jsdt.core;
  * @see IClasspathEntry
  * @since 2.0
  */
-public abstract class ClasspathVariableInitializer {
+public abstract class JsGlobalScopeVariableInitializer {
 
     /**
      * Creates a new classpath variable initializer.
      */
-    public ClasspathVariableInitializer() {
+    public JsGlobalScopeVariableInitializer() {
     	// a classpath variable initializer must have a public 0-argument constructor
     }
 

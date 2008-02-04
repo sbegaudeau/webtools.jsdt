@@ -1687,7 +1687,7 @@ public final class JavaCore extends Plugin {
 	 * are preserved from session to session.
 	 * <p>
 	 * Note that classpath variables can be contributed registered initializers for,
-	 * using the extension point "org.eclipse.wst.jsdt.core.classpathVariableInitializer".
+	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * If an initializer is registered for a variable, its persisted value will be ignored:
 	 * its initializer will thus get the opportunity to rebind the variable differently on
 	 * each session.
@@ -1704,7 +1704,7 @@ public final class JavaCore extends Plugin {
 	 * are preserved from session to session.
 	 * <p>
 	 * Note that classpath variables can be contributed registered initializers for,
-	 * using the extension point "org.eclipse.wst.jsdt.core.classpathVariableInitializer".
+	 * using the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * If an initializer is registered for a variable, its persisted value will be ignored:
 	 * its initializer will thus get the opportunity to rebind the variable differently on
 	 * each session.
@@ -1728,7 +1728,7 @@ public final class JavaCore extends Plugin {
 		}
 
 		// even if persisted value exists, initializer is given priority, only if no initializer is found the persisted value is reused
-		final ClasspathVariableInitializer initializer = JavaCore.getClasspathVariableInitializer(variableName);
+		final JsGlobalScopeVariableInitializer initializer = JavaCore.getJsGlobalScopeVariableInitializer(variableName);
 		if (initializer != null){
 			if (JavaModelManager.CP_RESOLVE_VERBOSE)
 				verbose_triggering_variable_initialization(variableName, initializer);
@@ -1778,7 +1778,7 @@ public final class JavaCore extends Plugin {
 			"	variable path: " + variablePath); //$NON-NLS-1$
 	}
 
-	private static void verbose_triggering_variable_initialization(String variableName, ClasspathVariableInitializer initializer) {
+	private static void verbose_triggering_variable_initialization(String variableName, JsGlobalScopeVariableInitializer initializer) {
 		Util.verbose(
 			"CPVariable INIT - triggering initialization\n" + //$NON-NLS-1$
 			"	variable: " + variableName + '\n' + //$NON-NLS-1$
@@ -1807,14 +1807,14 @@ public final class JavaCore extends Plugin {
 	/**
 	 * Helper method finding the classpath variable initializer registered for a given classpath variable name
 	 * or <code>null</code> if none was found while iterating over the contributions to extension point to
-	 * the extension point "org.eclipse.wst.jsdt.core.classpathVariableInitializer".
+	 * the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * <p>
  	 * @param variable the given variable
- 	 * @return ClasspathVariableInitializer - the registered classpath variable initializer or <code>null</code> if
+ 	 * @return JsGlobalScopeVariableInitializer - the registered classpath variable initializer or <code>null</code> if
 	 * none was found.
 	 * @since 2.1
  	 */
-	public static ClasspathVariableInitializer getClasspathVariableInitializer(String variable){
+	public static JsGlobalScopeVariableInitializer getJsGlobalScopeVariableInitializer(String variable){
 
 		Plugin jdtCorePlugin = JavaCore.getPlugin();
 		if (jdtCorePlugin == null) return null;
@@ -1832,8 +1832,8 @@ public final class JavaCore extends Plugin {
 							if (JavaModelManager.CP_RESOLVE_VERBOSE_ADVANCED)
 								verbose_found_variable_initializer(variable, configElement);
 							Object execExt = configElement.createExecutableExtension("class"); //$NON-NLS-1$
-							if (execExt instanceof ClasspathVariableInitializer){
-								ClasspathVariableInitializer initializer = (ClasspathVariableInitializer)execExt;
+							if (execExt instanceof JsGlobalScopeVariableInitializer){
+								JsGlobalScopeVariableInitializer initializer = (JsGlobalScopeVariableInitializer)execExt;
 								String deprecatedAttribute = configElement.getAttribute("deprecated"); //$NON-NLS-1$
 								if (deprecatedAttribute != null) {
 									JavaModelManager.getJavaModelManager().deprecatedVariables.put(variable, deprecatedAttribute);
@@ -4287,8 +4287,8 @@ public final class JavaCore extends Plugin {
 	 * A variable entry allows to express indirect references on a classpath to other projects or libraries,
 	 * depending on what the classpath variable is referring.
 	 * <p>
-	 *	It is possible to register an automatic initializer (<code>ClasspathVariableInitializer</code>),
-	 * which will be invoked through the extension point "org.eclipse.wst.jsdt.core.classpathVariableInitializer".
+	 *	It is possible to register an automatic initializer (<code>JsGlobalScopeVariableInitializer</code>),
+	 * which will be invoked through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
 	 * After resolution, a classpath variable entry may either correspond to a project or a library entry.
 	 * <p>
 	 * e.g. Here are some examples of variable path usage<ul>

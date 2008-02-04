@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.core.IProblemRequestor;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
-import org.eclipse.wst.jsdt.core.compiler.CompilationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.ReconcileContext;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -243,12 +243,12 @@ public class ReconcileWorkingCopyOperation extends JavaModelOperation {
 
 	private void notifyParticipants(final CompilationUnit workingCopy) {
 		IJavaProject javaProject = getWorkingCopy().getJavaProject();
-		CompilationParticipant[] participants = JavaModelManager.getJavaModelManager().compilationParticipants.getCompilationParticipants(javaProject);
+		validationParticipant[] participants = JavaModelManager.getJavaModelManager().validationParticipants.getvalidationParticipants(javaProject);
 		if (participants == null) return;
 
 		final ReconcileContext context = new ReconcileContext(this, workingCopy);
 		for (int i = 0, length = participants.length; i < length; i++) {
-			final CompilationParticipant participant = participants[i];
+			final validationParticipant participant = participants[i];
 			SafeRunner.run(new ISafeRunnable() {
 				public void handleException(Throwable exception) {
 					if (exception instanceof Error) {

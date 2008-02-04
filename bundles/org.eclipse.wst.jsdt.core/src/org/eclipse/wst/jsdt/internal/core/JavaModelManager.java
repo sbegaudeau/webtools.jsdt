@@ -104,7 +104,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.compiler.CompilationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
@@ -211,7 +211,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	/**
 	 * Name of the extension point for contributing classpath variable initializers
 	 */
-	public static final String CPVARIABLE_INITIALIZER_EXTPOINT_ID = "classpathVariableInitializer" ; //$NON-NLS-1$
+	public static final String CPVARIABLE_INITIALIZER_EXTPOINT_ID = "JsGlobalScopeVariableInitializer" ; //$NON-NLS-1$
 
 	/**
 	 * Name of the extension point for contributing classpath container initializers
@@ -226,7 +226,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 	/**
 	 * Name of the extension point for contributing a compilation participant
 	 */
-	public static final String COMPILATION_PARTICIPANT_EXTPOINT_ID = "compilationParticipant" ; //$NON-NLS-1$
+	public static final String COMPILATION_PARTICIPANT_EXTPOINT_ID = "validationParticipant" ; //$NON-NLS-1$
 
 	/**
 	 * Name of the extension point for contributing the Java 6 annotation processor manager
@@ -289,19 +289,19 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 
 	static final Object[][] NO_PARTICIPANTS = new Object[0][];
 
-	public static class CompilationParticipants {
+	public static class validationParticipants {
 
 		private final static int MAX_SOURCE_LEVEL = 7; // 1.1 to 1.7
 
 		/*
 		 * The registered compilation participants (a table from int (source level) to Object[])
 		 * The Object array contains first IConfigurationElements when not resolved yet, then
-		 * it contains CompilationParticipants.
+		 * it contains validationParticipants.
 		 */
 		private Object[][] registeredParticipants = null;
 		private HashSet managedMarkerTypes;
 
-		public CompilationParticipant[] getCompilationParticipants(IJavaProject project) {
+		public validationParticipant[] getvalidationParticipants(IJavaProject project) {
 			final Object[][] participantsPerSource = getRegisteredParticipants();
 			if (participantsPerSource == NO_PARTICIPANTS)
 				return null;
@@ -309,7 +309,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			final int sourceLevelIndex = indexForSourceLevel(sourceLevel);
 			final Object[] participants = participantsPerSource[sourceLevelIndex];
 			int length = participants.length;
-			CompilationParticipant[] result = new CompilationParticipant[length];
+			validationParticipant[] result = new validationParticipant[length];
 			int index = 0;
 			for (int i = 0; i < length; i++) {
 				if (participants[i] instanceof IConfigurationElement) {
@@ -326,14 +326,14 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 						}
 					});
 				}
-				CompilationParticipant participant = (CompilationParticipant) participants[i];
+				validationParticipant participant = (validationParticipant) participants[i];
 				if (participant != null && participant.isActive(project))
 					result[index++] = participant;
 			}
 			if (index == 0)
 				return null;
 			if (index < length)
-				System.arraycopy(result, 0, result = new CompilationParticipant[index], 0, index);
+				System.arraycopy(result, 0, result = new validationParticipant[index], 0, index);
 			return result;
 		}
 
@@ -360,11 +360,11 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			// for all extensions of this point...
 			for(int i = 0; i < extensions.length; i++) {
 				IConfigurationElement[] configElements = extensions[i].getConfigurationElements();
-				// for all config elements named "compilationParticipant"
+				// for all config elements named "validationParticipant"
 				for(int j = 0; j < configElements.length; j++) {
 					final IConfigurationElement configElement = configElements[j];
 					String elementName =configElement.getName();
-					if (!("compilationParticipant".equals(elementName))) { //$NON-NLS-1$
+					if (!("validationParticipant".equals(elementName))) { //$NON-NLS-1$
 						continue;
 					}
 					// add config element in the group it belongs to
@@ -465,7 +465,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		}
 	}
 
-	public final CompilationParticipants compilationParticipants = new CompilationParticipants();
+	public final validationParticipants validationParticipants = new validationParticipants();
 
 	/**
 	 * Returns whether the given full path (for a package) conflicts with the output location

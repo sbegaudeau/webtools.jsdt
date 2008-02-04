@@ -19,9 +19,9 @@
 <!-- Extension Point: Initializers of Classpath Variables                                -->
 <!-- =================================================================================== -->
 
-<extension-point name="%classpathVariableInitializersName" 
-	id="classpathVariableInitializer"
-	schema="schema/classpathVariableInitializer.exsd"/>
+<extension-point name="%JsGlobalScopeVariableInitializersName" 
+	id="JsGlobalScopeVariableInitializer"
+	schema="schema/JsGlobalScopeVariableInitializer.exsd"/>
   
 <!-- =================================================================================== -->
 <!-- Extension Point: Initializers of Classpath Containers                               -->
@@ -43,9 +43,9 @@
 <!-- Extension Point: Compilation Participant                                            -->
 <!-- =================================================================================== -->
 
-<extension-point name="%compilationParticipantsName" 
-	id="compilationParticipant"
-	schema="schema/compilationParticipant.exsd"/>
+<extension-point name="%validationParticipantsName" 
+	id="validationParticipant"
+	schema="schema/validationParticipant.exsd"/>
 
 <!-- =================================================================================== -->
 <!-- Extension Point: Inferrence Support                                            -->

@@ -66,8 +66,8 @@ import org.eclipse.core.runtime.IPath;
  *      Classpath variables are created using {@link JavaCore#setClasspathVariable(String, IPath, org.eclipse.core.runtime.IProgressMonitor)},
  * 		and gets resolved, to either a project or library entry, using
  *      {@link JavaCore#getResolvedClasspathEntry(IClasspathEntry)}.
- *		It is also possible to register an automatic initializer ({@link ClasspathVariableInitializer}),
- * 	which will be invoked through the extension point "org.eclipse.wst.jsdt.core.classpathVariableInitializer".
+ *		It is also possible to register an automatic initializer ({@link JsGlobalScopeVariableInitializer}),
+ * 	which will be invoked through the extension point "org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer".
  * 	After resolution, a classpath variable entry may either correspond to a project or a library entry. </li>
  *
  *  <li> A named classpath container identified by its container path.
@@ -110,7 +110,7 @@ import org.eclipse.core.runtime.IPath;
  * @see JavaCore#newSourceEntry(org.eclipse.core.runtime.IPath)
  * @see JavaCore#newVariableEntry(org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath, org.eclipse.core.runtime.IPath)
  * @see JavaCore#newContainerEntry(org.eclipse.core.runtime.IPath)
- * @see ClasspathVariableInitializer
+ * @see JsGlobalScopeVariableInitializer
  * @see JsGlobalScopeContainerInitializer
  */
 public interface IClasspathEntry {

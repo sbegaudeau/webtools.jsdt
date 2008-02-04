@@ -14,7 +14,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 
 /**
  * Richer description of a Java problem, as detected by the compiler or some of the underlying
- * technology reusing the compiler. With the introduction of <code>CompilationParticipant</code>,
+ * technology reusing the compiler. With the introduction of <code>validationParticipant</code>,
  * the simpler problem interface <code>IProblem</code> did not carry enough information to better
  * separate and categorize Java problems. In order to minimize impact on existing API, Java problems
  * are still passed around as <code>IProblem</code>, though actual implementations should explicitly
