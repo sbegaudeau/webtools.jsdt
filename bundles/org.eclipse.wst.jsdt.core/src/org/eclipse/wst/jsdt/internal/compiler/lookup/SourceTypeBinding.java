@@ -1505,10 +1505,17 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 		TypeBinding[] newParameters = new TypeBinding[size];
 		for (int i = 0; i < size; i++) {
 			Argument arg = arguments[i];
-			TypeBinding parameterType = (arg.type!=null)?arg.type.resolveType(methodDecl.scope, true /* check bounds*/):   TypeBinding.UNKNOWN;
+			TypeBinding parameterType = TypeBinding.UNKNOWN;
+			if (arg.type!=null) parameterType = arg.type.resolveType(methodDecl.scope, true /* check bounds*/) ;
+			else if (arg.inferredType!=null) parameterType = arg.inferredType.resolveType(methodDecl.scope, arg);
+			
+			
 			if (parameterType == null) {
-				foundArgProblem = true;
-			} else if (parameterType == TypeBinding.VOID) {
+//				foundArgProblem = true;
+				parameterType=TypeBinding.ANY;
+			} 
+//			else 
+			if (parameterType == TypeBinding.VOID) {
 				methodDecl.scope.problemReporter().argumentTypeCannotBeVoid(this, methodDecl, arg);
 				foundArgProblem = true;
 			} else {
