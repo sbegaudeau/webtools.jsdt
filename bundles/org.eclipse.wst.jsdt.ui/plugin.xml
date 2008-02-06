@@ -617,7 +617,7 @@
       </page>
 -->
       <page
-            name="JavaScript"        
+            name="%javaScriptPropertiesPageName"        
             class="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage"
             id="org.eclipse.wst.jsdt.internal.ui.preferences.JavaScriptMainPage">
          <enabledWhen>
@@ -6215,6 +6215,7 @@
             adaptable="true"
             id="org.eclipse.wst.jsdt.ui.javascript.support">
             <menu
+               label="%ActionLibraryMenu"
                id="org.eclipse.wst.jsdt.ui.project.tools">
             <separator
                name="group0">
@@ -6226,7 +6227,7 @@
 
    		<action
             class="org.eclipse.wst.jsdt.ui.JavaScriptSuperTypeAction"
-            label="Set Universal JavaScript Type"
+            label="%ActionSetGlobalType"
             menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
             enablesFor="1"
             id="org.eclipse.wst.jsdt.internal.ui.configure.super.type">
@@ -6242,21 +6243,21 @@
       	-->
       	<action
             class="org.eclipse.wst.jsdt.ui.JavaScriptSourceFoldersAction"
-            label="Edit Source Folders"
+            label="%ActionEditSourceFolders"
             menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
             enablesFor="1"
             id="org.eclipse.wst.jsdt.internal.ui.configure.source.folders">
       	</action>     	
          <action
             class="org.eclipse.wst.jsdt.ui.JavaScriptLibrariesAction"
-            label="Configure Global Scope"
+            label="%ActionCongigureScope"
             menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group0"
             enablesFor="1"
             id="org.eclipse.wst.jsdt.internal.ui.configure.scope">
       	</action>
         <action
             class="org.eclipse.wst.jsdt.ui.JavaScriptLibrariesAction"
-            label="Properties"
+            label="%ActionProperties"
             menubarPath="org.eclipse.wst.jsdt.ui.project.tools\group1"
             enablesFor="1"
             id="org.eclipse.wst.jsdt.internal.ui.configure.javascript.properties">
