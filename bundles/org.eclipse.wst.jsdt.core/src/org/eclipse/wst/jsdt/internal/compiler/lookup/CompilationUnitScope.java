@@ -1114,7 +1114,7 @@ public String toString() {
 	return "--- CompilationUnit Scope : " + new String(referenceContext.getFileName()); //$NON-NLS-1$
 }
 private ReferenceBinding typeToRecord(TypeBinding type) {
-	if (type.isArrayType())
+	while (type.isArrayType())
 		type = ((ArrayBinding) type).leafComponentType;
 
 	switch (type.kind()) {
