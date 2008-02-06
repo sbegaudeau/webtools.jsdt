@@ -29,8 +29,10 @@ import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
 import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
+import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.StopableTestCase;
@@ -1513,10 +1515,23 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			}
 		}
 
+
+
 	protected CompilationUnitDeclaration runInferTest(
 			String s, 
 			String testName,String expected,
 			InferOptions inferOptions
+			) {
+
+		return runInferTest(s, testName, expected, inferOptions,new DefaultInferrenceProvider());
+	}
+	
+	
+	protected CompilationUnitDeclaration runInferTest(
+			String s, 
+			String testName,String expected,
+			InferOptions inferOptions,
+			InferrenceProvider inferrenceProvider
 			) {
 			// Non-javac part
 			try {
@@ -1537,7 +1552,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 
 				CompilationUnitDeclaration compUnit= parser.parseCompilationUnit(sourceUnit, true);
 				
-				InferEngine inferEngine=inferOptions.createEngine();
+				InferEngine inferEngine=inferrenceProvider.getInferEngine();
+				
 				inferEngine.setCompilationUnit(compUnit);
 				inferEngine.doInfer();
 				if (expected!=null)
