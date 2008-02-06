@@ -9257,10 +9257,7 @@ public CompilationUnitDeclaration parse(
 					0);
 
 
-		this.inferenceEngines =  InferrenceManager.getInstance().getInferenceEngines(this.compilationUnit);
-		for (int i = 0; i <  this.inferenceEngines.length; i++) {
-			this.inferenceEngines[i].initializeOptions(this.options.inferOptions);
-		}
+		initializeInferenceEngine(this.compilationUnit);
 
 		/* scanners initialization */
 		char[] contents;
@@ -9291,7 +9288,13 @@ if (false)
 	}
 	return unit;
 }
-// A P I
+
+public void initializeInferenceEngine(CompilationUnitDeclaration compilationUnitDeclaration) {
+	this.inferenceEngines =  InferrenceManager.getInstance().getInferenceEngines(compilationUnitDeclaration);
+	for (int i = 0; i <  this.inferenceEngines.length; i++) {
+		this.inferenceEngines[i].initializeOptions(this.options.inferOptions);
+	}
+}
 
 public void parse(
 	Initializer initializer,
@@ -10324,7 +10327,8 @@ public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions co
 	if (compileOptions==null)
 		compileOptions=this.options;
 	
-
+	if (this.inferenceEngines==null)
+		initializeInferenceEngine(parsedUnit);
 //	InferEngine inferEngine=compileOptions.inferOptions.createEngine();
 	for (int i=0;i<this.inferenceEngines.length;i++)
 	{
