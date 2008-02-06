@@ -11,11 +11,11 @@
 package org.eclipse.wst.jsdt.internal.compiler.problem;
 
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /*
  * Special unchecked exception type used

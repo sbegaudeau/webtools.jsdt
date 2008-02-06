@@ -1,4 +1,4 @@
-package org.eclipse.wst.jsdt.internal.infer;
+package org.eclipse.wst.jsdt.core.infer;
 
 import java.util.ArrayList;
 import java.util.Iterator;

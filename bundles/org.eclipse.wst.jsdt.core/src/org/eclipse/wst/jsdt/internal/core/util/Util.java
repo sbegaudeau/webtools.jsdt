@@ -59,6 +59,7 @@ import org.eclipse.wst.jsdt.core.dom.QualifiedType;
 import org.eclipse.wst.jsdt.core.dom.SimpleType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
+import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.core.util.IClassFileAttribute;
 import org.eclipse.wst.jsdt.core.util.IClassFileReader;
 import org.eclipse.wst.jsdt.core.util.ICodeAttribute;
@@ -72,7 +73,6 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
-import org.eclipse.wst.jsdt.internal.infer.InferEngine;
 
 /**
  * Provides convenient utility methods to other types in this package.

@@ -19,6 +19,8 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
+import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.IErrorHandlingPolicy;
 import org.eclipse.wst.jsdt.internal.compiler.IProblemFactory;
@@ -108,8 +110,6 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
-import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class ProblemReporter extends ProblemHandler {
 

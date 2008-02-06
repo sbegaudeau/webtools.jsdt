@@ -1,4 +1,4 @@
-package org.eclipse.wst.jsdt.internal.infer;
+package org.eclipse.wst.jsdt.core.infer;
 
 public class InferrenceSupportExtension {
   public InferrenceProvider inferProvider;

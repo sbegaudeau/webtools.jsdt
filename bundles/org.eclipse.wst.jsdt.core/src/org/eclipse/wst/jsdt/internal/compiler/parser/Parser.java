@@ -26,6 +26,10 @@ import java.util.ResourceBundle;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
+import org.eclipse.wst.jsdt.core.infer.InferEngine;
+import org.eclipse.wst.jsdt.core.infer.InferOptions;
+import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
+import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
@@ -145,10 +149,6 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
-import org.eclipse.wst.jsdt.internal.infer.InferEngine;
-import org.eclipse.wst.jsdt.internal.infer.InferOptions;
-import org.eclipse.wst.jsdt.internal.infer.InferrenceManager;
-import org.eclipse.wst.jsdt.internal.infer.InferrenceProvider;
 
 public class Parser implements  ParserBasicInformation, TerminalTokens, OperatorIds, TypeIds {
 

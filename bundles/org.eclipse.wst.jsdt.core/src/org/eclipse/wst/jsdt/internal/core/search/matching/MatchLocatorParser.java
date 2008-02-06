@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
+import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.core.infer.InferredMethod;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -41,9 +44,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
-import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
-import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /**
  * A parser that locates ast nodes that match a given search pattern.

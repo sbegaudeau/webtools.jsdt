@@ -36,6 +36,9 @@ import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
+import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.core.infer.InferredMethod;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.core.search.FieldDeclarationMatch;
 import org.eclipse.wst.jsdt.core.search.FieldReferenceMatch;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
@@ -141,9 +144,6 @@ import org.eclipse.wst.jsdt.internal.core.search.IndexSelector;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchDocument;
 import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
-import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class MatchLocator implements ITypeRequestor {
 

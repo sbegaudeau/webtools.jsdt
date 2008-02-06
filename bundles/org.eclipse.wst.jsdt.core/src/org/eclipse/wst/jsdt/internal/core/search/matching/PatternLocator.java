@@ -17,6 +17,9 @@ import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
+import org.eclipse.wst.jsdt.core.infer.InferredMethod;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.core.search.SearchMatch;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -46,9 +49,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IIndexConstants;
-import org.eclipse.wst.jsdt.internal.infer.InferredAttribute;
-import org.eclipse.wst.jsdt.internal.infer.InferredMethod;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public abstract class PatternLocator implements IIndexConstants {
 

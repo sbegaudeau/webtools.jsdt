@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.eclipse.wst.jsdt.core.UnimplementedException;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 
 public class CombinedSourceTypeBinding extends SourceTypeBinding {
 

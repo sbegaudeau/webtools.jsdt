@@ -1,7 +1,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class FunctionTypeBinding extends SourceTypeBinding {
 

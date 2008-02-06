@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
 import org.eclipse.wst.jsdt.internal.compiler.IErrorHandlingPolicy;
@@ -73,7 +74,6 @@ import org.eclipse.wst.jsdt.internal.core.Openable;
 import org.eclipse.wst.jsdt.internal.core.SourceTypeElementInfo;
 import org.eclipse.wst.jsdt.internal.core.util.ASTNodeFinder;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 public class HierarchyResolver implements ITypeRequestor {
 

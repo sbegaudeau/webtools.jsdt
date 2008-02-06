@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.internal.infer;
+package org.eclipse.wst.jsdt.core.infer;
 
 import java.util.HashMap;
 import java.util.Map;

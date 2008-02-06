@@ -3296,7 +3296,7 @@ class ASTConverter {
 	public Type convertType(TypeReference typeReference) {
 		return convertType(typeReference,null);
 	}
-	public Type convertType(TypeReference typeReference, org.eclipse.wst.jsdt.internal.infer.InferredType inferredType) {
+	public Type convertType(TypeReference typeReference, org.eclipse.wst.jsdt.core.infer.InferredType inferredType) {
 		if (typeReference==null)
 		{
 			InferredType newType=new InferredType(this.ast);

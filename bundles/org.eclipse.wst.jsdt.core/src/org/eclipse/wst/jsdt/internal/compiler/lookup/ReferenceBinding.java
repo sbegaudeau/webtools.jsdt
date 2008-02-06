@@ -15,11 +15,11 @@ import java.util.Comparator;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.IDependent;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
-import org.eclipse.wst.jsdt.internal.infer.InferredType;
 
 /*
 Not all fields defined by this type (& its subclasses) are initialized when it is created.

@@ -1,4 +1,4 @@
-package org.eclipse.wst.jsdt.internal.infer;
+package org.eclipse.wst.jsdt.core.infer;
 
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;

@@ -9,6 +9,7 @@ Export-Package: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.core.dom.rewrite,
  org.eclipse.wst.jsdt.core.eval,
  org.eclipse.wst.jsdt.core.formatter,
+ org.eclipse.wst.jsdt.core.infer,
  org.eclipse.wst.jsdt.core.jdom,
  org.eclipse.wst.jsdt.core.search,
  org.eclipse.wst.jsdt.core.util,
@@ -44,7 +45,6 @@ Export-Package: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.internal.formatter.align;x-internal:=true,
  org.eclipse.wst.jsdt.internal.formatter.comment;x-internal:=true,
  org.eclipse.wst.jsdt.internal.formatter.old;x-internal:=true,
- org.eclipse.wst.jsdt.internal.infer,
  org.eclipse.wst.jsdt.launching
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.wst.jsdt.core.JavaCore
