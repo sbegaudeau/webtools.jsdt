@@ -9,12 +9,13 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class InferrenceManager {
 
 	public static final String EXTENSION_POINT= "inferrenceSupport"; //$NON-NLS-1$
 
-	protected static final String TAG_INFERENGINE = "inferenceEngine"; //$NON-NLS-1$
+	protected static final String TAG_INFERENCE_PROVIDER = "inferenceProvider"; //$NON-NLS-1$
 	protected static final String ATTR_INFERENGINE_CLASS = "class"; //$NON-NLS-1$
 
 
@@ -64,7 +65,7 @@ public class InferrenceManager {
 					for (int j = 0; j < elements.length; j++) {
 						try {
 							InferrenceProvider inferProvider = null;
-							if (elements[j].getName().equals(TAG_INFERENGINE)) {
+							if (elements[j].getName().equals(TAG_INFERENCE_PROVIDER)) {
 								inferProvider = (InferrenceProvider) elements[j]
 										.createExecutableExtension(ATTR_INFERENGINE_CLASS);
 							}
@@ -73,7 +74,7 @@ public class InferrenceManager {
 
 							extList.add(inferenceSupport);
 						} catch (CoreException e) {
-							e.printStackTrace();
+							Util.log(e, "Error in loading inference extension");
 						}
 					}
 				}
