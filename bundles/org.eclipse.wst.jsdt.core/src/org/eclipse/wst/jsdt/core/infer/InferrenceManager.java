@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class InferrenceManager {
@@ -50,6 +51,63 @@ public class InferrenceManager {
 	}
 
 
+	public InferrenceProvider [] getInferenceProviders(CompilationUnitDeclaration script)
+	{
+		InferrenceProvider[] inferenceProviders = getInferenceProviders();
+		ArrayList extProviders=new ArrayList();
+		for (int i = 0; i < inferenceProviders.length; i++) {
+			    int applies = inferenceProviders[i].applysTo(script);
+			    switch (applies) {
+				case InferrenceProvider.MAYBE_THIS:
+					  extProviders.add(inferenceProviders[i]);
+					break;
+
+				case InferrenceProvider.ONLY_THIS:
+					InferrenceProvider [] thisProvider = {inferenceProviders[i]};
+					return thisProvider;
+
+
+				default:
+					break;
+				}
+			}
+		return (InferrenceProvider [] )extProviders.toArray(new InferrenceProvider[extProviders.size()]);
+	}
+
+
+	
+
+	public InferEngine [] getInferenceEngines(CompilationUnitDeclaration script)
+	{
+		InferrenceProvider[] inferenceProviders = getInferenceProviders();
+		ArrayList extEngines=new ArrayList();
+		for (int i = 0; i < inferenceProviders.length; i++) {
+			    int applies = inferenceProviders[i].applysTo(script);
+			    switch (applies) {
+				case InferrenceProvider.MAYBE_THIS:
+					  InferEngine eng=inferenceProviders[i].getInferEngine();
+					  eng.appliesTo=InferrenceProvider.MAYBE_THIS;
+					  eng.inferenceProvider=inferenceProviders[i];
+					  extEngines.add(eng);
+					break;
+
+				case InferrenceProvider.ONLY_THIS:
+					  InferEngine engine=inferenceProviders[i].getInferEngine();
+					  engine.appliesTo=InferrenceProvider.ONLY_THIS;
+					  engine.inferenceProvider=inferenceProviders[i];
+					  InferEngine [] thisEngine = {engine};
+					return thisEngine;
+
+
+				default:
+					break;
+				}
+			}
+		return (InferEngine [] )extEngines.toArray(new InferEngine[extEngines.size()]);
+	}
+
+	
+	
 	protected void loadInferenceExtensions() {
 		IExtensionRegistry registry = Platform.getExtensionRegistry();
 		ArrayList extList = new ArrayList();

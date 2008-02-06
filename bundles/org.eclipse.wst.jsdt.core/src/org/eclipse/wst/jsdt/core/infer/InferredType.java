@@ -38,7 +38,10 @@ public class InferredType extends ASTNode {
 	public boolean isArray=false;
 	public boolean isAnonymous=false;
 
-
+	public String inferenceProviderID;
+	public String inferenceStyle;
+	
+	
 	public final static char[] OBJECT_NAME=new char[]{'O','b','j','e','c','t'};
 	public final static char[] OBJECT_LITERAL_NAME = new char[]{'{','}'};
 

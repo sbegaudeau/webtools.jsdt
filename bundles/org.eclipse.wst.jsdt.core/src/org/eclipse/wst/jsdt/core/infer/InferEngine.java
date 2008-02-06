@@ -46,6 +46,10 @@ public class InferEngine extends ASTVisitor {
 
     boolean isTopLevelAnonymousFunction;
     int anonymousCount=0;
+    
+    public int appliesTo;
+    
+    public InferrenceProvider inferenceProvider;
 
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
 	public  InferredType NumberType=new InferredType(new char[]{'N','u','m','b','e','r'});
@@ -1141,6 +1145,7 @@ public class InferEngine extends ASTVisitor {
 						0,
 						compUnit.numberInferredTypes );
 			type=compUnit.inferredTypes[compUnit.numberInferredTypes ++] = new InferredType(className);
+			type.inferenceProviderID=this.inferenceProvider.getID();
 			compUnit.inferredTypesHash.put(className,type);
 
 		}
@@ -1352,5 +1357,7 @@ public class InferEngine extends ASTVisitor {
 		popContext();
 	}
 	
-	
+
+	public void initializeOptions(InferOptions options) {
+	}
 }

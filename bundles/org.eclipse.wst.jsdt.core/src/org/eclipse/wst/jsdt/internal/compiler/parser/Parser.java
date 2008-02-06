@@ -29,7 +29,6 @@ import org.eclipse.wst.jsdt.core.compiler.InvalidInputException;
 import org.eclipse.wst.jsdt.core.infer.InferEngine;
 import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
-import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AND_AND_Expression;
@@ -331,10 +330,10 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
 	private static final int  UNCONSUMED_ELISION=0x2;
 	private static final int WAS_ARRAY_LIT_ELEMENT=0x1;
 
-	InferrenceProvider[] inferenceProviders;
-
 	public static final byte FLAG_EMPTY_STATEMENT = 1;
 
+	InferEngine[] inferenceEngines;
+	
 	static {
 		try{
 			initTables();
@@ -1050,11 +1049,6 @@ public Parser(ProblemReporter problemReporter, boolean optimizeStringLiterals) {
 
 	// javadoc support
 	this.javadocParser = createJavadocParser();
-	
-	this.inferenceProviders=  InferrenceManager.getInstance().getInferenceProviders();
-	for (int i = 0; i < this.inferenceProviders.length; i++) {
-		this.inferenceProviders[i].initializeOptions(this.options.inferOptions);
-	}
 	
 }
 protected void annotationRecoveryCheckPoint(int start, int end) {
@@ -9262,6 +9256,12 @@ public CompilationUnitDeclaration parse(
 					compilationResult,
 					0);
 
+
+		this.inferenceEngines =  InferrenceManager.getInstance().getInferenceEngines(this.compilationUnit);
+		for (int i = 0; i <  this.inferenceEngines.length; i++) {
+			this.inferenceEngines[i].initializeOptions(this.options.inferOptions);
+		}
+
 		/* scanners initialization */
 		char[] contents;
 		try {
@@ -10323,16 +10323,15 @@ protected void updateSourcePosition(Expression exp) {
 public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions compileOptions) {
 	if (compileOptions==null)
 		compileOptions=this.options;
+	
+
 //	InferEngine inferEngine=compileOptions.inferOptions.createEngine();
-	for (int i=0;i<inferenceProviders.length;i++)
+	for (int i=0;i<this.inferenceEngines.length;i++)
 	{
-		if (inferenceProviders[i].applysTo(parsedUnit))
-		{
-			InferEngine engine=inferenceProviders[i].getInferEngine();
+			InferEngine engine=this.inferenceEngines[i];
 			engine.initialize();
 			engine.setCompilationUnit(parsedUnit);
 			engine.doInfer();
-		}
 
 	}
 }

@@ -4,16 +4,23 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
 
 public class DefaultInferrenceProvider implements InferrenceProvider {
 
-	public boolean applysTo(CompilationUnitDeclaration scriptFile) {
-		return true;
+	public static final String ID="org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider";
+	
+
+	public int applysTo(CompilationUnitDeclaration scriptFile) {
+		return InferrenceProvider.MAYBE_THIS;
 	}
 
 	public InferEngine getInferEngine() {
-		return new InferEngine();
+		 InferEngine engine = new InferEngine();
+		 engine.inferenceProvider=this;
+		 return engine;
 	}
+ 
 
-	public void initializeOptions(InferOptions options) {
 
+	public String getID() {
+		return ID;
 	}
 
 }
