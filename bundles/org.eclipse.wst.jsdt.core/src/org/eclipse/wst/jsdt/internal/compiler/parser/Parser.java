@@ -10326,10 +10326,13 @@ public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions co
 //	InferEngine inferEngine=compileOptions.inferOptions.createEngine();
 	for (int i=0;i<inferenceProviders.length;i++)
 	{
-		InferEngine engine=inferenceProviders[i].getInferEngine();
-		engine.initialize();
-		engine.setCompilationUnit(parsedUnit);
-		engine.doInfer();
+		if (inferenceProviders[i].applysTo(parsedUnit))
+		{
+			InferEngine engine=inferenceProviders[i].getInferEngine();
+			engine.initialize();
+			engine.setCompilationUnit(parsedUnit);
+			engine.doInfer();
+		}
 
 	}
 }
