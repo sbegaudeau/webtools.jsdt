@@ -77,6 +77,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
+import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObjectToInt;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 import org.eclipse.wst.jsdt.internal.core.util.CommentRecorderParser;
@@ -116,7 +117,9 @@ public class SourceElementParser extends CommentRecorderParser {
 	HashtableOfObjectToInt sourceEnds = new HashtableOfObjectToInt();
 	HashMap nodesToCategories = new HashMap(); // a map from ASTNode to char[][]
 	boolean useSourceJavadocParser = true;
-
+	HashtableOfObject notifiedTypes=new HashtableOfObject();
+	
+	
 	public static final boolean NOTIFY_LOCALS=false;
 	static final ISourceElementRequestor.TypeParameterInfo[ ] EMPTY_TYPEPARAMETERINFO=new ISourceElementRequestor.TypeParameterInfo[0];
 /**
@@ -1248,6 +1251,11 @@ public void notifySourceElementRequestor( InferredType type ) {
 	if ( !type.isDefinition)
 		return;
 
+				// prevent possible recurrsion
+	if (notifiedTypes.containsKey(type.getName()))
+		return;
+	notifiedTypes.put(type.getName(), null);
+	
 
 	ISourceElementRequestor.TypeInfo typeInfo = new ISourceElementRequestor.TypeInfo();
 	typeInfo.declarationStart = type.sourceStart;
