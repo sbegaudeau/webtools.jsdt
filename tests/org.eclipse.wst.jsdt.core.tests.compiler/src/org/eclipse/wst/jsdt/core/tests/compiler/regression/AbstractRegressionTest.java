@@ -29,6 +29,8 @@ import junit.framework.AssertionFailedError;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
+import org.eclipse.wst.jsdt.core.infer.InferEngine;
+import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.StopableTestCase;
@@ -58,8 +60,6 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblemFactory;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchParticipant;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.SourceIndexer;
-import org.eclipse.wst.jsdt.internal.infer.InferEngine;
-import org.eclipse.wst.jsdt.internal.infer.InferOptions;
 
 public abstract class AbstractRegressionTest extends AbstractCompilerTest implements StopableTestCase {
 	// javac comparison related types, fields and methods - see runJavac for

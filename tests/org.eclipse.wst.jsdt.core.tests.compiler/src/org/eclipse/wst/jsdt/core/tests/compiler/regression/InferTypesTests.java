@@ -1,7 +1,7 @@
 package org.eclipse.wst.jsdt.core.tests.compiler.regression;
 
+import org.eclipse.wst.jsdt.core.infer.InferOptions;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.wst.jsdt.internal.infer.InferOptions;
 
 public class InferTypesTests extends AbstractRegressionTest {
 
