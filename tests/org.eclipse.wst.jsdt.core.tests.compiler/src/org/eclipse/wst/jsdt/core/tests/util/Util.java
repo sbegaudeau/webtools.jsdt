@@ -650,9 +650,34 @@ public static String[] getJavaClassLibs() {
 	IPath pluginDir = targetRoot.append(new Path(TARGET_PLUGIN));
 	IPath libDir = pluginDir.append(new Path(new String(SystemLibraryLocation.LIBRARY_PLUGIN_DIRECTORY)));
 	IPath fullDir = libDir.append(new Path(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME)));
+	File libFile=new File(fullDir.toOSString());
+	if (!libFile.exists())
+	{
+	targetRoot =  new Path(OUTPUT_DIRECTORY);
+	libDir = targetRoot.append(new Path(new String(SystemLibraryLocation.LIBRARY_PLUGIN_DIRECTORY)));
 	
+	 libFile=new File(libDir.toOSString());
+	libFile.mkdirs();
 	
+	 fullDir = libDir.append(new Path(new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME)));
+
+	Class clazz=SystemLibraryLocation.class;
+ 
+	String inputName=/*"../../../../../../../"+*/
+	new String(SystemLibraryLocation.LIBRARY_PLUGIN_DIRECTORY)+"/"+new String(SystemLibraryLocation.SYSTEM_LIBARAY_NAME);
+
+	URL resource = clazz.getClassLoader().getResource(inputName);
+
+	InputStream inputStream=clazz.getClassLoader().getResourceAsStream(inputName);
 	
+	try {
+		copyFile(inputStream, new File(fullDir.toOSString()));
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	}
 	
 	return new String[]
 	                  {
@@ -682,6 +707,33 @@ public static String[] getJavaClassLibs() {
 //		toNativePath(jreDir + "/lib/graphics.jar")
 //	};
 }
+
+public static void copyFile(InputStream src, File dst) throws IOException {
+	InputStream in=null;
+	OutputStream out=null;
+	try {
+		in = new BufferedInputStream(src);
+		out = new BufferedOutputStream(new FileOutputStream(dst));
+		byte[] buffer = new byte[4096];
+		int len;
+		while ((len=in.read(buffer)) != -1) {
+			out.write(buffer, 0, len);
+		}
+	} finally {
+		if (in != null)
+			try {
+				in.close();
+			} catch (IOException e) {
+			}
+		if (out != null)
+			try {
+				out.close();
+			} catch (IOException e) {
+			}
+	}
+}
+
+
 public static String getJavaClassLibsAsString() {
 	String[] classLibs = getJavaClassLibs();
 	StringBuffer buffer = new StringBuffer();
