@@ -67,4 +67,9 @@ public String toString() {
 public LibrarySuperType getCommonSuperType() {
 	return null;
 }
+public String getInferenceID() {
+	return null;
+}
+
+
 }

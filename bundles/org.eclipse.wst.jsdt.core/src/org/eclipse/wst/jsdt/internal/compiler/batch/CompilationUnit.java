@@ -99,4 +99,8 @@ public LibrarySuperType getCommonSuperType() {
 //	System.out.println("Unimplemented method:CompilationUnit.getCommonSuperType"); //$NON-NLS-1$
 	return null;
 }
+public String getInferenceID() {
+	return null;
+}
+
 }

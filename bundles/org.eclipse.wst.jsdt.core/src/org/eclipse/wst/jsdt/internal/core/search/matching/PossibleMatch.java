@@ -152,4 +152,9 @@ public String toString() {
 public LibrarySuperType getCommonSuperType() {
 	return openable.getCommonSuperType();
 }
+public String getInferenceID() {
+	return null;
+}
+
+
 }

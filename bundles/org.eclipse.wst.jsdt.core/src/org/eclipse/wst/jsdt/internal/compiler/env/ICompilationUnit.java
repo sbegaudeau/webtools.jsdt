@@ -38,4 +38,5 @@ char[] getMainTypeName();
  */
 char[][] getPackageName();
 LibrarySuperType getCommonSuperType();
+String getInferenceID();
 }

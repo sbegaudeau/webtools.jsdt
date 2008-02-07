@@ -154,4 +154,9 @@ public String toString(){
 public LibrarySuperType getCommonSuperType() {
 	return superType;
 }
+
+public String getInferenceID() {
+	return null;
+}
+
 }

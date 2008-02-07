@@ -210,6 +210,11 @@ protected boolean buildStructure(OpenableElementInfo info, final IProgressMonito
 			public LibrarySuperType getCommonSuperType() {
 				return CompilationUnit.this.getCommonSuperType();
 			}
+			public String getInferenceID() {
+				return CompilationUnit.this.getInferenceID();
+			}
+
+
 		},
 		true /*full parse to find local elements*/);
 
@@ -1424,7 +1429,9 @@ public URI getHostPath() {
 }
 
 public JsGlobalScopeContainerInitializer getContainerInitializer() {
-	JsGlobalScopeContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
+	JsGlobalScopeContainerInitializer init = null;
+	if (parent instanceof IVirtualParent)
+		init=((IVirtualParent)parent).getContainerInitializer();
 	return init;
 }
 
@@ -1456,6 +1463,11 @@ public IMethod[] findMethods(IMethod method) {
 		list.toArray(result);
 		return result;
 	}
+}
+
+public String getInferenceID() {
+	JsGlobalScopeContainerInitializer containerInitializer = getContainerInitializer();
+	return null;
 }
 
 

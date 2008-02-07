@@ -123,4 +123,10 @@ public LibrarySuperType getCommonSuperType() {
 	IJavaProject jp = JavaCore.create(myProject);
 	return jp.getCommonSuperType();
 }
+
+public String getInferenceID() {
+	return null;
+}
+
+
 }

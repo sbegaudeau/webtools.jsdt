@@ -173,7 +173,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 	if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
 		parser.javadocParser.checkDocComment = false;
 	requestor.parser = parser;
-//	CompilationUnitDeclaration unit =
+	CompilationUnitDeclaration unit =
 		parser.parseCompilationUnit(
 			this,
 		true /*full parse to find local elements*/);
@@ -187,7 +187,7 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 		unitInfo.timestamp = ((IFile)underlyingResource).getModificationStamp();
 
 	// compute other problems if needed
-	CompilationUnitDeclaration compilationUnitDeclaration = null;
+//	CompilationUnitDeclaration compilationUnitDeclaration = null;
 	info.setChildren(unitInfo.children);
 	try {
 
@@ -198,8 +198,8 @@ protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm, 
 			throw new RuntimeException("Implement this"); //$NON-NLS-1$
 		}
 	} finally {
-	    if (compilationUnitDeclaration != null) {
-	        compilationUnitDeclaration.cleanUp();
+	    if (unit != null) {
+	        unit.cleanUp();
 	    }
 	}
 
@@ -942,4 +942,10 @@ public IType[] getTypes() throws JavaModelException {
 		JsGlobalScopeContainerInitializer init = ((IVirtualParent)parent).getContainerInitializer();
 		return init;
 	}
+
+	public String getInferenceID() {
+		JsGlobalScopeContainerInitializer containerInitializer = getContainerInitializer();
+		return null;
+	}
+	
 }
