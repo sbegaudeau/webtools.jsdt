@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -23,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ReturnStatement extends Statement {
+public class ReturnStatement extends Statement implements IReturnStatement {
 
 	public Expression expression;
 	public SubRoutineStatement[] subroutines;
@@ -196,5 +198,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 			this.expression.traverse(visitor, scope);
 	}
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.RETURN_STATEMENT;
+
 }
 }

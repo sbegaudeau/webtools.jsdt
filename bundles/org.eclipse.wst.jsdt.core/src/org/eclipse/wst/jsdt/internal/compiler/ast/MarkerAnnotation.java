@@ -16,10 +16,12 @@
  */
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IMarkerAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class MarkerAnnotation extends Annotation {
+public class MarkerAnnotation extends Annotation implements IMarkerAnnotation {
 
 	public MarkerAnnotation(TypeReference type, int sourceStart) {
 		this.type = type;
@@ -37,5 +39,9 @@ public class MarkerAnnotation extends Annotation {
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.MARKER_ANNOTATION;
+	
 	}
 }

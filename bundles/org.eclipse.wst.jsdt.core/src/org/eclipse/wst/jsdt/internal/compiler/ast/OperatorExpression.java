@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IOperatorExpression;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
-public abstract class OperatorExpression extends Expression implements OperatorIds {
+public abstract class OperatorExpression extends Expression implements OperatorIds, IOperatorExpression {
 
 	public static int[][] OperatorSignatures = new int[NumberOfTables][];
 
@@ -1834,4 +1836,8 @@ public abstract class OperatorExpression extends Expression implements OperatorI
 	}
 
 	public abstract StringBuffer printExpressionNoParenthesis(int indent, StringBuffer output);
+	public int getASTType() {
+		return IASTNode.OPERATOR_EXPRESSION;
+	
+	}
 }

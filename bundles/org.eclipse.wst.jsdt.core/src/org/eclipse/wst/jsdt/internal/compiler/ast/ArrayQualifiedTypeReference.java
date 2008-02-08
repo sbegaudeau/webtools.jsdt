@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 
-public class ArrayQualifiedTypeReference extends QualifiedTypeReference {
+public class ArrayQualifiedTypeReference extends QualifiedTypeReference implements IArrayQualifiedTypeReference {
 	int dimensions;
 
 	public ArrayQualifiedTypeReference(char[][] sources , int dim, long[] poss) {
@@ -97,5 +99,9 @@ public class ArrayQualifiedTypeReference extends QualifiedTypeReference {
 
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.ARRAY_QUALIFIED_TYPE_REFERENCE;
+	
 	}
 }

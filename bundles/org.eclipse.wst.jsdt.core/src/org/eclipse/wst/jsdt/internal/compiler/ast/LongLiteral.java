@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ILongLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
-public class LongLiteral extends NumberLiteral {
+public class LongLiteral extends NumberLiteral implements ILongLiteral {
 	static final Constant FORMAT_ERROR = DoubleConstant.fromValue(1.0/0.0); // NaN;
 
 public LongLiteral(char[] token, int s,int e) {
@@ -141,5 +143,9 @@ public TypeBinding resolveType(BlockScope scope) {
 public void traverse(ASTVisitor visitor, BlockScope scope) {
 	visitor.visit(this, scope);
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.LONG_LITERAL;
+
 }
 }

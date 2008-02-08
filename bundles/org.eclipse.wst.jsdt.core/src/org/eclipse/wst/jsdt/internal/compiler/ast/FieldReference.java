@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IFieldReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -32,7 +34,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
-public class FieldReference extends Reference implements InvocationSite {
+public class FieldReference extends Reference implements InvocationSite, IFieldReference {
 
 	public static final int READ = 0;
 	public static final int WRITE = 1;
@@ -493,6 +495,9 @@ public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location)
 	}
 	return typeBinding;
 }
+public int getASTType() {
+	return IASTNode.FIELD_REFERENCE;
 
+}
 
 }

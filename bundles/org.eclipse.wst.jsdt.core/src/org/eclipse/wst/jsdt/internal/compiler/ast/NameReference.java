@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.INameReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
+
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public abstract class NameReference extends Reference implements InvocationSite {
+public abstract class NameReference extends Reference implements INameReference, InvocationSite {
 
 	public Binding binding;//, codegenBinding; //may be aTypeBinding-aFieldBinding-aLocalVariableBinding
 
@@ -80,7 +83,10 @@ public Binding alternateBinding()
 
 
 }
+public int getASTType() {
+	return IASTNode.NAME_REFERENCE;
 
+}
 }
 
 

@@ -12,6 +12,8 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import java.util.ArrayList;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -33,7 +35,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 
-public abstract class Expression extends Statement {
+public abstract class Expression extends Statement implements IExpression {
 
 	public Constant constant;
 
@@ -917,5 +919,8 @@ public void markAsNonNull() {
 		return this.resolveType(scope);
 	}
 	
+	public int getASTType() {
+		return IASTNode.EXPRESSION;
 	
+	}
 }

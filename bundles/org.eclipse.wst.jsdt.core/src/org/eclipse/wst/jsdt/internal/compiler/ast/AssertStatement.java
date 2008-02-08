@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IAssertStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -22,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class AssertStatement extends Statement {
+public class AssertStatement extends Statement implements IAssertStatement {
 
 	public Expression assertExpression, exceptionArgument;
 
@@ -174,5 +176,8 @@ public class AssertStatement extends Statement {
 		}
 		return output.append(';');
 	}
-
+	public int getASTType() {
+		return IASTNode.ASSERT_STATEMENT;
+	
+	}
 }

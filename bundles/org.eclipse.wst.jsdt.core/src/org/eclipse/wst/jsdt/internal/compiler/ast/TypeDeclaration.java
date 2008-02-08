@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ITypeDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -47,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public class TypeDeclaration extends Statement implements ProblemSeverities, ReferenceContext {
+public class TypeDeclaration extends Statement implements ProblemSeverities, ReferenceContext, ITypeDeclaration {
 	// Type decl kinds
 	public static final int CLASS_DECL = 1;
 	public static final int INTERFACE_DECL = 2;
@@ -1302,5 +1304,9 @@ void updateMaxFieldCount() {
  */
 public boolean isSecondary() {
 	return (this.bits & ASTNode.IsSecondaryType) != 0;
+}
+public int getASTType() {
+	return IASTNode.TYPE_DECLARATION;
+
 }
 }

@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IReference;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 
-public abstract class Reference extends Expression  {
+public abstract class Reference extends Expression implements IReference  {
 /**
  * BaseLevelReference constructor comment.
  */
@@ -31,5 +33,9 @@ public FieldBinding fieldBinding() {
 	//this method should be sent one FIELD-tagged references
 	//  (ref.bits & BindingIds.FIELD != 0)()
 	return null ;
+}
+public int getASTType() {
+	return IASTNode.REFERENCE;
+
 }
 }

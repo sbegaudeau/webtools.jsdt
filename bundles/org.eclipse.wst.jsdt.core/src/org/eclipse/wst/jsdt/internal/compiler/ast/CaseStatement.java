@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ICaseStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -22,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.FieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class CaseStatement extends Statement {
+public class CaseStatement extends Statement implements ICaseStatement {
 
 	public Expression constantExpression;
 	public boolean isEnumConstant;
@@ -135,5 +137,9 @@ public class CaseStatement extends Statement {
 			if (constantExpression != null) constantExpression.traverse(visitor, blockScope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.CASE_STATEMENT;
+	
 	}
 }

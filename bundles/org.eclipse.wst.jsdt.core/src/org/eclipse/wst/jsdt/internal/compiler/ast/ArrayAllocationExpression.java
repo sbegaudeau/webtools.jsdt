@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IArrayAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ArrayAllocationExpression extends Expression {
+public class ArrayAllocationExpression extends Expression implements IArrayAllocationExpression {
 
 	public TypeReference type;
 
@@ -137,5 +139,9 @@ public class ArrayAllocationExpression extends Expression {
 				this.initializer.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.ARRAY_ALLOCATION_EXPRESSION;
+	
 	}
 }

@@ -1,12 +1,15 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ObjectLiteralField extends Expression {
+public class ObjectLiteralField extends Expression implements IObjectLiteralField {
 
 	public Expression fieldName;
 	public Expression initializer;
@@ -19,6 +22,16 @@ public class ObjectLiteralField extends Expression {
 		this.sourceEnd=end;
 		this.sourceStart=start;
 	}
+	
+	public IExpression getFieldName() {
+		return fieldName;
+	}
+	
+	public IExpression getInitializer() {
+		return initializer;
+	}
+
+	
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		if (this.javaDoc!=null)
 			this.javaDoc.print(indent, output);
@@ -54,5 +67,9 @@ public class ObjectLiteralField extends Expression {
 			flowInfo=initializer.analyseCode(classScope,initializationContext, flowInfo);
 
 		return flowInfo;
+	}
+	public int getASTType() {
+		return IASTNode.OBJECT_LITERAL_FIELD;
+	
 	}
 }

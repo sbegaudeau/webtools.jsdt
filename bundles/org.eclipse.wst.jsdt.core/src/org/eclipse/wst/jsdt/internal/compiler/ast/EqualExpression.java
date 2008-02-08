@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IEqualExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -22,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class EqualExpression extends BinaryExpression {
+public class EqualExpression extends BinaryExpression implements IEqualExpression {
 
 	public EqualExpression(Expression left, Expression right,int operator) {
 		super(left,right,operator);
@@ -248,5 +250,9 @@ public class EqualExpression extends BinaryExpression {
 			right.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.EQUAL_EXPRESSION;
+	
 	}
 }

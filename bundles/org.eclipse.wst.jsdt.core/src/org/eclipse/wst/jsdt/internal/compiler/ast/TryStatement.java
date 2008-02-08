@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ITryStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FinallyFlowContext;
@@ -27,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
-public class TryStatement extends SubRoutineStatement {
+public class TryStatement extends SubRoutineStatement implements ITryStatement {
 
 //	private final static char[] SECRET_RETURN_ADDRESS_NAME = " returnAddress".toCharArray(); //$NON-NLS-1$
 //	private final static char[] SECRET_ANY_HANDLER_NAME = " anyExceptionHandler".toCharArray(); //$NON-NLS-1$
@@ -452,5 +454,9 @@ public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 			this.finallyBlock.traverse(visitor, this.scope);
 	}
 	visitor.endVisit(this, blockScope);
+}
+public int getASTType() {
+	return IASTNode.TRY_STATEMENT;
+
 }
 }

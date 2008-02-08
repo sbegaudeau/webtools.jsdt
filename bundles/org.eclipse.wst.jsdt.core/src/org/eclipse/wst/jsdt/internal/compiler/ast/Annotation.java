@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IAnnotation;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -34,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 /**
  * Annotation
  */
-public abstract class Annotation extends Expression {
+public abstract class Annotation extends Expression implements IAnnotation {
 
 	final static MemberValuePair[] NoValuePairs = new MemberValuePair[0];
 	public int declarationSourceEnd;
@@ -413,5 +415,8 @@ public abstract class Annotation extends Expression {
 	}
 
 	public abstract void traverse(ASTVisitor visitor, BlockScope scope);
-
+	public int getASTType() {
+		return IASTNode.ANNOTATION;
+	
+	}
 }

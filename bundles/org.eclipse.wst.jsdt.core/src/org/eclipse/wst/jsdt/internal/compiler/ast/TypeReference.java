@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ITypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -26,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public abstract class TypeReference extends Expression {
+public abstract class TypeReference extends Expression implements ITypeReference {
 
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 	return flowInfo;
@@ -205,4 +207,9 @@ protected void reportDeprecatedType(TypeBinding type, Scope scope) {
 }
 public abstract void traverse(ASTVisitor visitor, BlockScope scope);
 public abstract void traverse(ASTVisitor visitor, ClassScope scope);
+
+public int getASTType() {
+	return IASTNode.TYPE_REFERENCE;
+
+}
 }

@@ -12,6 +12,8 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import java.util.ArrayList;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IConstructorDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -31,7 +33,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 
-public class ConstructorDeclaration extends AbstractMethodDeclaration {
+public class ConstructorDeclaration extends AbstractMethodDeclaration implements IConstructorDeclaration {
 
 	public ExplicitConstructorCall constructorCall;
 
@@ -334,5 +336,8 @@ public void traverse(ASTVisitor visitor,	ClassScope classScope) {
 public TypeParameter[] typeParameters() {
     return this.typeParameters;
 }
+public int getASTType() {
+	return IASTNode.CONSTRUCTOR_DECLARATION;
 
+}
 }

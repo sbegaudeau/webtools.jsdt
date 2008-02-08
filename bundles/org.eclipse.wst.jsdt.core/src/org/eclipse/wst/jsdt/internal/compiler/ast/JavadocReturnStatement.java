@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
-public class JavadocReturnStatement extends ReturnStatement {
+public class JavadocReturnStatement extends ReturnStatement implements IJsDocReturnStatement {
 
 	public JavadocReturnStatement(int s, int e) {
 		super(null, s, e);
@@ -69,5 +71,9 @@ public class JavadocReturnStatement extends ReturnStatement {
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_RETURN_STATEMENT;
+	
 	}
 }

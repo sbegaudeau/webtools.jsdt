@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -20,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ArrayInitializer extends Expression {
+public class ArrayInitializer extends Expression implements IArrayInitializer {
 
 	public Expression[] expressions;
 	public ArrayBinding binding; //the type of the { , , , }
@@ -173,5 +175,9 @@ public class ArrayInitializer extends Expression {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.ARRAY_INITIALIZER;
+	
 	}
 }

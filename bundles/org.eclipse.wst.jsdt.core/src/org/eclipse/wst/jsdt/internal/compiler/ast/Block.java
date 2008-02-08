@@ -11,12 +11,14 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IBlock;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class Block extends Statement {
+public class Block extends Statement implements IBlock {
 
 	public Statement[] statements;
 	public int explicitDeclarations;
@@ -111,5 +113,8 @@ public class Block extends Statement {
 		}
 		visitor.endVisit(this, blockScope);
 	}
-
+	public int getASTType() {
+		return IASTNode.BLOCK;
+	
+	}
 }

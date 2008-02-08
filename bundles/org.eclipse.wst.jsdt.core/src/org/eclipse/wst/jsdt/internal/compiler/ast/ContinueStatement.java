@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IContinueStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InsideSubRoutineFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class ContinueStatement extends BranchStatement {
+public class ContinueStatement extends BranchStatement implements IContinueStatement {
 
 public ContinueStatement(char[] label, int sourceStart, int sourceEnd) {
 	super(label, sourceStart, sourceEnd);
@@ -95,5 +97,9 @@ public StringBuffer printStatement(int tab, StringBuffer output) {
 public void traverse(ASTVisitor visitor, 	BlockScope blockScope) {
 	visitor.visit(this, blockScope);
 	visitor.endVisit(this, blockScope);
+}
+public int getASTType() {
+	return IASTNode.CONTINUE_STATEMENT;
+
 }
 }

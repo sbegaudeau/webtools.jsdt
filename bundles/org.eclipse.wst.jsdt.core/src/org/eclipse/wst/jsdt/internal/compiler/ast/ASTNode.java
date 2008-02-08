@@ -12,7 +12,9 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
@@ -34,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 
-public abstract class ASTNode implements TypeConstants, TypeIds {
+public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 
 	public int sourceStart, sourceEnd;
 
@@ -734,5 +736,9 @@ public static void resolveDeprecatedAnnotations(BlockScope scope, Annotation[] a
 	public boolean isInferred()
 	{
 		return false;
+	}
+	public int getASTType() {
+		return IASTNode.AST_NODE;
+	
 	}
 }

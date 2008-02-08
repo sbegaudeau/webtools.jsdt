@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocMessageSend;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -25,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
-public class JavadocMessageSend extends MessageSend {
+public class JavadocMessageSend extends MessageSend implements IJsDocMessageSend {
 
 	public int tagSourceStart, tagSourceEnd;
 	public int tagValue;
@@ -241,5 +243,9 @@ public class JavadocMessageSend extends MessageSend {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_MESSAGE_SEND;
+	
 	}
 }

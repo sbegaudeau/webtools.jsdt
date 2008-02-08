@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IBreakStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.InsideSubRoutineFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class BreakStatement extends BranchStatement {
+public class BreakStatement extends BranchStatement implements IBreakStatement {
 
 public BreakStatement(char[] label, int sourceStart, int e) {
 	super(label, sourceStart, e);
@@ -91,5 +93,9 @@ public StringBuffer printStatement(int tab, StringBuffer output) {
 public void traverse(ASTVisitor visitor, BlockScope blockscope) {
 	visitor.visit(this, blockscope);
 	visitor.endVisit(this, blockscope);
+}
+public int getASTType() {
+	return IASTNode.BREAK_STATEMENT;
+
 }
 }

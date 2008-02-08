@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ISubRoutineStatement;
+
 
 /**
  * Extra behavior for statements which are generating subroutines
  */
-public abstract class SubRoutineStatement extends Statement {
+public abstract class SubRoutineStatement extends Statement implements ISubRoutineStatement {
 
 	 
 
@@ -27,5 +30,8 @@ public abstract class SubRoutineStatement extends Statement {
  
 	public abstract boolean isSubRoutineEscaping();
 
- 
+	public int getASTType() {
+		return IASTNode.SUB_ROUTINE_STATEMENT;
+	
+	}
 }

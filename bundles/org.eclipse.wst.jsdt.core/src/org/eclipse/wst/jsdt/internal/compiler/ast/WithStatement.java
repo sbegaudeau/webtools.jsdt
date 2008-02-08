@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IWithStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.WithScope;
 
-public class WithStatement extends Statement {
+public class WithStatement extends Statement implements IWithStatement {
 
 	public Expression condition;
 	public Statement action;
@@ -85,5 +87,9 @@ public class WithStatement extends Statement {
 				action.traverse(visitor, blockScope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.WITH_STATEMENT;
+	
 	}
 }

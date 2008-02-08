@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IAnnotationFunctionDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 
-public class AnnotationMethodDeclaration extends MethodDeclaration {
+public class AnnotationMethodDeclaration extends MethodDeclaration implements IAnnotationFunctionDeclaration {
 
 	public Expression defaultValue;
 	public int extendedDimensions;
@@ -155,5 +157,9 @@ public class AnnotationMethodDeclaration extends MethodDeclaration {
 			}
 		}
 		visitor.endVisit(this, classScope);
+	}
+	public int getASTType() {
+		return IASTNode.ANNOTATION_FUNCTION_DECLARATION;
+	
 	}
 }

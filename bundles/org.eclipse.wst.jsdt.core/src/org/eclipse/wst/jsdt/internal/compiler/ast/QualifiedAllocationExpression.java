@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IQualifiedAllocationExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -36,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
  * - trailing anonymous type
  * - generic type arguments for generic constructor invocation
  */
-public class QualifiedAllocationExpression extends AllocationExpression {
+public class QualifiedAllocationExpression extends AllocationExpression implements IQualifiedAllocationExpression {
 
 	//qualification may be on both side
 	public Expression enclosingInstance;
@@ -387,5 +389,9 @@ public class QualifiedAllocationExpression extends AllocationExpression {
 				this.anonymousType.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.QUALIFIED_ALLOCATION_EXPRESSION;
+	
 	}
 }

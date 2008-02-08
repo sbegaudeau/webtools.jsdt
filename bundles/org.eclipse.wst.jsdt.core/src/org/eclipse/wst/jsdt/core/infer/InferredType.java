@@ -3,6 +3,7 @@ package org.eclipse.wst.jsdt.core.infer;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -62,12 +63,12 @@ public class InferredType extends ASTNode {
 	{
 		return superClass!=null ? superClass.getName() : OBJECT_NAME;
 	}
-	public InferredAttribute addAttribute(char [] name, ASTNode definer)
+	public InferredAttribute addAttribute(char [] name, IASTNode definer)
 	{
 		InferredAttribute attribute = findAttribute(name);
 		if (attribute==null)
 		{
-			attribute=new InferredAttribute(name, this ,definer.sourceStart,definer.sourceEnd);
+			attribute=new InferredAttribute(name, this ,definer.sourceStart(),definer.sourceEnd());
 
 			if (this.numberAttributes == this.attributes.length)
 
@@ -83,7 +84,7 @@ public class InferredType extends ASTNode {
 			attributesHash.put(name, attribute);
 
 			if( !isAnonymous )
-				this.updatePositions(definer.sourceStart, definer.sourceEnd);
+				this.updatePositions(definer.sourceStart(), definer.sourceEnd());
 		}
 		return attribute;
 	}

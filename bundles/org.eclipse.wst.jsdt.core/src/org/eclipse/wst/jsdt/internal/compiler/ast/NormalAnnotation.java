@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.INormalAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 /**
  * Normal annotation node
  */
-public class NormalAnnotation extends Annotation {
+public class NormalAnnotation extends Annotation implements INormalAnnotation {
 
 	public MemberValuePair[] memberValuePairs;
 
@@ -69,5 +71,9 @@ public class NormalAnnotation extends Annotation {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.NORMAL_ANNOTATION;
+	
 	}
 }

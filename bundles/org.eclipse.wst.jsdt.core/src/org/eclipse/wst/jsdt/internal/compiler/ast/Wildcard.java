@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IWildcard;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -22,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.WildcardBinding;
 /**
  * Node to represent Wildcard
  */
-public class Wildcard extends SingleTypeReference {
+public class Wildcard extends SingleTypeReference implements IWildcard {
 
     public static final int UNBOUND = 0;
     public static final int EXTENDS = 1;
@@ -128,5 +130,9 @@ public class Wildcard extends SingleTypeReference {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.WILDCARD;
+	
 	}
 }

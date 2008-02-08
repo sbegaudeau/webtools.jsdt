@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ICombinedBinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -43,7 +45,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
  *     the resulting, separated expressions.</li>
  * </ul>
  */
-public class CombinedBinaryExpression extends BinaryExpression {
+public class CombinedBinaryExpression extends BinaryExpression implements ICombinedBinaryExpression {
 
 	/**
 	 * The number of consecutive binary expressions of this' left branch that
@@ -238,5 +240,9 @@ public void tuneArityMax() {
 	if (this.arityMax < ARITY_MAX_MAX) {
 		this.arityMax *= 2;
 	}
+}
+public int getASTType() {
+	return IASTNode.COMBINED_BINARY_EXPRESSION;
+
 }
 }

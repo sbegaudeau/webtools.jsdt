@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IForInStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -20,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ForInStatement extends Statement {
+public class ForInStatement extends Statement implements IForInStatement {
 
 	public Statement  iterationVariable;
 	public Expression collection;
@@ -203,5 +205,9 @@ public class ForInStatement extends Statement {
 				action.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.FOR_IN_STATEMENT;
+	
 	}
 }

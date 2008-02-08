@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ICastExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -28,7 +30,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public class CastExpression extends Expression {
+public class CastExpression extends Expression implements ICastExpression {
 
 	public Expression expression;
 	public Expression type;
@@ -490,5 +492,9 @@ public class CastExpression extends Expression {
 			expression.traverse(visitor, blockScope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.CAST_EXPRESSION;
+	
 	}
 }

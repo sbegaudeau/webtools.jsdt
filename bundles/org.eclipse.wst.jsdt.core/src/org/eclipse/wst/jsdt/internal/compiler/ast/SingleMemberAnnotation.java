@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ISingleMemberAnnotation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
@@ -17,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ElementValuePair;
 /**
  * SingleMemberAnnotation node
  */
-public class SingleMemberAnnotation extends Annotation {
+public class SingleMemberAnnotation extends Annotation implements ISingleMemberAnnotation {
 
 	public Expression memberValue;
 	private MemberValuePair[] singlePairs; // fake pair set, only value has accurate positions
@@ -59,5 +61,9 @@ public class SingleMemberAnnotation extends Annotation {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.SINGLE_MEMBER_ANNOTATION;
+	
 	}
 }

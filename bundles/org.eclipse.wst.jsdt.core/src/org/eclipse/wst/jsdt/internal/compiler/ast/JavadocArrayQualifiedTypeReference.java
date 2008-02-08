@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocArrayQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
 
-public class JavadocArrayQualifiedTypeReference extends ArrayQualifiedTypeReference {
+public class JavadocArrayQualifiedTypeReference extends ArrayQualifiedTypeReference implements IJsDocArrayQualifiedTypeReference {
 
 	public int tagSourceStart, tagSourceEnd;
 
@@ -45,5 +47,9 @@ public class JavadocArrayQualifiedTypeReference extends ArrayQualifiedTypeRefere
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_ARRAY_QUALIFIED_TYPE_REFERENCE;
+	
 	}
 }

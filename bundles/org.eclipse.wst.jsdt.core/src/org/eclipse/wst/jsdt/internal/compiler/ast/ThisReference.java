@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ThisReference extends Reference {
+public class ThisReference extends Reference implements IThisReference {
 
 	public static ThisReference implicitThis(){
 
@@ -96,5 +98,9 @@ public class ThisReference extends Reference {
 
 		visitor.visit(this, blockScope);
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.THIS_REFERENCE;
+	
 	}
 }

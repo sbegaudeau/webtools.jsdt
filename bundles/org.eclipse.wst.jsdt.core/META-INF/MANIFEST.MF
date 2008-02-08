@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-Vendor: %providerName
 Export-Package: org.eclipse.wst.jsdt.core,
+ org.eclipse.wst.jsdt.core.ast,
  org.eclipse.wst.jsdt.core.compiler,
  org.eclipse.wst.jsdt.core.compiler.libraries,
  org.eclipse.wst.jsdt.core.dom,

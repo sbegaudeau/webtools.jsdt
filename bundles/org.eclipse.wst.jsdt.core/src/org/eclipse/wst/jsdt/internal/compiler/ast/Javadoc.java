@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDoc;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -30,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 /**
  * Node representing a structured Javadoc comment
  */
-public class Javadoc extends ASTNode {
+public class Javadoc extends ASTNode implements IJsDoc {
 
 	public JavadocSingleNameReference[] paramReferences; // @param
 	public JavadocSingleTypeReference[] paramTypeParameters; // @param
@@ -916,5 +918,9 @@ public class Javadoc extends ASTNode {
 					return this.paramReferences[i];
 			}
 		return null;
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC;
+	
 	}
 }

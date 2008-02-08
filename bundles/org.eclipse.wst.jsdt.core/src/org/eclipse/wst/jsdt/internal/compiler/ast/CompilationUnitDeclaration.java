@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -42,7 +44,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 public class CompilationUnitDeclaration
 	extends ASTNode
-	implements ProblemSeverities, ReferenceContext {
+	implements ProblemSeverities, ReferenceContext, IScriptFileDeclaration {
 
 	protected void finalize() throws Throwable {
 //		System.out.println("finalize "+hashCode());
@@ -630,5 +632,9 @@ public class CompilationUnitDeclaration
 				}
 		}
 
+	}
+	public int getASTType() {
+		return IASTNode.SCRIPT_FILE_DECLARATION;
+	
 	}
 }

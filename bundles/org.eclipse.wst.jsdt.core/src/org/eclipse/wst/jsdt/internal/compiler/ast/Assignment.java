@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IAssignment;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -23,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class Assignment extends Expression {
+public class Assignment extends Expression implements IAssignment {
 
 	public Expression lhs;
 	public Expression expression;
@@ -234,5 +236,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 }
 public LocalVariableBinding localVariableBinding() {
 	return lhs.localVariableBinding();
+}
+public int getASTType() {
+	return IASTNode.ASSIGNMENT;
+
 }
 }

@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ISuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class SuperReference extends ThisReference {
+public class SuperReference extends ThisReference implements ISuperReference {
 
 	public SuperReference(int sourceStart, int sourceEnd) {
 
@@ -65,5 +67,9 @@ public class SuperReference extends ThisReference {
 	public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 		visitor.visit(this, blockScope);
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.SUPER_REFERENCE;
+	
 	}
 }

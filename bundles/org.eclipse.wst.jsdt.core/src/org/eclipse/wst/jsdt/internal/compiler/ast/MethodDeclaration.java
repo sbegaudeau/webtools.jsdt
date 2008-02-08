@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -27,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public class MethodDeclaration extends AbstractMethodDeclaration {
+public class MethodDeclaration extends AbstractMethodDeclaration implements IFunctionDeclaration {
 
 	public TypeReference returnType;
 	public TypeParameter[] typeParameters;
@@ -78,7 +80,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 			// tag parameters as being set
 			if (this.arguments != null) {
 				for (int i = 0, count = this.arguments.length; i < count; i++) {
-					flowInfo.markAsDefinitelyAssigned(this.arguments[i].binding);
+					flowInfo.markAsDefinitelyAssigned(this.arguments[i].getBinding());
 				}
 			}
 			// propagate to statements
@@ -291,5 +293,9 @@ public class MethodDeclaration extends AbstractMethodDeclaration {
 
 	public TypeParameter[] typeParameters() {
 	    return this.typeParameters;
+	}
+	public int getASTType() {
+		return IASTNode.FUNCTION_DECLARATION;
+	
 	}
 }

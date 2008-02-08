@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocImplicitTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -17,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class JavadocImplicitTypeReference extends TypeReference {
+public class JavadocImplicitTypeReference extends TypeReference implements IJsDocImplicitTypeReference {
 
 	public char[] token;
 
@@ -109,5 +111,9 @@ public class JavadocImplicitTypeReference extends TypeReference {
 
 	public StringBuffer printExpression(int indent, StringBuffer output) {
 		return new StringBuffer();
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_IMPLICIT_TYPE_REFERENCE;
+	
 	}
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IParameterizedQualifiedTypeReference;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -27,7 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
  * Syntactic representation of a reference to a generic type.
  * Note that it might also have a dimension.
  */
-public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeReference {
+public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeReference implements IParameterizedQualifiedTypeReference {
 
 	public TypeReference[][] typeArguments;
 
@@ -342,5 +344,8 @@ public class ParameterizedQualifiedTypeReference extends ArrayQualifiedTypeRefer
 		}
 		visitor.endVisit(this, scope);
 	}
-
+	public int getASTType() {
+		return IASTNode.PARAMETERIZED_QUALIFIED_TYPE_REFERENCE;
+	
+	}
 }

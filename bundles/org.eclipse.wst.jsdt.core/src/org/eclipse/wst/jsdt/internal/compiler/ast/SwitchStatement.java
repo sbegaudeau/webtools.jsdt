@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ISwitchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -22,7 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.SyntheticMethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
-public class SwitchStatement extends Statement {
+public class SwitchStatement extends Statement implements ISwitchStatement{
 
 	public Expression expression;
 	public Statement[] statements;
@@ -258,6 +260,9 @@ public class SwitchStatement extends Statement {
 		}
 		visitor.endVisit(this, blockScope);
 	}
-
+	public int getASTType() {
+		return IASTNode.SWITCH_STATEMENT;
+	
+	}
 
 }

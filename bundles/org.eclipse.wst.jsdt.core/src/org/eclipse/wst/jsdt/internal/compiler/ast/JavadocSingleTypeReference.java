@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocSingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -24,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
-public class JavadocSingleTypeReference extends SingleTypeReference {
+public class JavadocSingleTypeReference extends SingleTypeReference implements IJsDocSingleTypeReference {
 
 	public int tagSourceStart, tagSourceEnd;
 	public PackageBinding packageBinding;
@@ -102,5 +104,9 @@ public class JavadocSingleTypeReference extends SingleTypeReference {
 
 	public TypeBinding resolveType(ClassScope classScope) {
 		return internalResolveType(classScope);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_SINGLE_TYPE_REFERENCE;
+	
 	}
 }

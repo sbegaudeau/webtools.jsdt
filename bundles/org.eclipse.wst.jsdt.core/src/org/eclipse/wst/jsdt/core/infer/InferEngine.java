@@ -1,13 +1,16 @@
 package org.eclipse.wst.jsdt.core.infer;
 
 
+import org.eclipse.wst.jsdt.core.ast.IArgument;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
+
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
@@ -746,7 +749,7 @@ public class InferEngine extends ASTVisitor {
 
 	}
 
-	protected InferredType getTypeOf(Expression expression) {
+	protected InferredType getTypeOf(IExpression expression) {
 		if (expression instanceof StringLiteral || expression instanceof CharLiteral) {
 			return StringType;
 		}
@@ -770,7 +773,7 @@ public class InferEngine extends ASTVisitor {
 		}
 		else if (expression instanceof SingleNameReference)
 		{
-			AbstractVariableDeclaration varDecl = getVariable( expression );
+			AbstractVariableDeclaration varDecl = getVariable( (SingleNameReference)expression );
 			if( varDecl != null )
 				return varDecl.inferredType;
 			if (this.inferredGlobal!=null)
@@ -827,8 +830,8 @@ public class InferEngine extends ASTVisitor {
 			InferredType type = createAnonymousType( (ObjectLiteral)expression );
 
 			//set the start and end
-			type.sourceStart = expression.sourceStart;
-			type.sourceEnd = expression.sourceEnd;
+			type.sourceStart = expression.sourceStart();
+			type.sourceEnd = expression.sourceEnd();
 
 			return type;
 
@@ -987,14 +990,14 @@ public class InferEngine extends ASTVisitor {
 		if (javadoc==null)
 			return;
 		for (int i = 0; i < methodDeclaration.arguments.length; i++) {
-			JavadocSingleNameReference param = javadoc.findParam(methodDeclaration.arguments[i].name);
+			JavadocSingleNameReference param = javadoc.findParam(methodDeclaration.arguments[i].getName());
 			if (param!=null)
 			{
 				if (param.types!=null)
 					for (int j = 0; j < param.types.length; j++) {
 						TypeReference reference = param.types[j];
 						InferredType paramType=this.addType(reference.getSimpleTypeName());
-						methodDeclaration.arguments[i].inferredType=paramType;
+						methodDeclaration.arguments[i].setInferredType(paramType);
 //TODO: what to do when more than one type?
 						break;
 					}
@@ -1093,7 +1096,7 @@ public class InferEngine extends ASTVisitor {
 	
 	}
 
-	protected boolean isMatch(Expression expr,String [] names, int index)
+	protected boolean isMatch(IExpression expr,String [] names, int index)
 	{
 		char [] matchName=names[index].toCharArray();
 		if (expr instanceof SingleNameReference) {
@@ -1109,14 +1112,14 @@ public class InferEngine extends ASTVisitor {
 		return false;
 	}
 
-	protected boolean isFunction(MessageSend messageSend,String string) {
+	protected boolean isFunction(IFunctionCall messageSend,String string) {
 		String []names=string.split("\\."); //$NON-NLS-1$
 		char [] functionName=names[names.length-1].toCharArray();
-		if (!CharOperation.equals(functionName, messageSend.selector))
+		if (!CharOperation.equals(functionName, messageSend.getSelector()))
 			return false;
 
 		if (names.length>1)
-			return isMatch(messageSend.receiver, names, names.length-2);
+			return isMatch(messageSend.getReciever(), names, names.length-2);
 		return true;
 	}
 
@@ -1194,12 +1197,12 @@ public class InferEngine extends ASTVisitor {
 
 	}
 
-	private void buildDefinedMembers(ProgramElement[] statements, Argument[] arguments) {
+	private void buildDefinedMembers(ProgramElement[] statements, IArgument[] arguments) {
 
 		if (arguments!=null)
 		{
 			for (int i = 0; i < arguments.length; i++) {
-				this.currentContext.addMember( arguments[i].name, arguments[i] );
+				this.currentContext.addMember( arguments[i].getName(), arguments[i] );
 			}
 		}
 		if (statements!=null)
@@ -1340,7 +1343,7 @@ public class InferEngine extends ASTVisitor {
 	 * If at any point it hits a portion of the Field reference that is
 	 * not supported (such as a function call, a prototype, or this )
 	 */
-	protected final char [] constructTypeName( Expression expression ){
+	protected final char [] constructTypeName( IExpression expression ){
 
 		return Util.getTypeName( expression );
 	}

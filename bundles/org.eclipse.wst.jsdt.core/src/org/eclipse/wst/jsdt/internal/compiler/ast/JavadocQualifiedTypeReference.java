@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
@@ -21,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
-public class JavadocQualifiedTypeReference extends QualifiedTypeReference {
+public class JavadocQualifiedTypeReference extends QualifiedTypeReference implements IJsDocQualifiedTypeReference {
 
 	public int tagSourceStart, tagSourceEnd;
 	public PackageBinding packageBinding;
@@ -86,5 +88,9 @@ public class JavadocQualifiedTypeReference extends QualifiedTypeReference {
 
 	public TypeBinding resolveType(ClassScope classScope) {
 		return internalResolveType(classScope, false);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_QUALIFIED_TYPE_REFERENCE;
+	
 	}
 }

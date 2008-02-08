@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IStringLiteralConcatenation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 /**
  * Flatten string literal
  */
-public class StringLiteralConcatenation extends StringLiteral {
+public class StringLiteralConcatenation extends StringLiteral implements IStringLiteralConcatenation {
 	private static final int INITIAL_SIZE = 5;
 	public Expression[] literals;
 	public int counter;
@@ -75,5 +77,9 @@ public class StringLiteralConcatenation extends StringLiteral {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.STRING_LITERAL_CONCATENATION;
+	
 	}
 }

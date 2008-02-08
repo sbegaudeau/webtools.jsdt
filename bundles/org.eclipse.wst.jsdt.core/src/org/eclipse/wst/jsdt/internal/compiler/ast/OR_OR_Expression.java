@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IOR_OR_Expression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -17,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
 //dedicated treatment for the ||
-public class OR_OR_Expression extends BinaryExpression {
+public class OR_OR_Expression extends BinaryExpression implements IOR_OR_Expression {
 
 	int rightInitStateIndex = -1;
 	int mergedInitStateIndex = -1;
@@ -79,5 +81,9 @@ public class OR_OR_Expression extends BinaryExpression {
 			right.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.OR_OR_EXPRESSION;
+	
 	}
 }

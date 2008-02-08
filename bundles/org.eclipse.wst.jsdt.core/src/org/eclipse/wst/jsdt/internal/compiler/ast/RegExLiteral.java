@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IRegExLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class RegExLiteral extends Literal {
+public class RegExLiteral extends Literal implements IRegExLiteral {
 
 	char[] source;
 
@@ -84,5 +86,9 @@ public class RegExLiteral extends Literal {
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.REG_EX_LITERAL;
+	
 	}
 }

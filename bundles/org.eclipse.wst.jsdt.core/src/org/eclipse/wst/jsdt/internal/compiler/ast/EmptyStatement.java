@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IEmptyStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class EmptyStatement extends Statement {
+public class EmptyStatement extends Statement implements IEmptyStatement {
 
 	public EmptyStatement(int startPosition, int endPosition) {
 		this.sourceStart = startPosition;
@@ -53,7 +55,10 @@ public class EmptyStatement extends Statement {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
 	}
-
+	public int getASTType() {
+		return IASTNode.EMPTY_STATEMENT;
+	
+	}
 
 }
 

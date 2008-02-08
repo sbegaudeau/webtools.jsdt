@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ICharLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.StringConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class CharLiteral extends NumberLiteral {
+public class CharLiteral extends NumberLiteral implements ICharLiteral {
 	public char value;
 public CharLiteral(char[] token, int s, int e) {
 	super(token, s, e);
@@ -34,5 +36,9 @@ public TypeBinding literalType(BlockScope scope) {
 public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 	visitor.visit(this, blockScope);
 	visitor.endVisit(this, blockScope);
+}
+public int getASTType() {
+	return IASTNode.CHAR_LITERAL;
+
 }
 }

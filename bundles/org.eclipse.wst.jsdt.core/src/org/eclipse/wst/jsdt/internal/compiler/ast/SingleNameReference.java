@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ISingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -34,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public class SingleNameReference extends NameReference implements OperatorIds {
+public class SingleNameReference extends NameReference implements ISingleNameReference, OperatorIds {
 
 	public static final int READ = 0;
 	public static final int WRITE = 1;
@@ -47,6 +49,10 @@ public class SingleNameReference extends NameReference implements OperatorIds {
 		token = source;
 		sourceStart = (int) (pos >>> 32);
 		sourceEnd = (int) pos;
+	}
+	
+	public char[] getToken() {
+		return this.token;
 	}
 	public FlowInfo analyseAssignment(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo, Assignment assignment, boolean isCompound) {
 
@@ -554,5 +560,9 @@ public int nullStatus(FlowInfo flowInfo) {
 			scope.problemReporter().invalidType(location, new ProblemReferenceBinding(memberName,null,binding.problemId()));
 		}
 		return typeBinding;
+	}
+	public int getASTType() {
+		return IASTNode.SINGLE_NAME_REFERENCE;
+	
 	}
 }

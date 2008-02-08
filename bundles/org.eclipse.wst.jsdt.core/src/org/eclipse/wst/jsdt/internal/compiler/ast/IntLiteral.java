@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IIntLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 
-public class IntLiteral extends NumberLiteral {
+public class IntLiteral extends NumberLiteral implements IIntLiteral {
 	public int value;
 
 	public static final IntLiteral
@@ -137,5 +139,9 @@ public StringBuffer printExpression(int indent, StringBuffer output){
 public void traverse(ASTVisitor visitor, BlockScope scope) {
 	visitor.visit(this, scope);
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.INT_LITERAL;
+
 }
 }

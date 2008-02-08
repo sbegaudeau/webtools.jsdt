@@ -1,5 +1,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IFunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -8,11 +10,20 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class FunctionExpression extends Expression {
+public class FunctionExpression extends Expression implements IFunctionExpression {
 
 
 	public MethodDeclaration methodDeclaration;
 
+	public void setMethodDeclaration(MethodDeclaration methodDeclaration) {
+		this.methodDeclaration = methodDeclaration;
+	}
+	
+	public MethodDeclaration getMethodDeclaration() {
+		return this.methodDeclaration;
+	}
+	
+	
 	public FunctionExpression(MethodDeclaration methodDeclaration)
 	{
 		this.methodDeclaration=methodDeclaration;
@@ -51,6 +62,10 @@ public class FunctionExpression extends Expression {
 			FlowInfo flowInfo) {
 		this.methodDeclaration.analyseCode(classScope, initializationContext, flowInfo.copy());
 		return flowInfo;
+	}
+	public int getASTType() {
+		return IASTNode.FUNCTION_EXPRESSION;
+	
 	}
 
 }

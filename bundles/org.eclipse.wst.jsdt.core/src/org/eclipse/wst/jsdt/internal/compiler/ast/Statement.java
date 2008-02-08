@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IStatement;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public abstract class Statement extends ProgramElement {
+public abstract class Statement extends ProgramElement implements IStatement {
 
 	public abstract FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo);
 
@@ -70,6 +72,10 @@ public abstract class Statement extends ProgramElement {
 
 		resolve(scope);
 		return Constant.NotAConstant;
+	}
+	public int getASTType() {
+		return IASTNode.STATEMENT;
+	
 	}
 
 }

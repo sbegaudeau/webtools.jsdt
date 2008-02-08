@@ -12,6 +12,9 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -34,7 +37,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public class MessageSend extends Expression implements InvocationSite {
+public class MessageSend extends Expression implements InvocationSite, IFunctionCall {
 
 	public Expression receiver;
 	public char[] selector;
@@ -52,6 +55,20 @@ public class MessageSend extends Expression implements InvocationSite {
 	public TypeReference[] typeArguments;
 	public TypeBinding[] genericTypeArguments;
 
+	
+	public char[] getSelector() {
+		return this.selector;
+	}
+	
+	public IExpression getReciever() {
+		return this.receiver;
+	}
+	
+	public IExpression[] getArguments() {
+		return this.arguments;
+	}
+	
+	
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 
 	boolean nonStatic = binding==null || !binding.isStatic();
@@ -509,5 +526,9 @@ public void traverse(ASTVisitor visitor, BlockScope blockScope) {
 		}
 	}
 	visitor.endVisit(this, blockScope);
+}
+public int getASTType() {
+	return IASTNode.FUNCTION_CALL;
+
 }
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ISingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public class SingleTypeReference extends TypeReference {
+public class SingleTypeReference extends TypeReference implements ISingleTypeReference {
 
 	public char[] token;
 
@@ -89,5 +91,9 @@ public class SingleTypeReference extends TypeReference {
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.SINGLE_TYPE_REFERENCE;
+	
 	}
 }

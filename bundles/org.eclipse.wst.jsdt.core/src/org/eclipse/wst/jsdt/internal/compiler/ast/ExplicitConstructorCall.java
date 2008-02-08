@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExplicitConstructorCall;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -30,7 +32,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 
-public class ExplicitConstructorCall extends Statement implements InvocationSite {
+public class ExplicitConstructorCall extends Statement implements InvocationSite, IExplicitConstructorCall {
 
 	public Expression[] arguments;
 	public Expression qualification;
@@ -366,5 +368,9 @@ public class ExplicitConstructorCall extends Statement implements InvocationSite
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.EXPLICIT_CONSTRUCTOR_CALL;
+	
 	}
 }

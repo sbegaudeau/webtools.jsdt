@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.flow.ExceptionHandlingFlowContext;
@@ -26,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 
-public class Clinit extends AbstractMethodDeclaration {
+public class Clinit extends AbstractMethodDeclaration  {
 
 	private FieldBinding assertionSyntheticFieldBinding = null;
 	private FieldBinding classLiteralSyntheticField = null;
@@ -136,5 +138,8 @@ public class Clinit extends AbstractMethodDeclaration {
 			}
 		}
 	}
-
+	public int getASTType() {
+		return IASTNode.CL_INIT;
+	
+	}
 }

@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IBranchStatement;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public abstract class BranchStatement extends Statement {
+public abstract class BranchStatement extends Statement implements IBranchStatement {
 
 	public char[] label;
 	public SubRoutineStatement[] subroutines;
@@ -29,5 +31,9 @@ public BranchStatement(char[] label, int sourceStart,int sourceEnd) {
 
 public void resolve(BlockScope scope) {
 	// nothing to do during name resolution
+}
+public int getASTType() {
+	return IASTNode.BRANCH_STATEMENT;
+
 }
 }

@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IIntLiteralMinValue;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.impl.IntConstant;
 
-public class IntLiteralMinValue extends IntLiteral {
+public class IntLiteralMinValue extends IntLiteral implements IIntLiteralMinValue {
 
 	final static char[] CharValue = new char[]{'-','2','1','4','7','4','8','3','6','4','8'};
 	final static Constant MIN_VALUE = IntConstant.fromValue(Integer.MIN_VALUE) ;
@@ -24,5 +26,10 @@ public IntLiteralMinValue() {
 }
 public void computeConstant(){
 
-	/*precomputed at creation time*/ }
+	/*precomputed at creation time*/ 
+}
+public int getASTType() {
+	return IASTNode.INT_LITERAL_MIN_VALUE;
+
+}
 }

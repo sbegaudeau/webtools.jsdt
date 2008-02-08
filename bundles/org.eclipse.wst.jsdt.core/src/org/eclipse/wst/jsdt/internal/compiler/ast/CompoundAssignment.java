@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ICompoundAssignment;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class CompoundAssignment extends Assignment implements OperatorIds {
+public class CompoundAssignment extends Assignment implements OperatorIds, ICompoundAssignment {
 	public int operator;
 	public int preAssignImplicitConversion;
 
@@ -173,5 +175,9 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 			expression.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.COMPOUND_ASSIGNMENT;
+	
 	}
 }

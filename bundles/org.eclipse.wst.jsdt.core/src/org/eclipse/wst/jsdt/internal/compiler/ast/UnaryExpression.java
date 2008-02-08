@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IUnaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class UnaryExpression extends OperatorExpression {
+public class UnaryExpression extends OperatorExpression implements IUnaryExpression {
 
 	public Expression expression;
 	public Constant optimizedBooleanConstant;
@@ -178,5 +180,9 @@ public FlowInfo analyseCode(
 			this.expression.traverse(visitor, blockScope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.UNARY_EXPRESSION;
+	
 	}
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IBinaryExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -20,7 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
-public class BinaryExpression extends OperatorExpression {
+public class BinaryExpression extends OperatorExpression implements IBinaryExpression {
 
 /* Tracking helpers
  * The following are used to elaborate realistic statistics about binary
@@ -419,5 +421,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 		this.right.traverse(visitor, scope);
 	}
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.BINARY_EXPRESSION;
+
 }
 }

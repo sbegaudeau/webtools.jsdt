@@ -20,8 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+
 import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 
@@ -497,7 +498,7 @@ public class Util implements SuffixConstants {
 	 * If at any point it hits a portion of the Field reference that is
 	 * not supported (such as a function call, a prototype, or this )
 	 */
-	public final static char [] getTypeName( Expression expression ){
+	public final static char [] getTypeName( IExpression expression ){
 
 		char [] name = null;
 

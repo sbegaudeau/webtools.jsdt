@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocArraySingleTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
@@ -17,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
-public class JavadocArraySingleTypeReference extends ArrayTypeReference {
+public class JavadocArraySingleTypeReference extends ArrayTypeReference implements IJsDocArraySingleTypeReference {
 
 	public JavadocArraySingleTypeReference(char[] name, int dim, long pos) {
 		super(name, dim, pos);
@@ -43,5 +45,9 @@ public class JavadocArraySingleTypeReference extends ArrayTypeReference {
 	public void traverse(ASTVisitor visitor, ClassScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_ARRAY_SINGLE_TYPE_REFERENCE;
+	
 	}
 }

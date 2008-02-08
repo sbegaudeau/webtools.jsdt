@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IFieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -26,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class FieldDeclaration extends AbstractVariableDeclaration {
+public class FieldDeclaration extends AbstractVariableDeclaration implements IFieldDeclaration {
 
 	public FieldBinding binding;
 //	 is in super		public Javadoc javadoc;
@@ -263,5 +265,9 @@ public void traverse(ASTVisitor visitor, MethodScope scope) {
 			this.initialization.traverse(visitor, scope);
 	}
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.FIELD_DECLARATION;
+
 }
 }

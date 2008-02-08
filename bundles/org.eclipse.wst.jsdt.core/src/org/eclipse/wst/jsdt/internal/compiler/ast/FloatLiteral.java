@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IFloatLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.FloatConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.FloatUtil;
 
-public class FloatLiteral extends NumberLiteral {
+public class FloatLiteral extends NumberLiteral implements IFloatLiteral {
 	float value;
 	final static float Float_MIN_VALUE = Float.intBitsToFloat(1); // work-around VAJ problem 1F6IGUU
 	public FloatLiteral(char[] token, int s, int e) {
@@ -96,5 +98,9 @@ public class FloatLiteral extends NumberLiteral {
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.FLOAT_LITERAL;
+	
 	}
 }

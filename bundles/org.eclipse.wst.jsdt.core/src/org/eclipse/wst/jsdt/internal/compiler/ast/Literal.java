@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ILiteral;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public abstract class Literal extends Expression {
+public abstract class Literal extends Expression implements ILiteral {
 
 	public Literal(int s, int e) {
 
@@ -55,4 +57,9 @@ public abstract class Literal extends Expression {
 	}
 
 	public abstract char[] source();
+	
+	public int getASTType() {
+		return IASTNode.LITERAL;
+	
+	}
 }

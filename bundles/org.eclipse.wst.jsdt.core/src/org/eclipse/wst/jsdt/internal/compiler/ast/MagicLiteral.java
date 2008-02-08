@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-public abstract class  MagicLiteral extends Literal {
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IMagicLiteral;
+
+public abstract class  MagicLiteral extends Literal implements IMagicLiteral {
 
 	public MagicLiteral(int start , int end) {
 
@@ -25,5 +28,9 @@ public abstract class  MagicLiteral extends Literal {
 	public char[] source() {
 
 		return null;
+	}
+	public int getASTType() {
+		return IASTNode.MAGIC_LITERAL;
+	
 	}
 }

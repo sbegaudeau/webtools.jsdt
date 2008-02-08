@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IDoStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class DoStatement extends Statement {
+public class DoStatement extends Statement implements IDoStatement {
 
 	public Expression condition;
 	public Statement action;
@@ -144,5 +146,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 		this.condition.traverse(visitor, scope);
 	}
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.DOUBLE_LITERAL;
+
 }
 }

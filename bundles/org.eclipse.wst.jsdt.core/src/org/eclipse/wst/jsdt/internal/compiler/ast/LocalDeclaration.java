@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -26,7 +28,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 
-public class LocalDeclaration extends AbstractVariableDeclaration {
+public class LocalDeclaration extends AbstractVariableDeclaration implements ILocalDeclaration {
 
 	public LocalVariableBinding binding;
 
@@ -40,7 +42,14 @@ public class LocalDeclaration extends AbstractVariableDeclaration {
 		this.sourceEnd = sourceEnd;
 		this.declarationEnd = sourceEnd;
 	}
+public LocalVariableBinding getBinding() {
+	return this.binding;
+}
 
+public void setBinding(LocalVariableBinding binding) {
+	this.binding=binding;
+}
+	
 public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 	// record variable initialization if any
 	if ((flowInfo.tagBits & FlowInfo.UNREACHABLE) == 0) {
@@ -312,5 +321,9 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		if (inferredType!=null)
 			return new String(inferredType.getName());
 		return null;
+	}
+	public int getASTType() {
+		return IASTNode.LOCAL_DECLARATION;
+	
 	}
 }

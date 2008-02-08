@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocArgumentExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -18,7 +20,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class JavadocArgumentExpression extends Expression {
+public class JavadocArgumentExpression extends Expression implements IJsDocArgumentExpression {
 	public char[] token;
 	public Argument argument;
 
@@ -102,5 +104,9 @@ public class JavadocArgumentExpression extends Expression {
 			}
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_ARGUMENTEXPRESSION;
+	
 	}
 }

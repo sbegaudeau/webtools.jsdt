@@ -11,6 +11,9 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
+import org.eclipse.wst.jsdt.core.ast.IArgument;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -21,6 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
+
 import org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -39,9 +43,10 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.AbortMethod;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortType;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
+
 public abstract class AbstractMethodDeclaration
 	extends Statement
-	implements ProblemSeverities, ReferenceContext {
+	implements IAbstractFunctionDeclaration,  ProblemSeverities, ReferenceContext {
 
 	public MethodScope scope;
 	//it is not relevent for constructor but it helps to have the name of the constructor here
@@ -76,6 +81,14 @@ public abstract class AbstractMethodDeclaration
 		this.compilationResult = compilationResult;
 	}
 
+	public void setArguments( IArgument[] args) {
+		if(args instanceof Argument[]) this.arguments = (Argument[])args;
+	}
+	
+	public IArgument[] getArguments() {
+		return this.arguments;
+	}
+	
 	/*
 	 *	We cause the compilation task to abort to a given extent.
 	 */
@@ -123,13 +136,13 @@ public abstract class AbstractMethodDeclaration
 			boolean used = this.binding.isAbstract() || this.binding.isNative();
 			AnnotationBinding[][] paramAnnotations = null;
 			for (int i = 0, length = this.arguments.length; i < length; i++) {
-				Argument argument = this.arguments[i];
+				IArgument argument = this.arguments[i];
 				argument.bind(this.scope, this.binding.parameters[i], used);
-				if (argument.annotations != null) {
+				if (argument.getAnnotation() != null) {
 					this.binding.tagBits |= TagBits.HasParameterAnnotations;
 					if (paramAnnotations == null)
 						paramAnnotations = new AnnotationBinding[length][];
-					paramAnnotations[i] = argument.binding.getAnnotations();
+					paramAnnotations[i] = argument.getBinding().getAnnotations();
 				}
 			}
 			if (paramAnnotations != null)
@@ -427,5 +440,8 @@ public abstract class AbstractMethodDeclaration
 	public boolean isInferred() {
 		return this.inferredMethod!=null;
 	}
-
+	public int getASTType() {
+		return IASTNode.ABSTRACT_FUNCTION_DECLARATION;
+	
+	}
 }

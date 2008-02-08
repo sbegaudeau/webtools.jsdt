@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IPrefixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class PrefixExpression extends CompoundAssignment {
+public class PrefixExpression extends CompoundAssignment implements IPrefixExpression {
 
 /**
  * PrefixExpression constructor comment.
@@ -52,5 +54,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 		this.lhs.traverse(visitor, scope);
 	}
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.PREFIX_EXPRESSION;
+
 }
 }

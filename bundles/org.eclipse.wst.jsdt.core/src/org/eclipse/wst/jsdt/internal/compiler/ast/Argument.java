@@ -11,6 +11,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IArgument;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
@@ -23,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 
-public class Argument extends LocalDeclaration {
+public class Argument extends LocalDeclaration implements IArgument {
 
 	public char [] comment;
 	// prefix for setter method (to recognize special hiding argument)
@@ -38,6 +40,10 @@ public class Argument extends LocalDeclaration {
 		this.bits |= IsLocalDeclarationReachable;
 	}
 
+	public char[] getComment() {
+		return this.comment;
+	}
+	
 	public void bind(MethodScope scope, TypeBinding typeBinding, boolean used) {
 
 		// record the resolved type into the type reference
@@ -180,5 +186,9 @@ public class Argument extends LocalDeclaration {
 				type.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.ARGUMENT;
+	
 	}
 }

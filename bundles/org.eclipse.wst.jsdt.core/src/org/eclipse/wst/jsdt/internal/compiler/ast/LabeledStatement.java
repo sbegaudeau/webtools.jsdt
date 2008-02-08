@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ILabeledStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.flow.LabelFlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class LabeledStatement extends Statement {
+public class LabeledStatement extends Statement implements ILabeledStatement {
 
 	public Statement statement;
 	public char[] label;
@@ -112,5 +114,9 @@ public class LabeledStatement extends Statement {
 			if (this.statement != null) this.statement.traverse(visitor, blockScope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.LABELED_STATEMENT;
+	
 	}
 }

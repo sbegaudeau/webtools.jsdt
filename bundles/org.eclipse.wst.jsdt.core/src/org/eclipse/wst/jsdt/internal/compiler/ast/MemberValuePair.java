@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IMemberValuePair;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
@@ -23,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 /**
  * MemberValuePair node
  */
-public class MemberValuePair extends ASTNode {
+public class MemberValuePair extends ASTNode implements IMemberValuePair {
 
 	public char[] name;
 	public Expression value;
@@ -225,5 +227,9 @@ public class MemberValuePair extends ASTNode {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.MEMBER_VALUEPAIR;
+	
 	}
 }

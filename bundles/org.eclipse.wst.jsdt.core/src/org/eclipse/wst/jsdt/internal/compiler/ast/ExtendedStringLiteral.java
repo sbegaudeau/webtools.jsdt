@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExtendedStringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class ExtendedStringLiteral extends StringLiteral {
+public class ExtendedStringLiteral extends StringLiteral implements IExtendedStringLiteral {
 
 	/**
 	 *  Build a string+char literal
@@ -75,5 +77,9 @@ public class ExtendedStringLiteral extends StringLiteral {
 
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.EXTENDED_STRING_LITERAL;
+	
 	}
 }

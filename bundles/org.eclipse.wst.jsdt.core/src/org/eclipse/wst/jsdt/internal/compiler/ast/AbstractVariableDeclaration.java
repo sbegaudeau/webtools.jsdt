@@ -10,15 +10,19 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
+import org.eclipse.wst.jsdt.core.ast.IAnnotation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
+
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public abstract class AbstractVariableDeclaration extends Statement implements InvocationSite {
+public abstract class AbstractVariableDeclaration extends Statement implements  IAbstractVariableDeclaration, InvocationSite {
 	public int declarationEnd;
 	public int declarationSourceEnd;
 	public int declarationSourceStart;
@@ -37,7 +41,21 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 	
 	public AbstractVariableDeclaration nextLocal;
 
+	public InferredType getInferredType() {
+		return this.inferredType;
+	}
 
+	public IAnnotation[] getAnnotation() {
+		return this.annotations;
+	}
+	
+	public void setInferredType(InferredType type) {
+		this.inferredType = type;
+	}
+	
+	public char[] getName() {
+		return this.name;
+	}
 	public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, FlowInfo flowInfo) {
 		return flowInfo;
 	}
@@ -154,5 +172,9 @@ public abstract class AbstractVariableDeclaration extends Statement implements I
 			return inferredType.binding;
 		return null;
 
+	}
+	public int getASTType() {
+		return IASTNode.ABSTRACT_VARIABLE_DECLARATION;
+	
 	}
 }

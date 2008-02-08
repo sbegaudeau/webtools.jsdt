@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IQualifiedTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -23,7 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.AbortCompilation;
 
-public class QualifiedTypeReference extends TypeReference {
+public class QualifiedTypeReference extends TypeReference implements IQualifiedTypeReference {
 
 	public char[][] tokens;
 	public long[] sourcePositions;
@@ -140,5 +142,9 @@ public class QualifiedTypeReference extends TypeReference {
 
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.QUALIFIED_TYPE_REFERENCE;
+	
 	}
 }

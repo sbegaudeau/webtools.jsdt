@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ITypeParameter;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -17,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
-public class TypeParameter extends AbstractVariableDeclaration {
+public class TypeParameter extends AbstractVariableDeclaration implements ITypeParameter {
 
     public TypeVariableBinding binding;
 	public TypeReference[] bounds;
@@ -26,7 +28,7 @@ public class TypeParameter extends AbstractVariableDeclaration {
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration#getKind()
 	 */
 	public int getKind() {
-		return TYPE_PARAMETER;
+		return AbstractVariableDeclaration.TYPE_PARAMETER;
 	}
 
 	public void checkBounds(Scope scope) {
@@ -108,5 +110,9 @@ public class TypeParameter extends AbstractVariableDeclaration {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.TYPE_PARAMETER;
+	
 	}
 }

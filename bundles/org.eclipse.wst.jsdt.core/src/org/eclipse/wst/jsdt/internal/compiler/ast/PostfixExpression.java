@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IPostfixExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 
-public class PostfixExpression extends CompoundAssignment {
+public class PostfixExpression extends CompoundAssignment implements IPostfixExpression {
 
 public PostfixExpression(Expression lhs, Expression expression, int operator, int pos) {
 	super(lhs, expression, operator, pos);
@@ -45,5 +47,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 		this.lhs.traverse(visitor, scope);
 	}
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.POSTFIX_EXPRESSION;
+
 }
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IQualifiedNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -34,7 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 
-public class QualifiedNameReference extends NameReference {
+public class QualifiedNameReference extends NameReference implements IQualifiedNameReference {
 
 	public char[][] tokens;
 	public long[] sourcePositions;
@@ -760,5 +762,9 @@ public void traverse(ASTVisitor visitor, ClassScope scope) {
 
 public String unboundReferenceErrorName() {
 	return new String(this.tokens[0]);
+}
+public int getASTType() {
+	return IASTNode.QUALIFIED_NAME_REFERENCE;
+
 }
 }

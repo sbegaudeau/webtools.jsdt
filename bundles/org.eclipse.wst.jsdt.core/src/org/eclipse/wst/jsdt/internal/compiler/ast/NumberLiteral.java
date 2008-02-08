@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
-public abstract class NumberLiteral extends Literal {
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.INumberLiteral;
+
+public abstract class NumberLiteral extends Literal implements INumberLiteral {
 
 	public char[] source;
 	
@@ -32,5 +35,9 @@ public abstract class NumberLiteral extends Literal {
 	public char[] source(){
 
 		return source;
+	}
+	public int getASTType() {
+		return IASTNode.NUMBER_LITERAL;
+	
 	}
 }

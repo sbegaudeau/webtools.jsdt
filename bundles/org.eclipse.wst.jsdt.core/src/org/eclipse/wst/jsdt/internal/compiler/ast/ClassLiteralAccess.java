@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -25,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeVariableBinding;
 
-public class ClassLiteralAccess extends Expression {
+public class ClassLiteralAccess extends Expression  {
 
 	public TypeReference type;
 	public TypeBinding targetType;
@@ -99,5 +101,9 @@ public class ClassLiteralAccess extends Expression {
 			type.traverse(visitor, blockScope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.CLASS_LITERAL_ACCESS;
+	
 	}
 }

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IJsDocAllocationExpression;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
@@ -25,7 +27,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class JavadocAllocationExpression extends AllocationExpression {
+public class JavadocAllocationExpression extends AllocationExpression implements IJsDocAllocationExpression {
 
 	public int tagSourceStart, tagSourceEnd;
 	public int tagValue, memberStart;
@@ -201,5 +203,9 @@ public class JavadocAllocationExpression extends AllocationExpression {
 			}
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.JSDOC_ALLOCATION_EXPRESSION;
+	
 	}
 }

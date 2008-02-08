@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.Parser;
 
-public class Initializer extends FieldDeclaration {
+public class Initializer extends FieldDeclaration implements IInitializer {
 
 	public Block block;
 	public int lastVisibleFieldID;
@@ -47,7 +49,7 @@ public class Initializer extends FieldDeclaration {
 	 * @see org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration#getKind()
 	 */
 	public int getKind() {
-		return INITIALIZER;
+		return AbstractVariableDeclaration.INITIALIZER;
 	}
 
 	public boolean isStatic() {
@@ -106,5 +108,9 @@ public class Initializer extends FieldDeclaration {
 			block.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.INITIALIZER;
+	
 	}
 }

@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 
-public class ImportReference extends ASTNode {
+public class ImportReference extends ASTNode implements IImportReference {
 
 	public char[][] tokens;
 	public long[] sourcePositions; //each entry is using the code : (start<<32) + end
@@ -74,5 +76,9 @@ public class ImportReference extends ASTNode {
 		// annotations are traversed during the compilation unit traversal using a class scope
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.IMPORT_REFERENCE;
+	
 	}
 }

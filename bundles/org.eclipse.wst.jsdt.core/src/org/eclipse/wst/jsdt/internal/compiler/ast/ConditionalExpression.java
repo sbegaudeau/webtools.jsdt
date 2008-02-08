@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IConditionalExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -19,7 +21,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BaseTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ConditionalExpression extends OperatorExpression {
+public class ConditionalExpression extends OperatorExpression implements IConditionalExpression {
 
 	public Expression condition, valueIfTrue, valueIfFalse;
 	public Constant optimizedBooleanConstant;
@@ -327,5 +329,9 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 			valueIfFalse.traverse(visitor, scope);
 		}
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.CONDITIONAL_EXPRESSION;
+	
 	}
 }

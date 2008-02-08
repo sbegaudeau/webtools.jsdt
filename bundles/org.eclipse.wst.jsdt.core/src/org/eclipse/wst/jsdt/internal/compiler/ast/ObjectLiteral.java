@@ -1,5 +1,8 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
+import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -9,7 +12,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 
-public class ObjectLiteral extends Expression {
+public class ObjectLiteral extends Expression implements IObjectLiteral {
 
 	public ObjectLiteralField [] fields;
 	public InferredType inferredType;
@@ -36,6 +39,18 @@ public class ObjectLiteral extends Expression {
 			output.append("}"); //$NON-NLS-1$
 		}
 		return output;
+	}
+	
+	public InferredType getInferredType() {
+		return this.inferredType;
+	}
+	
+	public void setInferredType(InferredType type) {
+		this.inferredType=type;
+	}
+	
+	public IObjectLiteralField[] getFields() {
+		return this.fields;
 	}
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		if (visitor.visit(this, scope)) {
@@ -71,5 +86,9 @@ public class ObjectLiteral extends Expression {
 			}
 
 		return flowInfo;
+	}
+	public int getASTType() {
+		return IASTNode.OBJECT_LITERAL;
+	
 	}
 }

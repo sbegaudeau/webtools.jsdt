@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IListExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -17,7 +19,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.Constant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class ListExpression extends Expression {
+public class ListExpression extends Expression implements IListExpression {
 
 /* Tracking helpers
  * The following are used to elaborate realistic statistics about binary
@@ -92,5 +94,9 @@ public StringBuffer printExpression(int indent, StringBuffer output) {
 		this.expressions[i].printExpression(indent, output);
 	}
 	return output;
+}
+public int getASTType() {
+	return IASTNode.LIST_EXPRESSION;
+
 }
 }

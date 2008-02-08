@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IQualifiedSuperReference;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class QualifiedSuperReference extends QualifiedThisReference {
+public class QualifiedSuperReference extends QualifiedThisReference implements IQualifiedSuperReference {
 
 	public QualifiedSuperReference(TypeReference name, int pos, int sourceEnd) {
 		super(name, pos, sourceEnd);
@@ -70,5 +72,9 @@ public class QualifiedSuperReference extends QualifiedThisReference {
 			qualification.traverse(visitor, blockScope);
 		}
 		visitor.endVisit(this, blockScope);
+	}
+	public int getASTType() {
+		return IASTNode.QUALIFIED_SUPER_REFERENCE;
+	
 	}
 }

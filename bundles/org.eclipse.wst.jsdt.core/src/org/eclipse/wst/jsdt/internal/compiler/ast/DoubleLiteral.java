@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IDoubleLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.DoubleConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.util.FloatUtil;
 
-public class DoubleLiteral extends NumberLiteral {
+public class DoubleLiteral extends NumberLiteral implements IDoubleLiteral {
 	double value;
 	public DoubleLiteral(char[] token, int s, int e) {
 		super(token, s, e);
@@ -95,5 +97,9 @@ public class DoubleLiteral extends NumberLiteral {
 	public void traverse(ASTVisitor visitor, BlockScope scope) {
 		visitor.visit(this, scope);
 		visitor.endVisit(this, scope);
+	}
+	public int getASTType() {
+		return IASTNode.DOUBLE_LITERAL;
+	
 	}
 }

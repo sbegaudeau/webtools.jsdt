@@ -1,9 +1,11 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IEmptyExpression;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class EmptyExpression extends Expression {
+public class EmptyExpression extends Expression implements IEmptyExpression {
 
 	
 	
@@ -23,5 +25,8 @@ public class EmptyExpression extends Expression {
 	public TypeBinding resolveType(BlockScope scope) {
 		return TypeBinding.ANY;
 	}
-
+	public int getASTType() {
+		return IASTNode.EMPTY_EXPRESSION;
+	
+	}
 }

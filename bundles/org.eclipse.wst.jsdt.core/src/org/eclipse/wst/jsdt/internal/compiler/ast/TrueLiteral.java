@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.ITrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.impl.BooleanConstant;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
-public class TrueLiteral extends MagicLiteral {
+public class TrueLiteral extends MagicLiteral implements ITrueLiteral {
 	static final char[] source = {'t' , 'r' , 'u' , 'e'};
 public TrueLiteral(int s , int e) {
 	super(s,e);
@@ -35,5 +37,9 @@ public char[] source() {
 public void traverse(ASTVisitor visitor, BlockScope scope) {
 	visitor.visit(this, scope);
 	visitor.endVisit(this, scope);
+}
+public int getASTType() {
+	return IASTNode.TRUE_LITERAL;
+
 }
 }
