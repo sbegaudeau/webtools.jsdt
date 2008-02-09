@@ -13,6 +13,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAssignment;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -240,5 +241,13 @@ public LocalVariableBinding localVariableBinding() {
 public int getASTType() {
 	return IASTNode.ASSIGNMENT;
 
+}
+
+public IExpression getExpression() {
+	return this.expression;
+}
+
+public IExpression getLeftHandSide() {
+	return this.lhs;
 }
 }

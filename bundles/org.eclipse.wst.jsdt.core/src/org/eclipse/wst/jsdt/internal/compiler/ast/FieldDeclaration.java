@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFieldDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -269,5 +270,9 @@ public void traverse(ASTVisitor visitor, MethodScope scope) {
 public int getASTType() {
 	return IASTNode.FIELD_DECLARATION;
 
+}
+public IExpression getInitialization()
+{
+	return this.initialization;
 }
 }

@@ -2,6 +2,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IJsDoc;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -71,5 +72,9 @@ public class ObjectLiteralField extends Expression implements IObjectLiteralFiel
 	public int getASTType() {
 		return IASTNode.OBJECT_LITERAL_FIELD;
 	
+	}
+
+	public IJsDoc getJsDoc() {
+		return this.javaDoc;
 	}
 }

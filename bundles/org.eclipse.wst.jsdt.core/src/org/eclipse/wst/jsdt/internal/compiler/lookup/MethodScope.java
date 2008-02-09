@@ -222,7 +222,7 @@ public class MethodScope extends BlockScope {
         boolean isConstructor=inferredMethod.isConstructor;
         if (isConstructor && declaringClass!=inferredMethod.inType.binding)
         	isConstructor=false;
-		 MethodBinding binding = createMethod(inferredMethod.methodDeclaration,inferredMethod.name,declaringClass, isConstructor,false); 
+		 MethodBinding binding = createMethod((AbstractMethodDeclaration) inferredMethod.getFunctionDeclaration(),inferredMethod.name,declaringClass, isConstructor,false); 
 		 if (inferredMethod.isConstructor || declaringClass!=inferredMethod.inType.binding)
 			 binding.allocationType=inferredMethod.inType.binding;
 		 return binding;

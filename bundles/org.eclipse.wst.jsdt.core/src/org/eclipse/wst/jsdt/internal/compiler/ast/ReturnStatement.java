@@ -11,6 +11,7 @@
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
@@ -202,5 +203,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 public int getASTType() {
 	return IASTNode.RETURN_STATEMENT;
 
+}
+
+public IExpression getExpression() {
+	return this.expression;
 }
 }

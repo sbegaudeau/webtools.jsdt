@@ -12,4 +12,5 @@ package org.eclipse.wst.jsdt.core.ast;
 public interface IObjectLiteralField extends IExpression{
 	public IExpression getFieldName();
 	public IExpression getInitializer();
+	public IJsDoc getJsDoc();
 }

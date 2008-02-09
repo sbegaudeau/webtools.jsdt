@@ -13,6 +13,8 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IAnnotation;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
+import org.eclipse.wst.jsdt.core.ast.IJsDoc;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
@@ -177,4 +179,16 @@ public abstract class AbstractVariableDeclaration extends Statement implements  
 		return IASTNode.ABSTRACT_VARIABLE_DECLARATION;
 	
 	}
+	
+	public IJsDoc getJsDoc()
+	{
+		return this.javadoc;
+	}
+	
+	public IExpression getInitialization()
+	{
+		return this.initialization;
+	}
+
+
 }

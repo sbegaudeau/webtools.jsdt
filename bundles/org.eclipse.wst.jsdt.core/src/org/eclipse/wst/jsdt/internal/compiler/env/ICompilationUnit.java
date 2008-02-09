@@ -38,5 +38,11 @@ char[] getMainTypeName();
  */
 char[][] getPackageName();
 LibrarySuperType getCommonSuperType();
+
+
+/**
+ * Get the id of the inference provider for this Compilation Unit
+ * @return  inference provider id
+ */
 String getInferenceID();
 }

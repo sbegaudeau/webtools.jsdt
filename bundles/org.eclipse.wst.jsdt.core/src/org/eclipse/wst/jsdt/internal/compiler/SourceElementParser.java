@@ -1309,7 +1309,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 
 		ISourceElementRequestor.MethodInfo methodInfo = new ISourceElementRequestor.MethodInfo();
 		methodInfo.isConstructor = method.isConstructor;
-		MethodDeclaration methodDeclaration=method.methodDeclaration;
+		MethodDeclaration methodDeclaration=(MethodDeclaration)method.getFunctionDeclaration();
 
 		char[][] argumentTypes = null;
 		char[][] argumentNames = null;
@@ -1341,7 +1341,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 		methodInfo.categories = (char[][]) this.nodesToCategories.get(methodDeclaration);
 		requestor.enterMethod(methodInfo);
 
-		visitIfNeeded( method.methodDeclaration );
+		visitIfNeeded( (MethodDeclaration)method.getFunctionDeclaration() );
 
 		requestor.exitMethod(methodDeclaration.declarationSourceEnd, -1, -1);
 

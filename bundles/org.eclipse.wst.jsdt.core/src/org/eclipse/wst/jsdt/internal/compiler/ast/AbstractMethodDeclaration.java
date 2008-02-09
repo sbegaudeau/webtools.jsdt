@@ -14,6 +14,8 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
+import org.eclipse.wst.jsdt.core.ast.IJsDoc;
+import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -443,5 +445,36 @@ public abstract class AbstractMethodDeclaration
 	public int getASTType() {
 		return IASTNode.ABSTRACT_FUNCTION_DECLARATION;
 	
+	}
+	
+ 
+	public IJsDoc getJsDoc()
+	{
+		return this.javadoc;
+	}
+
+	public IProgramElement[] getStatements()
+	{
+		return this.statements;
+	}
+
+	public char[] getName()
+	{
+		return this.selector;
+	}
+
+	public void setInferredType(InferredType type)
+	{
+		this.inferredType=type;
+	}
+
+	public InferredMethod getInferredMethod()
+	{
+		return this.inferredMethod;
+	}
+
+	public InferredType getInferredType()
+	{
+		return this.inferredType;
 	}
 }

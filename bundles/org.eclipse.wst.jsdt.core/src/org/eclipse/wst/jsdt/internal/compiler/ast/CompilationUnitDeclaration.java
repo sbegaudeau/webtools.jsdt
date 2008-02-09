@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -22,6 +23,7 @@ import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
+import org.eclipse.wst.jsdt.internal.compiler.DelegateASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowInfo;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ReferenceContext;
@@ -526,7 +528,11 @@ public class CompilationUnitDeclaration
 		ignoreFurtherInvestigation = true;
 	}
 
-
+	
+	public void traverse(org.eclipse.wst.jsdt.core.ast.ASTVisitor visitor)
+	{
+		this.traverse(new DelegateASTVisitor(visitor), null,false);
+	}
 
 	public void traverse(
 			ASTVisitor visitor,
@@ -637,4 +643,16 @@ public class CompilationUnitDeclaration
 		return IASTNode.SCRIPT_FILE_DECLARATION;
 	
 	}
+
+	public IProgramElement[] getStatements() {
+		return this.statements;
+	}
+
+	public String getInferenceID() {
+		if (this.compilationResult.compilationUnit!=null)
+			return this.compilationResult.compilationUnit.getInferenceID();
+		return null;
+	}
+	
+	
 }

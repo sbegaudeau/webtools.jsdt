@@ -1,21 +1,21 @@
 package org.eclipse.wst.jsdt.core.infer;
 
-import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 
 public class DefaultInferrenceProvider implements InferrenceProvider {
 
 	public static final String ID="org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider";
 	
 
-	public int applysTo(CompilationUnitDeclaration scriptFile) {
-		if (scriptFile.compilationResult.compilationUnit!=null)
+	public int applysTo(IScriptFileDeclaration scriptFile) {
+		char[] fileNameChars = scriptFile.getFileName();
+		if (fileNameChars!=null)
 		{
-			ICompilationUnit compilationUnit = scriptFile.compilationResult.compilationUnit;
 //			String inferenceID = compilationUnit.getInferenceID();
 //			if (ID.equals(inferenceID))
 //			  return InferrenceProvider.ONLY_THIS;
-			String fileName = new String(compilationUnit.getFileName());
+
+			String fileName = new String(fileNameChars);
 			if (fileName.indexOf("org.eclipse.wst.jsdt.core/libraries")>=0)
 			{
 				  return InferrenceProvider.ONLY_THIS;

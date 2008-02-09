@@ -17,5 +17,7 @@ public interface IAbstractVariableDeclaration extends IStatement{
 	public InferredType getInferredType();
 	public IAnnotation[] getAnnotation();
 	public char[] getName();
+	public IExpression getInitialization();
+	public IJsDoc getJsDoc();
 
 }

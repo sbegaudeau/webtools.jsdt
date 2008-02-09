@@ -167,4 +167,10 @@ public interface IJsGlobalScopeContainerInitialzer {
 	 * returns a String of all SuperTypes provided by this library.
 	 */
 	String[] containerSuperTypes();
+	
+	/**
+	 * Get the id of the inference provider for this library
+	 * @return  inference provider id
+	 */
+	String getInferenceID();
 }

@@ -770,7 +770,7 @@ public int match(InferredMethod inferredMethod, MatchingNodeSet nodeSet) {
 	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
 	if (this.pattern.parameterSimpleNames != null) {
 		int length = this.pattern.parameterSimpleNames.length;
-		ASTNode[] args = inferredMethod.methodDeclaration.arguments;
+		ASTNode[] args = ((AbstractMethodDeclaration)inferredMethod.getFunctionDeclaration()).arguments;
 		int argsLength = args == null ? 0 : args.length;
 		if (length != argsLength) return IMPOSSIBLE_MATCH;
 		for (int i = 0; i < argsLength; i++) {
@@ -783,7 +783,7 @@ public int match(InferredMethod inferredMethod, MatchingNodeSet nodeSet) {
 						nodeSet.mustResolve = true;
 						resolve = true;
 					}
-					this.methodDeclarationsWithInvalidParam.put(inferredMethod.methodDeclaration, null);
+					this.methodDeclarationsWithInvalidParam.put((AbstractMethodDeclaration)inferredMethod.getFunctionDeclaration(), null);
 				} else {
 					return IMPOSSIBLE_MATCH;
 				}

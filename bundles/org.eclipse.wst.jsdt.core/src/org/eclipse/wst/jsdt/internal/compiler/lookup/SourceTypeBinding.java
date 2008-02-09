@@ -186,7 +186,7 @@ private void buildMethods() {
 	// create bindings for source methods
 	for (int i = 0; i < size; i++) {
 		 InferredMethod method = (InferredMethod)inferredType.methods.get(i);
-			MethodScope scope = new MethodScope(this.scope, method.methodDeclaration, false);
+			MethodScope scope = new MethodScope(this.scope, (MethodDeclaration)method.getFunctionDeclaration(), false);
 			MethodBinding methodBinding = scope.createMethod(method,this);
 			method.methodBinding=methodBinding;
 			if (methodBinding != null) // is null if binding could not be created
@@ -1796,7 +1796,7 @@ public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
 	InferredType inferredType=this.classScope.inferredType;
 	InferredMethod inferredMethod = inferredType.findMethod(binding.selector, null);
 	if (inferredMethod!=null)
-		return inferredMethod.methodDeclaration;
+		return (AbstractMethodDeclaration) inferredMethod.getFunctionDeclaration();
 //	AbstractMethodDeclaration[] methods = classScope.referenceContext.methods;
 //	for (int i = methods.length; --i >= 0;)
 //		if (binding == methods[i].binding)

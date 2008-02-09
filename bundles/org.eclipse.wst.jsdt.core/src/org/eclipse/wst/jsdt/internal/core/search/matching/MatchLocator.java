@@ -2382,7 +2382,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 					 level = (Integer) nodeSet.matchingNodes.removeKey(method);
 					 accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;
 					int value = (level != null && matchedClassContainer) ? level.intValue() : -1;
-					reportMatching(null, method.methodDeclaration, enclosingElement, value, typeInHierarchy, nodeSet);
+					reportMatching(null, (AbstractMethodDeclaration) method.getFunctionDeclaration(), enclosingElement, value, typeInHierarchy, nodeSet);
 
 				}
 		}

@@ -16,6 +16,7 @@ import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
+import org.eclipse.wst.jsdt.internal.compiler.DelegateASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.AnnotationBinding;
@@ -741,4 +742,11 @@ public static void resolveDeprecatedAnnotations(BlockScope scope, Annotation[] a
 		return IASTNode.AST_NODE;
 	
 	}
+	
+	
+	public void traverse(org.eclipse.wst.jsdt.core.ast.ASTVisitor visitor)
+	{
+		this.traverse(new DelegateASTVisitor(visitor), null);
+	}
+
 }

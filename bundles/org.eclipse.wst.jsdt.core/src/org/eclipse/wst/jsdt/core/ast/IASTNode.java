@@ -8,6 +8,7 @@ package org.eclipse.wst.jsdt.core.ast;
 
 
 
+
 /**
  * @author childsb
  *
@@ -137,4 +138,7 @@ public interface IASTNode {
 	public int sourceStart() ;
 	public int sourceEnd();
 	public int getASTType();
+	
+	public void traverse(ASTVisitor visitor);
+
 }

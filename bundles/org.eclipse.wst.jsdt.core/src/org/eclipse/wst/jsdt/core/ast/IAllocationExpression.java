@@ -11,4 +11,6 @@ package org.eclipse.wst.jsdt.core.ast;
  */
 public interface IAllocationExpression {
 
+	IExpression getMember();
+
 }

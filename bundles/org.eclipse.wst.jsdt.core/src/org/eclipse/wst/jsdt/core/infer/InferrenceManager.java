@@ -80,8 +80,19 @@ public class InferrenceManager {
 	public InferEngine [] getInferenceEngines(CompilationUnitDeclaration script)
 	{
 		InferrenceProvider[] inferenceProviders = getInferenceProviders();
+		if (inferenceProviders.length==1)
+			  return getSingleEngine(inferenceProviders[0]);
+			
 		ArrayList extEngines=new ArrayList();
 		for (int i = 0; i < inferenceProviders.length; i++) {
+			    if (script.compilationResult!=null && script.compilationResult.compilationUnit!=null)
+			    {
+			    	String inferenceID = script.compilationResult.compilationUnit.getInferenceID();
+			    	if (inferenceProviders[i].getID().equals(inferenceID))
+			    	{
+						  return getSingleEngine(inferenceProviders[i]);
+			    	}
+			    }
 			    int applies = inferenceProviders[i].applysTo(script);
 			    switch (applies) {
 				case InferrenceProvider.MAYBE_THIS:
@@ -92,11 +103,7 @@ public class InferrenceManager {
 					break;
 
 				case InferrenceProvider.ONLY_THIS:
-					  InferEngine engine=inferenceProviders[i].getInferEngine();
-					  engine.appliesTo=InferrenceProvider.ONLY_THIS;
-					  engine.inferenceProvider=inferenceProviders[i];
-					  InferEngine [] thisEngine = {engine};
-					return thisEngine;
+					  return getSingleEngine(inferenceProviders[i]);
 
 
 				default:
@@ -106,6 +113,15 @@ public class InferrenceManager {
 		return (InferEngine [] )extEngines.toArray(new InferEngine[extEngines.size()]);
 	}
 
+	
+	private InferEngine [] getSingleEngine(InferrenceProvider provider)
+	{
+		  InferEngine engine=provider.getInferEngine();
+		  engine.appliesTo=InferrenceProvider.ONLY_THIS;
+		  engine.inferenceProvider=provider;
+		  InferEngine [] thisEngine = {engine};
+		  return thisEngine;
+	}
 	
 	
 	protected void loadInferenceExtensions() {

@@ -13,6 +13,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
+import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
 import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
 
 public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainer, IJsGlobalScopeContainerInitialzerExtension {
@@ -123,6 +124,10 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 		return ImageDescriptor.createFromFile(this.getClass(),"rino.jpg"); //$NON-NLS-1$
 	//	System.out.println("Unimplemented method:BasicBrowserLibraryJsGlobalScopeContainerInitializer.getImage");
 		//return null;
+	}
+
+	public String getInferenceID() {
+		return DefaultInferrenceProvider.ID;
 	}
 	
 }

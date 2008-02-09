@@ -1,24 +1,29 @@
 package org.eclipse.wst.jsdt.core.infer;
 
+import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 
 public class InferredMethod extends InferredMember{
 
-	public MethodDeclaration methodDeclaration;
+	private MethodDeclaration methodDeclaration;
 
 	public boolean isConstructor;
 	public MethodBinding methodBinding;
-	public InferredMethod(char [] name, MethodDeclaration methodDeclaration, InferredType inType )
+	public InferredMethod(char [] name, IFunctionDeclaration functionDeclaration, InferredType inType )
 	{
-		this.methodDeclaration=methodDeclaration;
+		this.methodDeclaration=(MethodDeclaration)functionDeclaration;
 		this.name=name;
 		this.inType = inType;
 		this.sourceStart=methodDeclaration.sourceStart;
 		this.sourceEnd=methodDeclaration.sourceEnd;
 	}
 
-
+	public IFunctionDeclaration getFunctionDeclaration()
+	{
+		return methodDeclaration;
+	}
+	
 	public StringBuffer print(int indent, StringBuffer output)
 	{
 		String modifier=(isStatic)? "static ":""; //$NON-NLS-1$ //$NON-NLS-2$

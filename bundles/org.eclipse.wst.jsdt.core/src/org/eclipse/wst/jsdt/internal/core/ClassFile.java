@@ -945,6 +945,8 @@ public IType[] getTypes() throws JavaModelException {
 
 	public String getInferenceID() {
 		JsGlobalScopeContainerInitializer containerInitializer = getContainerInitializer();
+		if (containerInitializer!=null)
+			return containerInitializer.getInferenceID();
 		return null;
 	}
 	

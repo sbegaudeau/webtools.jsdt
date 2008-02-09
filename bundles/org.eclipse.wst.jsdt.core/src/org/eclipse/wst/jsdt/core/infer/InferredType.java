@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
+import org.eclipse.wst.jsdt.core.ast.IAbstractFunctionDeclaration;
+import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
-import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
@@ -102,7 +103,8 @@ public class InferredType extends ASTNode {
 	}
 
 
-	public InferredMethod addMethod(char [] methodName, MethodDeclaration methodDeclaration, boolean isConstructor) {
+	public InferredMethod addMethod(char [] methodName, IFunctionDeclaration functionDeclaration, boolean isConstructor) {
+		MethodDeclaration methodDeclaration = (MethodDeclaration)functionDeclaration;
 		InferredMethod method = findMethod(methodName, methodDeclaration);
 		if (method==null)
 		{
@@ -133,7 +135,7 @@ public class InferredType extends ASTNode {
 		return method;
 	}
 
-	public InferredMethod findMethod(char [] methodName, MethodDeclaration methodDeclaration) {
+	public InferredMethod findMethod(char [] methodName, IFunctionDeclaration methodDeclaration) {
 		boolean isConstructor= methodName==TypeConstants.INIT;
 		if (methods!=null)
 			for (Iterator methodIterator = methods.iterator(); methodIterator.hasNext();) {
@@ -197,11 +199,11 @@ public class InferredType extends ASTNode {
 		}
 	}
 
-	public boolean containsMethod(AbstractMethodDeclaration inMethod) {
+	public boolean containsMethod(IAbstractFunctionDeclaration inMethod) {
 		if (methods!=null)
 			for (Iterator iter = methods.iterator(); iter.hasNext();) {
 				InferredMethod method = (InferredMethod) iter.next();
-				if (method.methodDeclaration==inMethod)
+				if (method.getFunctionDeclaration()==inMethod)
 					return true;
 			}
 		return false;
@@ -254,13 +256,13 @@ public class InferredType extends ASTNode {
 			this.sourceEnd=end;
 	}
 
-	public AbstractMethodDeclaration declarationOf(MethodBinding methodBinding) {
+	public IAbstractFunctionDeclaration declarationOf(MethodBinding methodBinding) {
 		if (methodBinding != null && this.methods != null) {
 			for (int i = 0, max = this.methods.size(); i < max; i++) {
 				InferredMethod method=(InferredMethod) this.methods.get(i);
 
 				if (method.methodBinding==methodBinding)
-					return method.methodDeclaration;
+					return method.getFunctionDeclaration();
 			}
 		}
 		return null;

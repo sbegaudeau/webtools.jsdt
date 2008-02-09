@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
+import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.flow.FlowContext;
@@ -338,5 +339,9 @@ public void traverse(ASTVisitor visitor, BlockScope scope) {
 public int getASTType() {
 	return IASTNode.ALLOCATION_EXPRESSION;
 
+}
+
+public IExpression getMember() {
+	return this.member;
 }
 }

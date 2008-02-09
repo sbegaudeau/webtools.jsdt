@@ -310,5 +310,13 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 		return new JavaModelStatus(ATTRIBUTE_READ_ONLY);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitialzer#getInferenceID()
+	 */
+	public String getInferenceID()
+	{
+		return null;
+	}
 }
 

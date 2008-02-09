@@ -6803,7 +6803,7 @@ public final class CompletionEngine
 				if ((parsedType = ((ClassScope)sourceType.scope).referenceContext) != null)
 					 methodDecl = parsedType.declarationOf(method.original());
 				else if ( ((ClassScope)sourceType.scope).inferredType  != null)
-						 methodDecl = ((ClassScope)sourceType.scope).inferredType.declarationOf(method.original());
+						 methodDecl = (AbstractMethodDeclaration) ((ClassScope)sourceType.scope).inferredType.declarationOf(method.original());
 
 					if (methodDecl != null){
 						Argument[] arguments = methodDecl.arguments;

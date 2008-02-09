@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
+import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
 
 /** 
  * Resolves a container for a JRE classpath container entry.
@@ -286,5 +287,9 @@ public class JREContainerInitializer extends JsGlobalScopeContainerInitializer {
 		return new String[] {LaunchingMessages.JREContainerInitializer_Global,LaunchingMessages.JREContainerInitializer_Object,LaunchingMessages.JREContainerInitializer_Array};
 	}
 	
+	public String getInferenceID() {
+		return DefaultInferrenceProvider.ID;
+	}
 	
+
 }

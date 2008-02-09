@@ -1,16 +1,23 @@
 package org.eclipse.wst.jsdt.core.infer;
 
 
+import org.eclipse.wst.jsdt.core.ast.ASTVisitor;
+import org.eclipse.wst.jsdt.core.ast.IAllocationExpression;
 import org.eclipse.wst.jsdt.core.ast.IArgument;
+import org.eclipse.wst.jsdt.core.ast.IAssignment;
 import org.eclipse.wst.jsdt.core.ast.IExpression;
 import org.eclipse.wst.jsdt.core.ast.IFunctionCall;
+import org.eclipse.wst.jsdt.core.ast.IFunctionDeclaration;
+import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
+import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
+import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
+import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractVariableDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AllocationExpression;
-
+import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayInitializer;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Assignment;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CharLiteral;
@@ -22,20 +29,16 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.FunctionExpression;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Javadoc;
 import org.eclipse.wst.jsdt.internal.compiler.ast.JavadocSingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
-import org.eclipse.wst.jsdt.internal.compiler.ast.MessageSend;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NumberLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ObjectLiteralField;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ProgramElement;
-import org.eclipse.wst.jsdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 public class InferEngine extends ASTVisitor {
@@ -182,70 +185,71 @@ public class InferEngine extends ASTVisitor {
 	}
 
 
-	public boolean visit(MessageSend messageSend, BlockScope scope) {
-		boolean visitChildren=handleFunctionCall(messageSend);
+	public boolean visit(IFunctionCall functionCall) {
+		boolean visitChildren=handleFunctionCall(functionCall);
 		if (visitChildren)
 		{
-			if (this.contextPtr==-1 && messageSend.receiver instanceof FunctionExpression)
+			if (this.contextPtr==-1 && functionCall.getReceiver() instanceof FunctionExpression)
 				this.isTopLevelAnonymousFunction=true;
 		}
 		return visitChildren;
 	}
 
-	public boolean visit(LocalDeclaration localDeclaration, BlockScope scope) {
+	public boolean visit(ILocalDeclaration localDeclaration) {
 
 		//add as a member of the current context
-		currentContext.addMember( localDeclaration.name, localDeclaration );
+		currentContext.addMember( localDeclaration.getName(), localDeclaration );
 
-		if (localDeclaration.javadoc!=null)
+		if (localDeclaration.getJsDoc()!=null)
 		{
-			Javadoc javadoc = localDeclaration.javadoc;
+			Javadoc javadoc = (Javadoc)localDeclaration.getJsDoc();
 			InferredAttribute attribute = null;
 			if (javadoc.memberOf!=null)
 			{
 				InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
-				 attribute = type.addAttribute(localDeclaration.name, localDeclaration);
-				 if (localDeclaration.initialization!=null)
-					 attribute.initializationStart=localDeclaration.initialization.sourceStart;
+				 attribute = type.addAttribute(localDeclaration.getName(), localDeclaration);
+				 if (localDeclaration.getInitialization()!=null)
+					 attribute.initializationStart=localDeclaration.getInitialization().sourceStart();
 				attribute.type=type;
-			}
+			} 
 
 			if (javadoc.returnType!=null)
 			{
 			   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
-			   localDeclaration.inferredType=type;
+			   localDeclaration.setInferredType(type);
 			   if (attribute!=null)
 				   attribute.type=type;
 			}
 		}
 
-		if (localDeclaration.inferredType==null && localDeclaration.initialization!=null)
+		if (localDeclaration.getInferredType()==null && localDeclaration.getInitialization()!=null)
 		{
-			localDeclaration.inferredType= getTypeOf(localDeclaration.initialization);
+			localDeclaration.setInferredType(getTypeOf(localDeclaration.getInitialization()));
 		}
 		return true;
 	}
 
-	public boolean visit(Assignment assignment, BlockScope scope) {
+	public boolean visit(IAssignment assignment) {
 		pushContext();
-		if (handlePrototype(assignment))
+		Expression assignmentExpression=(Expression)assignment.getExpression();
+		if (handlePrototype((Assignment)assignment))
 		{
 
 		}
-		else if (assignment.expression instanceof FunctionExpression)
+		else if (assignmentExpression instanceof FunctionExpression)
 		{
-			boolean keepVisiting= handleFunctionExpressionAssignment(assignment);
+			boolean keepVisiting= handleFunctionExpressionAssignment((Assignment) assignment);
 			if (!keepVisiting)
 				return false;
 		}
-		else if (assignment.expression instanceof SingleNameReference  && this.currentContext.currentType !=null &&
-				isThis(assignment.lhs))
+		else if (assignmentExpression instanceof SingleNameReference  && this.currentContext.currentType !=null &&
+				isThis(assignment.getLeftHandSide()))
 		{
-			SingleNameReference snr=(SingleNameReference)assignment.expression;
+			SingleNameReference snr=(SingleNameReference)assignmentExpression;
 			Object object = this.currentContext.getMember( snr.token );
 
 
-			FieldReference fieldReference=(FieldReference)assignment.lhs;
+			FieldReference fieldReference=(FieldReference)assignment.getLeftHandSide();
 			char [] memberName = fieldReference.token;
 			InferredMember member = null;
 
@@ -264,7 +268,7 @@ public class InferEngine extends ASTVisitor {
 			else{
 
 				member = this.currentContext.currentType.addAttribute( memberName, assignment );
-				((InferredAttribute)member).type = getTypeOf( assignment.expression );
+				((InferredAttribute)member).type = getTypeOf( assignmentExpression );
 
 			}
 
@@ -278,16 +282,16 @@ public class InferEngine extends ASTVisitor {
 		/*
 		 *	foo = {};
 		 */
-		else if ( assignment.expression instanceof ObjectLiteral && assignment.lhs instanceof SingleNameReference ){
+		else if ( assignmentExpression instanceof ObjectLiteral && assignment.getLeftHandSide() instanceof SingleNameReference ){
 
-			AbstractVariableDeclaration varDecl = getVariable( assignment.lhs );
+			AbstractVariableDeclaration varDecl = getVariable( assignment.getLeftHandSide() );
 
 			if( varDecl != null ){
 				InferredType type = varDecl.inferredType;
 
 				if( type == null ){
 					//create an annonymous type based on the ObjectLiteral
-					type = getTypeOf( assignment.expression );
+					type = getTypeOf( assignmentExpression );
 
 					varDecl.inferredType = type;
 
@@ -303,12 +307,12 @@ public class InferEngine extends ASTVisitor {
 		 * foo.bar = {};
 		 *
 		 */
-		else if ( assignment.expression instanceof ObjectLiteral && assignment.lhs instanceof FieldReference ){
+		else if ( assignmentExpression instanceof ObjectLiteral && assignment.getLeftHandSide() instanceof FieldReference ){
 
 			if (this.inferOptions.useAssignments && passNumber == 2 )
 			{
 
-				FieldReference fRef = (FieldReference)assignment.lhs;
+				FieldReference fRef = (FieldReference)assignment.getLeftHandSide();
 
 				InferredType receiverType = getInferredType( fRef.receiver );
 
@@ -324,7 +328,7 @@ public class InferEngine extends ASTVisitor {
 					if( !(attr != null && attr.type != null) ){
 
 						attr = receiverType.addAttribute( fRef.token, assignment );
-						attr.type = getTypeOf( assignment.expression );
+						attr.type = getTypeOf( assignmentExpression );
 
 						/*
 						 * determine if static
@@ -346,9 +350,9 @@ public class InferEngine extends ASTVisitor {
 				}
 			}
 		}
-		else if ( assignment.expression instanceof AllocationExpression && 
-			((AllocationExpression)assignment.expression).member instanceof FunctionExpression){
-			handleFunctionExpressionAssignment(assignment);
+		else if ( assignmentExpression instanceof AllocationExpression && 
+			((AllocationExpression)assignmentExpression).member instanceof FunctionExpression){
+			handleFunctionExpressionAssignment((Assignment)assignment);
 		}
 		else
 		{
@@ -357,14 +361,14 @@ public class InferEngine extends ASTVisitor {
 			 */
 			if (this.inferOptions.useAssignments)
 			{
-				if( assignment.lhs instanceof FieldReference ){
-					FieldReference fRef = (FieldReference)assignment.lhs;
+				if( assignment.getLeftHandSide() instanceof FieldReference ){
+					FieldReference fRef = (FieldReference)assignment.getLeftHandSide();
 					int nameStart=(int)(fRef.nameSourcePosition>>>32);
 
 					InferredType receiverType = getInferredType( fRef.receiver );
 					if (receiverType==null)
 					{
-					  MethodDeclaration function = getDefinedFunction(fRef.receiver);
+					  IFunctionDeclaration function = getDefinedFunction(fRef.receiver);
 					  if (function!=null)
 						  receiverType=addType(constructTypeName(fRef.receiver));
 					}
@@ -384,10 +388,10 @@ public class InferEngine extends ASTVisitor {
 
 
 //							attr.type =
-							MethodDeclaration definedFunction=null;
-							InferredType exprType = getTypeOf( assignment.expression );
+							IFunctionDeclaration definedFunction=null;
+							InferredType exprType = getTypeOf( assignmentExpression );
 							if (exprType==null)
-								 definedFunction = getDefinedFunction(assignment.expression );
+								 definedFunction = getDefinedFunction(assignmentExpression );
 
 							if (definedFunction!=null)
 							{
@@ -697,7 +701,7 @@ public class InferEngine extends ASTVisitor {
 				int nameStart= (int)(fieldReference.nameSourcePosition >>> 32);
 
 				InferredType typeOf = getTypeOf(assignment.expression);
-				MethodDeclaration methodDecl=null;
+				IFunctionDeclaration methodDecl=null;
 
 				if (typeOf==null)
 					methodDecl=getDefinedFunction(assignment.expression);
@@ -721,7 +725,7 @@ public class InferEngine extends ASTVisitor {
 		return false;
 	}
 
-	protected MethodDeclaration getDefinedFunction(Expression expression)
+	protected IFunctionDeclaration getDefinedFunction(IExpression expression)
 	{
 		if (expression instanceof SingleNameReference)
 		{
@@ -740,7 +744,7 @@ public class InferEngine extends ASTVisitor {
 			{
 				InferredMethod method = receiverType.findMethod(fieldReference.token, null);
 				if (method!=null)
-					return method.methodDeclaration;
+					return method.getFunctionDeclaration();
 			}
 
 		 }
@@ -881,22 +885,22 @@ public class InferEngine extends ASTVisitor {
 		}		
 	}
 
-	public void endVisit(Assignment assignment, BlockScope scope) {
+	public void endVisit(IAssignment assignment) {
 		popContext();
 	}
 
-	protected boolean handleFunctionCall(MessageSend messageSend) {
+	protected boolean handleFunctionCall(IFunctionCall messageSend) {
 		return true;
 	}
 
-	public void endVisit(ReturnStatement returnStatement, BlockScope scope) {
+	public void endVisit(IReturnStatement returnStatement) {
 
 			if (currentContext.currentMethod!=null)
 			{
-				if (returnStatement.expression!=null)
+				if (returnStatement.getExpression()!=null)
 				{
 
-					InferredType type = getTypeOf(returnStatement.expression);
+					InferredType type = getTypeOf(returnStatement.getExpression());
 
 					if (currentContext.currentMethod.inferredType==VoidType)
 						currentContext.currentMethod.inferredType=type;
@@ -907,11 +911,11 @@ public class InferEngine extends ASTVisitor {
 
 	}
 
-	public void endVisit(MethodDeclaration methodDeclaration, Scope scope) {
+	public void endVisit(IFunctionDeclaration methodDeclaration) {
 		popContext();
 	}
 
-	public boolean visit(MethodDeclaration methodDeclaration, Scope scope) {
+	public boolean visit(IFunctionDeclaration methodDeclaration) {
 		pushContext();
 		if (this.isTopLevelAnonymousFunction && this.currentContext.currentType==null)
 		{
@@ -920,20 +924,20 @@ public class InferEngine extends ASTVisitor {
 			this.inferredGlobal=this.currentContext.currentType;
 		}
 
-		this.isTopLevelAnonymousFunction=false;
+		this.isTopLevelAnonymousFunction=false; 
 		if (passNumber==1)
 		{
-			buildDefinedMembers(methodDeclaration.statements,methodDeclaration.arguments);
-			if (methodDeclaration.javadoc!=null)
+			buildDefinedMembers((ProgramElement[])methodDeclaration.getStatements(),(Argument[])methodDeclaration.getArguments());
+			if (methodDeclaration.getJsDoc()!=null)
 			{
 				InferredMethod method=null;
-				Javadoc javadoc = methodDeclaration.javadoc;
+				Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
 				if (javadoc.isConstructor)
 				{
-					InferredType type = this.addType(methodDeclaration.selector);
+					InferredType type = this.addType(methodDeclaration.getName());
 					type.isDefinition=true;
-					method = type.addMethod(methodDeclaration.selector, methodDeclaration,true);
-					method.nameStart=methodDeclaration.sourceStart;
+					method = type.addMethod(methodDeclaration.getName(), methodDeclaration,true);
+					method.nameStart=methodDeclaration.sourceStart();
 					method.isConstructor=true;
 
 					if (javadoc.extendsType!=null)
@@ -945,43 +949,43 @@ public class InferEngine extends ASTVisitor {
 				else if (javadoc.memberOf!=null)
 				{
 					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
-					method=type.addMethod(methodDeclaration.selector, methodDeclaration,false);
+					method=type.addMethod(methodDeclaration.getName(), methodDeclaration,false);
 				}
 
 				if (javadoc.returnType!=null)
 				{
 				   InferredType type = this.addType(javadoc.returnType.getSimpleTypeName());
-				   methodDeclaration.inferredType=type;
-				   methodDeclaration.bits |= ASTNode.IsInferredJsDocType;
+				   methodDeclaration.setInferredType(type);
+				   ((MethodDeclaration)methodDeclaration).bits |= ASTNode.IsInferredJsDocType;
 				}
 
 			}
-			if (methodDeclaration.arguments!=null)
-				handleFunctionDeclarationArguments(methodDeclaration);
+			if (methodDeclaration.getArguments()!=null)
+				handleFunctionDeclarationArguments((MethodDeclaration)methodDeclaration);
 		}
 		// check if this is a constructor
 		if (passNumber==2)
 		{
 
-			if (methodDeclaration.selector!=null) {
+			if (methodDeclaration.getName()!=null) {
 				InferredType type = compUnit
-						.findInferredType(methodDeclaration.selector);
+						.findInferredType(methodDeclaration.getName());
 				if (type != null) {
 					this.currentContext.currentType = type;
 					type.isDefinition = true;
 					InferredMethod method = type.addMethod(
-							methodDeclaration.selector, methodDeclaration,true);
-					method.nameStart=methodDeclaration.sourceStart;
+							methodDeclaration.getName(), methodDeclaration,true);
+					method.nameStart=methodDeclaration.sourceStart();
 					method.isConstructor = true;
-					methodDeclaration.inferredType=type;
+					methodDeclaration.setInferredType(type);
 				}
 			}
 		}
-		this.currentContext.currentMethod=methodDeclaration;
-		if (methodDeclaration.inferredMethod!=null && methodDeclaration.inferredMethod.inType!=null)
-			this.currentContext.currentType=methodDeclaration.inferredMethod.inType;
-		if (methodDeclaration.inferredType==null)
-			methodDeclaration.inferredType=VoidType;
+		this.currentContext.currentMethod=(MethodDeclaration)methodDeclaration;
+		if (methodDeclaration.getInferredMethod()!=null && methodDeclaration.getInferredMethod().inType!=null)
+			this.currentContext.currentType=methodDeclaration.getInferredMethod().inType;
+		if (methodDeclaration.getInferredType()==null)
+			methodDeclaration.setInferredType(VoidType);
 		return true;
 	}
 
@@ -1008,11 +1012,10 @@ public class InferEngine extends ASTVisitor {
 
 
 	public boolean visit(
-    		AllocationExpression allocationExpression,
-    		BlockScope scope) {
+    		IAllocationExpression allocationExpression) {
 
 		InferredType type = null;
-		char [] possibleTypeName = constructTypeName( allocationExpression.member );
+		char [] possibleTypeName = constructTypeName( allocationExpression.getMember() );
 		if( possibleTypeName != null ){
 			type = compUnit.findInferredType( possibleTypeName );
 
@@ -1023,18 +1026,18 @@ public class InferEngine extends ASTVisitor {
 	}
 
 
-	public void endVisit(ObjectLiteralField field, BlockScope scope) {
-		if (field.javaDoc!=null)
+	public void endVisit(IObjectLiteralField field) {
+		if (field.getJsDoc()!=null)
 		{
-			Javadoc javaDoc = field.javaDoc;
+			Javadoc javaDoc = (Javadoc)field.getJsDoc();
 			InferredType inClass=this.currentContext.currentType;
 			char [] name=null;
 			int nameStart=-1;
 			InferredType returnType=null;
 //			boolean isFunction=field.initializer instanceof FunctionExpression;
- 			if (field.fieldName instanceof SingleNameReference)
+ 			if (field.getFieldName() instanceof SingleNameReference)
  			{
- 				SingleNameReference singleNameReference=(SingleNameReference)field.fieldName;
+ 				SingleNameReference singleNameReference=(SingleNameReference)field.getFieldName();
  				name=singleNameReference.token;
  				nameStart=singleNameReference.sourceStart;
  			}
@@ -1051,8 +1054,8 @@ public class InferEngine extends ASTVisitor {
 
 			if (inClass!=null)
 			{
-				if (field.initializer instanceof FunctionExpression) {
-					FunctionExpression functionExpression = (FunctionExpression) field.initializer;
+				if (field.getInitializer() instanceof FunctionExpression) {
+					FunctionExpression functionExpression = (FunctionExpression) field.getInitializer();
 				    InferredMember method = inClass.addMethod(name, functionExpression.methodDeclaration,false);
 				    method.nameStart=nameStart;
 				    functionExpression.methodDeclaration.modifiers=javaDoc.modifiers;
@@ -1065,8 +1068,8 @@ public class InferEngine extends ASTVisitor {
 				}
 				else	//attribute
 				{
-					InferredAttribute attribute = inClass.addAttribute(name, field.fieldName);
-					attribute.nameStart=field.fieldName.sourceStart;
+					InferredAttribute attribute = inClass.addAttribute(name, field.getFieldName());
+					attribute.nameStart=field.getFieldName().sourceStart();
 					if (returnType!=null)
 						attribute.type=returnType;
 				}
@@ -1076,7 +1079,7 @@ public class InferEngine extends ASTVisitor {
 		//no jsdoc
 		else{
 
-			if( field.initializer instanceof ObjectLiteral ){
+			if( field.getInitializer() instanceof ObjectLiteral ){
 
 			}
 
@@ -1125,9 +1128,9 @@ public class InferEngine extends ASTVisitor {
 
 	public void doInfer()
 	{
-		compUnit.traverse(this, compUnit.scope,true);
+		compUnit.traverse(this );
 		passNumber=2;
-		compUnit.traverse(this, compUnit.scope,true);
+		compUnit.traverse(this );
 		this.compUnit=null;
 }
 
@@ -1180,7 +1183,7 @@ public class InferEngine extends ASTVisitor {
 	 *
 	 * Currently, only SNR are supported
 	 */
-	protected AbstractVariableDeclaration getVariable(Expression expression)
+	protected AbstractVariableDeclaration getVariable(IExpression expression)
 	{
 		char [] name=null;
 
@@ -1221,7 +1224,7 @@ public class InferEngine extends ASTVisitor {
 		}
 	}
 
-	private static boolean isThis(Expression expression)
+	private static boolean isThis(IExpression expression)
 	{
 		if (expression instanceof FieldReference && ((FieldReference)expression).receiver.isThis())
 			return true;
@@ -1265,7 +1268,8 @@ public class InferEngine extends ASTVisitor {
 
 				if (type==null)
 				{
-					if (WellKnownTypes.containsKey(possibleTypeName))
+					if (WellKnownTypes.containsKey(possibleTypeName) || 
+							(this.passNumber==2 && this.isKnownType(possibleTypeName)))
 					{
 						type = addType(possibleTypeName);
 						type.isDefinition=true;
@@ -1336,6 +1340,10 @@ public class InferEngine extends ASTVisitor {
 
 
 
+	protected boolean isKnownType(char[] possibleTypeName) {
+		return false;
+	}
+
 	/*
 	 * For SNR it returns the name
 	 * For FR it construct a Qualified name separated by '.'
@@ -1348,15 +1356,15 @@ public class InferEngine extends ASTVisitor {
 		return Util.getTypeName( expression );
 	}
 
-	public boolean visit(ObjectLiteral literal, BlockScope scope) {
-		if (this.passNumber==1 && literal.inferredType==null)
-			createAnonymousType(literal);
+	public boolean visit(IObjectLiteral literal) {
+		if (this.passNumber==1 && literal.getInferredType()==null)
+			createAnonymousType((ObjectLiteral)literal);
 		pushContext();
-		this.currentContext.currentType=literal.inferredType;
+		this.currentContext.currentType=literal.getInferredType();
 		return true;
 	}
 
-	public void endVisit(ObjectLiteral literal, BlockScope scope) {
+	public void endVisit(IObjectLiteral literal) {
 		popContext();
 	}
 	

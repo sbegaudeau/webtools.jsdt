@@ -1467,6 +1467,8 @@ public IMethod[] findMethods(IMethod method) {
 
 public String getInferenceID() {
 	JsGlobalScopeContainerInitializer containerInitializer = getContainerInitializer();
+	if (containerInitializer!=null)
+		return containerInitializer.getInferenceID();
 	return null;
 }
 

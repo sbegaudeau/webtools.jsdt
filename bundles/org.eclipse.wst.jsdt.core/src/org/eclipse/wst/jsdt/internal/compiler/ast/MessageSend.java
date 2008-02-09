@@ -531,4 +531,8 @@ public int getASTType() {
 	return IASTNode.FUNCTION_CALL;
 
 }
+
+public IExpression getReceiver() {
+	return this.receiver;
+}
 }
