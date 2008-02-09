@@ -923,7 +923,7 @@ ImportBinding[] getDefaultImports() {
 	// abort if java.lang cannot be found...
 	if (importBinding == null || !importBinding.isValidBinding()) {
 	// create a proxy for the missing BinaryType
-		BinaryTypeBinding missingObject = environment.cacheMissingBinaryType(JAVA_LANG_OBJECT, this.referenceContext);
+		MissingBinaryTypeBinding missingObject = environment.cacheMissingBinaryType(JAVA_LANG_OBJECT, this.referenceContext);
 		importBinding = missingObject.fPackage;
 	}
 	return environment.defaultImports = new ImportBinding[] {new ImportBinding(new char[][] {SystemLibraryLocation.SYSTEM_LIBARAY_NAME}, true, importBinding, (ImportReference)null)};

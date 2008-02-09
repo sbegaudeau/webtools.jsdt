@@ -176,7 +176,8 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 			VariableBinding existingVariable=(VariableBinding)varBinding;
 			if (existingVariable.isFor(this))
 			{
-				existingVariable.type=variableType;
+				if (variableType!=null)
+					existingVariable.type=variableType;
 				alreadyDefined=true;
 			}
 			else

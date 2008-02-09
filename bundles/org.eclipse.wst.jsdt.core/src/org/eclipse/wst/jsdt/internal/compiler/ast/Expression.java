@@ -915,7 +915,17 @@ public void markAsNonNull() {
 	
 	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location)
 	{
-		System.out.println("IMPLEMENT resolveForAllocation for "+this.getClass());
+		switch (getASTType()) {
+		case IASTNode.STRING_LITERAL:
+		case IASTNode.CHAR_LITERAL:
+		case IASTNode.ARRAY_REFERENCE:
+			
+			break;
+
+		default:
+			System.out.println("IMPLEMENT resolveForAllocation for "+this.getClass());
+			break;
+		}
 		return this.resolveType(scope);
 	}
 	

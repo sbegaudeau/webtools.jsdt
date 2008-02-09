@@ -11,9 +11,10 @@
 package org.eclipse.wst.jsdt.internal.compiler.lookup;
 
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
-public class MissingBinaryTypeBinding extends BinaryTypeBinding {
+public class MissingBinaryTypeBinding extends SourceTypeBinding {
 
 /**
  * Special constructor for constructing proxies of missing binary types (114349)
@@ -21,11 +22,12 @@ public class MissingBinaryTypeBinding extends BinaryTypeBinding {
  * @param compoundName
  * @param environment
  */
-public MissingBinaryTypeBinding(PackageBinding packageBinding, char[][] compoundName, LookupEnvironment environment) {
+public MissingBinaryTypeBinding(PackageBinding packageBinding, char[][] compoundName, LookupEnvironment environment, Scope parentScope) {
+	super(compoundName,packageBinding,new ClassScope(parentScope,new InferredType(null)));
 	this.compoundName = compoundName;
 	computeId();
 	this.tagBits |= TagBits.IsBinaryBinding | TagBits.HierarchyHasProblems;
-	this.environment = environment;
+//	this.environment = environment;
 	this.fPackage = packageBinding;
 	this.fileName = CharOperation.concatWith(compoundName, '/');
 	this.sourceName = compoundName[compoundName.length - 1]; // [java][util][Map$Entry]

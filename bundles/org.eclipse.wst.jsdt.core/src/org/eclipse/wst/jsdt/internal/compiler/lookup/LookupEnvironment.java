@@ -236,7 +236,7 @@ public BinaryTypeBinding cacheBinaryType(ISourceType binaryType, boolean needFie
 		return createBinaryTypeFrom(binaryType, computePackageFrom(compoundName), needFieldsAndMethods, accessRestriction);
 	return null; // the type already exists & can be retrieved from the cache
 }
-public BinaryTypeBinding cacheMissingBinaryType(char[][] compoundName, CompilationUnitDeclaration unit) {
+public MissingBinaryTypeBinding cacheMissingBinaryType(char[][] compoundName, CompilationUnitDeclaration unit) {
 	// report the missing class file first
 	problemReporter.isClassPathCorrect(
 		compoundName,
@@ -245,7 +245,7 @@ public BinaryTypeBinding cacheMissingBinaryType(char[][] compoundName, Compilati
 
 	PackageBinding packageBinding = computePackageFrom(compoundName);
 	// create a proxy for the missing BinaryType
-	MissingBinaryTypeBinding type = new MissingBinaryTypeBinding(packageBinding, compoundName, this);
+	MissingBinaryTypeBinding type = new MissingBinaryTypeBinding(packageBinding, compoundName, this,unit.scope);
 	if (type.id != TypeIds.T_JavaLangObject) {
 		// make Object be its superclass - it could in turn be missing as well
 		ReferenceBinding objectType = getType(TypeConstants.JAVA_LANG_OBJECT);

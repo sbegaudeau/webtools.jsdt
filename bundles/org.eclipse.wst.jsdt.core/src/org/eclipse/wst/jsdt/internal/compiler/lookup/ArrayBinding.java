@@ -37,7 +37,7 @@ public ArrayBinding(TypeBinding type, int dimensions, LookupEnvironment environm
 	else
     	this.tagBits |= type.tagBits & (TagBits.HasTypeVariable | TagBits.HasDirectWildcard);
 
-	referenceBinding = environment.getType(TypeConstants.ARRAY);
+	referenceBinding = environment.getResolvedType(TypeConstants.ARRAY,null);
 	this.fPackage=environment.defaultPackage;
 }
 

@@ -36,8 +36,8 @@ import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 public class SourceTypeBinding extends ReferenceBinding {
 	public ReferenceBinding superclass;
 	public ReferenceBinding[] superInterfaces= Binding.NO_SUPERINTERFACES;
-	private FieldBinding[] fields;
-	private MethodBinding[] methods;
+	protected FieldBinding[] fields;
+	protected MethodBinding[] methods;
 	public ReferenceBinding[] memberTypes=Binding.NO_MEMBER_TYPES;
     public TypeVariableBinding[] typeVariables=Binding.NO_TYPE_VARIABLES;
 
