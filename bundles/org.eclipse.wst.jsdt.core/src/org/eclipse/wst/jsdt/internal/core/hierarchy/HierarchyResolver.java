@@ -84,6 +84,8 @@ public class HierarchyResolver implements ITypeRequestor {
 	private CompilerOptions options;
 	HierarchyBuilder builder;
 	private ReferenceBinding[] typeBindings;
+	
+	HashSet processedUnits=new HashSet();
 
 	private int typeIndex;
 	private IGenericType[] typeModels;
@@ -129,8 +131,11 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 //	new StringBuffer(Messages.accept_cannot)
 //		.append(sourceUnit.getFileName())
 //		.toString());
+	
+	if (this.processedUnits.contains(sourceUnit))
+		return;
 	Parser parser = new Parser(this.lookupEnvironment.problemReporter, true);
-
+ 
 	CompilationResult result = new CompilationResult(sourceUnit, 1, 1, this.options.maxProblemsPerUnit);
 	CompilationUnitDeclaration parsedUnit =
 		parser.dietParse(sourceUnit, result);
@@ -138,7 +143,7 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 		parser.inferTypes(parsedUnit, this.options);
 		try {
 			this.lookupEnvironment.buildTypeBindings(parsedUnit, accessRestriction);
-
+			this.processedUnits.add(sourceUnit);
 //			org.eclipse.wst.jsdt.core.ICompilationUnit cu = ((SourceTypeElementInfo)sourceType).getHandle().getCompilationUnit();
 			rememberAllTypes(parsedUnit, sourceUnit, false);
 
@@ -691,6 +696,7 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 			}
 		}
 
+		processedUnits=new HashSet();
 		// build type bindings
 		Parser parser = new Parser(this.lookupEnvironment.problemReporter, true);
 		for (int i = 0; i < openablesLength; i++) {
@@ -750,7 +756,9 @@ public void resolve(Openable[] openables, HashSet localTypes, IProgressMonitor m
 					cus[unitsIndex] = cu;
 					parsedUnits[unitsIndex++] = parsedUnit;
 					try {
-						this.lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
+						if (!processedUnits.contains(openable))
+							this.lookupEnvironment.buildTypeBindings(parsedUnit, null /*no access restriction*/);
+						processedUnits.add(openable);
 						if (openable.equals(focusOpenable)) {
 							focusUnit = parsedUnit;
 						}
