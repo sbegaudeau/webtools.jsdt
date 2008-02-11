@@ -105,11 +105,14 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 	this.referenceContext = unit;
 	unit.scope = this;
 
-	char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.getPackageName() : unit.currentPackage.tokens;
-
-	this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
-
-
+	/* bc - start bug 218398 - NPE when doing source->cleanup */
+	
+	//char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.getPackageName() : unit.currentPackage.tokens;
+	//this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
+	this.currentPackageName = CharOperation.NO_CHAR_CHAR;
+	/* bc - end bug 218398 - NPE when doing source->cleanup */
+	
+	
 	this.referencedTypes = new ObjectVector();
 	if (compilerOptions().produceReferenceInfo) {
 		this.qualifiedReferences = new CompoundNameVector();
