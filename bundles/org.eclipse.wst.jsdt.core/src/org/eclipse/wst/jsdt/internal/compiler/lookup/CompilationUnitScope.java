@@ -292,7 +292,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 			//		SourceTypeBinding type = buildType(typeDecl,null, fPackage, accessRestriction);
 			if (type != null)
 			{
-				if (existingBinding!=null && !typeDecl.isAnonymous )
+				if (existingBinding!=null && !typeDecl.isAnonymous  )
 				{
 					if (existingBinding instanceof CombinedSourceTypeBinding)
 					{
@@ -300,7 +300,10 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 						combinedBinding.addSourceType(type);
 					}
 					else
-						existingBinding=new CombinedSourceTypeBinding(child,type,existingBinding);
+					{
+						if (!CharOperation.equals(type.fileName, existingBinding.fileName))
+							existingBinding=new CombinedSourceTypeBinding(child,type,existingBinding);
+					}
 					environment.defaultPackage.addType(existingBinding);
 				}
 				else
