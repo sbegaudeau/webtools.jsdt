@@ -13,6 +13,8 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		super(initialSourceType.compoundName, initialSourceType.fPackage, scope);
 		sourceTypes[0]=initialSourceType;
 		sourceTypes[1]=initialSourceType2;
+		setSuperclass(initialSourceType);
+		setSuperclass(initialSourceType2);
 	}
 
 
@@ -21,6 +23,7 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		int length = this.sourceTypes.length;
 		System.arraycopy(this.sourceTypes, 0, this.sourceTypes=new SourceTypeBinding[length+1], 0, length);
 		this.sourceTypes[length]=binding;
+		setSuperclass(binding);
 	}
 
 
@@ -137,6 +140,26 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		for (int i = 0; i < this.sourceTypes.length ; i++)
 			this.sourceTypes[i].cleanup();
 	}
+
+
+	private void setSuperclass(SourceTypeBinding from)
+	{
+		if (this.superclass==null || (from.superclass!=null && from.superclass.id!=TypeIds.T_JavaLangObject))
+			this.superclass=from.superclass;
+	}
+
+
+	public ReferenceBinding superclass() {
+		for (int i = 0; i < this.sourceTypes.length ; i++)
+		{
+			ReferenceBinding supercls = this.sourceTypes[i].superclass;
+			if (supercls!=null && supercls.id!=TypeIds.T_JavaLangObject)
+				return supercls;
+		}
+		return this.superclass;
+	}
+	
+	
 
 }
 
