@@ -315,6 +315,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext,
 				return this.resolvedType = (valueIfFalseType != TypeBinding.NULL)?  valueIfFalseType : valueIfTrueType;
 			}
 //		}
+		if (valueIfFalseType.isValidBinding() && valueIfTrueType.isValidBinding())
 		scope.problemReporter().conditionalArgumentsIncompatibleTypes(
 			this,
 			valueIfTrueType,
