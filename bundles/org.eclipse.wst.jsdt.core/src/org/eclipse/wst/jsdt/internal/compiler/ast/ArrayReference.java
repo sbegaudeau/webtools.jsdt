@@ -86,6 +86,8 @@ public FlowInfo analyseCode(
 				this.resolvedType=TypeBinding.UNKNOWN;
 			}
 		}
+		else 
+			this.resolvedType=TypeBinding.UNKNOWN;
 		  position.resolveTypeExpecting(scope, new TypeBinding[] {scope.getJavaLangNumber(),scope.getJavaLangString(),TypeBinding.ANY});
 //		if (positionType != null) {
 //			position.computeConversion(scope, TypeBinding.INT, positionType);

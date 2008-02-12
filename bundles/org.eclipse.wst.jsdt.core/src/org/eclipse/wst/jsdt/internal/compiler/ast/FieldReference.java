@@ -371,6 +371,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	 */
 	if (this.receiverType.id==TypeIds.T_any)
 	{
+		constant = Constant.NotAConstant;
 		this.binding=new  ProblemFieldBinding( null, token, ProblemReasons.NotFound) ;
 	    return this.resolvedType=TypeBinding.ANY;
 	}
