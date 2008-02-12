@@ -1052,7 +1052,7 @@ public class InferEngine extends ASTVisitor {
 				returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
 			}
 
-			if (inClass!=null)
+			if (inClass!=null && name!=null)
 			{
 				if (field.getInitializer() instanceof FunctionExpression) {
 					FunctionExpression functionExpression = (FunctionExpression) field.getInitializer();
