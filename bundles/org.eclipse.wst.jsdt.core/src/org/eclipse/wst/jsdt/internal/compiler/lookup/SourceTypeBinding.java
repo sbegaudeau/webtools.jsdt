@@ -843,15 +843,16 @@ public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 	if ((this.tagBits & TagBits.AreMethodsComplete) != 0) { // have resolved all arg types & return type of the methods
 		long range;
 		if ((range = ReferenceBinding.binarySearch(TypeConstants.INIT, this.methods)) >= 0) {
-			nextMethod: for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
+//			nextMethod: 
+				for (int imethod = (int)range, end = (int)(range >> 32); imethod <= end; imethod++) {
 				MethodBinding method = this.methods[imethod];
-				if (method.parameters.length == argCount) {
-					TypeBinding[] toMatch = method.parameters;
-					for (int iarg = 0; iarg < argCount; iarg++)
-						if (toMatch[iarg] != argumentTypes[iarg])
-							continue nextMethod;
+//				if (method.parameters.length == argCount) {
+//					TypeBinding[] toMatch = method.parameters;
+//					for (int iarg = 0; iarg < argCount; iarg++)
+//						if (toMatch[iarg] != argumentTypes[iarg])
+//							continue nextMethod;
 					return method;
-				}
+//				}
 			}
 		}
 	} else {
