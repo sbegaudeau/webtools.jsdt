@@ -121,7 +121,7 @@ public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlob
 			return null;
 		}
 		
-		return ImageDescriptor.createFromFile(this.getClass(),"rino.jpg"); //$NON-NLS-1$
+		return ImageDescriptor.createFromFile(this.getClass(),"rino.gif"); //$NON-NLS-1$
 	//	System.out.println("Unimplemented method:BasicBrowserLibraryJsGlobalScopeContainerInitializer.getImage");
 		//return null;
 	}
