@@ -32,6 +32,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeConstants;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeIds;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class FieldReference extends Reference implements InvocationSite, IFieldReference {
@@ -368,6 +369,12 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	 * Need to look in the fields and method for a match... In JS there is no distinction between member functions
 	 * or field. We are trying to mimic that property below (Java does have a distinction)
 	 */
+	if (this.receiverType.id==TypeIds.T_any)
+	{
+		this.binding=new  ProblemFieldBinding( null, token, ProblemReasons.NotFound) ;
+	    return this.resolvedType=TypeBinding.ANY;
+	}
+	
 	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
 	boolean receiverIsType=   receiver instanceof NameReference && ( ((NameReference) receiver).bits & Binding.TYPE) != 0;
 	if (!memberBinding.isValidBinding() && (this.receiverType!=null && this.receiverType.isFunctionType()))
