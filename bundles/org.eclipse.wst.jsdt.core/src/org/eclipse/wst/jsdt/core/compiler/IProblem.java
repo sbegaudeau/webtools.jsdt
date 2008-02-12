@@ -394,6 +394,7 @@ void setSourceStart(int sourceStart);
 	int UnusedPrivateMethod = Internal + MethodRelated + 118;
 	/** @since 3.0 */
 	int IndirectAccessToStaticMethod = Internal + MethodRelated + 119;
+	int WrongNumberOfArguments = Internal + MethodRelated + 120;
 
 	// constructors
 	int UndefinedConstructor = ConstructorRelated + 130;

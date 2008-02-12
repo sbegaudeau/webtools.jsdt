@@ -3381,6 +3381,7 @@ public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 		(int) messageSend.nameSourcePosition);
 }
 
+
 public void invalidNullToSynchronize(Expression expression) {
 	this.handle(
 		IProblem.InvalidNullToSynchronized,
@@ -3389,6 +3390,21 @@ public void invalidNullToSynchronize(Expression expression) {
 		expression.sourceStart,
 		expression.sourceEnd);
 }
+
+public void wrongNumberOfArguments(MessageSend functionCall, MethodBinding binding) {
+	String functionName =  new String(functionCall.selector);
+
+	this.handle(
+		IProblem.WrongNumberOfArguments,
+		new String[] {
+				functionName}, //$NON-NLS-1$
+		new String[] {
+				functionName}, //$NON-NLS-1$
+		functionCall.sourceStart,
+		functionCall.sourceEnd);
+}
+
+
 public void invalidOperator(BinaryExpression expression, TypeBinding leftType, TypeBinding rightType) {
 	String leftName = new String(leftType.readableName());
 	String rightName = new String(rightType.readableName());
