@@ -1206,7 +1206,7 @@ public void conditionalArgumentsIncompatibleTypes(ConditionalExpression expressi
 	this.handle(
 		IProblem.IncompatibleTypesInConditionalOperator,
 		new String[] {new String(trueType.readableName()), new String(falseType.readableName())},
-		new String[] {new String(trueType.sourceName()), new String(falseType.sourceName())},
+		new String[] {new String(trueType.readableName()), new String(falseType.readableName())},
 		expression.sourceStart,
 		expression.sourceEnd);
 }
