@@ -254,7 +254,9 @@ public class MethodScope extends BlockScope {
 			{
 				returnType=method.inferredMethod.inType.resolveType(this,method);
 			}
-				 
+			if (returnType==null)
+				returnType=TypeBinding.UNKNOWN;
+			
 			if (isLocal && method.selector!=null)
 			{
 				methodBinding =
