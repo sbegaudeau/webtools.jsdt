@@ -259,18 +259,19 @@ public TypeBinding resolveType(BlockScope scope) {
 			}
 			if ((argumentTypes[i] = argument.resolveType(scope)) == null) {
 				argHasError = true;
+				argumentTypes[i]=TypeBinding.UNKNOWN;
 			}
 		}
-		if (argHasError) {
-			if (this.resolvedType instanceof ReferenceBinding) {
-				// record a best guess, for clients who need hint about possible contructor match
-				TypeBinding[] pseudoArgs = new TypeBinding[length];
-				for (int i = length; --i >= 0;)
-					pseudoArgs[i] = argumentTypes[i] == null ? this.resolvedType : argumentTypes[i]; // replace args with errors with receiver
-				this.binding = scope.findMethod((ReferenceBinding) this.resolvedType, TypeConstants.INIT, pseudoArgs, this);
-			}
-			return this.resolvedType;
-		}
+//		if (argHasError) {
+//			if (this.resolvedType instanceof ReferenceBinding) {
+//				// record a best guess, for clients who need hint about possible contructor match
+//				TypeBinding[] pseudoArgs = new TypeBinding[length];
+//				for (int i = length; --i >= 0;)
+//					pseudoArgs[i] = argumentTypes[i] == null ? this.resolvedType : argumentTypes[i]; // replace args with errors with receiver
+//				this.binding = scope.findMethod((ReferenceBinding) this.resolvedType, TypeConstants.INIT, pseudoArgs, this);
+//			}
+//			return this.resolvedType;
+//		}
 	}
 	if (this.resolvedType == null || this.resolvedType.isAnyType())
 	{
