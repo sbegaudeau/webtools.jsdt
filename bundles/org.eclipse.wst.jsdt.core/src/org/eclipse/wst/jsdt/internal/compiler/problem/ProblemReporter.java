@@ -395,6 +395,9 @@ public static long getIrritant(int problemID) {
 
 		case IProblem.WrongNumberOfArguments:
 			return CompilerOptions.WrongNumberOfArguments;
+			
+		case IProblem.NonConstantExpression:
+			return CompilerOptions.SwitchCaseShouldBeConstant;
 
 	
 	}
