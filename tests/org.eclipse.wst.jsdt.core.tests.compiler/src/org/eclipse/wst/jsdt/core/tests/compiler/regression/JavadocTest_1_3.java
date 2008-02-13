@@ -64,7 +64,7 @@ public class JavadocTest_1_3 extends JavadocTest {
 		else
 			options.put(CompilerOptions.OPTION_ReportMissingJavadocTags, reportInvalidJavadoc);
 		options.put(CompilerOptions.OPTION_ReportFieldHiding, CompilerOptions.IGNORE);
-		options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.IGNORE);
+//		options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.IGNORE);
 		options.put(CompilerOptions.OPTION_ReportDeprecation, CompilerOptions.ERROR);
 		options.put(CompilerOptions.OPTION_ReportUnusedImport, CompilerOptions.ERROR);
 		return options;

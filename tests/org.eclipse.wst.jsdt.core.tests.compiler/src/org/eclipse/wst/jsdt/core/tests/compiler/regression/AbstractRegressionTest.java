@@ -369,7 +369,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 		defaultOptions.put(CompilerOptions.OPTION_ReportLocalVariableHiding, CompilerOptions.WARNING);
 		defaultOptions.put(CompilerOptions.OPTION_ReportFieldHiding, CompilerOptions.WARNING);
 		defaultOptions.put(CompilerOptions.OPTION_ReportPossibleAccidentalBooleanAssignment, CompilerOptions.WARNING);
-		defaultOptions.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.WARNING);
+		defaultOptions.put(CompilerOptions.OPTION_ReportWrongNumberOfArguments, CompilerOptions.WARNING);
 		defaultOptions.put(CompilerOptions.OPTION_PreserveUnusedLocal, CompilerOptions.PRESERVE);
 		defaultOptions.put(CompilerOptions.OPTION_ReportUnnecessaryElse, CompilerOptions.WARNING );
 		defaultOptions.put(CompilerOptions.OPTION_Unresolved_Field, CompilerOptions.ERROR );

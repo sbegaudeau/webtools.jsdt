@@ -5209,36 +5209,36 @@ public void test142c() {
 			options
 		);
     }
-    
-    //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99009
-    public void test164() {
-		Map options = this.getCompilerOptions();
-		options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.WARNING);
-        this.runNegativeTest(
-            new String[] {
-                "X.java",
-                "@SuppressWarnings({\"synthetic-access\", \"unused\"})\n" +
-				"public class X {\n" + 
-				"    private int i;\n" +
-				"	 private void bar() {}\n" +
-				"    public void foo() {\n" + 
-				"       class C {\n" +
-				"			private void bar() {\n" +
-				"				System.out.println(i);\n" +
-				"				i = 0;\n" +
-				"				bar();\n" +
-				"			}\n" +
-				"		};\n" +
-				"		new C().bar();\n" +
-				"    }\n" + 
-				"}" 
-            },
-            "",
-			null,
-			true,
-			options
-		);
-    }
+//    
+//    //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99009
+//    public void test164() {
+//		Map options = this.getCompilerOptions();
+//		options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.WARNING);
+//        this.runNegativeTest(
+//            new String[] {
+//                "X.java",
+//                "@SuppressWarnings({\"synthetic-access\", \"unused\"})\n" +
+//				"public class X {\n" + 
+//				"    private int i;\n" +
+//				"	 private void bar() {}\n" +
+//				"    public void foo() {\n" + 
+//				"       class C {\n" +
+//				"			private void bar() {\n" +
+//				"				System.out.println(i);\n" +
+//				"				i = 0;\n" +
+//				"				bar();\n" +
+//				"			}\n" +
+//				"		};\n" +
+//				"		new C().bar();\n" +
+//				"    }\n" + 
+//				"}" 
+//            },
+//            "",
+//			null,
+//			true,
+//			options
+//		);
+//    }
     
     //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99009
     public void test165() {

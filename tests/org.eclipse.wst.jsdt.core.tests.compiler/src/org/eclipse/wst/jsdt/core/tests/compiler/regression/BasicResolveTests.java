@@ -334,7 +334,7 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"var d=new Date();\n" +
+						"var d=new Date(1);\n" +
 						"" 
 				},
 				""
@@ -771,5 +771,29 @@ public class BasicResolveTests extends AbstractRegressionTest {
 		);
 	}
 
+
+	public void test054()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function func1(pp){}\n"+ 
+						"func1();\n"+ 
+						"function obj(){}\n"+ 
+						"var o=new obj(1);\n"+ 
+						"" 
+				},
+				"----------\n" + 
+				"1. WARNING in X.js (at line 2)\n" + 
+				"	func1();\n" + 
+				"	^^^^^^^\n" + 
+				"Wrong number of arguments for the function func1 (), expecting 1 argument(s), but there was 0 \n" + 
+				"----------\n" + 
+				"2. WARNING in X.js (at line 4)\n" + 
+				"	var o=new obj(1);\n" + 
+				"	      ^^^^^^^^^^\n" + 
+				"Wrong number of arguments for the function obj (), expecting 0 argument(s), but there was 1 \n" + 
+				"----------\n"
+		);
+	}
 		
 }

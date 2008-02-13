@@ -42,7 +42,7 @@ public static Class testClass() {
 }
 protected Map getCompilerOptions() {
 	Map options = super.getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportMissingSerialVersion, CompilerOptions.ERROR);
+//	options.put(CompilerOptions.OPTION_ReportMissingSerialVersion, CompilerOptions.ERROR);
 	return options;
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=101476

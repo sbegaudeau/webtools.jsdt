@@ -4068,35 +4068,35 @@ public void test127() {
 	
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=127766
-public void test128() {
-	Map options = this.getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
-	options.put(CompilerOptions.OPTION_ReportMissingSerialVersion, CompilerOptions.IGNORE);
-
-	this.runNegativeTest(
-         new String[] {
-        		 "X.java",
-        		 "public class X {\n" + 
-        		 "	public static void main( String[] args) {\n" + 
-        		 "		Enum e = new Enum(\"foo\", 2) {\n" + 
-        		 "			public int compareTo( Object o) {\n" + 
-        		 "				return 0;\n" + 
-        		 "			}\n" + 
-        		 "		};\n" + 
-        		 "		System.out.println(e);\n" + 
-        		 "	}\n" + 
-        		 "}",
-         },
-         "----------\n" + 
-         "1. ERROR in X.java (at line 3)\n" + 
-         "	Enum e = new Enum(\"foo\", 2) {\n" + 
-         "	             ^^^^\n" + 
-         "The type new Enum(){} may not subclass Enum explicitly\n" + 
-         "----------\n",
-         null,
-         true,
-         options);
-}
+//public void test128() {
+//	Map options = this.getCompilerOptions();
+//	options.put(CompilerOptions.OPTION_ReportRawTypeReference, CompilerOptions.IGNORE);
+//	options.put(CompilerOptions.OPTION_ReportMissingSerialVersion, CompilerOptions.IGNORE);
+//
+//	this.runNegativeTest(
+//         new String[] {
+//        		 "X.java",
+//        		 "public class X {\n" + 
+//        		 "	public static void main( String[] args) {\n" + 
+//        		 "		Enum e = new Enum(\"foo\", 2) {\n" + 
+//        		 "			public int compareTo( Object o) {\n" + 
+//        		 "				return 0;\n" + 
+//        		 "			}\n" + 
+//        		 "		};\n" + 
+//        		 "		System.out.println(e);\n" + 
+//        		 "	}\n" + 
+//        		 "}",
+//         },
+//         "----------\n" + 
+//         "1. ERROR in X.java (at line 3)\n" + 
+//         "	Enum e = new Enum(\"foo\", 2) {\n" + 
+//         "	             ^^^^\n" + 
+//         "The type new Enum(){} may not subclass Enum explicitly\n" + 
+//         "----------\n",
+//         null,
+//         true,
+//         options);
+//}
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=141155
 public void test129() {
 	this.runConformTest(

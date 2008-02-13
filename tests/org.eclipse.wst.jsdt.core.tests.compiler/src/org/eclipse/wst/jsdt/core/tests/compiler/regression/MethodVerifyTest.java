@@ -6304,7 +6304,7 @@ public void test101() {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=159973
 public void test102() {
 	Map options = this.getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.IGNORE);
+//	options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.IGNORE);
 	this.runNegativeTest(
 		new String[] {
 			"X.java",
@@ -6725,7 +6725,7 @@ public void test102() {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=159973
 public void test108() {
 	Map options = this.getCompilerOptions();
-	options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.IGNORE);
+//	options.put(CompilerOptions.OPTION_ReportSyntheticAccessEmulation, CompilerOptions.IGNORE);
 	this.runNegativeTest(
 		new String[] {
 			"X.java",
