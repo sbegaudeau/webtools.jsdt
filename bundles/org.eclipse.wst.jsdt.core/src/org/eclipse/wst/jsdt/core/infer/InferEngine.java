@@ -544,6 +544,7 @@ public class InferEngine extends ASTVisitor {
 						method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration ,false);
 						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd); // @GINO: not sure if necessary
 						method.nameStart = nameStart;
+						receiverType.isDefinition=true;
 
 						/*
 						 * determine if static
