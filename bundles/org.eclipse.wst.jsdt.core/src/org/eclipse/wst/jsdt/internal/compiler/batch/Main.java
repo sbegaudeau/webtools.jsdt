@@ -1719,9 +1719,9 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 		} else if (token.equals("syntheticAccess") //$NON-NLS-1$
 				|| token.equals("synthetic-access")) { //$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportSyntheticAccessEmulation,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
+//		this.options.put(
+//			CompilerOptions.OPTION_ReportSyntheticAccessEmulation,
+//			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("nls")) { //$NON-NLS-1$
 		this.options.put(
 			CompilerOptions.OPTION_ReportNonExternalizedStringLiteral,
@@ -1751,9 +1751,9 @@ protected void handleWarningToken(String token, boolean isEnabling, boolean useE
 			CompilerOptions.OPTION_ReportEmptyStatement,
 			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("serial")) {//$NON-NLS-1$
-		this.options.put(
-			CompilerOptions.OPTION_ReportMissingSerialVersion,
-			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
+//		this.options.put(
+//			CompilerOptions.OPTION_ReportMissingSerialVersion,
+//			isEnabling ? CompilerOptions.WARNING : CompilerOptions.IGNORE);
 	} else if (token.equals("emptyBlock")) {//$NON-NLS-1$
 		this.options.put(
 			CompilerOptions.OPTION_ReportUndocumentedEmptyBlock,

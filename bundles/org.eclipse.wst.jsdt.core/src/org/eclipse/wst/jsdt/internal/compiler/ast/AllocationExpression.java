@@ -298,6 +298,8 @@ public TypeBinding resolveType(BlockScope scope) {
 			scope.problemReporter().invalidConstructor(this, binding);
 			return this.resolvedType;
 		}
+		if (argumentTypes.length!=binding.parameters.length)
+			scope.problemReporter().wrongNumberOfArguments(this, binding);
 		if (isMethodUseDeprecated(binding, scope, true))
 			scope.problemReporter().deprecatedMethod(binding, this);
 		checkInvocationArguments(scope, null, allocationType, this.binding, this.arguments, argumentTypes, argsContainCast, this);

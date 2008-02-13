@@ -382,6 +382,8 @@ public TypeBinding resolveType(BlockScope scope) {
 			}
 		
 		}
+		if (argumentTypes.length!=this.binding.parameters.length)
+			scope.problemReporter().wrongNumberOfArguments(this, this.binding);
 	}
 
 	if (!binding.isValidBinding() && !(this.actualReceiverType==TypeBinding.ANY || this.actualReceiverType==TypeBinding.UNKNOWN)) {

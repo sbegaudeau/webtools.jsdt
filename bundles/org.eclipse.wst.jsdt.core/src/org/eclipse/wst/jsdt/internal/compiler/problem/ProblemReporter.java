@@ -110,6 +110,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.Scanner;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.parser.TerminalTokens;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
+import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 
 public class ProblemReporter extends ProblemHandler {
 
@@ -391,6 +392,11 @@ public static long getIrritant(int problemID) {
 			return CompilerOptions.OverridingMethodWithoutSuperInvocation;
 		case IProblem.UndefinedField:
 			return CompilerOptions.UndefinedField;
+
+		case IProblem.WrongNumberOfArguments:
+			return CompilerOptions.WrongNumberOfArguments;
+
+	
 	}
 	return 0;
 }
@@ -3393,15 +3399,35 @@ public void invalidNullToSynchronize(Expression expression) {
 
 public void wrongNumberOfArguments(MessageSend functionCall, MethodBinding binding) {
 	String functionName =  new String(functionCall.selector);
-
+	int actualArguments=(functionCall.arguments!=null) ? functionCall.arguments.length : 0;
+    String actualNumber=String.valueOf(actualArguments);
+    String expectingNumber=String.valueOf(binding.parameters.length);
+	
 	this.handle(
 		IProblem.WrongNumberOfArguments,
 		new String[] {
-				functionName}, //$NON-NLS-1$
+				functionName,expectingNumber,actualNumber}, //$NON-NLS-1$
 		new String[] {
-				functionName}, //$NON-NLS-1$
+				functionName,expectingNumber,actualNumber}, //$NON-NLS-1$
 		functionCall.sourceStart,
 		functionCall.sourceEnd);
+}
+
+public void wrongNumberOfArguments(AllocationExpression allocationExpression, MethodBinding binding) {
+	char[] typeName = Util.getTypeName(allocationExpression.member);
+	String functionName =  typeName!=null ? new String(typeName) : "";
+	int actualArguments=(allocationExpression.arguments!=null) ? allocationExpression.arguments.length : 0;
+    String actualNumber=String.valueOf(actualArguments);
+    String expectingNumber=String.valueOf(binding.parameters.length);
+	
+	this.handle(
+		IProblem.WrongNumberOfArguments,
+		new String[] {
+				functionName,expectingNumber,actualNumber}, //$NON-NLS-1$
+		new String[] {
+				functionName,expectingNumber,actualNumber}, //$NON-NLS-1$
+				allocationExpression.sourceStart,
+				allocationExpression.sourceEnd);
 }
 
 

@@ -23,7 +23,9 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ExtraCompilerModifiers;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.FunctionTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.VariableBinding;
@@ -231,6 +233,15 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 				if (initializationType != null) {
 //					if (variableType != initializationType) // must call before computeConversion() and typeMismatchError()
 //						scope.compilationUnitScope().recordTypeConversion(variableType, initializationType);
+					if (initializationType.isFunctionType())
+					{
+						MethodBinding existingMethod = scope.findMethod(this.name, null);
+						if (existingMethod!=null)
+						{
+							MethodBinding functionBinding = ((FunctionTypeBinding)initializationType).functionBinding;
+							existingMethod.updateFrom(functionBinding);
+						}
+					}
 					if (variableType==TypeBinding.UNKNOWN && initializationType!=TypeBinding.NULL)
 						this.binding.type=initializationType;
 					else if (initialization.isConstantValueOfTypeAssignableToType(initializationType, variableType)
