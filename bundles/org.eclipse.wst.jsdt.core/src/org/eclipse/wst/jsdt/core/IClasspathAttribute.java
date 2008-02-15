@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core;
 
+import org.eclipse.wst.jsdt.internal.core.ClasspathAttribute;
+
 /**
  * A classpath attribute defines a name/value pair that can be persisted with a classpath entry. Such an attribute
  * can be created using the factory method {@link JavaCore#newClasspathAttribute(String, String) newClasspathAttribute(String name, String value)}.
@@ -86,5 +88,7 @@ public interface IClasspathAttribute {
 	 * @since 3.1
 	 */
 	String getValue();
+	
+	public static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true"); //$NON-NLS-1$ //$NON-NLS-2$
 
 }

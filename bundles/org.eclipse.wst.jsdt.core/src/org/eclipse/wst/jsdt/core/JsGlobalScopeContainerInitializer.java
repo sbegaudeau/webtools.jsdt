@@ -318,5 +318,8 @@ public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScop
 	{
 		return null;
 	}
+
+	public void removeFromProject(IJavaProject project) {}
+	
 }
 

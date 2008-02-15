@@ -173,4 +173,6 @@ public interface IJsGlobalScopeContainerInitialzer {
 	 * @return  inference provider id
 	 */
 	String getInferenceID();
+	
+	void removeFromProject(IJavaProject project);
 }

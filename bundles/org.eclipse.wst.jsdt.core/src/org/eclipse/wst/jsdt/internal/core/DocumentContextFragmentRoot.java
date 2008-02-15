@@ -37,7 +37,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	 */
 	public static final boolean HACK_DOJO= true;
 
-	private static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true"); //$NON-NLS-1$ //$NON-NLS-2$
+	//private static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true"); //$NON-NLS-1$ //$NON-NLS-2$
 	private String[] includedFiles;
 	//private Long[] timeStamps;
 	private IFile fRelativeFile;
@@ -386,7 +386,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 		for(int i = 0;i<includedFiles.length;i++) {
 			IResource theFile = folder.findMember(includedFiles[i]);
 			if(javaProject.isOnClasspath(theFile)) continue;
-			IClasspathEntry entry = JavaCore.newLibraryEntry(theFile.getLocation().makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[] {HIDE}, true);
+			IClasspathEntry entry = JavaCore.newLibraryEntry(theFile.getLocation().makeAbsolute(), null, null, new IAccessRule[0], new IClasspathAttribute[] {IClasspathAttribute.HIDE}, true);
 
 			newEntriesList.add(entry);
 		}
