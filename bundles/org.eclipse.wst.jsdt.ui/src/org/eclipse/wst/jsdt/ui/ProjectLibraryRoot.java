@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.eclipse.wst.jsdt.core.IClasspathAttribute;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
@@ -94,7 +95,16 @@ public class ProjectLibraryRoot implements IAdaptable{
 					classpathEntry = root.getRawClasspathEntry();
 				}
 				catch (JavaModelException e) {}
+				
 				int entryKind= classpathEntry.getEntryKind();
+				IClasspathAttribute[] attribs = classpathEntry.getExtraAttributes();
+				
+				for(int k = 0;attribs!=null && k<attribs.length;k++) {
+					if(attribs[k]==IClasspathAttribute.HIDE) continue;
+					
+				}
+				
+				
 			if ( (entryKind != IClasspathEntry.CPE_SOURCE) && entryKind!=IClasspathEntry.CPE_CONTAINER) {
 					addJARContainer= true;
 					projectPackageFragmentRoots.add(root);

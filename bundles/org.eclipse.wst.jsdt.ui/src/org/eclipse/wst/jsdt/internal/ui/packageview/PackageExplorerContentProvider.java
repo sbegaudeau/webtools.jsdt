@@ -362,7 +362,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 						result.add(fragments[j]);
 					}
 				} else {
-					result.add(root);
+				//	result.add(root);
 				}
 			}
 		}
@@ -407,7 +407,8 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 	private Object[] getContainerPackageFragmentRoots(PackageFragmentRootContainer container, boolean createFolder) {
 		
 			Object[] children = container.getChildren();
-		
+			if(children==null) return new Object[0];
+			
 			ArrayList allChildren = new ArrayList();
 			ArrayList expanded = new ArrayList();
 			expanded.addAll(Arrays.asList(children));

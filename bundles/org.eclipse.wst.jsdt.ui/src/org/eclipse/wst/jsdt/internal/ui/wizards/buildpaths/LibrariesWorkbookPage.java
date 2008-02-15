@@ -36,6 +36,7 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.eclipse.wst.jsdt.core.IAccessRule;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.wst.jsdt.internal.ui.util.ExceptionHandler;
@@ -355,7 +356,7 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 						value= new IAccessRule[0];
 					}
 					attrib.setValue(value);
-				} else {
+				}else {
 					removeCustomAttribute(attrib);
 				}
 				selElements.remove(i);
@@ -368,7 +369,14 @@ public class LibrariesWorkbookPage extends BuildPathBasePage {
 					}
 					changedAttributes.add(key); // collect the changed attributes
 				}
+			}else if(elem instanceof  CPListElement) {
+				CPListElement listElem = (CPListElement)elem;
+				JsGlobalScopeContainerInitializer init = listElem.getContainerInitializer();
+				init.removeFromProject(fCurrJProject);
+				
+				
 			}
+		
 		}
 		if (selElements.isEmpty()) {
 			fLibrariesList.refresh();
