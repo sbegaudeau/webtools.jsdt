@@ -157,7 +157,8 @@ protected void verifyAllTagsCompletion() {
 		// Block tags
 		TAG_AUTHOR, TAG_DEPRECATED, TAG_EXCEPTION, TAG_PARAM, TAG_RETURN, TAG_SEE, TAG_VERSION, TAG_CATEGORY,
 		TAG_SINCE,
-		TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD , TAG_THROWS,
+//		TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD ,
+		TAG_THROWS,
 		// Inline tags
 		TAG_LINK,
 		TAG_DOC_ROOT,
@@ -407,7 +408,7 @@ public void test020() {
 		" */\n" + 
 		"public class Test {}\n";
 	verifyCompletionInJavadoc(source, "@s");
-	verifyCompletionOnJavadocTag("s".toCharArray(), new char[][] { TAG_SEE, TAG_SINCE, TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD }, false);
+	verifyCompletionOnJavadocTag("s".toCharArray(), new char[][] { TAG_SEE, TAG_SINCE/*, TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD*/ }, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	assertEquals("Invalid tag start position", 24, completionTag.tagSourceStart);
 	assertEquals("Invalid tag end position", 28, completionTag.tagSourceEnd+1);
@@ -420,7 +421,7 @@ public void test021() {
 		" */\n" + 
 		"public class Test {}\n";
 	verifyCompletionInJavadoc(source, "@se");
-	verifyCompletionOnJavadocTag("se".toCharArray(), new char[][] { TAG_SEE, TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD }, false);
+	verifyCompletionOnJavadocTag("se".toCharArray(), new char[][] { TAG_SEE/*, TAG_SERIAL, TAG_SERIAL_DATA, TAG_SERIAL_FIELD */}, false);
 	CompletionOnJavadocTag completionTag = (CompletionOnJavadocTag) this.javadoc.getCompletionNode();
 	assertEquals("Invalid tag start position", 24, completionTag.tagSourceStart);
 	assertEquals("Invalid tag end position", 28, completionTag.tagSourceEnd+1);
