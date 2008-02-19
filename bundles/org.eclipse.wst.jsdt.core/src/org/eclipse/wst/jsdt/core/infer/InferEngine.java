@@ -206,7 +206,7 @@ public class InferEngine extends ASTVisitor {
 			InferredAttribute attribute = null;
 			if (javadoc.memberOf!=null)
 			{
-				InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
+				InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
 				 attribute = type.addAttribute(localDeclaration.getName(), localDeclaration);
 				 if (localDeclaration.getInitialization()!=null)
 					 attribute.initializationStart=localDeclaration.getInitialization().sourceStart();
@@ -465,8 +465,7 @@ public class InferEngine extends ASTVisitor {
 	private InferredType createAnonymousType(char[] possibleTypeName, InferredType currentType) {
 		char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
 		char []name = CharOperation.concat(ANONYMOUS_PREFIX,possibleTypeName,cs);
-		InferredType type = addType(name);
-		type.isDefinition=true;
+		InferredType type = addType(name,true);
 		type.isAnonymous=true;
 		if (currentType!=null)
 			type.superClass=currentType;
@@ -484,8 +483,7 @@ public class InferEngine extends ASTVisitor {
 		char [] loc = (String.valueOf( objLit.sourceStart ) + '_' + String.valueOf( objLit.sourceEnd )).toCharArray();
 		char []name = CharOperation.concat( ANONYMOUS_PREFIX, ANONYMOUS_CLASS_ID, loc );
 
-		InferredType anonType = addType(name);
-		anonType.isDefinition=true;
+		InferredType anonType = addType(name,true);
 		anonType.isAnonymous=true;
 		anonType.superClass = ObjectType;
 
@@ -610,8 +608,7 @@ public class InferEngine extends ASTVisitor {
 
 				//create the new type if not found
 				if( newType == null ){
-					newType = addType( possibleTypeName );
-					newType.isDefinition = true;
+					newType = addType( possibleTypeName ,true);
 				}
 
 //				char[] typeName = getTypeName(fieldReference.receiver);
@@ -920,8 +917,7 @@ public class InferEngine extends ASTVisitor {
 		pushContext();
 		if (this.isTopLevelAnonymousFunction && this.currentContext.currentType==null)
 		{
-			this.currentContext.currentType=addType(InferredType.GLOBAL_NAME);
-			this.currentContext.currentType.isDefinition=true;
+			this.currentContext.currentType=addType(InferredType.GLOBAL_NAME,true);
 			this.inferredGlobal=this.currentContext.currentType;
 		}
 
@@ -949,8 +945,10 @@ public class InferEngine extends ASTVisitor {
 				}
 				else if (javadoc.memberOf!=null)
 				{
-					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName());
-					method=type.addMethod(methodDeclaration.getName(), methodDeclaration,false);
+					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
+					char [] name=methodDeclaration.getName();
+					if (name!=null)
+						method=type.addMethod(methodDeclaration.getName(), methodDeclaration,false);
 				}
 
 				if (javadoc.returnType!=null)
@@ -1100,9 +1098,9 @@ public class InferEngine extends ASTVisitor {
 	
 	}
 
-	protected boolean isMatch(IExpression expr,String [] names, int index)
+	protected boolean isMatch(IExpression expr,char[] [] names, int index)
 	{
-		char [] matchName=names[index].toCharArray();
+		char [] matchName=names[index];
 		if (expr instanceof SingleNameReference) {
 			SingleNameReference snr = (SingleNameReference) expr;
 			return CharOperation.equals(snr.token, matchName);
@@ -1122,10 +1120,25 @@ public class InferEngine extends ASTVisitor {
 		if (!CharOperation.equals(functionName, messageSend.getSelector()))
 			return false;
 
+		char [][]namesChars=new char[names.length][];
+		for (int i = 0; i < namesChars.length; i++) {
+			namesChars[i]=names[i].toCharArray();
+		}
+		if (names.length>1)
+			return isMatch(messageSend.getReciever(), namesChars, namesChars.length-2);
+		return true;
+	}
+
+	protected boolean isFunction(IFunctionCall messageSend,char [][]names) {
+		char [] functionName=names[names.length-1];
+		if (!CharOperation.equals(functionName, messageSend.getSelector()))
+			return false;
+
 		if (names.length>1)
 			return isMatch(messageSend.getReciever(), names, names.length-2);
 		return true;
 	}
+
 
 	public void doInfer()
 	{
@@ -1135,8 +1148,11 @@ public class InferEngine extends ASTVisitor {
 		this.compUnit=null;
 }
 
-
 	protected InferredType addType(char[] className) {
+		return addType(className,false);
+	}
+
+	protected InferredType addType(char[] className, boolean isDefinition) {
 
 		InferredType type = compUnit.findInferredType(className);
 
@@ -1156,6 +1172,8 @@ public class InferEngine extends ASTVisitor {
 			compUnit.inferredTypesHash.put(className,type);
 
 		}
+		if (isDefinition)
+			type.isDefinition=isDefinition;
 		return type;
 	}
 
@@ -1272,8 +1290,7 @@ public class InferEngine extends ASTVisitor {
 					if (WellKnownTypes.containsKey(possibleTypeName) || 
 							(this.passNumber==2 && this.isKnownType(possibleTypeName)))
 					{
-						type = addType(possibleTypeName);
-						type.isDefinition=true;
+						type = addType(possibleTypeName,true);
 					}
 					 
 				}
