@@ -3206,7 +3206,7 @@ public class CodeFormatterVisitor extends ASTVisitor {
 //		}
 //
 		final ProgramElement[] statements = compilationUnitDeclaration.statements;
-		if (statements != null) {
+		if (statements != null && statements.length>0) {
 			int statementsLength = statements.length;
 			for (int i = 0; i < statementsLength - 1; i++) {
 				statements[i].traverse(this, scope);
