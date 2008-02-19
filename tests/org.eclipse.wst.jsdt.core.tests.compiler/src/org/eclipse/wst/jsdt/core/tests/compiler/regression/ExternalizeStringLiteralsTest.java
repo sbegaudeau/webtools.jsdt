@@ -35,20 +35,19 @@ public void test001() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"A.java",
-			"public class A {\n" + 
-			"	void foo() {\n" + 
-			"		System.out.println(\"a\");\n" + 
+			"A.js",
+			"	function foo() {\n" + 
+			"		println(\"a\");\n" + 
 			"	} //$NON-NLS-1$	\n" + 
-			"}"
+			""
 		},
 		"----------\n" + 
-		"1. ERROR in A.java (at line 3)\n" + 
-		"	System.out.println(\"a\");\n" + 
+		"1. ERROR in A.js (at line 2)\n" + 
+		"	println(\"a\");\n" + 
 		"	                   ^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"2. ERROR in A.java (at line 4)\n" + 
+		"2. ERROR in A.js (at line 3)\n" + 
 		"	} //$NON-NLS-1$	\n" + 
 		"	  ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
@@ -63,55 +62,49 @@ public void test002() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"class X {\n" +
-			"	String s = null; //$NON-NLS-1$\n" +
-			"	String s2 = \"\"; //$NON-NLS-1$\n" +
-			"	String s3 = \"\"; //$NON-NLS-1$//$NON-NLS-2$\n" +
+			"X.js",
+			"	var s = null; //$NON-NLS-1$\n" +
+			"	var s2 = \"\"; //$NON-NLS-1$\n" +
+			"	var s3 = \"\"; //$NON-NLS-1$//$NON-NLS-2$\n" +
 			"	\n" +
-			"	void foo() {\n" +
-			"		String s4 = null; //$NON-NLS-1$\n" +
-			"		String s5 = \"\"; //$NON-NLS-1$\n" +
-			"		String s6 = \"\"; //$NON-NLS-2$//$NON-NLS-1$\n" +
-			"		System.out.println(\"foo\");//$NON-NLS-1$//$NON-NLS-2$\n" +
+			"	function foo() {\n" +
+			"		var s4 = null; //$NON-NLS-1$\n" +
+			"		var s5 = \"\"; //$NON-NLS-1$\n" +
+			"		var s6 = \"\"; //$NON-NLS-2$//$NON-NLS-1$\n" +
+			"		println(\"foo\");//$NON-NLS-1$//$NON-NLS-2$\n" +
 			"	} //$NON-NLS-1$\n" +
 			"	//$NON-NLS-1$\n" +
-			"}//$NON-NLS-3$",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
-		"	String s = null; //$NON-NLS-1$\n" + 
+		"1. ERROR in X.js (at line 1)\n" + 
+		"	var s = null; //$NON-NLS-1$\n" + 
 		"	                 ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 4)\n" + 
-		"	String s3 = \"\"; //$NON-NLS-1$//$NON-NLS-2$\n" + 
+		"2. ERROR in X.js (at line 3)\n" + 
+		"	var s3 = \"\"; //$NON-NLS-1$//$NON-NLS-2$\n" + 
 		"	                             ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"3. ERROR in X.java (at line 7)\n" + 
-		"	String s4 = null; //$NON-NLS-1$\n" + 
+		"3. ERROR in X.js (at line 6)\n" + 
+		"	var s4 = null; //$NON-NLS-1$\n" + 
 		"	                  ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"4. ERROR in X.java (at line 9)\n" + 
-		"	String s6 = \"\"; //$NON-NLS-2$//$NON-NLS-1$\n" + 
+		"4. ERROR in X.js (at line 8)\n" + 
+		"	var s6 = \"\"; //$NON-NLS-2$//$NON-NLS-1$\n" + 
 		"	                ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"5. ERROR in X.java (at line 10)\n" + 
-		"	System.out.println(\"foo\");//$NON-NLS-1$//$NON-NLS-2$\n" + 
+		"5. ERROR in X.js (at line 9)\n" + 
+		"	println(\"foo\");//$NON-NLS-1$//$NON-NLS-2$\n" + 
 		"	                                       ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"6. ERROR in X.java (at line 11)\n" + 
+		"6. ERROR in X.js (at line 10)\n" + 
 		"	} //$NON-NLS-1$\n" + 
 		"	  ^^^^^^^^^^^^^\n" + 
-		"Unnecessary $NON-NLS$ tag\n" + 
-		"----------\n" + 
-		"7. ERROR in X.java (at line 13)\n" + 
-		"	}//$NON-NLS-3$\n" + 
-		"	 ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n",
 		null,
@@ -123,21 +116,19 @@ public void test003() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"p/Foo.java",
-			"package p;\n" + 
-			"public class Foo { \n" + 
-			"    public void foo() {\n" + 
-			"		System.out.println(\"string1\" + \"string2\" //$NON-NLS-1$\n" + 
+			"Foo.js",
+			"    function foo() {\n" + 
+			"		println(\"string1\" + \"string2\" //$NON-NLS-1$\n" + 
 			"		);\n" + 
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in p\\Foo.java (at line 4)\n" + 
-		"	System.out.println(\"string1\" + \"string2\" //$NON-NLS-1$\n" + 
+		"1. ERROR in Foo.js (at line 2)\n" + 
+		"	println(\"string1\" + \"string2\" //$NON-NLS-1$\n" + 
 		"	                               ^^^^^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"2. ERROR in p\\Foo.java (at line 6)\n" + 
+		"2. ERROR in p\\Foo.js (at line 4)\n" + 
 		"	}\n" + 
 		"	^\n" + 
 		"Syntax error, insert \"}\" to complete ClassBody\n" + 
@@ -151,13 +142,11 @@ public void test004() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runConformTest(
 		new String[] {
-			"p/Foo.java",
-			"package p;\n" + 
-			"public class Foo { \n" + 
-			"    public void foo() {\n" + 
+			"Foo.js",
+			"    function foo() {\n" + 
 			"		//$NON-NLS-1$\n" + 
 			"	 };\n" + 
-			"}",
+			"",
 		}, 
 		"",
 		null,
@@ -171,16 +160,15 @@ public void test005() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\r\n" + 
-			"	public static void main(String[] args) {\r\n" + 
-			"		String s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\r\n" + 
+			"X.js",
+			"	function main( args) {\r\n" + 
+			"		var s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\r\n" + 
 			"    }\r\n" + 
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\n" + 
 		"	                            ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n",
@@ -193,20 +181,19 @@ public void test006() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\r\n" + 
-			"	public static void main(String[] args) {\r\n" + 
-			"		String s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\r\n" + 
-			"    }\r\n" +
+			"X.js",
+			"	public static function main(String[] args) {\r\n" + 
+			"		var s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\r\n" + 
+			"    \r\n" +
 			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"\"; //$NON-NLS-1$//$NON-NLS-1$\n" + 
 		"	                            ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 4)\n" + 
+		"2. ERROR in X.js (at line 3)\n" + 
 		"	}\n" + 
 		"	^\n" + 
 		"Syntax error, insert \"}\" to complete ClassBody\n" + 
@@ -220,21 +207,20 @@ public void test007() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\r\n" + 
-			"	public static void main(String[] args) {\r\n" + 
-			"		String s = null; //$NON-NLS-1$//$NON-NLS-1$\r\n" + 
+			"X.js",
+			"	function main(args) {\r\n" + 
+			"		var s = null; //$NON-NLS-1$//$NON-NLS-1$\r\n" + 
 			"    }\r\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s = null; //$NON-NLS-1$//$NON-NLS-1$\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = null; //$NON-NLS-1$//$NON-NLS-1$\n" + 
 		"	                 ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
-		"	String s = null; //$NON-NLS-1$//$NON-NLS-1$\n" + 
+		"2. ERROR in X.js (at line 2)\n" + 
+		"	var s = null; //$NON-NLS-1$//$NON-NLS-1$\n" + 
 		"	                              ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n",
@@ -247,26 +233,25 @@ public void test008() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\r\n" + 
-			"	public static void main(String[] args) {\r\n" + 
-			"		String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\r\n" + 
+			"X.js",
+			"	function main(args) {\r\n" + 
+			"		var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\r\n" + 
 			"    }\r\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	           ^^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"2. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                   ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"3. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"3. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                                ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n",
@@ -279,13 +264,11 @@ public void test009() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runConformTest(
 		new String[] {
-			"p/Foo.java",
-			"package p;\n" + 
-			"public class Foo { \n" + 
-			"    public void foo(int i) {\n" + 
-			"		System.out.println(\"test1\" + i + \"test2\"); //$NON-NLS-2$//$NON-NLS-1$\r\n" + 
+			"Foo.js",
+			"    function foo(i) {\n" + 
+			"		println(\"test1\" + i + \"test2\"); //$NON-NLS-2$//$NON-NLS-1$\r\n" + 
 			"	 };\n" + 
-			"}",
+			"",
 		}, 
 		"",
 		null,
@@ -299,35 +282,29 @@ public void test010() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public static void main(String[] args) {\n" +
-			"		String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" +
-			"		int i = s;\n" +
-			"		System.out.println(s);\n" +
+			"X.js",
+			"	function main(args) {\n" +
+			"		var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" +
+			"		var i = s;\n" +
+			"		println(s);\n" +
 			"    }\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	           ^^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"2. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                   ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"3. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"3. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                                ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
-		"----------\n" + 
-		"4. ERROR in X.java (at line 4)\n" + 
-		"	int i = s;\n" + 
-		"	        ^\n" + 
-		"Type mismatch: cannot convert from String to int\n" + 
 		"----------\n",
 		null,
 		true,
@@ -338,33 +315,27 @@ public void test011() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public static void main(String[] args) {\n" +
-			"		int i = null;\n" +
-			"		String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" +
-			"		System.out.println(s + i);\n" +
+			"X.js",
+			"	function main(args) {\n" +
+			"		var i = null;\n" +
+			"		var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" +
+			"		println(s + i);\n" +
 			"    }\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	int i = null;\n" + 
-		"	        ^^^^\n" + 
-		"Type mismatch: cannot convert from null to int\n" + 
-		"----------\n" + 
-		"2. ERROR in X.java (at line 4)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"2. ERROR in X.js (at line 3)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	           ^^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"3. ERROR in X.java (at line 4)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"3. ERROR in X.js (at line 3)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                   ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"4. ERROR in X.java (at line 4)\n" + 
-		"	String s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"4. ERROR in X.js (at line 3)\n" + 
+		"	var s = \"test\"; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                                ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n",
@@ -377,28 +348,22 @@ public void test012() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public static void main(String[] args) {\n" +
-			"		int i = null;\n" +
-			"		String s = null; //$NON-NLS-2$//$NON-NLS-3$\n" +
-			"		System.out.println(s + i);\n" +
+			"X.js",
+			"	function main(args) {\n" +
+			"		var i = null;\n" +
+			"		var s = null; //$NON-NLS-2$//$NON-NLS-3$\n" +
+			"		println(s + i);\n" +
 			"    }\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	int i = null;\n" + 
-		"	        ^^^^\n" + 
-		"Type mismatch: cannot convert from null to int\n" + 
-		"----------\n" + 
-		"2. ERROR in X.java (at line 4)\n" + 
-		"	String s = null; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"2. ERROR in X.js (at line 3)\n" + 
+		"	var s = null; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                 ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"3. ERROR in X.java (at line 4)\n" + 
-		"	String s = null; //$NON-NLS-2$//$NON-NLS-3$\n" + 
+		"3. ERROR in X.js (at line 3)\n" + 
+		"	var s = null; //$NON-NLS-2$//$NON-NLS-3$\n" + 
 		"	                              ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n",
@@ -411,17 +376,16 @@ public void test013() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public static void main(String[] args) {\n" +
-			"		String s = \"test1\";\n" +
-			"		System.out.println(s);\n" +
+			"X.js",
+			"	function main(args) {\n" +
+			"		var s = \"test1\";\n" +
+			"		println(s);\n" +
 			"    }\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test1\";\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test1\";\n" + 
 		"	           ^^^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n",
@@ -435,22 +399,21 @@ public void test014() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public static void main(String[] args) {\n" +
-			"		String s = \"test1\"; //$NON-NLS-?$\n" +
-			"		System.out.println(s);\n" +
+			"X.js",
+			"	function main(args) {\n" +
+			"		var s = \"test1\"; //$NON-NLS-?$\n" +
+			"		println(s);\n" +
 			"    }\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test1\"; //$NON-NLS-?$\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test1\"; //$NON-NLS-?$\n" + 
 		"	           ^^^^^^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 3)\n" + 
-		"	String s = \"test1\"; //$NON-NLS-?$\n" + 
+		"2. ERROR in X.js (at line 2)\n" + 
+		"	var s = \"test1\"; //$NON-NLS-?$\n" + 
 		"	                    ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n",
@@ -464,22 +427,21 @@ public void test015() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public void foo() {\n" +
-			"		String s1= null; //$NON-NLS-1$\n" +
-			"		String s2= \"\";\n" +
+			"X.js",
+			"	public function foo() {\n" +
+			"		var s1= null; //$NON-NLS-1$\n" +
+			"		var s2= \"\";\n" +
 			"	}\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 3)\n" + 
-		"	String s1= null; //$NON-NLS-1$\n" + 
+		"1. ERROR in X.js (at line 2)\n" + 
+		"	var s1= null; //$NON-NLS-1$\n" + 
 		"	                 ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 4)\n" + 
-		"	String s2= \"\";\n" + 
+		"2. ERROR in X.js (at line 3)\n" + 
+		"	var s2= \"\";\n" + 
 		"	           ^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n",
@@ -493,23 +455,22 @@ public void test016() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	private String s1= null; //$NON-NLS-1$\n" +
+			"X.js",
+			"	var s1= null; //$NON-NLS-1$\n" +
 			"	\n" +
-			"	public void foo() {\n" +
-			"		String s2= \"\";\n" +
+			"	function foo() {\n" +
+			"		var s2= \"\";\n" +
 			"	}\n" +
 			"}",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 2)\n" + 
-		"	private String s1= null; //$NON-NLS-1$\n" + 
+		"1. ERROR in X.js (at line 1)\n" + 
+		"	private var s1= null; //$NON-NLS-1$\n" + 
 		"	                         ^^^^^^^^^^^^^\n" + 
 		"Unnecessary $NON-NLS$ tag\n" + 
 		"----------\n" + 
-		"2. ERROR in X.java (at line 5)\n" + 
-		"	String s2= \"\";\n" + 
+		"2. ERROR in X.js (at line 4)\n" + 
+		"	var s2= \"\";\n" + 
 		"	           ^^\n" + 
 		"Non-externalized string literal; it should be followed by //$NON-NLS-<n>$\n" + 
 		"----------\n",
@@ -523,18 +484,17 @@ public void test017() {
 	customOptions.put(CompilerOptions.OPTION_ReportNonExternalizedStringLiteral, CompilerOptions.ERROR);
 	this.runNegativeTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" +
-			"	public void foo(String locationInAST) {\n" +
-			"		String enclosingType= \"\"; //$NON-NLS-1$\n" +
+			"X.js",
+			"	function foo(locationInAST) {\n" +
+			"		var enclosingType= \"\"; //$NON-NLS-1$\n" +
 			"		if (locationInAST != null) {\n" +
 			"			enclosingType.toString()\n" +
 			"		}\n" +
 			"	}\n" +
-			"}",
+			"",
 		}, 
 		"----------\n" + 
-		"1. ERROR in X.java (at line 5)\n" + 
+		"1. ERROR in X.js (at line 5)\n" + 
 		"	enclosingType.toString()\n" + 
 		"	                       ^\n" + 
 		"Syntax error, insert \";\" to complete BlockStatements\n" + 

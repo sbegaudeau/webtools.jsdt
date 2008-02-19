@@ -8,7 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.core.tests.compiler.regression;
+package org.eclipse.wst.jsdt.core.tests.future.compiler.regression;
+import org.eclipse.wst.jsdt.core.tests.compiler.regression.AbstractRegressionTest;
+
 import junit.framework.Test;
 
 public class ArrayTest extends AbstractRegressionTest {

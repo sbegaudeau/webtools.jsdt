@@ -14,6 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.AmbiguousMethodTest;
+import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.AnnotationTest;
+import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.Compliance_1_5;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 
 import junit.framework.Test;

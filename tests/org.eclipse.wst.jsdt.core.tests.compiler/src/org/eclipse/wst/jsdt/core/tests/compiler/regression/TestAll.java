@@ -15,6 +15,10 @@ import java.util.ArrayList;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.ArrayTest;
+import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.BooleanTest;
+import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.CastTest;
+import org.eclipse.wst.jsdt.core.tests.future.compiler.regression.Compliance_1_4;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 
@@ -35,8 +39,8 @@ public static Test suite() {
 	standardTests.add(BooleanTest.class);
 	standardTests.add(CastTest.class);
 //	standardTests.add(ClassFileComparatorTest.class);
-	standardTests.add(CollisionCase.class);
-	standardTests.add(ConstantTest.class);
+//	standardTests.add(CollisionCase.class);
+//	standardTests.add(ConstantTest.class);
 	standardTests.add(DeprecatedTest.class);
 	standardTests.add(LocalVariableTest.class);
 	standardTests.add(LookupTest.class);
@@ -49,7 +53,7 @@ public static Test suite() {
 	standardTests.add(UtilTest.class);
 	standardTests.add(XLargeTest.class);
 	standardTests.add(InternalScannerTest.class);
-	standardTests.add(ConditionalExpressionTest.class);
+//	standardTests.add(ConditionalExpressionTest.class);
 	standardTests.add(ExternalizeStringLiteralsTest.class);
 	standardTests.add(NonFatalErrorTest.class);
 	standardTests.add(FlowAnalysisTest.class);
@@ -72,7 +76,7 @@ public static Test suite() {
 
 	// Tests to run when compliance is greater than 1.3
 	ArrayList since_1_4 = new ArrayList();
-	since_1_4.add(AssertionTest.class);
+//	since_1_4.add(AssertionTest.class);
 
 	// Tests to run when compliance is greater than 1.4
 	ArrayList since_1_5 = new ArrayList();
@@ -81,9 +85,9 @@ public static Test suite() {
 	since_1_5.add(GenericTypeSignatureTest.class);
 	since_1_5.add(InternalHexFloatTest.class);
 	since_1_5.add(JavadocTest_1_5.class);
-	since_1_5.add(BatchCompilerTest.class);
+//	since_1_5.add(BatchCompilerTest.class);
 	since_1_5.add(ExternalizeStringLiterals15Test.class);
-	since_1_5.add(Deprecated15Test.class);
+//	since_1_5.add(Deprecated15Test.class);
 
 	// Tests to run when compliance is greater than 1.5
 	ArrayList since_1_6 = new ArrayList();

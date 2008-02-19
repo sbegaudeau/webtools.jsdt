@@ -98,17 +98,16 @@ public void runConformTest(String fileName, String fileContents,
 // AST implementation - visiting binary expressions
 public void test0001_regular_binary_expression() {
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    String s2 = \"s2\";\n" + 
-		"    String s3 = \"s3\";\n" + 
-		"    String s4 = \"s4\";\n" + 
-		"    System.out.println(s1 + \"l1\" + s2 + \"l2\" +\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    var s2 = \"s2\";\n" + 
+		"    var s3 = \"s3\";\n" + 
+		"    var s4 = \"s4\";\n" + 
+		"    println(s1 + \"l1\" + s2 + \"l2\" +\n" +
 		"      s3 + \"l3\" + s4);\n" + 
 		"  }\n" + 
-		"}\n",
+		"\n",
 		defaultParser,
 		new ASTBinaryExpressionCollector(),
 		"[v SL \"s1\"]\n" + 
@@ -154,17 +153,16 @@ public void test0002_combined_binary_expression() {
 	CombinedBinaryExpression.defaultArityMaxStartingValue = 3;
 	// one CBE each fourth BE
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    String s2 = \"s2\";\n" + 
-		"    String s3 = \"s3\";\n" + 
-		"    String s4 = \"s4\";\n" + 
-		"    System.out.println(s1 + \"l1\" + s2 + \"l2\" +\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    var s2 = \"s2\";\n" + 
+		"    var s3 = \"s3\";\n" + 
+		"    var s4 = \"s4\";\n" + 
+		"    println(s1 + \"l1\" + s2 + \"l2\" +\n" +
 		"      s3 + \"l3\" + s4);\n" + 
 		"  }\n" + 
-		"}\n",
+		"\n",
 		defaultParser,
 		new ASTBinaryExpressionCollector() {
 			public void endVisit(BinaryExpression binaryExpression, BlockScope scope) {
@@ -228,17 +226,16 @@ public void test0003_combined_binary_expression() {
 		// one CBE each third BE - except the top one, which is degenerate (no
 		// references table)
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    String s2 = \"s2\";\n" + 
-		"    String s3 = \"s3\";\n" + 
-		"    String s4 = \"s4\";\n" + 
-		"    System.out.println(s1 + \"l1\" + s2 + \"l2\" +\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    var s2 = \"s2\";\n" + 
+		"    var s3 = \"s3\";\n" + 
+		"    var s4 = \"s4\";\n" + 
+		"    println(s1 + \"l1\" + s2 + \"l2\" +\n" +
 		"      s3 + \"l3\" + s4);\n" + 
 		"  }\n" + 
-		"}\n",
+		"\n",
 		parser,		
 		new ASTBinaryExpressionCollector() {
 			public void endVisit(BinaryExpression binaryExpression, BlockScope scope) {
@@ -300,15 +297,14 @@ public void test0004_combined_binary_expression() {
 			new CompilerOptions(), 
 			new DefaultProblemFactory()), true); // optimize string literals
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    System.out.println(\"l\" + \"1\" + s1);\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    println(\"l\" + \"1\" + s1);\n" +
 			// "l" + "1" is collapsed into "l1" without affecting binary 
 			// expressions: only one BE
 		"  }\n" + 
-		"}\n",
+		"\n",
 		parser,
 		new ASTBinaryExpressionCollector(),
 		"[v SL \"s1\"]\n" + 
@@ -327,15 +323,14 @@ public void test0004_combined_binary_expression() {
 // string literals optimization
 public void test0005_combined_binary_expression() {
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    System.out.println(\"l\" + \"1\" + s1);\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    println(\"l\" + \"1\" + s1);\n" +
 			// "l" + "1" is handled by a string literal concatenation without 
 			// affecting binary expressions: only one BE
 		"  }\n" + 
-		"}\n",
+		"\n",
 		defaultParser,
 		new ASTBinaryExpressionCollector(),
 		"[v SL \"s1\"]\n" + 
@@ -362,17 +357,16 @@ public void test0005_combined_binary_expression() {
 public void test0006_combined_binary_expression() {
 	CombinedBinaryExpression.defaultArityMaxStartingValue = 1;
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    String s2 = \"s2\";\n" + 
-		"    String s3 = \"s3\";\n" + 
-		"    String s4 = \"s4\";\n" + 
-		"    System.out.println(s1 + \"l1\" + s2 + \"l2\" +\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    var s2 = \"s2\";\n" + 
+		"    var s3 = \"s3\";\n" + 
+		"    var s4 = \"s4\";\n" + 
+		"    println(s1 + \"l1\" + s2 + \"l2\" +\n" +
 		"      s3 + s1 + s4);\n" + 
 		"  }\n" + 
-		"}\n",
+		"\n",
 		defaultParser,
 		new ASTBinaryExpressionCollector() {
 			public boolean visit(BinaryExpression binaryExpression, BlockScope scope) {
@@ -415,17 +409,16 @@ public void test0006_combined_binary_expression() {
 public void test0007_combined_binary_expression() {
 	CombinedBinaryExpression.defaultArityMaxStartingValue = 4; 
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    String s2 = \"s2\";\n" + 
-		"    String s3 = \"s3\";\n" + 
-		"    String s4 = \"s4\";\n" + 
-		"    System.out.println(s1 + \"l1\" + s2 + \"l2\" +\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    var s2 = \"s2\";\n" + 
+		"    var s3 = \"s3\";\n" + 
+		"    var s4 = \"s4\";\n" + 
+		"    println(s1 + \"l1\" + s2 + \"l2\" +\n" +
 		"      s3 + \"l3\" + s4);\n" + 
 		"  }\n" + 
-		"}\n",
+		"\n",
 		defaultParser,
 		new ASTBinaryExpressionCollector() {
 			public boolean visit(BinaryExpression binaryExpression, BlockScope scope) {
@@ -452,15 +445,14 @@ public void test0007_combined_binary_expression() {
 // Adding combined binary expressions - case of one-deep expression
 public void test0008_combined_binary_expression() {
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    String s2 = \"s2\";\n" + 
-		"    System.out.println(s1 + \"l1\" + s2 + \"l2\");\n" + 
-		"    System.out.println(s1 + s2);\n" + 
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    var s2 = \"s2\";\n" + 
+		"    println(s1 + \"l1\" + s2 + \"l2\");\n" + 
+		"    println(s1 + s2);\n" + 
 		"  }\n" + 
-		"}\n",
+		"\n",
 		defaultParser,		
 		new ASTBinaryExpressionCollector() {
 			public void endVisit(BinaryExpression binaryExpression, BlockScope scope) {
@@ -504,18 +496,17 @@ public void test0009_combined_binary_expression() {
 	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
 	this.runConformTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"public static void main(String args[]) {\n" + 
-			"    final int max = 30; \n" + 
-			"    String s[] = new String[max];\n" + 
-			"    for (int i = 0; i < max; i++) {\n" + 
+			"X.js",
+			"  function main(args) {\n" + 
+			"    var max = 30; \n" + 
+			"    var s = new Array();\n" + 
+			"    for (var i = 0; i < max; i++) {\n" + 
 			"        s[i] = \"a\";\n" + 
 			"    }\n" + 
 			"    foo(s);\n" + 
 			"}\n" + 
-			"static void foo (String s[]) {\n" + 
-			"    System.out.println(\n" + 
+			" function foo (s) {\n" + 
+			"    println(\n" + 
 			"        s[0] + s[1] + s[2] + s[3] + s[4] + s[5] + s[6] + \n" +
 			"        s[7] + s[8] + s[9] + s[10] + s[11] + s[12] + s[13] +\n" +
 			"        s[14] + s[15] + s[16] + s[17] + s[18] + s[19] + \n" + 
@@ -523,7 +514,7 @@ public void test0009_combined_binary_expression() {
 			"        s[26] + s[27] + s[28] + s[29]\n" + 
 			"        );\n" + 
 			"}\n" + 
-			"}"},
+			""},
 		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 }
 
@@ -534,9 +525,9 @@ public void test0010_combined_binary_expression() {
 	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
 	this.runConformTest(
 		new String[] {
-			"X.java",
+			"X.js",
 			"public class X {\n" + 
-			"public static void main(String args[]) {\n" + 
+			"  function main(String args[]) {\n" + 
 			"    final int max = 30; \n" + 
 			"    String s[] = new String[max];\n" + 
 			"    for (int i = 0; i < max; i++) {\n" + 
@@ -544,9 +535,9 @@ public void test0010_combined_binary_expression() {
 			"    }\n" + 
 			"    foo(s);\n" + 
 			"}\n" + 
-			"static void foo (String s[]) {\n" +
-			"    final String c = \"a\";" + 
-			"    System.out.println(\n" + 
+			" function foo (s) {\n" +
+			"    var c = \"a\";" + 
+			"    println(\n" + 
 			"        c + c + c + c + s[4] + s[5] + s[6] + s[7] + s[8] + \n" +
 			"        s[9] + s[10] + s[11] + s[12] + s[13] + s[14] + \n" +
 			"        s[15] + s[16] + s[17] + s[18] + s[19] + s[20] + \n" +
@@ -566,26 +557,25 @@ public void test0011_combined_binary_expression() {
 	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
 	this.runConformTest(
 		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"public static void main(String args[]) {\n" + 
-			"    final int max = 30; \n" + 
-			"    String s[] = new String[max];\n" + 
-			"    for (int i = 0; i < max; i++) {\n" + 
+			"X.js",
+			"  function main(String args[]) {\n" + 
+			"    var max = 30; \n" + 
+			"    var s = new Array();\n" + 
+			"    for (var i = 0; i < max; i++) {\n" + 
 			"        s[i] = \"a\";\n" + 
 			"    }\n" + 
 			"    foo(s);\n" + 
 			"}\n" + 
-			"static void foo (String s[]) {\n" +
-			"    final String c = \"a\";" + 
-			"    System.out.println(\n" + 
+			" function foo (s) {\n" +
+			"    var c = \"a\";" + 
+			"    println(\n" + 
 			"        c + c + c + c + c + c + c + c + c + c + \n" + 
 			"        c + c + c + c + c + c + c + c + c + c + \n" + 
 			"        c + c + s[22] + s[23] + s[24] + s[25] + s[26] + \n" +
 			"        s[27] + s[28] + s[29]\n" + 
 			"        );\n" + 
 			"}\n" + 
-			"}"
+			""
 		},
 		"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 }
@@ -596,17 +586,16 @@ public void test0011_combined_binary_expression() {
 public void test0012_combined_binary_expression() {
 	CombinedBinaryExpression.defaultArityMaxStartingValue = 2; 
 	runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"  void foo() {\n" + 
-		"    String s1 = \"s1\";\n" + 
-		"    String s2 = \"s2\";\n" + 
-		"    String s3 = \"s3\";\n" + 
-		"    String s4 = \"s4\";\n" + 
-		"    System.out.println(s1 + \"l1\" + s2 + \"l2\" +\n" +
+		"X.js", 
+		"  function foo() {\n" + 
+		"    var s1 = \"s1\";\n" + 
+		"    var s2 = \"s2\";\n" + 
+		"    var s3 = \"s3\";\n" + 
+		"    var s4 = \"s4\";\n" + 
+		"    println(s1 + \"l1\" + s2 + \"l2\" +\n" +
 		"      s3 + s1 + s4);\n" + 
 		"  }\n" + 
-		"}\n",
+		"\n",
 		defaultParser,
 		new ASTCollector() {
 			public boolean visit(BinaryExpression binaryExpression, 
@@ -623,100 +612,99 @@ public void test0012_combined_binary_expression() {
 		CombinedBinaryExpression.ARITY_MAX_MIN;
 }
 
-// https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
-// check if the generated code is OK when leveraging CombinedBinaryExpression
-// variant involving a left-deep right expression at the topmost level
-public void test0013_combined_binary_expression() {
-	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
-	this.runConformTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"public static void main(String args[]) {\n" + 
-			"    final int max = 30; \n" + 
-			"    String s[] = new String[max];\n" + 
-			"    for (int i = 0; i < max; i++) {\n" + 
-			"        s[i] = \"a\";\n" + 
-			"    }\n" + 
-			"    foo(s);\n" + 
-			"}\n" + 
-			"static void foo (String s[]) {\n" + 
-			"    System.out.println(\n" + 
-			"        \"b\" + (s[0] + s[1] + s[2] + s[3] + s[4] + s[5] + s[6] + \n" +
-			"        s[7] + s[8] + s[9] + s[10] + s[11] + s[12] + s[13] +\n" +
-			"        s[14] + s[15] + s[16] + s[17] + s[18] + s[19] + \n" + 
-			"        s[20] + s[21] + s[22] + s[23] + s[24] + s[25] + \n" +
-			"        s[26] + s[27] + s[28] + s[29])\n" + 
-			"        );\n" + 
-			"}\n" + 
-			"}"
-		},
-		"baaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-}
+//// https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
+//// check if the generated code is OK when leveraging CombinedBinaryExpression
+//// variant involving a left-deep right expression at the topmost level
+//public void test0013_combined_binary_expression() {
+//	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
+//	this.runConformTest(
+//		new String[] {
+//			"X.js",
+//			"  function main(var args[]) {\n" + 
+//			"    final int max = 30; \n" + 
+//			"    var s[] = new String[max];\n" + 
+//			"    for (int i = 0; i < max; i++) {\n" + 
+//			"        s[i] = \"a\";\n" + 
+//			"    }\n" + 
+//			"    foo(s);\n" + 
+//			"}\n" + 
+//			" function foo (var s[]) {\n" + 
+//			"    println(\n" + 
+//			"        \"b\" + (s[0] + s[1] + s[2] + s[3] + s[4] + s[5] + s[6] + \n" +
+//			"        s[7] + s[8] + s[9] + s[10] + s[11] + s[12] + s[13] +\n" +
+//			"        s[14] + s[15] + s[16] + s[17] + s[18] + s[19] + \n" + 
+//			"        s[20] + s[21] + s[22] + s[23] + s[24] + s[25] + \n" +
+//			"        s[26] + s[27] + s[28] + s[29])\n" + 
+//			"        );\n" + 
+//			"}\n" + 
+//			"}"
+//		},
+//		"baaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//}
 
-// https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
-// check if the generated code is OK when leveraging CombinedBinaryExpression
-// variant involving a left-deep right expression at the topmost level, with
-// a constant high in tree
-public void test0014_combined_binary_expression() {
-	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
-	this.runConformTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"public static void main(String args[]) {\n" + 
-			"    final int max = 30; \n" + 
-			"    String s[] = new String[max];\n" + 
-			"    for (int i = 0; i < max; i++) {\n" + 
-			"        s[i] = \"a\";\n" + 
-			"    }\n" + 
-			"    foo(s);\n" + 
-			"}\n" + 
-			"static void foo (String s[]) {\n" +
-			"    final String c = \"c\";\n" + 
-			"    System.out.println(\n" + 
-			"        \"b\" + \n" +
-			"         (c + c + c + c + c + c + c + c + c + c + \n" +
-			"          c + c + c + c + c + c + c + c + c + c + \n" +
-			"          c + c + s[0])\n" + 
-			"        );\n" + 
-			"}\n" + 
-			"}"
-		},
-		"bcccccccccccccccccccccca");
-}
+//// https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
+//// check if the generated code is OK when leveraging CombinedBinaryExpression
+//// variant involving a left-deep right expression at the topmost level, with
+//// a constant high in tree
+//public void test0014_combined_binary_expression() {
+//	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
+//	this.runConformTest(
+//		new String[] {
+//			"X.js",
+//			" class X {\n" + 
+//			"  function main(var args[]) {\n" + 
+//			"    final int max = 30; \n" + 
+//			"    var s[] = new String[max];\n" + 
+//			"    for (int i = 0; i < max; i++) {\n" + 
+//			"        s[i] = \"a\";\n" + 
+//			"    }\n" + 
+//			"    foo(s);\n" + 
+//			"}\n" + 
+//			" function foo (var s[]) {\n" +
+//			"    final var c = \"c\";\n" + 
+//			"    println(\n" + 
+//			"        \"b\" + \n" +
+//			"         (c + c + c + c + c + c + c + c + c + c + \n" +
+//			"          c + c + c + c + c + c + c + c + c + c + \n" +
+//			"          c + c + s[0])\n" + 
+//			"        );\n" + 
+//			"}\n" + 
+//			"}"
+//		},
+//		"bcccccccccccccccccccccca");
+//}
 
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
 // check if the generated code is OK when leveraging CombinedBinaryExpression
 // variant involving a left-deep right expression at the topmost level, with
 // a constant low in tree
-public void test0015_combined_binary_expression() {
-	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
-	this.runConformTest(
-		new String[] {
-			"X.java",
-			"public class X {\n" + 
-			"public static void main(String args[]) {\n" + 
-			"    final int max = 30; \n" + 
-			"    String s[] = new String[max];\n" + 
-			"    for (int i = 0; i < max; i++) {\n" + 
-			"        s[i] = \"a\";\n" + 
-			"    }\n" + 
-			"    foo(s);\n" + 
-			"}\n" + 
-			"static void foo (String s[]) {\n" +
-			"    final String c = \"c\";\n" + 
-			"    System.out.println(\n" + 
-			"        \"b\" + \n" +
-			"         (c + c + c + c + c + c + c + c + c + c + \n" +
-			"          c + c + c + c + c + c + c + c + c + c + \n" +
-			"          s[0] + s[1] + s[2])\n" + 
-			"        );\n" + 
-			"}\n" + 
-			"}"
-		},
-		"bccccccccccccccccccccaaa");
-}
+//public void test0015_combined_binary_expression() {
+//	assertEquals(20, CombinedBinaryExpression.ARITY_MAX_MIN);
+//	this.runConformTest(
+//		new String[] {
+//			"X.js",
+//			" class X {\n" + 
+//			"  function main(var args[]) {\n" + 
+//			"    final int max = 30; \n" + 
+//			"    var s[] = new String[max];\n" + 
+//			"    for (int i = 0; i < max; i++) {\n" + 
+//			"        s[i] = \"a\";\n" + 
+//			"    }\n" + 
+//			"    foo(s);\n" + 
+//			"}\n" + 
+//			" function foo (var s[]) {\n" +
+//			"    final var c = \"c\";\n" + 
+//			"    println(\n" + 
+//			"        \"b\" + \n" +
+//			"         (c + c + c + c + c + c + c + c + c + c + \n" +
+//			"          c + c + c + c + c + c + c + c + c + c + \n" +
+//			"          s[0] + s[1] + s[2])\n" + 
+//			"        );\n" + 
+//			"}\n" + 
+//			"}"
+//		},
+//		"bccccccccccccccccccccaaa");
+//}
 
 // AST implementation - binary expressions
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102728
@@ -724,12 +712,11 @@ public void test0015_combined_binary_expression() {
 public void test0016_combined_binary_expression() {
 	CombinedBinaryExpression.defaultArityMaxStartingValue = 2; 
 	this.runConformTest(
-		"X.java", 
-		"public class X {\n" + 
-		"void foo(int i1, int i2, int i3, int i4) {\n" + 
-		"  System.out.println(i1 - i2 + 0 + i3 + 0 + i4);\n" + 
+		"X.js", 
+		"function foo( i1,  i2,  i3,  i4) {\n" + 
+		"  println(i1 - i2 + 0 + i3 + 0 + i4);\n" + 
 		"}\n" + 
-		"}\n",
+		"\n",
 		defaultParser,
 		new ASTCollector() {
 			public boolean visit(BinaryExpression binaryExpression, 
@@ -744,136 +731,139 @@ public void test0016_combined_binary_expression() {
 	CombinedBinaryExpression.defaultArityMaxStartingValue = 
 		CombinedBinaryExpression.ARITY_MAX_MIN;
 }
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=157170
-public void test0017() {
-	CompilerOptions options = new CompilerOptions();
-	options.complianceLevel = ClassFileConstants.JDK1_5;
-	options.sourceLevel = ClassFileConstants.JDK1_5;
-	options.targetJDK = ClassFileConstants.JDK1_5;
-	this.runConformTest(
-		"X.java", 
-		"@interface Annot {\n" +
-		"	int value() default 0;\n" +
-		"}\n" +
-		"@Annot\n" +
-		"@Annot(3)\n" +
-		"@Annot(value=4)\n" +
-		"public class X {\n" + 
-		"}\n",
-		new Parser(
-				new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(), 
-				options, 
-				new DefaultProblemFactory()), false),
-		new AnnotationCollector(),
-		"marker annotation start visit\n" + 
-		"marker annotation end visit\n" + 
-		"single member annotation start visit\n" + 
-		"3\n" + 
-		"single member annotation end visit\n" + 
-		"normal annotation start visit\n" + 
-		"member value pair start visit\n" + 
-		"value, 4\n" + 
-		"member value pair end visit\n" + 
-		"normal annotation end visit\n");
-}
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=157170
-public void test0018() {
-	CompilerOptions options = new CompilerOptions();
-	options.complianceLevel = ClassFileConstants.JDK1_5;
-	options.sourceLevel = ClassFileConstants.JDK1_5;
-	options.targetJDK = ClassFileConstants.JDK1_5;
-	options.docCommentSupport = true;
-	this.runConformTest(
-		"X.java", 
-		"@interface Annot {\n" +
-		"	int value() default 0;\n" +
-		"}\n" +
-		"/**\n" +
-		" * @see Annot\n" +
-		" */\n" +
-		"@Annot\n" +
-		"@Annot(3)\n" +
-		"@Annot(value=4)\n" +
-		"public class X {\n" +
-		"	/**\n" +
-		"	 * @see Annot\n" +
-		"	 */\n" +
-		"	public void foo() {}\n" +
-		"}\n",
-		new Parser(
-				new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(), 
-				options, 
-				new DefaultProblemFactory()), false),
-		new AnnotationCollector(),
-		"java doc single type reference start visit\n" + 
-		"java doc single type reference end visit\n" + 
-		"marker annotation start visit\n" + 
-		"marker annotation end visit\n" + 
-		"single member annotation start visit\n" + 
-		"3\n" + 
-		"single member annotation end visit\n" + 
-		"normal annotation start visit\n" + 
-		"member value pair start visit\n" + 
-		"value, 4\n" + 
-		"member value pair end visit\n" + 
-		"normal annotation end visit\n" + 
-		"java doc single type reference start visit\n" + 
-		"java doc single type reference end visit\n");
-}
-//https://bugs.eclipse.org/bugs/show_bug.cgi?id=157170
-public void test0019() {
-	CompilerOptions options = new CompilerOptions();
-	options.complianceLevel = ClassFileConstants.JDK1_5;
-	options.sourceLevel = ClassFileConstants.JDK1_5;
-	options.targetJDK = ClassFileConstants.JDK1_5;
-	options.docCommentSupport = true;
-	this.runConformTest(
-		"X.java", 
-		"@interface Annot {\n" +
-		"	int value() default 0;\n" +
-		"}\n" +
-		"/**\n" +
-		" * @see Annot\n" +
-		" */\n" +
-		"@Annot\n" +
-		"@Annot(3)\n" +
-		"@Annot(value=4)\n" +
-		"public class X {\n" +
-		"	/**\n" +
-		"	 * @see Annot\n" +
-		"	 */\n" +
-		"	public void foo(@Annot int i) {\n" +
-		"		@Annot int j = 0;" +
-		"	}\n" +
-		"}\n",
-		new Parser(
-				new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(), 
-				options, 
-				new DefaultProblemFactory()), false),
-		new AnnotationCollector(),
-		"java doc single type reference start visit\n" + 
-		"java doc single type reference end visit\n" + 
-		"marker annotation start visit\n" + 
-		"marker annotation end visit\n" + 
-		"single member annotation start visit\n" + 
-		"3\n" + 
-		"single member annotation end visit\n" + 
-		"normal annotation start visit\n" + 
-		"member value pair start visit\n" + 
-		"value, 4\n" + 
-		"member value pair end visit\n" + 
-		"normal annotation end visit\n" + 
-		"java doc single type reference start visit\n" + 
-		"java doc single type reference end visit\n" + 
-		"start argument\n" + 
-		"marker annotation start visit\n" + 
-		"marker annotation end visit\n" + 
-		"exit argument\n" + 
-		"start local declaration\n" + 
-		"marker annotation start visit\n" + 
-		"marker annotation end visit\n" + 
-		"exit local declaration\n");
-}
+
+//
+//
+////https://bugs.eclipse.org/bugs/show_bug.cgi?id=157170
+//public void test0017() {
+//	CompilerOptions options = new CompilerOptions();
+//	options.complianceLevel = ClassFileConstants.JDK1_5;
+//	options.sourceLevel = ClassFileConstants.JDK1_5;
+//	options.targetJDK = ClassFileConstants.JDK1_5;
+//	this.runConformTest(
+//		"X.js", 
+//		"@interface Annot {\n" +
+//		"	int value() default 0;\n" +
+//		"}\n" +
+//		"@Annot\n" +
+//		"@Annot(3)\n" +
+//		"@Annot(value=4)\n" +
+//		" class X {\n" + 
+//		"}\n",
+//		new Parser(
+//				new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(), 
+//				options, 
+//				new DefaultProblemFactory()), false),
+//		new AnnotationCollector(),
+//		"marker annotation start visit\n" + 
+//		"marker annotation end visit\n" + 
+//		"single member annotation start visit\n" + 
+//		"3\n" + 
+//		"single member annotation end visit\n" + 
+//		"normal annotation start visit\n" + 
+//		"member value pair start visit\n" + 
+//		"value, 4\n" + 
+//		"member value pair end visit\n" + 
+//		"normal annotation end visit\n");
+//}
+////https://bugs.eclipse.org/bugs/show_bug.cgi?id=157170
+//public void test0018() {
+//	CompilerOptions options = new CompilerOptions();
+//	options.complianceLevel = ClassFileConstants.JDK1_5;
+//	options.sourceLevel = ClassFileConstants.JDK1_5;
+//	options.targetJDK = ClassFileConstants.JDK1_5;
+//	options.docCommentSupport = true;
+//	this.runConformTest(
+//		"X.js", 
+//		"@interface Annot {\n" +
+//		"	int value() default 0;\n" +
+//		"}\n" +
+//		"/**\n" +
+//		" * @see Annot\n" +
+//		" */\n" +
+//		"@Annot\n" +
+//		"@Annot(3)\n" +
+//		"@Annot(value=4)\n" +
+//		" class X {\n" +
+//		"	/**\n" +
+//		"	 * @see Annot\n" +
+//		"	 */\n" +
+//		"	public function foo() {}\n" +
+//		"}\n",
+//		new Parser(
+//				new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(), 
+//				options, 
+//				new DefaultProblemFactory()), false),
+//		new AnnotationCollector(),
+//		"java doc single type reference start visit\n" + 
+//		"java doc single type reference end visit\n" + 
+//		"marker annotation start visit\n" + 
+//		"marker annotation end visit\n" + 
+//		"single member annotation start visit\n" + 
+//		"3\n" + 
+//		"single member annotation end visit\n" + 
+//		"normal annotation start visit\n" + 
+//		"member value pair start visit\n" + 
+//		"value, 4\n" + 
+//		"member value pair end visit\n" + 
+//		"normal annotation end visit\n" + 
+//		"java doc single type reference start visit\n" + 
+//		"java doc single type reference end visit\n");
+//}
+////https://bugs.eclipse.org/bugs/show_bug.cgi?id=157170
+//public void test0019() {
+//	CompilerOptions options = new CompilerOptions();
+//	options.complianceLevel = ClassFileConstants.JDK1_5;
+//	options.sourceLevel = ClassFileConstants.JDK1_5;
+//	options.targetJDK = ClassFileConstants.JDK1_5;
+//	options.docCommentSupport = true;
+//	this.runConformTest(
+//		"X.js", 
+//		"@interface Annot {\n" +
+//		"	int value() default 0;\n" +
+//		"}\n" +
+//		"/**\n" +
+//		" * @see Annot\n" +
+//		" */\n" +
+//		"@Annot\n" +
+//		"@Annot(3)\n" +
+//		"@Annot(value=4)\n" +
+//		"public class X {\n" +
+//		"	/**\n" +
+//		"	 * @see Annot\n" +
+//		"	 */\n" +
+//		"	public function foo(@Annot int i) {\n" +
+//		"		@Annot int j = 0;" +
+//		"	}\n" +
+//		"}\n",
+//		new Parser(
+//				new ProblemReporter(DefaultErrorHandlingPolicies.proceedWithAllProblems(), 
+//				options, 
+//				new DefaultProblemFactory()), false),
+//		new AnnotationCollector(),
+//		"java doc single type reference start visit\n" + 
+//		"java doc single type reference end visit\n" + 
+//		"marker annotation start visit\n" + 
+//		"marker annotation end visit\n" + 
+//		"single member annotation start visit\n" + 
+//		"3\n" + 
+//		"single member annotation end visit\n" + 
+//		"normal annotation start visit\n" + 
+//		"member value pair start visit\n" + 
+//		"value, 4\n" + 
+//		"member value pair end visit\n" + 
+//		"normal annotation end visit\n" + 
+//		"java doc single type reference start visit\n" + 
+//		"java doc single type reference end visit\n" + 
+//		"start argument\n" + 
+//		"marker annotation start visit\n" + 
+//		"marker annotation end visit\n" + 
+//		"exit argument\n" + 
+//		"start local declaration\n" + 
+//		"marker annotation start visit\n" + 
+//		"marker annotation end visit\n" + 
+//		"exit local declaration\n");
+//}
 }
 
 // Helper classes: define visitors leveraged by some tests

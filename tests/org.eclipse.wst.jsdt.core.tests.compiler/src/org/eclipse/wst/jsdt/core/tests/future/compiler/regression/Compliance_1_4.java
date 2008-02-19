@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package org.eclipse.wst.jsdt.core.tests.compiler.regression;
+package org.eclipse.wst.jsdt.core.tests.future.compiler.regression;
 
 import java.util.Map;
 
 import junit.framework.Test;
 
+import org.eclipse.wst.jsdt.core.tests.compiler.regression.AbstractRegressionTest;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 public class Compliance_1_4 extends AbstractRegressionTest {
