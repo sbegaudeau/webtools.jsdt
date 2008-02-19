@@ -507,7 +507,7 @@ public class JavadocParser extends AbstractCommentParser {
 		this.tagValue = NO_TAG_VALUE;
 		switch (token) {
 			case TerminalTokens.TokenNameIdentifier :
-				switch (tagName[0]) {
+				switch (tagName[0]) { 
 				case 'a':
 					if (length == TAG_ADDON_LENGTH && CharOperation.equals(TAG_ADDON, tagName)) {
 						this.tagValue = TAG_ADDON_VALUE;
@@ -532,11 +532,13 @@ public class JavadocParser extends AbstractCommentParser {
 						if (length == TAG_CATEGORY_LENGTH && CharOperation.equals(TAG_CATEGORY, tagName)) {
 							this.tagValue = TAG_CATEGORY_VALUE;
 							valid = parseIdentifierTag(false); // TODO (frederic) reconsider parameter value when @category will be significant in spec
+						} else	if (length == TAG_CLASSDECRIPTION_LENGTH && CharOperation.equals(TAG_CLASSDECRIPTION, tagName)) {
+							this.tagValue = TAG_CLASSDECRIPTION_VALUE;
+							valid =true;
+						} else	if (length == TAG_CLASS_LENGTH && CharOperation.equals(TAG_CLASS, tagName)) {
+							this.tagValue = TAG_CLASS_VALUE;
+							valid =true;
 						} else
-							if (length == TAG_CLASSDECRIPTION_LENGTH && CharOperation.equals(TAG_CLASSDECRIPTION, tagName)) {
-								this.tagValue = TAG_CLASSDECRIPTION_VALUE;
-								valid =true;
-							} else
 								if (length == TAG_CONSTRUCTOR_LENGTH && CharOperation.equals(TAG_CONSTRUCTOR, tagName)) {
 									this.tagValue = TAG_CONSTRUCTOR_VALUE;
 									this.isConstructor=true;
@@ -569,7 +571,11 @@ public class JavadocParser extends AbstractCommentParser {
 						if (length == TAG_FILEOVERVIEW_LENGTH && CharOperation.equals(TAG_FILEOVERVIEW, tagName)) {
 							this.tagValue = TAG_FILEOVERVIEW_VALUE;
 							valid = true;
-						}
+						} else
+							if (length == TAG_FINAL_LENGTH && CharOperation.equals(TAG_FINAL, tagName)) {
+								this.tagValue = TAG_FINAL_VALUE;
+								valid = true;
+							} 
 						break;
 					case 'i':
 						if (length == TAG_INHERITDOC_LENGTH && CharOperation.equals(TAG_INHERITDOC, tagName)) {
@@ -639,6 +645,10 @@ public class JavadocParser extends AbstractCommentParser {
 							this.tagValue = TAG_PARAM_VALUE;
 							valid = parseParam();
 						}
+						else if (length == TAG_PRIVATE_LENGTH && CharOperation.equals(TAG_PRIVATE, tagName)) {
+							this.tagValue = TAG_PRIVATE_VALUE;
+							valid = true;
+						}
 						else if (length == TAG_PROJECT_DESCRIPTION_LENGTH && CharOperation.equals(TAG_PROJECT_DESCRIPTION, tagName)) {
 							this.tagValue = TAG_PROJECT_DESCRIPTION_VALUE;
 							valid = true;
@@ -648,6 +658,10 @@ public class JavadocParser extends AbstractCommentParser {
 						if (length == TAG_RETURNS_LENGTH && CharOperation.equals(TAG_RETURNS, tagName)) {
 							this.tagValue = TAG_RETURNS_VALUE;
 							valid = parseReturn();
+						}else
+						if (length == TAG_REQUIRES_LENGTH && CharOperation.equals(TAG_REQUIRES, tagName)) {
+							this.tagValue = TAG_REQUIRES_VALUE;
+							valid = parseRequires();
 						}
 						break;
 					case 's':
@@ -977,5 +991,10 @@ public class JavadocParser extends AbstractCommentParser {
 			  System.arraycopy(typeReference, 0, refs, 0, typeReference.length);
 		  }
 		  nameRef.types=refs;
+	}
+	
+	protected boolean parseRequires()
+	{
+		return true;
 	}
 }

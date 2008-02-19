@@ -71,9 +71,9 @@ public class CompletionJavadocParser extends JavadocParser {
 		initLevelTags();
 	}
 
-	/*
-	 * Do not parse comment if completion location is not included.
-	 */
+//	/*
+//	 * Do not parse comment if completion location is not included.
+//	 */
 	public boolean checkDeprecation(int commentPtr) {
 		this.cursorLocation = ((CompletionParser)sourceParser).cursorLocation;
 		CompletionScanner completionScanner = (CompletionScanner)this.scanner;
@@ -88,7 +88,8 @@ public class CompletionJavadocParser extends JavadocParser {
 			this.firstTagPosition = 1;
 			super.checkDeprecation(commentPtr);
 		} else {
-			this.docComment = null;
+			super.checkDeprecation(commentPtr);
+//			this.docComment = null;
 		}
 		return false;
 	}
