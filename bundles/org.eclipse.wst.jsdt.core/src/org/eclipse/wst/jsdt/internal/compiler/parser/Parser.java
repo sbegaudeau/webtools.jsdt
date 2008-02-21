@@ -332,7 +332,7 @@ public class Parser implements  ParserBasicInformation, TerminalTokens, Operator
 
 	public static final byte FLAG_EMPTY_STATEMENT = 1;
 
-	InferEngine[] inferenceEngines;
+	public InferEngine[] inferenceEngines;
 	
 	static {
 		try{
@@ -9290,7 +9290,8 @@ if (false)
 }
 
 public void initializeInferenceEngine(CompilationUnitDeclaration compilationUnitDeclaration) {
-	this.inferenceEngines =  InferrenceManager.getInstance().getInferenceEngines(compilationUnitDeclaration);
+	if (this.inferenceEngines==null)
+		this.inferenceEngines =  InferrenceManager.getInstance().getInferenceEngines(compilationUnitDeclaration);
 	for (int i = 0; i <  this.inferenceEngines.length; i++) {
 		this.inferenceEngines[i].initializeOptions(this.options.inferOptions);
 	}

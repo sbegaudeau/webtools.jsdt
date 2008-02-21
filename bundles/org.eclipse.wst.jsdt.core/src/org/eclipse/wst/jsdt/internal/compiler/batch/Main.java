@@ -1381,7 +1381,7 @@ private String[] expandedCommandLine;
 
 private PrintWriter err;
 
-ArrayList extraProblems;
+protected ArrayList extraProblems;
 
 public Main(PrintWriter outWriter, PrintWriter errWriter, boolean systemExitWhenFinished) {
 	this(outWriter, errWriter, systemExitWhenFinished, null);
@@ -1543,7 +1543,7 @@ public String bind(String id, String[] arguments) {
  * @param minimalSupportedVersion the given minimal version
  * @return true if and only if the running VM supports the given minimal version, false otherwise
  */
-private boolean checkVMVersion(long minimalSupportedVersion) {
+protected boolean checkVMVersion(long minimalSupportedVersion) {
 	// the format of this property is supposed to be xx.x where x are digits.
 	String classFileVersion = System.getProperty("java.class.version"); //$NON-NLS-1$
 	if (classFileVersion == null) {
@@ -3369,7 +3369,7 @@ public void performCompilation() throws InvalidInputException {
 	// cleanup
 	environment.cleanup();
 }
-private ReferenceBinding[] processClassNames(LookupEnvironment environment) throws InvalidInputException {
+protected ReferenceBinding[] processClassNames(LookupEnvironment environment) throws InvalidInputException {
 	// check for .class file presence in case of apt processing
 	int length = this.classNames.length;
 	ReferenceBinding[] referenceBindings = new ReferenceBinding[length];
