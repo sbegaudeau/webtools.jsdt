@@ -344,10 +344,10 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 			}
 			char[] fieldname=new char[]{'p','r','o','t','o','t','y','p','e'};
 			this.binding=scope.getJavaLangObject().getField(fieldname, true);
+			constant = Constant.NotAConstant;
+			return this.resolvedType = typeBinding;
 		}
 
-		constant = Constant.NotAConstant;
-		return this.resolvedType = typeBinding;
 	}
 
 	this.receiverType = receiver.resolveType(scope);
