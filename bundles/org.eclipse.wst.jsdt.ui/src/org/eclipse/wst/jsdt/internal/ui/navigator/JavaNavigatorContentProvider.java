@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -23,7 +24,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.IAdaptable;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -37,7 +38,10 @@ import org.eclipse.ui.navigator.PipelinedViewerUpdate;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaModel;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IPackageFragment;
+import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.ui.navigator.IExtensionStateConstants.Values;
 import org.eclipse.wst.jsdt.internal.ui.packageview.PackageExplorerContentProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
@@ -256,35 +260,88 @@ public class JavaNavigatorContentProvider extends
 	 * @param proposedChildren
 	 */
 	private void customize(Object[] javaElements, Set proposedChildren) {
-		List elementList= Arrays.asList(javaElements);
-		for (Iterator iter= proposedChildren.iterator(); iter.hasNext();) {
-			Object element= iter.next();
-			IResource resource= null;
-			if (element instanceof IResource) {
-				resource= (IResource)element;
-			} else if (element instanceof IAdaptable) {
-				resource= (IResource)((IAdaptable)element).getAdapter(IResource.class);
+	//	List elementList= Arrays.asList(javaElements);
+//		IResource[] javaElementResources;
+//		for(int i = 0;i<javaElements.length;i++) {
+//			if(javaElements[i] instanceof IJavaElement) {
+//				
+//			}
+//		}
+		
+		
+//		for (Iterator iter= proposedChildren.iterator(); iter.hasNext();) {
+//			Object element= iter.next();
+//			IResource resource= null;
+//			if (element instanceof IResource) {
+//				resource= (IResource)element;
+//			} else if (element instanceof IAdaptable) {
+//				resource= (IResource)((IAdaptable)element).getAdapter(IResource.class);
+//			}
+//			if (resource != null) {
+//				int i= elementList.indexOf(resource);
+//				if (i >= 0) {
+//					javaElements[i]= null;
+//				}
+//			}
+//		}
+		
+		
+			
+		proposedChildren.removeAll(Arrays.asList(javaElements));
+		proposedChildren.addAll(Arrays.asList(javaElements));
+			
+			
+		
+		Vector allJavaElements = new Vector(Arrays.asList(javaElements));
+		boolean addedPfRoot = false;
+		while(allJavaElements.size()>0) {
+			Object element=null;
+			try {
+				element = allJavaElements.remove(0);
 			}
-			if (resource != null) {
-				int i= elementList.indexOf(resource);
-				if (i >= 0) {
-					javaElements[i]= null;
-				}
+			catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-		}
-		for (int i= 0; i < javaElements.length; i++) {
-			Object element= javaElements[i];
+			
 			if (element instanceof IJavaElement) {
 				IJavaElement cElement= (IJavaElement)element;
 				IResource resource= cElement.getResource();
-				if (resource != null) {
-					proposedChildren.remove(resource);
+				proposedChildren.remove(resource);
+				if(cElement instanceof IPackageFragmentRoot) {
+					IPackageFragmentRoot root = (IPackageFragmentRoot)cElement;
+					try {
+						Object[] nonJava = root.getNonJavaResources();
+						allJavaElements.addAll(Arrays.asList(root.getChildren()));
+						proposedChildren.removeAll(Arrays.asList(nonJava));
+					}
+					catch (JavaModelException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}else if(cElement instanceof IPackageFragment) {
+						IPackageFragment root = (IPackageFragment)cElement;
+						
+						if(root.isDefaultPackage()) {
+							IPackageFragmentRoot pfRoot = (IPackageFragmentRoot)root.getParent();
+							if(!addedPfRoot) allJavaElements.add(pfRoot);
+							addedPfRoot = true;
+						}
+						
+						try {
+							Object[] nonJava = root.getNonJavaResources();
+							Object[] children = root.getChildren();
+							allJavaElements.addAll(Arrays.asList(children));
+							proposedChildren.removeAll(Arrays.asList(nonJava));
+						}
+						catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 				}
-				proposedChildren.add(element);
-			} else if (element != null) {
-				proposedChildren.add(element);
 			}
 		}
+		
 	}
 
 
