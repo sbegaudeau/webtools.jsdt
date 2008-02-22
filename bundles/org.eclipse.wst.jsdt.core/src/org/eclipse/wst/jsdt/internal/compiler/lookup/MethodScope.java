@@ -211,9 +211,9 @@ public class MethodScope extends BlockScope {
 		if ((modifiers & ClassFileConstants.AccNative) != 0 && (modifiers & ClassFileConstants.AccStrictfp) != 0)
 			problemReporter().nativeMethodsCannotBeStrictfp(declaringClass, (AbstractMethodDeclaration) referenceContext);
 
-		// static members are only authorized in a static member or top level type
-		if (((realModifiers & ClassFileConstants.AccStatic) != 0) && declaringClass.isNestedType() && !declaringClass.isStatic())
-			problemReporter().unexpectedStaticModifierForMethod(declaringClass, (AbstractMethodDeclaration) referenceContext);
+//		// static members are only authorized in a static member or top level type
+//		if (((realModifiers & ClassFileConstants.AccStatic) != 0) && declaringClass.isNestedType() && !declaringClass.isStatic())
+//			problemReporter().unexpectedStaticModifierForMethod(declaringClass, (AbstractMethodDeclaration) referenceContext);
 
 		methodBinding.modifiers = modifiers;
 	}
