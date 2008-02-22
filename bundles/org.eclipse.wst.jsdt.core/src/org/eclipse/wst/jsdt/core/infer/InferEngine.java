@@ -463,8 +463,16 @@ public class InferEngine extends ASTVisitor {
 	}
 
 	private InferredType createAnonymousType(char[] possibleTypeName, InferredType currentType) {
-		char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
-		char []name = CharOperation.concat(ANONYMOUS_PREFIX,possibleTypeName,cs);
+		char []name;
+		if (this.isKnownType(possibleTypeName))
+		{
+			name=possibleTypeName;
+		}
+		else
+		{
+			char[] cs = String.valueOf(this.anonymousCount++).toCharArray();
+			name = CharOperation.concat(ANONYMOUS_PREFIX,possibleTypeName,cs);
+		}
 		InferredType type = addType(name,true);
 		type.isAnonymous=true;
 		if (currentType!=null)
@@ -568,6 +576,7 @@ public class InferEngine extends ASTVisitor {
 					if (receiverType!=null)
 					{
 						InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration,false);
+						method.isStatic=receiverType.isAnonymous;
 						method.nameStart=nameStart;
 						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
 					}
@@ -1287,10 +1296,22 @@ public class InferEngine extends ASTVisitor {
 
 				if (type==null)
 				{
-					if (WellKnownTypes.containsKey(possibleTypeName) || 
-							(this.passNumber==2 && this.isKnownType(possibleTypeName)))
+					if (WellKnownTypes.containsKey(possibleTypeName)) 
 					{
 						type = addType(possibleTypeName,true);
+					}
+					else if (this.passNumber==2 && this.isKnownType(possibleTypeName))
+					{
+						type = addType(possibleTypeName,true);
+//						if (type!=null)
+//						{
+//							AbstractVariableDeclaration varDecl = getVariable( (expression) );
+//
+//							if( varDecl != null ){
+//								varDecl.inferredType=type;
+//							}
+//							
+//						}
 					}
 					 
 				}

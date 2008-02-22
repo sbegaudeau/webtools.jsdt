@@ -200,7 +200,7 @@ public class ASTNodeFinder {
 			if (!inferredType.isDefinition)
 				continue;
 
-			if (inferredType.isAnonymous) {
+			if (!inferredType.isNamed()) {
 				if (findAnonymous && ++count == occurenceCount) {
 					return inferredType;
 				}

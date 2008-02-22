@@ -267,4 +267,9 @@ public class InferredType extends ASTNode {
 		}
 		return null;
 	}
+	
+	public boolean isNamed()
+	{
+		return !isAnonymous || !CharOperation.prefixEquals(InferEngine.ANONYMOUS_PREFIX, this.name);
+	}
 }
