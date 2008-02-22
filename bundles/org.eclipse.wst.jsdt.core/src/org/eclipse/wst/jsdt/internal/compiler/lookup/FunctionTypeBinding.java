@@ -35,6 +35,7 @@ public class FunctionTypeBinding extends SourceTypeBinding {
 
 
 	public void cleanup() {
+		super.cleanup();
 		functionTypeBinding.cleanup();
 	}
 

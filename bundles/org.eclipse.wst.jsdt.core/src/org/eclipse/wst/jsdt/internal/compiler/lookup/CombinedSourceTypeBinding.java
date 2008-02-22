@@ -137,6 +137,7 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 
 	public void cleanup()
 	{
+		super.cleanup();
 		for (int i = 0; i < this.sourceTypes.length ; i++)
 			this.sourceTypes[i].cleanup();
 	}
@@ -150,12 +151,15 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 
 
 	public ReferenceBinding superclass() {
+		ReferenceBinding supercls = null;
 		for (int i = 0; i < this.sourceTypes.length ; i++)
 		{
-			ReferenceBinding supercls = this.sourceTypes[i].superclass;
+			supercls = this.sourceTypes[i].superclass;
 			if (supercls!=null && supercls.id!=TypeIds.T_JavaLangObject)
 				return supercls;
 		}
+		if (supercls!=null && this.superclass==null)
+			return supercls;
 		return this.superclass;
 	}
 	
