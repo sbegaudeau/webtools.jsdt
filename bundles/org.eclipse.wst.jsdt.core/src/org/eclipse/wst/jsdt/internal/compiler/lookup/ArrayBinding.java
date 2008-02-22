@@ -161,9 +161,12 @@ public boolean isCompatibleWith(TypeBinding otherType) {
 				return false; // cannot assign 'String[]' into 'Object[][]' but can assign 'byte[][]' into 'Object[]'
 			break;
 		case Binding.BASE_TYPE :
-			return false;
+			return otherType.isAnyType();
 		case Binding.WILDCARD_TYPE :
 		    return ((WildcardBinding) otherType).boundCheck(this);
+
+		case Binding.TYPE :
+		    return otherType==this.referenceBinding;
 
 		case Binding.TYPE_PARAMETER :
 			// check compatibility with capture of ? super X

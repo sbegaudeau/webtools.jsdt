@@ -911,6 +911,8 @@ private boolean isCompatibleWith0(TypeBinding otherType) {
 			if ( otherReferenceType.isSuperclassOf(this))
 				return true;
 			return (otherReferenceType.isAnonymousType()  && this.isSuperclassOf(otherReferenceType));
+		case Binding.ARRAY_TYPE:
+		   return this==((ArrayBinding)otherType).referenceBinding;
 		default :
 			return false;
 	}
