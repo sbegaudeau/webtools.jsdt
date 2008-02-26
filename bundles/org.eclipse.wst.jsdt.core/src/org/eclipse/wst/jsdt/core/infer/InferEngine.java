@@ -308,11 +308,14 @@ public class InferEngine extends ASTVisitor {
 		 *
 		 */
 		else if ( assignmentExpression instanceof ObjectLiteral && assignment.getLeftHandSide() instanceof FieldReference ){
+			FieldReference fRef = (FieldReference)assignment.getLeftHandSide();
 
-			if (this.inferOptions.useAssignments && passNumber == 2 )
+			boolean isKnownName=fRef.receiver.isThis() && isKnownType(fRef.token) && 
+					(this.inferredGlobal!=null && this.inferredGlobal==this.currentContext.currentType); 
+				
+			 if (isKnownName || (this.inferOptions.useAssignments && passNumber == 2 ))
 			{
 
-				FieldReference fRef = (FieldReference)assignment.getLeftHandSide();
 
 				InferredType receiverType = getInferredType( fRef.receiver );
 
@@ -330,6 +333,20 @@ public class InferEngine extends ASTVisitor {
 						attr = receiverType.addAttribute( fRef.token, assignment );
 						attr.type = getTypeOf( assignmentExpression );
 
+						if (isKnownName && attr.type.isAnonymous)
+						{
+							InferredType existingType = compUnit.findInferredType( fRef.token ) ;
+							if (existingType!=null)
+								attr.type=existingType;
+							else
+							{
+								compUnit.inferredTypesHash.removeKey(attr.type.name);
+								attr.type.name=fRef.token;
+								compUnit.inferredTypesHash.put(fRef.token, attr.type);
+							}
+						}
+						
+						
 						/*
 						 * determine if static
 						 *
