@@ -500,6 +500,9 @@ public int nullStatus(FlowInfo flowInfo) {
 						}
 						// perform capture conversion if read access
 						TypeBinding fieldType = checkFieldAccess(scope);
+						if (fieldType.isAnonymousType())
+							bits |= Binding.TYPE;
+						
 						return this.resolvedType =
 							(((this.bits & IsStrictlyAssigned) == 0)
 								? fieldType.capture(scope, this.sourceEnd)
