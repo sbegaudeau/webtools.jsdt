@@ -501,6 +501,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			int currentPosition = selectionStart - 1;
 			int nextCharacterPosition = selectionStart;
 			char currentCharacter = ' ';
+			boolean brokeLoop=false;
 			try {
 				lineLoop: while(currentPosition > 0){
 
@@ -543,6 +544,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						case '/':
 						case '"':
 						case '\'':
+							brokeLoop=true;
 							break lineLoop;
 					}
 					currentPosition--;
@@ -550,7 +552,9 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 			} catch (ArrayIndexOutOfBoundsException e) {
 				return false;
 			}
-
+			if (!brokeLoop)
+				nextCharacterPosition=currentPosition;
+			
 			// compute start and end of the last token
 			scanner.resetTo(nextCharacterPosition, end);
 			do {
