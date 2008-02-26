@@ -1557,16 +1557,21 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 				// use the declaration source end by default
 				fieldEndPosition = fieldDeclaration.declarationSourceEnd;
 			}
+			MethodDeclaration methodDeclaration = null;
 			if (isInRange) {
 				int currentModifiers = fieldDeclaration.modifiers;
 
 				// remember deprecation so as to not lose it below
 				boolean deprecated = (currentModifiers & ClassFileConstants.AccDeprecated) != 0 || hasDeprecatedAnnotation(fieldDeclaration.annotations);
 
+				if (fieldDeclaration.initialization instanceof FunctionExpression) 
+					methodDeclaration=((FunctionExpression)fieldDeclaration.initialization).methodDeclaration;
+				else if (fieldDeclaration.initialization instanceof Assignment &&
+						((Assignment)fieldDeclaration.initialization).getExpression() instanceof FunctionExpression)
+					methodDeclaration=((FunctionExpression)((Assignment)fieldDeclaration.initialization).getExpression()).methodDeclaration;
+				
+				if (methodDeclaration!=null) {
 
-				if (fieldDeclaration.initialization instanceof FunctionExpression) {
-
-					MethodDeclaration methodDeclaration = ((FunctionExpression)fieldDeclaration.initialization).methodDeclaration;
 
 					char[][] argumentTypes = null;
 					char[][] argumentNames = null;
@@ -1636,7 +1641,7 @@ public void notifySourceElementRequestor(AbstractVariableDeclaration fieldDeclar
 			}
 			this.visitIfNeeded(fieldDeclaration, declaringType);
 			if (isInRange){
-				if (fieldDeclaration.initialization instanceof FunctionExpression)
+				if (methodDeclaration!=null)
 				{
 					requestor.exitMethod(fieldDeclaration.declarationSourceEnd, -1, -1);
 				}
