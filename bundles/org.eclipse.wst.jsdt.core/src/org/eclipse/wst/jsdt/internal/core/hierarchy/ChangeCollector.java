@@ -357,9 +357,12 @@ public class ChangeCollector {
 			case IJavaElement.METHOD:
 				IJavaElement[] children = ((IMember)element).getChildren();
 				for (int i = 0, length = children.length; i < length; i++) {
-					IType type = (IType)children[i];
-					allTypes.add(type);
-					getAllTypesFromElement(type, allTypes);
+					if (element.getElementType()==IJavaElement.TYPE)
+					{
+						IType type = (IType)children[i];
+						allTypes.add(type);
+						getAllTypesFromElement(type, allTypes);
+					}
 				}
 				break;
 		}
