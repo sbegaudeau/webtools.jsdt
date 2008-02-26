@@ -136,12 +136,15 @@ public class OpenAction extends SelectionDispatchAction {
 				element= SelectionConverter.selectJavaElement(elements, getShell(), getDialogTitle(), ActionMessages.OpenAction_select_element);
 				if (element == null)
 					return;
-			}
+			}   
 
-			int type= element.getElementType();
-			if (type == IJavaElement.JAVA_PROJECT || type == IJavaElement.PACKAGE_FRAGMENT_ROOT || type == IJavaElement.PACKAGE_FRAGMENT)
-				element= EditorUtility.getEditorInputJavaElement(fEditor, false);
-			run(new Object[] {element} );
+			if (element!=null)
+			{
+				int type= element.getElementType();
+				if (type == IJavaElement.JAVA_PROJECT || type == IJavaElement.PACKAGE_FRAGMENT_ROOT || type == IJavaElement.PACKAGE_FRAGMENT)
+					element= EditorUtility.getEditorInputJavaElement(fEditor, false);
+				run(new Object[] {element} );
+			}
 		} catch (InvocationTargetException e) {
 			ExceptionHandler.handle(e, getShell(), getDialogTitle(), ActionMessages.OpenAction_error_message); 
 		} catch (InterruptedException e) {
