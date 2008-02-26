@@ -174,7 +174,7 @@ public class InferTypesTests extends AbstractRegressionTest {
 				"  foo.onMouseDown = function () { return 1; };\n"+
 				"\n",
 				"X.js",
-				"class ___foo0 extends Object{\n  Number onMouseDown()\n}\n",
+				"class ___foo0 extends Object{\n  static Number onMouseDown()\n}\n",
 				getDefaultOptions()
 				
 			 );

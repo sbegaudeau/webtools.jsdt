@@ -120,6 +120,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 	public static boolean SHIFT = false;
 	
 	protected static final String SOURCE_DIRECTORY = Util.getOutputDirectory()  + File.separator + "source";
+	
+	public static final String INFERENCE_ENGINES="InferenceEnginesOption";
 
 	protected String[] classpaths;
 	protected boolean createdVerifier;
@@ -1066,6 +1068,12 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 					compilerOptions,
 					requestor, 
 					problemFactory);
+			Object inferEngines=options.get(INFERENCE_ENGINES);
+			if (inferEngines !=null)
+			{
+				batchCompiler.parser.inferenceEngines=(InferEngine []) inferEngines;
+				
+			}
 			batchCompiler.options.produceReferenceInfo = true;
 			Throwable exception = null;
 			try {
