@@ -60,6 +60,7 @@ public class InferEngine extends ASTVisitor {
 	public  InferredType StringType=new InferredType(new char[]{'S','t','r','i','n','g'});
 	public  InferredType NumberType=new InferredType(new char[]{'N','u','m','b','e','r'});
 	public  InferredType BooleanType=new InferredType(new char[]{'B','o','o','l','e','a','n'});
+	public  InferredType FunctionType=new InferredType(new char[]{'F','u','n','c','t','i','o','n'});
 	public  InferredType ArrayType=new InferredType(InferredType.ARRAY_NAME);
 	public  InferredType VoidType=new InferredType(new char[]{'v','o','i','d'});
 	public  InferredType ObjectType=new InferredType(InferredType.OBJECT_NAME);
@@ -727,7 +728,7 @@ public class InferEngine extends ASTVisitor {
 				InferredType typeOf = getTypeOf(assignment.expression);
 				IFunctionDeclaration methodDecl=null;
 
-				if (typeOf==null)
+				if (typeOf==null || typeOf==FunctionType)
 					methodDecl=getDefinedFunction(assignment.expression);
 
 				if (methodDecl!=null)
@@ -867,6 +868,10 @@ public class InferEngine extends ASTVisitor {
 		} 	else if ( expression instanceof ThisReference ){
 			return this.currentContext.currentType;
 		}
+		else if (expression instanceof Assignment)
+			return getTypeOf(((Assignment)expression).getExpression());
+		else if (expression instanceof FunctionExpression)
+			return FunctionType;
 
 		return null;
 	}
