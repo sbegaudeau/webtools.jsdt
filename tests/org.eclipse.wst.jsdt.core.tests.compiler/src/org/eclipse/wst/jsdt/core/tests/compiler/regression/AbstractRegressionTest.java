@@ -1562,6 +1562,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 				
 				InferEngine inferEngine=inferrenceProvider.getInferEngine();
 				
+				inferEngine.initialize();
 				inferEngine.setCompilationUnit(compUnit);
 				inferEngine.doInfer();
 				if (expected!=null)
