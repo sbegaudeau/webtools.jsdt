@@ -369,9 +369,13 @@ public class InferEngine extends ASTVisitor {
 			}
 		}
 		else if ( assignmentExpression instanceof AllocationExpression && 
-			((AllocationExpression)assignmentExpression).member instanceof FunctionExpression){
-			handleFunctionExpressionAssignment((Assignment)assignment);
-		}
+				((AllocationExpression)assignmentExpression).member instanceof FunctionExpression){
+				handleFunctionExpressionAssignment((Assignment)assignment);
+			}
+		else if ( assignmentExpression instanceof Assignment && 
+				((Assignment)assignmentExpression).expression instanceof FunctionExpression){
+				handleFunctionExpressionAssignment((Assignment)assignment);
+			}
 		else
 		{
 			/*
@@ -529,12 +533,20 @@ public class InferEngine extends ASTVisitor {
 			functionExpression=(FunctionExpression)assignment.expression;
 		else if (assignment.expression instanceof AllocationExpression)
 			functionExpression=(FunctionExpression)((AllocationExpression)assignment.expression).member;
+		else if (assignment.expression instanceof Assignment)
+			functionExpression=(FunctionExpression)((Assignment)assignment.expression).expression;
 
 		char [] possibleTypeName = constructTypeName( assignment.lhs );
 
 		InferredType type = null;
 		if( possibleTypeName != null )
+		{
 			type = compUnit.findInferredType( possibleTypeName );
+			if (type==null && isPossibleClassName(possibleTypeName))
+			{
+				type=addType(possibleTypeName,true);
+			}
+		}
 
 		if (type!=null)	// isConstructor
 		{
@@ -1019,19 +1031,20 @@ public class InferEngine extends ASTVisitor {
 		return true;
 	}
 
-	protected void handleFunctionDeclarationArguments(MethodDeclaration methodDeclaration) {
-		Javadoc javadoc = methodDeclaration.javadoc;
+	protected void handleFunctionDeclarationArguments(IFunctionDeclaration methodDeclaration) {
+		Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
 		if (javadoc==null)
 			return;
-		for (int i = 0; i < methodDeclaration.arguments.length; i++) {
-			JavadocSingleNameReference param = javadoc.findParam(methodDeclaration.arguments[i].getName());
+		IArgument[] arguments = methodDeclaration.getArguments();
+		for (int i = 0; i < arguments.length; i++) {
+			JavadocSingleNameReference param = javadoc.findParam(arguments[i].getName());
 			if (param!=null)
 			{
 				if (param.types!=null)
 					for (int j = 0; j < param.types.length; j++) {
 						TypeReference reference = param.types[j];
 						InferredType paramType=this.addType(reference.getSimpleTypeName());
-						methodDeclaration.arguments[i].setInferredType(paramType);
+						arguments[i].setInferredType(paramType);
 //TODO: what to do when more than one type?
 						break;
 					}
@@ -1431,5 +1444,10 @@ public class InferEngine extends ASTVisitor {
 	
 
 	public void initializeOptions(InferOptions options) {
+	}
+	
+	protected boolean isPossibleClassName(char[]name)
+	{
+		return false;
 	}
 }
