@@ -1085,8 +1085,8 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 					} else {
 						this.requestor.acceptMethod(
 							/*declaringClass.qualifiedPackageName()*/ new char[0],
-							declaringClass.qualifiedSourceName(),
 							declaringClass.getFileName(),
+							declaringClass.qualifiedSourceName(),
 							declaringClass.enclosingType() == null ? null : new String(getSignature(declaringClass.enclosingType())),
 							methodBinding.isConstructor()
 								? declaringClass.sourceName()

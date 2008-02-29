@@ -189,7 +189,7 @@ public void acceptType(char[] packageName, 		char[] fileName,char[] typeName, in
 	if(isDeclaration) {
 		type = resolveTypeByLocation(packageName, typeName, acceptFlags, start, end);
 	} else {
-		type = resolveType(packageName, typeName, acceptFlags);
+		type = resolveType(packageName,fileName, typeName, acceptFlags);
 		if(type != null ) {
 			String key = uniqueKey == null ? type.getKey() : new String(uniqueKey);
 //			if(type.isBinary()) {
@@ -250,7 +250,7 @@ public void acceptField(char[] declaringTypePackageName, char[] fileName, char[]
 			}
 		}
 	} else {
-		IType type= resolveType(declaringTypePackageName, declaringTypeName, NameLookup.ACCEPT_ALL);
+		IType type= resolveType(declaringTypePackageName, fileName, declaringTypeName, NameLookup.ACCEPT_ALL);
 		if (type != null) {
 			IField field= type.getField(new String(name));
 			if (field.exists()) {
@@ -498,7 +498,7 @@ public void acceptMethod(
 //		}
 	} else {
 		IJavaElement parent = (!isFileName) ?
-				resolveType(declaringTypePackageName, declaringTypeName,NameLookup.ACCEPT_ALL)
+				resolveType(declaringTypePackageName, fileName,declaringTypeName,NameLookup.ACCEPT_ALL)
 			:
 				resolveCompilationUnit(declaringTypePackageName, declaringTypeName);		// fix for 1FWFT6Q
 //		if (type != null) {
@@ -711,7 +711,7 @@ public void acceptTypeParameter(char[] declaringTypePackageName, char[] fileName
 				NameLookup.ACCEPT_ALL,
 				start, end);
 	} else {
-		type = resolveType(declaringTypePackageName, declaringTypeName,
+		type = resolveType(declaringTypePackageName, fileName, declaringTypeName,
 				NameLookup.ACCEPT_ALL);
 	}
 
@@ -871,10 +871,22 @@ public IJavaElement[] getElements() {
 /**
  * Resolve the type
  */
-protected IType resolveType(char[] packageName, char[] typeName, int acceptFlags) {
+protected IType resolveType(char[] packageName, char[] fileName, char[] typeName, int acceptFlags) {
 
 	IType type= null;
 
+	if (fileName!=null)
+	{
+		ICompilationUnit compilationUnit = (ICompilationUnit)resolveCompilationUnit(packageName, fileName);
+		if (compilationUnit!=null && compilationUnit.exists())
+		{
+			 type=compilationUnit.getType(new String(typeName));
+			 if (type!=null && type.exists())
+				 return type;
+		}
+		
+	}
+	
 	if (this.openable instanceof CompilationUnit && ((CompilationUnit)this.openable).isWorkingCopy()) {
 		CompilationUnit wc = (CompilationUnit) this.openable;
 		try {
@@ -944,6 +956,10 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 	Path cuPath = new Path(fullCUName);
 	String cuName=cuPath.lastSegment();
 
+	Openable cu = new HandleFactory().createOpenable(fullCUName,null);
+	if ((cu instanceof CompilationUnit || this.openable instanceof ClassFile)&& cu.exists()) 
+		return cu;
+	
 	if (this.openable instanceof CompilationUnit || this.openable instanceof ClassFile) {
 		if ( (cuName.equals(this.openable.getElementName()) &&
 				new String(packageName).equals(this.openable.getParent().getElementName())
