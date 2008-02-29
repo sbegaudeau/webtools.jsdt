@@ -15,6 +15,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredAttribute;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
@@ -52,6 +53,8 @@ public class SourceTypeBinding extends ReferenceBinding {
 	public final static int RECEIVER_TYPE_EMUL = 3;
 	HashMap[] synthetics;
 	char[] genericReferenceTypeSignature;
+	
+	public SourceTypeBinding nextType;
 
 	private SimpleLookupTable storedAnnotations = null; // keys are this ReferenceBinding & its fields and methods, value is an AnnotationHolder
 
@@ -91,6 +94,8 @@ void buildFieldsAndMethods() {
 }
 
 public InferredType getInferredType() {
+	if (this.nextType!=null)
+		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
 	ClassScope classScope = scope.classScope();
 	return classScope.inferredType;
 }
@@ -723,46 +728,58 @@ void faultInTypesForFieldsAndMethods() {
 }
 // NOTE: the type of each field of a source type is resolved when needed
 public FieldBinding[] fields() {
-	if ((this.tagBits & TagBits.AreFieldsComplete) != 0)
-		return this.fields;
+	if ((this.tagBits & TagBits.AreFieldsComplete) == 0)
+	{
 
-	int failed = 0;
-	FieldBinding[] resolvedFields = this.fields;
-	try {
-		// lazily sort fields
-		if ((this.tagBits & TagBits.AreFieldsSorted) == 0) {
-			int length = this.fields.length;
-			if (length > 1)
-				ReferenceBinding.sortFields(this.fields, 0, length);
-			this.tagBits |= TagBits.AreFieldsSorted;
-		}
-		for (int i = 0, length = this.fields.length; i < length; i++) {
-			if (resolveTypeFor(this.fields[i]) == null) {
-				// do not alter original field array until resolution is over, due to reentrance (143259)
-				if (resolvedFields == this.fields) {
-					System.arraycopy(this.fields, 0, resolvedFields = new FieldBinding[length], 0, length);
+		int failed = 0;
+		FieldBinding[] resolvedFields = this.fields;
+		try {
+			// lazily sort fields
+			if ((this.tagBits & TagBits.AreFieldsSorted) == 0) {
+				int length = this.fields.length;
+				if (length > 1)
+					ReferenceBinding.sortFields(this.fields, 0, length);
+				this.tagBits |= TagBits.AreFieldsSorted;
+			}
+			for (int i = 0, length = this.fields.length; i < length; i++) {
+				if (resolveTypeFor(this.fields[i]) == null) {
+					// do not alter original field array until resolution is over, due to reentrance (143259)
+					if (resolvedFields == this.fields) {
+						System.arraycopy(this.fields, 0, resolvedFields = new FieldBinding[length], 0, length);
+					}
+					resolvedFields[i] = null;
+					failed++;
 				}
-				resolvedFields[i] = null;
-				failed++;
 			}
-		}
-	} finally {
-		if (failed > 0) {
-			// ensure fields are consistent reqardless of the error
-			int newSize = resolvedFields.length - failed;
-			if (newSize == 0)
-				return this.fields = Binding.NO_FIELDS;
+		} finally {
+			if (failed > 0) {
+				// ensure fields are consistent reqardless of the error
+				int newSize = resolvedFields.length - failed;
+				if (newSize == 0)
+					return this.fields = Binding.NO_FIELDS;
 
-			FieldBinding[] newFields = new FieldBinding[newSize];
-			for (int i = 0, j = 0, length = resolvedFields.length; i < length; i++) {
-				if (resolvedFields[i] != null)
-					newFields[j++] = resolvedFields[i];
+				FieldBinding[] newFields = new FieldBinding[newSize];
+				for (int i = 0, j = 0, length = resolvedFields.length; i < length; i++) {
+					if (resolvedFields[i] != null)
+						newFields[j++] = resolvedFields[i];
+				}
+				this.fields = newFields;
 			}
-			this.fields = newFields;
 		}
+		this.tagBits |= TagBits.AreFieldsComplete;
 	}
-	this.tagBits |= TagBits.AreFieldsComplete;
-	return this.fields;
+	if (this.nextType!=null)
+	{
+		FieldBinding[] moreFields=this.nextType.fields();
+		FieldBinding[] combinedFields=new FieldBinding[this.fields.length+moreFields.length];
+		System.arraycopy(this.fields, 0, combinedFields, 0, this.fields.length);
+		System.arraycopy(moreFields, 0, combinedFields, this.fields.length, moreFields.length);
+
+		return combinedFields;
+
+	}
+	else
+		return this.fields;
 }
 /**
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#genericTypeSignature()
@@ -837,8 +854,16 @@ public MethodBinding[] getDefaultAbstractMethods() {
 			result[count++] = this.methods[i];
 	return result;
 }
-// NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
+
 public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
+	MethodBinding exactConstructor = getExactConstructor0(argumentTypes);
+	if (exactConstructor==null && this.nextType!=null)
+		exactConstructor=this.nextType.getExactConstructor(argumentTypes);
+	return exactConstructor;
+}
+
+// NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
+private MethodBinding getExactConstructor0(TypeBinding[] argumentTypes) {
 	int argCount = argumentTypes.length;
 	if ((this.tagBits & TagBits.AreMethodsComplete) != 0) { // have resolved all arg types & return type of the methods
 		long range;
@@ -886,9 +911,16 @@ public MethodBinding getExactConstructor(TypeBinding[] argumentTypes) {
 	return null;
 }
 
+
+public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
+	MethodBinding exactMethod = getExactMethod0(selector, argumentTypes, refScope);
+	if (exactMethod==null && this.nextType!=null)
+		exactMethod=this.nextType.getExactMethod(selector, argumentTypes, refScope);
+	return exactMethod;
+}
 //NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
 //searches up the hierarchy as long as no potential (but not exact) match was found.
-public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
+private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTypes, CompilationUnitScope refScope) {
 	// sender from refScope calls recordTypeReference(this)
 //	int argCount = argumentTypes.length;
 	boolean foundNothing = true;
@@ -979,8 +1011,15 @@ public MethodBinding getExactMethod(char[] selector, TypeBinding[] argumentTypes
 	return null;
 }
 
-//NOTE: the type of a field of a source type is resolved when needed
+
 public FieldBinding getField(char[] fieldName, boolean needResolve) {
+	FieldBinding field = getField0(fieldName, needResolve);
+	if (field==null && this.nextType!=null)
+		field=this.nextType.getField(fieldName, needResolve);
+	return field;
+}
+//NOTE: the type of a field of a source type is resolved when needed
+private FieldBinding getField0(char[] fieldName, boolean needResolve) {
 
 	if ((this.tagBits & TagBits.AreFieldsComplete) != 0)
 		return ReferenceBinding.binarySearch(fieldName, this.fields);
@@ -1021,8 +1060,20 @@ public FieldBinding getField(char[] fieldName, boolean needResolve) {
 	return null;
 }
 
-// NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
 public MethodBinding[] getMethods(char[] selector) {
+	MethodBinding[] meths = getMethods0(selector);
+	if (this.nextType==null)
+		return meths;
+	MethodBinding[] moreMethods=this.nextType.getMethods(selector);
+	MethodBinding[] combinedMethods=new MethodBinding[meths.length+moreMethods.length];
+	System.arraycopy( meths, 0, combinedMethods, 0,  meths.length);
+	System.arraycopy(moreMethods, 0, combinedMethods,  meths.length, moreMethods.length);
+
+	return combinedMethods;	
+}
+ 
+// NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
+private MethodBinding[] getMethods0(char[] selector) {
 	if ((this.tagBits & TagBits.AreMethodsComplete) != 0) {
 		long range;
 		if ((range = ReferenceBinding.binarySearch(selector, this.methods)) >= 0) {
@@ -1184,7 +1235,16 @@ public boolean isGenericType() {
     return this.typeVariables != Binding.NO_TYPE_VARIABLES;
 }
 public ReferenceBinding[] memberTypes() {
-	return this.memberTypes;
+	if (this.nextType==null)
+		return this.memberTypes;
+	
+	ReferenceBinding[] moreTypes=this.nextType.memberTypes();
+	ReferenceBinding[] combinedTypes=new ReferenceBinding[this.memberTypes.length+moreTypes.length];
+	System.arraycopy(this.memberTypes, 0, combinedTypes, 0, this.memberTypes.length);
+	System.arraycopy(moreTypes, 0, combinedTypes, this.memberTypes.length, moreTypes.length);
+
+	return combinedTypes;
+
 }
 public FieldBinding getUpdatedFieldBinding(FieldBinding targetField, ReferenceBinding newDeclaringClass) {
 	if (this.synthetics == null)
@@ -1224,171 +1284,221 @@ public MethodBinding getUpdatedMethodBinding(MethodBinding targetMethod, Referen
 	return updatedMethod;
 }
 public boolean hasMemberTypes() {
-    return this.memberTypes!=null &&  this.memberTypes.length > 0;
+    boolean hasMembers= this.memberTypes!=null &&  this.memberTypes.length > 0;
+    if (!hasMembers && this.nextType!=null)
+    	hasMembers=this.nextType.hasMemberTypes();
+    return hasMembers;
 }
 // NOTE: the return type, arg & exception types of each method of a source type are resolved when needed
 public MethodBinding[] methods() {
-	if ((this.tagBits & TagBits.AreMethodsComplete) != 0)
-		return this.methods;
 
-	// lazily sort methods
-	if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
-		int length = this.methods.length;
-		if (length > 1)
-			ReferenceBinding.sortMethods(this.methods, 0, length);
-		this.tagBits |= TagBits.AreMethodsSorted;
-	}
-
-	int failed = 0;
-	MethodBinding[] resolvedMethods = this.methods;
-	try {
-		for (int i = 0, length = this.methods.length; i < length; i++) {
-			if (resolveTypesFor(this.methods[i]) == null) {
-				// do not alter original method array until resolution is over, due to reentrance (143259)
-				if (resolvedMethods == this.methods) {
-					System.arraycopy(this.methods, 0, resolvedMethods = new MethodBinding[length], 0, length);
-				}
-				resolvedMethods[i] = null; // unable to resolve parameters
-				failed++;
-			}
+	if ((this.tagBits & TagBits.AreMethodsComplete) == 0) {
+		// lazily sort methods
+		if ((this.tagBits & TagBits.AreMethodsSorted) == 0) {
+			int length = this.methods.length;
+			if (length > 1)
+				ReferenceBinding.sortMethods(this.methods, 0, length);
+			this.tagBits |= TagBits.AreMethodsSorted;
 		}
-
-		// find & report collision cases
-		boolean complyTo15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
-		for (int i = 0, length = this.methods.length; i < length; i++) {
-			MethodBinding method = resolvedMethods[i];
-			if (method == null)
-				continue;
-			char[] selector = method.selector;
-			AbstractMethodDeclaration methodDecl = null;
-			nextSibling: for (int j = i + 1; j < length; j++) {
-				MethodBinding method2 = resolvedMethods[j];
-				if (method2 == null)
-					continue nextSibling;
-				if (!CharOperation.equals(selector, method2.selector))
-					break nextSibling; // methods with same selector are contiguous
-
-				if (complyTo15 && method.returnType != null && method2.returnType != null) {
-					// 8.4.2, for collision to be detected between m1 and m2:
-					// signature(m1) == signature(m2) i.e. same arity, same type parameter count, can be substituted
-					// signature(m1) == erasure(signature(m2)) or erasure(signature(m1)) == signature(m2)
-					TypeBinding[] params1 = method.parameters;
-					TypeBinding[] params2 = method2.parameters;
-					int pLength = params1.length;
-					if (pLength != params2.length)
-						continue nextSibling;
-
-					TypeVariableBinding[] vars = method.typeVariables;
-					TypeVariableBinding[] vars2 = method2.typeVariables;
-					boolean equalTypeVars = vars == vars2;
-					MethodBinding subMethod = method2;
-					if (!equalTypeVars) {
-						MethodBinding temp = method.computeSubstitutedMethod(method2, this.scope.environment());
-						if (temp != null) {
-							equalTypeVars = true;
-							subMethod = temp;
-						}
-					}
-					boolean equalParams = method.areParametersEqual(subMethod);
-					if (equalParams && equalTypeVars) {
-						// duplicates regardless of return types
-					} else if (method.returnType.erasure() == subMethod.returnType.erasure() && (equalParams || method.areParameterErasuresEqual(method2))) {
-						// name clash for sure if not duplicates, report as duplicates
-					} else if (!equalTypeVars && vars != Binding.NO_TYPE_VARIABLES && vars2 != Binding.NO_TYPE_VARIABLES) {
-						// type variables are different so we can distinguish between methods
-						continue nextSibling;
-					} else if (pLength > 0) {
-						// check to see if the erasure of either method is equal to the other
-						int index = pLength;
-						for (; --index >= 0;) {
-							if (params1[index] != params2[index].erasure())
-								break;
-							if (params1[index] == params2[index]) {
-								TypeBinding type = params1[index].leafComponentType();
-								if (type instanceof SourceTypeBinding && type.typeVariables() != Binding.NO_TYPE_VARIABLES) {
-									index = pLength; // handle comparing identical source types like X<T>... its erasure is itself BUT we need to answer false
-									break;
-								}
-							}
-						}
-						if (index >= 0 && index < pLength) {
-							for (index = pLength; --index >= 0;)
-								if (params1[index].erasure() != params2[index])
-									break;
-						}
-						if (index >= 0)
-							continue nextSibling;
-					}
-				} else if (!method.areParametersEqual(method2)) { // prior to 1.5, parameter identity meant a collision case
-					continue nextSibling;
-				}
-				boolean isEnumSpecialMethod = isEnum() && (CharOperation.equals(selector,TypeConstants.VALUEOF) || CharOperation.equals(selector,TypeConstants.VALUES));
-				// report duplicate
-				if (methodDecl == null) {
-					methodDecl = method.sourceMethod(); // cannot be retrieved after binding is lost & may still be null if method is special
-					if (methodDecl != null && methodDecl.binding != null) { // ensure its a valid user defined method
-						if (isEnumSpecialMethod) {
-							this.scope.problemReporter().duplicateEnumSpecialMethod(this, methodDecl);
-						} else {
-							this.scope.problemReporter().duplicateMethodInType(this, methodDecl);
-						}
-						methodDecl.binding = null;
-						// do not alter original method array until resolution is over, due to reentrance (143259)
-						if (resolvedMethods == this.methods) {
-							System.arraycopy(this.methods, 0, resolvedMethods = new MethodBinding[length], 0, length);
-						}
-						resolvedMethods[i] = null;
-						failed++;
-					}
-				}
-				AbstractMethodDeclaration method2Decl = method2.sourceMethod();
-				if (method2Decl != null && method2Decl.binding != null) { // ensure its a valid user defined method
-					if (isEnumSpecialMethod) {
-						this.scope.problemReporter().duplicateEnumSpecialMethod(this, method2Decl);
-					} else {
-						this.scope.problemReporter().duplicateMethodInType(this, method2Decl);
-					}
-					method2Decl.binding = null;
+		int failed = 0;
+		MethodBinding[] resolvedMethods = this.methods;
+		try {
+			for (int i = 0, length = this.methods.length; i < length; i++) {
+				if (resolveTypesFor(this.methods[i]) == null) {
 					// do not alter original method array until resolution is over, due to reentrance (143259)
 					if (resolvedMethods == this.methods) {
-						System.arraycopy(this.methods, 0, resolvedMethods = new MethodBinding[length], 0, length);
+						System.arraycopy(this.methods, 0,
+								resolvedMethods = new MethodBinding[length], 0,
+								length);
 					}
-					resolvedMethods[j] = null;
+					resolvedMethods[i] = null; // unable to resolve parameters
 					failed++;
 				}
 			}
-			if (method.returnType == null && methodDecl == null) { // forget method with invalid return type... was kept to detect possible collisions
-				methodDecl = method.sourceMethod();
-				if (methodDecl != null) {
-					methodDecl.binding = null;
-				}
-				// do not alter original method array until resolution is over, due to reentrance (143259)
-				if (resolvedMethods == this.methods) {
-					System.arraycopy(this.methods, 0, resolvedMethods = new MethodBinding[length], 0, length);
-				}
-				resolvedMethods[i] = null;
-				failed++;
-			}
-		}
-	} finally {
-		if (failed > 0) {
-			int newSize = resolvedMethods.length - failed;
-			if (newSize == 0) {
-				this.methods = Binding.NO_METHODS;
-			} else {
-				MethodBinding[] newMethods = new MethodBinding[newSize];
-				for (int i = 0, j = 0, length = resolvedMethods.length; i < length; i++)
-					if (resolvedMethods[i] != null)
-						newMethods[j++] = resolvedMethods[i];
-				this.methods = newMethods;
-			}
-		}
 
-		// handle forward references to potential default abstract methods
-//		addDefaultAbstractMethods();
-		this.tagBits |= TagBits.AreMethodsComplete;
+			// find & report collision cases
+			boolean complyTo15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
+			for (int i = 0, length = this.methods.length; i < length; i++) {
+				MethodBinding method = resolvedMethods[i];
+				if (method == null)
+					continue;
+				char[] selector = method.selector;
+				AbstractMethodDeclaration methodDecl = null;
+				nextSibling: for (int j = i + 1; j < length; j++) {
+					MethodBinding method2 = resolvedMethods[j];
+					if (method2 == null)
+						continue nextSibling;
+					if (!CharOperation.equals(selector, method2.selector))
+						break nextSibling; // methods with same selector are contiguous
+
+					if (complyTo15 && method.returnType != null
+							&& method2.returnType != null) {
+						// 8.4.2, for collision to be detected between m1 and m2:
+						// signature(m1) == signature(m2) i.e. same arity, same type parameter count, can be substituted
+						// signature(m1) == erasure(signature(m2)) or erasure(signature(m1)) == signature(m2)
+						TypeBinding[] params1 = method.parameters;
+						TypeBinding[] params2 = method2.parameters;
+						int pLength = params1.length;
+						if (pLength != params2.length)
+							continue nextSibling;
+
+						TypeVariableBinding[] vars = method.typeVariables;
+						TypeVariableBinding[] vars2 = method2.typeVariables;
+						boolean equalTypeVars = vars == vars2;
+						MethodBinding subMethod = method2;
+						if (!equalTypeVars) {
+							MethodBinding temp = method
+									.computeSubstitutedMethod(method2,
+											this.scope.environment());
+							if (temp != null) {
+								equalTypeVars = true;
+								subMethod = temp;
+							}
+						}
+						boolean equalParams = method
+								.areParametersEqual(subMethod);
+						if (equalParams && equalTypeVars) {
+							// duplicates regardless of return types
+						} else if (method.returnType.erasure() == subMethod.returnType
+								.erasure()
+								&& (equalParams || method
+										.areParameterErasuresEqual(method2))) {
+							// name clash for sure if not duplicates, report as duplicates
+						} else if (!equalTypeVars
+								&& vars != Binding.NO_TYPE_VARIABLES
+								&& vars2 != Binding.NO_TYPE_VARIABLES) {
+							// type variables are different so we can distinguish between methods
+							continue nextSibling;
+						} else if (pLength > 0) {
+							// check to see if the erasure of either method is equal to the other
+							int index = pLength;
+							for (; --index >= 0;) {
+								if (params1[index] != params2[index].erasure())
+									break;
+								if (params1[index] == params2[index]) {
+									TypeBinding type = params1[index]
+											.leafComponentType();
+									if (type instanceof SourceTypeBinding
+											&& type.typeVariables() != Binding.NO_TYPE_VARIABLES) {
+										index = pLength; // handle comparing identical source types like X<T>... its erasure is itself BUT we need to answer false
+										break;
+									}
+								}
+							}
+							if (index >= 0 && index < pLength) {
+								for (index = pLength; --index >= 0;)
+									if (params1[index].erasure() != params2[index])
+										break;
+							}
+							if (index >= 0)
+								continue nextSibling;
+						}
+					} else if (!method.areParametersEqual(method2)) { // prior to 1.5, parameter identity meant a collision case
+						continue nextSibling;
+					}
+					boolean isEnumSpecialMethod = isEnum()
+							&& (CharOperation.equals(selector,
+									TypeConstants.VALUEOF) || CharOperation
+									.equals(selector, TypeConstants.VALUES));
+					// report duplicate
+					if (methodDecl == null) {
+						methodDecl = method.sourceMethod(); // cannot be retrieved after binding is lost & may still be null if method is special
+						if (methodDecl != null && methodDecl.binding != null) { // ensure its a valid user defined method
+							if (isEnumSpecialMethod) {
+								this.scope.problemReporter()
+										.duplicateEnumSpecialMethod(this,
+												methodDecl);
+							} else {
+								this.scope
+										.problemReporter()
+										.duplicateMethodInType(this, methodDecl);
+							}
+							methodDecl.binding = null;
+							// do not alter original method array until resolution is over, due to reentrance (143259)
+							if (resolvedMethods == this.methods) {
+								System
+										.arraycopy(
+												this.methods,
+												0,
+												resolvedMethods = new MethodBinding[length],
+												0, length);
+							}
+							resolvedMethods[i] = null;
+							failed++;
+						}
+					}
+					AbstractMethodDeclaration method2Decl = method2
+							.sourceMethod();
+					if (method2Decl != null && method2Decl.binding != null) { // ensure its a valid user defined method
+						if (isEnumSpecialMethod) {
+							this.scope.problemReporter()
+									.duplicateEnumSpecialMethod(this,
+											method2Decl);
+						} else {
+							this.scope.problemReporter().duplicateMethodInType(
+									this, method2Decl);
+						}
+						method2Decl.binding = null;
+						// do not alter original method array until resolution is over, due to reentrance (143259)
+						if (resolvedMethods == this.methods) {
+							System
+									.arraycopy(
+											this.methods,
+											0,
+											resolvedMethods = new MethodBinding[length],
+											0, length);
+						}
+						resolvedMethods[j] = null;
+						failed++;
+					}
+				}
+				if (method.returnType == null && methodDecl == null) { // forget method with invalid return type... was kept to detect possible collisions
+					methodDecl = method.sourceMethod();
+					if (methodDecl != null) {
+						methodDecl.binding = null;
+					}
+					// do not alter original method array until resolution is over, due to reentrance (143259)
+					if (resolvedMethods == this.methods) {
+						System.arraycopy(this.methods, 0,
+								resolvedMethods = new MethodBinding[length], 0,
+								length);
+					}
+					resolvedMethods[i] = null;
+					failed++;
+				}
+			}
+		} finally {
+			if (failed > 0) {
+				int newSize = resolvedMethods.length - failed;
+				if (newSize == 0) {
+					this.methods = Binding.NO_METHODS;
+				} else {
+					MethodBinding[] newMethods = new MethodBinding[newSize];
+					for (int i = 0, j = 0, length = resolvedMethods.length; i < length; i++)
+						if (resolvedMethods[i] != null)
+							newMethods[j++] = resolvedMethods[i];
+					this.methods = newMethods;
+				}
+			}
+
+			// handle forward references to potential default abstract methods
+			//		addDefaultAbstractMethods();
+			this.tagBits |= TagBits.AreMethodsComplete;
+		}
 	}
-	return this.methods;
+	if (this.nextType!=null)
+	{
+		MethodBinding[] moreMethods=this.nextType.methods();
+		MethodBinding[] combinedMethods=new MethodBinding[this.methods.length+moreMethods.length];
+		System.arraycopy(this.methods, 0, combinedMethods, 0, this.methods.length);
+		System.arraycopy(moreMethods, 0, combinedMethods, this.methods.length, moreMethods.length);
+
+		return combinedMethods;
+
+	}
+	else
+		return this.methods;
+
 }
 private FieldBinding resolveTypeFor(FieldBinding field) {
 	if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
@@ -1583,9 +1693,14 @@ public AnnotationHolder retrieveAnnotationHolder(Binding binding, boolean forceI
 	return super.retrieveAnnotationHolder(binding, false);
 }
 public void setFields(FieldBinding[] fields) {
+//	if (this.nextType!=null)
+//		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
+
 	this.fields = fields;
 }
 public void setMethods(MethodBinding[] methods) {
+//	if (this.nextType!=null)
+//		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
 	this.methods = methods;
 }
 public final int sourceEnd() {
@@ -1610,7 +1725,12 @@ SimpleLookupTable storedAnnotations(boolean forceInitialize) {
 	return this.storedAnnotations;
 }
 public ReferenceBinding superclass() {
-	return this.superclass;
+	if (this.nextType==null)
+		return this.superclass;
+	if (this.superclass!=null && this.superclass.id!=TypeIds.T_JavaLangObject)
+		return this.superclass;
+	return this.nextType.superclass();
+
 }
 public ReferenceBinding[] superInterfaces() {
 	return this.superInterfaces;
@@ -1817,5 +1937,28 @@ public void cleanup()
 {
 this.scope=null;
 this.classScope=null;
+// clean up should be called for each compilation unit, so it shouldnt be necessary to chain the cleanups
+//if (this.nextType!=null)
+//	this.nextType.cleanup();
 }
+
+
+public boolean contains(ReferenceBinding binding)
+{
+	if (binding==this)
+		return true;
+	if (this.nextType!=null)
+		return this.nextType.contains(binding);
+	return false;
+}
+
+
+public void addNextType(SourceTypeBinding type) {
+	SourceTypeBinding binding=this;
+	while (binding.nextType!=null)
+		binding=binding.nextType;
+	binding.nextType=type;
+	
+}
+
 }

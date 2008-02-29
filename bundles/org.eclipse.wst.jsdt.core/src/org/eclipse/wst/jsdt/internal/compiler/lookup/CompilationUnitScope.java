@@ -297,15 +297,14 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 			{
 				if (existingBinding!=null && typeDecl.isNamed()  )
 				{
-					if (existingBinding instanceof CombinedSourceTypeBinding)
+					if (existingBinding.nextType!=null)
 					{
-						CombinedSourceTypeBinding combinedBinding=(CombinedSourceTypeBinding)existingBinding;
-						combinedBinding.addSourceType(type);
+						existingBinding.addNextType(type);
 					}
 					else
 					{
 						if (!CharOperation.equals(type.fileName, existingBinding.fileName))
-							existingBinding=new CombinedSourceTypeBinding(child,type,existingBinding);
+							existingBinding.addNextType(type);
 					}
 					environment.defaultPackage.addType(existingBinding);
 				}
@@ -360,10 +359,10 @@ public void buildSuperType() {
 
 
 		/* If super type is combined source type, search through SourceTypes for the specific instance */
-		if(superBinding instanceof CombinedSourceTypeBinding) {
+		if( (superBinding instanceof SourceTypeBinding) && ((SourceTypeBinding)superBinding).nextType!=null) {
 
-				CombinedSourceTypeBinding te = (CombinedSourceTypeBinding)superBinding;
-				classScope = te.classScope;
+			
+				classScope = ((SourceTypeBinding)superBinding).classScope;
 
 				SourceTypeBinding sourceType = null;
 

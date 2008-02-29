@@ -71,8 +71,8 @@ public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invoca
 	SourceTypeBinding invocationType = scope.enclosingSourceType();
 	if (invocationType == declaringClass && invocationType == receiverType) return true;
 
-	if (receiverType instanceof CombinedSourceTypeBinding) {
-		CombinedSourceTypeBinding combinedBinding = (CombinedSourceTypeBinding) receiverType;
+	if( (receiverType instanceof SourceTypeBinding) && ((SourceTypeBinding)receiverType).nextType!=null) {
+		SourceTypeBinding combinedBinding = (SourceTypeBinding) receiverType;
 		if (combinedBinding.contains(declaringClass)  && combinedBinding.contains(invocationType)) return true;
 
 	}

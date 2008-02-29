@@ -15,6 +15,8 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		sourceTypes[1]=initialSourceType2;
 		setSuperclass(initialSourceType);
 		setSuperclass(initialSourceType2);
+		this.tagBits|=initialSourceType.tagBits;
+		this.tagBits|=initialSourceType2.tagBits;
 	}
 
 
@@ -24,6 +26,7 @@ public class CombinedSourceTypeBinding extends SourceTypeBinding {
 		System.arraycopy(this.sourceTypes, 0, this.sourceTypes=new SourceTypeBinding[length+1], 0, length);
 		this.sourceTypes[length]=binding;
 		setSuperclass(binding);
+		this.tagBits|=binding.tagBits;
 	}
 
 
