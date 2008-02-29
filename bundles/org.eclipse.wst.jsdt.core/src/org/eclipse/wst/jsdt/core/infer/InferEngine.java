@@ -1378,6 +1378,11 @@ public class InferEngine extends ASTVisitor {
 			if (possibleTypeName != null)
 				// search the defined types in the context
 				type = compUnit.findInferredType(possibleTypeName);
+			
+			if (type==null && isPossibleClassName(possibleTypeName))
+			{
+				type = addType(possibleTypeName,true);
+			}
 
 			/*
 			 * Continue the search by trying to resolve further down the name
