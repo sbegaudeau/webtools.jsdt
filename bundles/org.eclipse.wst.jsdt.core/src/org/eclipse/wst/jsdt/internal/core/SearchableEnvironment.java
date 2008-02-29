@@ -316,7 +316,7 @@ public class SearchableEnvironment implements INameEnvironment,
 						return;
 					if (!findMembers && enclosingTypeNames != null && enclosingTypeNames.length > 0)
 						return; // accept only top level types
-					storage.acceptType(packageName, simpleTypeName, enclosingTypeNames, modifiers, access);
+					storage.acceptType(packageName, path.toCharArray(),simpleTypeName, enclosingTypeNames, modifiers, access);
 				}
 			};
 			try {
@@ -499,7 +499,7 @@ public class SearchableEnvironment implements INameEnvironment,
 						return;
 					if (!findMembers && enclosingTypeNames != null && enclosingTypeNames.length > 0)
 						return; // accept only top level types
-					storage.acceptType(packageName, simpleTypeName, enclosingTypeNames, modifiers, access);
+					storage.acceptType(packageName, path.toCharArray(),simpleTypeName, enclosingTypeNames, modifiers, access);
 				}
 			};
 			try {
@@ -626,7 +626,7 @@ public class SearchableEnvironment implements INameEnvironment,
 						return false;
 					if (excludePath != null && excludePath.equals(path))
 						return false;
-					storage.acceptBinding(packageName, simpleTypeName,type,
+					storage.acceptBinding(packageName, path.toCharArray(),simpleTypeName,type,
 							  modifiers, access);
 					return true;
 				}

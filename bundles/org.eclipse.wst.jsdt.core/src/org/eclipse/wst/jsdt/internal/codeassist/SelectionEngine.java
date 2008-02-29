@@ -186,7 +186,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 		this.parser = new SelectionParser(problemReporter);
 	}
 
-	public void acceptType(char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, int modifiers, AccessRestriction accessRestriction) {
+	public void acceptType(char[] packageName, char [] fileName,  char[] simpleTypeName, char[][] enclosingTypeNames, int modifiers, AccessRestriction accessRestriction) {
 		char[] typeName = enclosingTypeNames == null ?
 				simpleTypeName :
 					CharOperation.concat(
@@ -262,9 +262,10 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						this.acceptedInterfaces[this.acceptedInterfacesCount++] = acceptedInterface;
 						break;
 					default:
-						char[][] acceptedClass = new char[2][];
+						char[][] acceptedClass = new char[3][];
 						acceptedClass[0] = packageName;
 						acceptedClass[1] = typeName;
+						acceptedClass[2] = fileName;
 
 						if(this.acceptedClasses == null) {
 							this.acceptedClasses = new char[10][][];
@@ -285,6 +286,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				this.noProposal = false;
 				this.requestor.acceptType(
 					packageName,
+					fileName,
 					typeName,
 					modifiers,
 					false,
@@ -296,7 +298,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 		}
 	}
 
-	public void acceptBinding(char[] packageName, char[] simpleTypeName, int bindingType, int modifiers, AccessRestriction accessRestriction) {
+	public void acceptBinding(char[] packageName, char [] filename, char[] simpleTypeName, int bindingType, int modifiers, AccessRestriction accessRestriction) {
 		char[] typeName = 		simpleTypeName ;
 
 		if (CharOperation.equals(simpleTypeName, this.selectedIdentifier)) {
@@ -387,6 +389,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				this.noProposal = false;
 				this.requestor.acceptType(
 					packageName,
+					filename,
 					typeName,
 					modifiers,
 					false,
@@ -417,6 +420,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				this.noProposal = false;
 				this.requestor.acceptType(
 					this.acceptedClasses[i][0],
+					this.acceptedClasses[i][2],
 					this.acceptedClasses[i][1],
 					this.acceptedClassesModifiers[i],
 					false,
@@ -434,6 +438,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				this.noProposal = false;
 				this.requestor.acceptType(
 					this.acceptedInterfaces[i][0],
+					null,
 					this.acceptedInterfaces[i][1],
 					this.acceptedInterfacesModifiers[i],
 					false,
@@ -451,6 +456,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				this.noProposal = false;
 				this.requestor.acceptType(
 					this.acceptedAnnotations[i][0],
+					null,
 					this.acceptedAnnotations[i][1],
 					this.acceptedAnnotationsModifiers[i],
 					false,
@@ -468,6 +474,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				this.noProposal = false;
 				this.requestor.acceptType(
 					this.acceptedEnums[i][0],
+					null,
 					this.acceptedEnums[i][1],
 					this.acceptedEnumsModifiers[i],
 					false,
@@ -968,6 +975,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				} else {
 					this.requestor.acceptTypeParameter(
 						enclosingType.qualifiedPackageName(),
+						enclosingType.getFileName(),
 						enclosingType.qualifiedSourceName(),
 						typeVariableBinding.sourceName(),
 						false,
@@ -981,6 +989,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				} else {
 					this.requestor.acceptMethodTypeParameter(
 						enclosingMethod.declaringClass.qualifiedPackageName(),
+						enclosingMethod.declaringClass.getFileName(),
 						enclosingMethod.declaringClass.qualifiedSourceName(),
 						enclosingMethod.isConstructor()
 								? enclosingMethod.declaringClass.sourceName()
@@ -1008,6 +1017,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 				this.requestor.acceptType(
 					typeBinding.qualifiedPackageName(),
+					typeBinding.getFileName(),
 					typeBinding.qualifiedSourceName(),
 					typeBinding.modifiers,
 					false,
@@ -1076,6 +1086,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						this.requestor.acceptMethod(
 							/*declaringClass.qualifiedPackageName()*/ new char[0],
 							declaringClass.qualifiedSourceName(),
+							declaringClass.getFileName(),
 							declaringClass.enclosingType() == null ? null : new String(getSignature(declaringClass.enclosingType())),
 							methodBinding.isConstructor()
 								? declaringClass.sourceName()
@@ -1104,6 +1115,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 						} else {
 							this.requestor.acceptField(
 								declaringClass.qualifiedPackageName(),
+								declaringClass.getFileName(),
 								declaringClass.qualifiedSourceName(),
 								fieldBinding.name,
 								false,
@@ -1371,6 +1383,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 					this.requestor.acceptField(
 						packageName,
+						compilationUnit.getFileName(),
 						qualifiedSourceName,
 						field.name,
 						true,
@@ -1391,6 +1404,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 					this.requestor.acceptMethod(
 						packageName,
+						compilationUnit.getFileName(),
 						qualifiedSourceName,
 						null, // SelectionRequestor does not need of declaring type signature for method declaration
 						method.selector,
@@ -1429,6 +1443,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 			this.requestor.acceptType(
 				packageName,
+				null,
 				qualifiedSourceName,
 				typeDeclaration.modifiers,
 				true,
@@ -1457,6 +1472,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 				FieldDeclaration field = fields[i];
 				this.requestor.acceptField(
 					packageName,
+					null,
 					qualifiedSourceName,
 					field.name,
 					true,
@@ -1483,6 +1499,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 				this.requestor.acceptMethod(
 					packageName,
+					null,
 					qualifiedSourceName,
 					null, // SelectionRequestor does not need of declaring type signature for method declaration
 					method.selector,
@@ -1516,6 +1533,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 					this.requestor.acceptMethodTypeParameter(
 						packageName,
+						null,
 						qualifiedSourceName,
 						method.selector,
 						method.sourceStart,
@@ -1545,6 +1563,7 @@ public final class SelectionEngine extends Engine implements ISearchRequestor {
 
 				this.requestor.acceptTypeParameter(
 					packageName,
+					null,
 					qualifiedSourceName,
 					typeParameter.name,
 					true,

@@ -44,6 +44,7 @@ public interface ISelectionRequestor {
 	 */
 	void acceptType(
 		char[] packageName,
+		char[] fileName,
 		char[] annotationName,
 		int modifiers,
 		boolean isDeclaration,
@@ -95,6 +96,7 @@ public interface ISelectionRequestor {
 	 */
 	void acceptField(
 		char[] declaringTypePackageName,
+		char[] fileName,
 		char[] declaringTypeName,
 		char[] name,
 		boolean isDeclaration,
@@ -154,6 +156,7 @@ public interface ISelectionRequestor {
 	// parameters 'isDeclaration', 'start' and 'end' are use to distinguish duplicate methods declarations
 	void acceptMethod(
 		char[] declaringTypePackageName,
+		char[] fileName,
 		char[] declaringTypeName,
 		String enclosingDeclaringTypeSignature,
 		char[] selector,
@@ -206,6 +209,7 @@ public interface ISelectionRequestor {
 	 */
 	void acceptTypeParameter(
 		char[] declaringTypePackageName,
+		char[] fileName,
 		char[] declaringTypeName,
 		char[] typeParameterName,
 		boolean isDeclaration,
@@ -249,6 +253,7 @@ public interface ISelectionRequestor {
 	 */
 	void acceptMethodTypeParameter(
 		char[] declaringTypePackageName,
+		char[] fileName,
 		char[] declaringTypeName,
 		char[] selector,
 		int selectorStart,

@@ -532,6 +532,7 @@ public final class CompletionEngine
 	 */
 	public void acceptType(
 		char[] packageName,
+		char[] fileName,
 		char[] simpleTypeName,
 		char[][] enclosingTypeNames,
 		int modifiers,
@@ -575,6 +576,7 @@ public final class CompletionEngine
 
 	public void acceptBinding(
 			char[] packageName,
+			char[] fileName,
 			char[] simpleTypeName,
 			int bindingType,
 			int modifiers,

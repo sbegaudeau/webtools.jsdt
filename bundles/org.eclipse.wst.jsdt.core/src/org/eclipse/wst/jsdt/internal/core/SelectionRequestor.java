@@ -167,7 +167,7 @@ protected void acceptBinaryMethod(
 /**
  * Resolve the type.
  */
-public void acceptType(char[] packageName, char[] typeName, int modifiers, boolean isDeclaration, char[] uniqueKey, int start, int end) {
+public void acceptType(char[] packageName, 		char[] fileName,char[] typeName, int modifiers, boolean isDeclaration, char[] uniqueKey, int start, int end) {
 	int acceptFlags = 0;
 	int kind = modifiers & (ClassFileConstants.AccInterface|ClassFileConstants.AccEnum|ClassFileConstants.AccAnnotation);
 	switch (kind) {
@@ -222,7 +222,7 @@ public void acceptError(CategorizedProblem error) {
 /**
  * Resolve the field.
  */
-public void acceptField(char[] declaringTypePackageName, char[] declaringTypeName, char[] name, boolean isDeclaration, char[] uniqueKey, int start, int end) {
+public void acceptField(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] name, boolean isDeclaration, char[] uniqueKey, int start, int end) {
 	if(isDeclaration) {
 		IType type= resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
 				NameLookup.ACCEPT_ALL,
@@ -467,6 +467,7 @@ public void acceptLocalVariable(LocalVariableBinding binding) {
  */
 public void acceptMethod(
 		char[] declaringTypePackageName,
+		char[] fileName,
 		char[] declaringTypeName,
 		String enclosingDeclaringTypeSignature,
 		char[] selector,
@@ -703,7 +704,7 @@ protected void acceptMethodDeclaration(IType type, char[] selector, int start, i
 	}
 	return;
 }
-public void acceptTypeParameter(char[] declaringTypePackageName, char[] declaringTypeName, char[] typeParameterName, boolean isDeclaration, int start, int end) {
+public void acceptTypeParameter(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] typeParameterName, boolean isDeclaration, int start, int end) {
 	IType type;
 	if(isDeclaration) {
 		type = resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
@@ -733,7 +734,7 @@ public void acceptTypeParameter(char[] declaringTypePackageName, char[] declarin
 		}
 	}
 }
-public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] declaringTypeName, char[] selector,int selectorStart, int selectorEnd, char[] typeParameterName, boolean isDeclaration, int start, int end) {
+public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] selector,int selectorStart, int selectorEnd, char[] typeParameterName, boolean isDeclaration, int start, int end) {
 	IType type = resolveTypeByLocation(declaringTypePackageName, declaringTypeName,
 			NameLookup.ACCEPT_ALL,
 			selectorStart, selectorEnd);

@@ -476,6 +476,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 			}
 			public void acceptType(
 					char[] packageName,
+					char[] fileName,
 					char[] typeName,
 					char[][] enclosingTypeNames,
 					int modifiers,
@@ -485,7 +486,7 @@ public class MissingTypesGuesser extends ASTVisitor {
 				char[][] compoundName = CharOperation.splitOn('.', fullyQualifiedName);
 				results.add(compoundName);
 			}
-			public void acceptBinding(char[] packageName, char[] bindingName, int bindingType, int modifiers, AccessRestriction accessRestriction) {
+			public void acceptBinding(char[] packageName, char[] fileName, char[] bindingName, int bindingType, int modifiers, AccessRestriction accessRestriction) {
 				// TODO Auto-generated method stub
 
 			}

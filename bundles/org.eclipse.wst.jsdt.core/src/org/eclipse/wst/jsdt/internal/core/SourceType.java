@@ -824,7 +824,7 @@ public String[][] resolveType(String typeName, WorkingCopyOwner owner) throws Ja
 
 	class TypeResolveRequestor implements ISelectionRequestor {
 		String[][] answers = null;
-		public void acceptType(char[] packageName, char[] tName, int modifiers, boolean isDeclaration, char[] uniqueKey, int start, int end) {
+		public void acceptType(char[] packageName, char[] fileName, char[] tName, int modifiers, boolean isDeclaration, char[] uniqueKey, int start, int end) {
 			String[] answer = new String[]  {new String(packageName), new String(tName) };
 			if (this.answers == null) {
 				this.answers = new String[][]{ answer };
@@ -838,19 +838,19 @@ public String[][] resolveType(String typeName, WorkingCopyOwner owner) throws Ja
 		public void acceptError(CategorizedProblem error) {
 			// ignore
 		}
-		public void acceptField(char[] declaringTypePackageName, char[] declaringTypeName, char[] fieldName, boolean isDeclaration, char[] uniqueKey, int start, int end) {
+		public void acceptField(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] fieldName, boolean isDeclaration, char[] uniqueKey, int start, int end) {
 			// ignore
 		}
-		public void acceptMethod(char[] declaringTypePackageName, char[] declaringTypeName, String enclosingDeclaringTypeSignature, char[] selector, char[][] parameterPackageNames, char[][] parameterTypeNames, String[] parameterSignatures, char[][] typeParameterNames, char[][][] typeParameterBoundNames, boolean isConstructor, boolean isDeclaration, char[] uniqueKey, int start, int end) {
+		public void acceptMethod(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, String enclosingDeclaringTypeSignature, char[] selector, char[][] parameterPackageNames, char[][] parameterTypeNames, String[] parameterSignatures, char[][] typeParameterNames, char[][][] typeParameterBoundNames, boolean isConstructor, boolean isDeclaration, char[] uniqueKey, int start, int end) {
 			// ignore
 		}
 		public void acceptPackage(char[] packageName){
 			// ignore
 		}
-		public void acceptTypeParameter(char[] declaringTypePackageName, char[] declaringTypeName, char[] typeParameterName, boolean isDeclaration, int start, int end) {
+		public void acceptTypeParameter(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] typeParameterName, boolean isDeclaration, int start, int end) {
 			// ignore
 		}
-		public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] declaringTypeName, char[] selector, int selectorStart, int selcetorEnd, char[] typeParameterName, boolean isDeclaration, int start, int end) {
+		public void acceptMethodTypeParameter(char[] declaringTypePackageName, char[] fileName, char[] declaringTypeName, char[] selector, int selectorStart, int selcetorEnd, char[] typeParameterName, boolean isDeclaration, int start, int end) {
 			// ignore
 		}
 
