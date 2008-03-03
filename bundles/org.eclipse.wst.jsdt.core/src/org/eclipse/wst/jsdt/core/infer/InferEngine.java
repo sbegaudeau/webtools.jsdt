@@ -38,7 +38,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.StringLiteral;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ThisReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TrueLiteral;
-import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
 public class InferEngine extends ASTVisitor {
@@ -1041,13 +1040,22 @@ public class InferEngine extends ASTVisitor {
 			if (param!=null)
 			{
 				if (param.types!=null)
+				{
+					
+					char []name={};
 					for (int j = 0; j < param.types.length; j++) {
-						TypeReference reference = param.types[j];
-						InferredType paramType=this.addType(reference.getSimpleTypeName());
-						arguments[i].setInferredType(paramType);
-//TODO: what to do when more than one type?
-						break;
+						char []typeName=param.types[j].getSimpleTypeName();
+						if (j==0)
+							name=typeName;
+						else
+						{
+							name=CharOperation.append(name, '|');
+							name=CharOperation.concat(name, typeName);
+						}
 					}
+					InferredType paramType=this.addType(name);
+					arguments[i].setInferredType(paramType);
+				}
 			}
 		}
 	}

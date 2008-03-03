@@ -1059,7 +1059,7 @@ public final boolean isUsed() {
 
 /* Answer true if the receiver is deprecated (or any of its enclosing types)
 */
-public final boolean isViewedAsDeprecated() {
+public boolean isViewedAsDeprecated() {
 	return (this.modifiers & (ClassFileConstants.AccDeprecated | ExtraCompilerModifiers.AccDeprecatedImplicitly)) != 0
 	|| (this.getPackage().tagBits & TagBits.AnnotationDeprecated) != 0;
 }

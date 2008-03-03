@@ -1097,6 +1097,18 @@ public void storeDependencyInfo() {
 
 	for (int i = 0, l = referencedTypes.size; i < l; i++) {
 		ReferenceBinding type = (ReferenceBinding) referencedTypes.elementAt(i);
+		if (type instanceof MultipleTypeBinding)
+		{
+			ReferenceBinding[] types = ((MultipleTypeBinding)type).types;
+			for (int j = 0; j < types.length; j++) {
+				if (!types[j].isLocalType())
+					recordQualifiedReference(types[j].isMemberType()
+						? CharOperation.splitOn('.', types[j].readableName())
+						: types[j].compoundName);
+				
+			}
+		}
+		else
 		if (!type.isLocalType())
 			recordQualifiedReference(type.isMemberType()
 				? CharOperation.splitOn('.', type.readableName())
