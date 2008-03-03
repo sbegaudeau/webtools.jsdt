@@ -852,4 +852,25 @@ public class BasicResolveTests extends AbstractRegressionTest {
 				""
 		);
 	}
+	
+	
+	public void test059()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						 "/**\n"
+						+ " * Valid class javadoc\n"
+						+ " * @param {String | Number} p1 param def\n"
+						+ " */\n"
+						+"function foo(p1){\n"  
+						+"p1.length;\n" 
+						+"p1.toPrecision(1);\n" 
+						+"}\n" 
+						+"" 
+				},
+				""
+		);
+	}
+	
+	
 }
