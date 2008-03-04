@@ -902,7 +902,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		FieldBinding notVisibleField = null;
 		// we could hold onto the not visible field for extra error reporting
 		while (keepLooking) {
-			if (JavaCore.IS_EMCASCRIPT4)
+			if (JavaCore.IS_ECMASCRIPT4)
 			{
 				ReferenceBinding[] itsInterfaces = currentType.superInterfaces();
 				if (itsInterfaces == null) { // needed for statically imported types which don't know their hierarchy yet
@@ -946,7 +946,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		}
 
 		// walk all visible interfaces to find ambiguous references
-		if (JavaCore.IS_EMCASCRIPT4 && interfacesToVisit != null) {
+		if (JavaCore.IS_ECMASCRIPT4 && interfacesToVisit != null) {
 			ProblemFieldBinding ambiguous = null;
 			done : for (int i = 0; i < nextPosition; i++) {
 				ReferenceBinding anInterface = interfacesToVisit[i];

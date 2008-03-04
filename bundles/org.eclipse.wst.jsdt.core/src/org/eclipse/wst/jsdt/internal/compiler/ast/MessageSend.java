@@ -87,7 +87,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		}
 	}
 	ReferenceBinding[] thrownExceptions;
-	if (JavaCore.IS_EMCASCRIPT4)
+	if (JavaCore.IS_ECMASCRIPT4)
 	{
 		if ((thrownExceptions = binding.thrownExceptions) != Binding.NO_EXCEPTIONS) {
 		// must verify that exceptions potentially thrown by this expression are caught in the method

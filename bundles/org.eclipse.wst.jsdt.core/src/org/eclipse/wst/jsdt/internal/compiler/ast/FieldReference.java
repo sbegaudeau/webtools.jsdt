@@ -410,7 +410,7 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 			}
 	//		return this.resolvedType=TypeBinding.UNKNOWN;
 		}
-		if (JavaCore.IS_EMCASCRIPT4)
+		if (JavaCore.IS_ECMASCRIPT4)
 		{
 			TypeBinding receiverErasure = this.receiverType.erasure();
 			if (receiverErasure instanceof ReferenceBinding) {

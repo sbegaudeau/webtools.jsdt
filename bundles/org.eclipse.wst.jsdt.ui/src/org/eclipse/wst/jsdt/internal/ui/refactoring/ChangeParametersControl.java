@@ -146,7 +146,7 @@ public class ChangeParametersControl extends Composite {
 	private class ParametersCellModifier implements ICellModifier {
 		public boolean canModify(Object element, String property) {
 			Assert.isTrue(element instanceof ParameterInfo);
-			if (JavaCore.IS_EMCASCRIPT4 && property.equals(PROPERTIES[TYPE_PROP]))
+			if (JavaCore.IS_ECMASCRIPT4 && property.equals(PROPERTIES[TYPE_PROP]))
 				return fMode.canChangeTypes();
 			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
 				return true;
@@ -157,7 +157,7 @@ public class ChangeParametersControl extends Composite {
 		}
 		public Object getValue(Object element, String property) {
 			Assert.isTrue(element instanceof ParameterInfo);
-			if (JavaCore.IS_EMCASCRIPT4 && property.equals(PROPERTIES[TYPE_PROP]))
+			if (JavaCore.IS_ECMASCRIPT4 && property.equals(PROPERTIES[TYPE_PROP]))
 				return ((ParameterInfo) element).getNewTypeName();
 			else if (property.equals(PROPERTIES[NEWNAME_PROP]))
 				return ((ParameterInfo) element).getNewName();
@@ -195,14 +195,14 @@ public class ChangeParametersControl extends Composite {
 	private static final String[] PROPERTIES_NO_RETURN = new String[] {  RefactoringMessages.ChangeParametersControl_new, RefactoringMessages.ChangeParametersControl_default }; 
 	private static final String[] PROPERTIES_WITH_RETURN = new String[] { RefactoringMessages.ChangeParametersControl_type, RefactoringMessages.ChangeParametersControl_new, RefactoringMessages.ChangeParametersControl_default }; 
 	
-	private static final String[] PROPERTIES= JavaCore.IS_EMCASCRIPT4?PROPERTIES_WITH_RETURN:PROPERTIES_NO_RETURN;
+	private static final String[] PROPERTIES= JavaCore.IS_ECMASCRIPT4?PROPERTIES_WITH_RETURN:PROPERTIES_NO_RETURN;
 	
 	
 	
 	
-	private static final int TYPE_PROP= JavaCore.IS_EMCASCRIPT4?0:-1;
-	private static final int NEWNAME_PROP= JavaCore.IS_EMCASCRIPT4?1:0;
-	private static final int DEFAULT_PROP= JavaCore.IS_EMCASCRIPT4?2:1;
+	private static final int TYPE_PROP= JavaCore.IS_ECMASCRIPT4?0:-1;
+	private static final int NEWNAME_PROP= JavaCore.IS_ECMASCRIPT4?1:0;
+	private static final int DEFAULT_PROP= JavaCore.IS_ECMASCRIPT4?2:1;
 
 	private static final int ROW_COUNT= 7;
 
@@ -294,7 +294,7 @@ public class ChangeParametersControl extends Composite {
 		
 //		if (SHOW_TYPES)
 //		{
-		if(JavaCore.IS_EMCASCRIPT4) {
+		if(JavaCore.IS_ECMASCRIPT4) {
 			tc= new TableColumn(table, SWT.NONE, TYPE_PROP);
 			tc.setResizable(true);
 			tc.setText(SHOW_TYPES?RefactoringMessages.ChangeParametersControl_table_type:""); //$NON-NLS-1$
@@ -596,11 +596,11 @@ public class ChangeParametersControl extends Composite {
 		
 		final TableTextCellEditor editors[]= new TableTextCellEditor[PROPERTIES.length];
 
-		if(JavaCore.IS_EMCASCRIPT4)	editors[TYPE_PROP]= new TableTextCellEditor(fTableViewer, TYPE_PROP);
+		if(JavaCore.IS_ECMASCRIPT4)	editors[TYPE_PROP]= new TableTextCellEditor(fTableViewer, TYPE_PROP);
 		editors[NEWNAME_PROP]= new TableTextCellEditor(fTableViewer, NEWNAME_PROP);
 		editors[DEFAULT_PROP]= new TableTextCellEditor(fTableViewer, DEFAULT_PROP);
 		
-		if (fMode.canChangeTypes() && (JavaCore.IS_EMCASCRIPT4)	) {
+		if (fMode.canChangeTypes() && (JavaCore.IS_ECMASCRIPT4)	) {
 			SubjectControlContentAssistant assistant= installParameterTypeContentAssist(editors[TYPE_PROP].getText());
 			editors[TYPE_PROP].setContentAssistant(assistant);
 		}

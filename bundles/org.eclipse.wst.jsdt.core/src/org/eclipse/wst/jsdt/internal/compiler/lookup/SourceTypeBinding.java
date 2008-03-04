@@ -995,7 +995,7 @@ private MethodBinding getExactMethod0(char[] selector, TypeBinding[] argumentTyp
 	}
 
 	if (foundNothing) {
-		if (JavaCore.IS_EMCASCRIPT4 && isInterface()) {
+		if (JavaCore.IS_ECMASCRIPT4 && isInterface()) {
 			 if (this.superInterfaces.length == 1) {
 				if (refScope != null)
 					refScope.recordTypeReference(this.superInterfaces[0]);
@@ -1573,7 +1573,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 	if (methodDecl == null) return null; // method could not be resolved in previous iteration
 
 	TypeParameter[] typeParameters = methodDecl.typeParameters();
-	if (JavaCore.IS_EMCASCRIPT4)
+	if (JavaCore.IS_ECMASCRIPT4)
 	{
 		if (typeParameters != null) {
 			methodDecl.scope.connectTypeVariables(typeParameters, true);
@@ -1673,7 +1673,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 		method.parameters = Binding.NO_PARAMETERS; // see 107004
 		// nullify type parameter bindings as well as they have a backpointer to the method binding
 		// (see https://bugs.eclipse.org/bugs/show_bug.cgi?id=81134)
-		if (JavaCore.IS_EMCASCRIPT4)
+		if (JavaCore.IS_ECMASCRIPT4)
 		{
 			if (typeParameters != null)
 				for (int i = 0, length = typeParameters.length; i < length; i++)

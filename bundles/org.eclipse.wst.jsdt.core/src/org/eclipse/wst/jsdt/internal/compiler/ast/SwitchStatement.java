@@ -169,7 +169,7 @@ public class SwitchStatement extends Statement implements ISwitchStatement{
 
 			}
 			if (statements != null) {
-				scope = !JavaCore.IS_EMCASCRIPT4 ? upperScope :  new BlockScope(upperScope);
+				scope = !JavaCore.IS_ECMASCRIPT4 ? upperScope :  new BlockScope(upperScope);
 				int length;
 				// collection of cases is too big but we will only iterate until caseCount
 				cases = new CaseStatement[length = statements.length];

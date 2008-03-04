@@ -14,9 +14,9 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider;
-import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
 
-public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainer, IJsGlobalScopeContainerInitialzerExtension {
+public class BasicBrowserLibraryJsGlobalScopeContainerInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainer, IJsGlobalScopeContainerInitializerExtension {
 	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.baseBrowserLibrary"; //$NON-NLS-1$
 	private static final String ContainerDescription = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3Browser;
 	private static final String FILE_DESCRIPTION0 = Messages.BasicBrowserLibraryJsGlobalScopeContainerInitializer_ECMA3DOM;

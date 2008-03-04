@@ -32,7 +32,7 @@ import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 
@@ -143,9 +143,9 @@ public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 
 	public ImageDescriptor getImageDescriptor() {
 		JsGlobalScopeContainerInitializer init = JSDScopeUtil.getContainerInitializer(fClassPathEntry.getPath());
-		if(init!=null && init instanceof IJsGlobalScopeContainerInitialzerExtension) {
+		if(init!=null && init instanceof IJsGlobalScopeContainerInitializerExtension) {
 			IPath entPath = fClassPathEntry.getPath();
-			ImageDescriptor image = ((IJsGlobalScopeContainerInitialzerExtension)init).getImage(entPath, fClassPathEntry.toString(), super.getJavaProject());
+			ImageDescriptor image = ((IJsGlobalScopeContainerInitializerExtension)init).getImage(entPath, fClassPathEntry.toString(), super.getJavaProject());
 			if(image!=null) return image;
 		}
 		return JavaPluginImages.DESC_OBJS_LIBRARY;

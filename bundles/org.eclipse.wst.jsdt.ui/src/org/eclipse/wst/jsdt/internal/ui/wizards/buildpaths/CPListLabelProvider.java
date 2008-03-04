@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
@@ -324,9 +324,9 @@ public class CPListLabelProvider extends LabelProvider {
 		
 		JsGlobalScopeContainerInitializer init = cpentry.getContainerInitializer();
 		
-		if(init!=null && init instanceof IJsGlobalScopeContainerInitialzerExtension) {
+		if(init!=null && init instanceof IJsGlobalScopeContainerInitializerExtension) {
 			IPath entPath = cpentry.getPath();
-			ImageDescriptor image = ((IJsGlobalScopeContainerInitialzerExtension)init).getImage(init.getPath(), entPath.toString(), cpentry.getJavaProject());
+			ImageDescriptor image = ((IJsGlobalScopeContainerInitializerExtension)init).getImage(init.getPath(), entPath.toString(), cpentry.getJavaProject());
 			if(image!=null) return image;
 		}
 		

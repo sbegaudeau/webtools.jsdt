@@ -866,7 +866,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		StringBuffer buff= new StringBuffer();
 		
 		int flags= getMethod().getFlags();
-		if(JavaCore.IS_EMCASCRIPT4) {
+		if(JavaCore.IS_ECMASCRIPT4) {
 			buff.append(getVisibilityString(flags));
 			if (Flags.isStatic(flags))
 				buff.append("static "); //$NON-NLS-1$
@@ -876,7 +876,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			buff.append(ATTRIBUTE_FUNCTION_HEAD + " "); //$NON-NLS-1$
 		}
 		
-		if (! getMethod().isConstructor() && JavaCore.IS_EMCASCRIPT4)
+		if (! getMethod().isConstructor() && JavaCore.IS_ECMASCRIPT4)
 			buff.append(fReturnTypeInfo.getOldTypeName())
 				.append(' ');
 
@@ -897,19 +897,19 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 		if(PREFIX_FUNCTION_HEAD) {
 			buff.append(ATTRIBUTE_FUNCTION_HEAD + " "); //$NON-NLS-1$
 		}
-		if(JavaCore.IS_EMCASCRIPT4) {
+		if(JavaCore.IS_ECMASCRIPT4) {
 			buff.append(getVisibilityString(fVisibility));
 			if (Flags.isStatic(getMethod().getFlags()))
 				buff.append("static "); //$NON-NLS-1$
 		}
-		if (! getMethod().isConstructor() && JavaCore.IS_EMCASCRIPT4)
+		if (! getMethod().isConstructor() && JavaCore.IS_ECMASCRIPT4)
 			buff.append(getReturnTypeString()).append(' ');
 
 		buff.append(getMethodName())
 			.append(Signature.C_PARAM_START)
 			.append(getMethodParameters())
 			.append(Signature.C_PARAM_END);
-		if(JavaCore.IS_EMCASCRIPT4) 
+		if(JavaCore.IS_ECMASCRIPT4) 
 			buff.append(getMethodThrows());
 		
 		return buff.toString();
@@ -978,7 +978,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 			return false;
 		else if (JdtFlags.isNative(getMethod()))
 			return false;
-		else if (JavaCore.IS_EMCASCRIPT4 && getMethod().getDeclaringType().isInterface())
+		else if (JavaCore.IS_ECMASCRIPT4 && getMethod().getDeclaringType().isInterface())
 			return false;
 		else 
 			return true;
@@ -1494,7 +1494,7 @@ public class ChangeSignatureRefactoring extends ScriptableRefactoring implements
 	}
 	
 	private static String createDeclarationString(ParameterInfo info) {
-		if(JavaCore.IS_EMCASCRIPT4) {
+		if(JavaCore.IS_ECMASCRIPT4) {
 			String newTypeName= info.getNewTypeName();
 			int index= newTypeName.indexOf('.');
 			if (index != -1){

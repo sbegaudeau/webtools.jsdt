@@ -120,7 +120,7 @@ public class ASTNodeFinder {
 	 * Returns null if not found.
 	 */
 	public TypeDeclaration findType(IType typeHandle) {
-		if (!JavaCore.IS_EMCASCRIPT4)
+		if (!JavaCore.IS_ECMASCRIPT4)
 			return null;
 		IJavaElement parent = typeHandle.getParent();
 		final char[] typeName = typeHandle.getElementName().toCharArray();

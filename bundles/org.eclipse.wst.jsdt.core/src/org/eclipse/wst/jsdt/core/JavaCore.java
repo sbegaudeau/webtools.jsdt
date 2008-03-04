@@ -150,7 +150,7 @@ import org.osgi.framework.BundleContext;
  */
 public final class JavaCore extends Plugin {
 
-	public static final boolean IS_EMCASCRIPT4=false;
+	public static final boolean IS_ECMASCRIPT4=false;
 
 	private static final IResource[] NO_GENERATED_RESOURCES = new IResource[0];
 

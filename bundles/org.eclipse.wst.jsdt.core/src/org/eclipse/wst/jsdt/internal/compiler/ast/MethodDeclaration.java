@@ -110,7 +110,7 @@ public class MethodDeclaration extends AbstractMethodDeclaration implements IFun
 			}
 			this.scope.reportUnusedDeclarations();
 			// check unreachable catch blocks
-			if (JavaCore.IS_EMCASCRIPT4)
+			if (JavaCore.IS_ECMASCRIPT4)
 				methodContext.complainIfUnusedExceptionHandlers(this);
 		} catch (AbortMethod e) {
 			this.ignoreFurtherInvestigation = true;

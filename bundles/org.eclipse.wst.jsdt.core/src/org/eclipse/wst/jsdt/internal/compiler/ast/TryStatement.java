@@ -351,7 +351,7 @@ public void resolve(BlockScope upperScope) {
 				this.scope.problemReporter().undocumentedEmptyBlock(this.finallyBlock.sourceStart, this.finallyBlock.sourceEnd);
 			}
 		} else {
-			finallyScope = JavaCore.IS_EMCASCRIPT4 ? new BlockScope(this.scope, false) : this.scope; // don't add it yet to parent scope
+			finallyScope = JavaCore.IS_ECMASCRIPT4 ? new BlockScope(this.scope, false) : this.scope; // don't add it yet to parent scope
 
 			// provision for returning and forcing the finally block to run
 			MethodScope methodScope = this.scope.methodScope();
@@ -388,7 +388,7 @@ public void resolve(BlockScope upperScope) {
 				}
 			}
 			this.finallyBlock.resolveUsing(finallyScope);
-			if (JavaCore.IS_EMCASCRIPT4) {
+			if (JavaCore.IS_ECMASCRIPT4) {
 				// force the finally scope to have variable positions shifted after its try scope and catch ones
 				finallyScope.shiftScopes = new BlockScope[this.catchArguments == null ? 1
 						: this.catchArguments.length + 1];
@@ -405,7 +405,7 @@ public void resolve(BlockScope upperScope) {
 		boolean catchHasError = false;
 		for (int i = 0; i < length; i++) {
 			BlockScope catchScope = new BlockScope(this.scope);
-			if (JavaCore.IS_EMCASCRIPT4 && finallyScope != null){
+			if (JavaCore.IS_ECMASCRIPT4 && finallyScope != null){
 				finallyScope.shiftScopes[i+1] = catchScope;
 			}
 			// side effect on catchScope in resolveForCatch(..)
@@ -432,7 +432,7 @@ public void resolve(BlockScope upperScope) {
 		this.caughtExceptionTypes = new ReferenceBinding[0];
 	}
 
-	if (JavaCore.IS_EMCASCRIPT4 && finallyScope != null){
+	if (JavaCore.IS_ECMASCRIPT4 && finallyScope != null){
 		// add finallyScope as last subscope, so it can be shifted behind try/catch subscopes.
 		// the shifting is necessary to achieve no overlay in between the finally scope and its
 		// sibling in term of local variable positions.

@@ -74,7 +74,7 @@ public class Argument extends LocalDeclaration implements IArgument {
 			this.binding = new LocalVariableBinding(this, typeBinding, this.modifiers, true);
 		}
 		scope.addLocalVariable(	this.binding );
-		if (JavaCore.IS_EMCASCRIPT4)
+		if (JavaCore.IS_ECMASCRIPT4)
 			resolveAnnotations(scope, this.annotations, this.binding);
 		//true stand for argument instead of just local
 		this.binding.declaration = this;

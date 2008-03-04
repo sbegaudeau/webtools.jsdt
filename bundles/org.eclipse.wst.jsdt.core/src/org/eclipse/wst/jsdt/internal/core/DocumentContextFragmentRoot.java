@@ -36,7 +36,8 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	 * if user includes dojo.js check if dojo.js.uncompressed.js exists instead and replace with that.
 	 */
 	public static final boolean HACK_DOJO= true;
-
+	private final String UNCOMPRESSED_DOJO="dojo.js.uncompressed.js"; //$NON-NLS-1$
+	private final  String DOJO_COMPRESSED = "dojo.js"; //$NON-NLS-1$
 	//private static final ClasspathAttribute HIDE = new ClasspathAttribute("hide","true"); //$NON-NLS-1$ //$NON-NLS-2$
 	private String[] includedFiles;
 	//private Long[] timeStamps;
@@ -97,6 +98,13 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 					if(DEBUG) System.out.println("DocumentContextFragmentRoot ====>" + "Accepting binding.. " + new String(simpleTypeName) + " in " + path + "\n\tfor file " + fRelativeFile.toString()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 					this.foundPaths.add(path);
 					return true;
+				}else if(HACK_DOJO) {
+					String includeString = includedFiles[i];
+					if(path.toLowerCase().indexOf(DOJO_COMPRESSED)>0 && (includeString.toLowerCase().indexOf(UNCOMPRESSED_DOJO)>0)) {
+						this.foundPaths.add(path);
+						return true;
+					}
+
 				}
 			}
 
@@ -351,8 +359,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	}
 	private void dojoHack() {
 		if(!HACK_DOJO) return;
-		String UNCOMPRESSED_DOJO="dojo.js.uncompressed.js"; //$NON-NLS-1$
-		String DOJO_COMPRESSED = "dojo.js"; //$NON-NLS-1$
+		
 
 		for(int i = 0;i<includedFiles.length;i++) {
 			String includeString = includedFiles[i];

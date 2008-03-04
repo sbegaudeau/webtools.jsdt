@@ -135,7 +135,7 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 			layout.marginHeight= 0;
 			layout.marginWidth= 0;
 			composite.setLayout(layout);
-			if(JavaCore.IS_EMCASCRIPT4) { 
+			if(JavaCore.IS_ECMASCRIPT4) { 
 				createAccessControl(composite);
 				createReturnTypeControl(composite);
 			}
@@ -264,7 +264,7 @@ public class ChangeSignatureWizard extends RefactoringWizard {
 			TabItem item= new TabItem(folder, SWT.NONE);
 			item.setText(RefactoringMessages.ChangeSignatureInputPage_parameters); 
 			item.setControl(createParameterTableControl(folder));
-			if(JavaCore.IS_EMCASCRIPT4) { 
+			if(JavaCore.IS_ECMASCRIPT4) { 
 				TabItem itemEx= new TabItem(folder, SWT.NONE);
 				itemEx.setText(RefactoringMessages.ChangeSignatureInputPage_exceptions); 
 				itemEx.setControl(createExceptionsTableControl(folder));

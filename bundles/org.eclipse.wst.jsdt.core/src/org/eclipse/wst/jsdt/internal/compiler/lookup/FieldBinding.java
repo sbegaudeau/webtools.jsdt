@@ -66,7 +66,7 @@ public final boolean canBeSeenBy(PackageBinding invocationPackage) {
 */
 
 public final boolean canBeSeenBy(TypeBinding receiverType, InvocationSite invocationSite, Scope scope) {
-	if (isPublic() || !JavaCore.IS_EMCASCRIPT4) return true;
+	if (isPublic() || !JavaCore.IS_ECMASCRIPT4) return true;
 
 	SourceTypeBinding invocationType = scope.enclosingSourceType();
 	if (invocationType == declaringClass && invocationType == receiverType) return true;

@@ -24,7 +24,7 @@ import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.internal.corext.template.java.SignatureUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
-import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitialzerExtension;
+import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.ui.JavaElementImageDescriptor;
@@ -593,8 +593,8 @@ public class CompletionProposalLabelProvider {
 		if(compUnit!=null && propType!=null)
 			init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
 		
-		if(init!=null && init instanceof IJsGlobalScopeContainerInitialzerExtension) {
-			ImageDescriptor description = ((IJsGlobalScopeContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
+		if(init!=null && init instanceof IJsGlobalScopeContainerInitializerExtension) {
+			ImageDescriptor description = ((IJsGlobalScopeContainerInitializerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
 			if( description!=null) return description;
 			
 		}
@@ -661,8 +661,8 @@ public class CompletionProposalLabelProvider {
 		char[] propType = proposal.getName();
 		IJavaProject project = proposal.getJavaProject();
 		JsGlobalScopeContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
-		if(init!=null && init instanceof IJsGlobalScopeContainerInitialzerExtension) {
-			ImageDescriptor description = ((IJsGlobalScopeContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
+		if(init!=null && init instanceof IJsGlobalScopeContainerInitializerExtension) {
+			ImageDescriptor description = ((IJsGlobalScopeContainerInitializerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
 			if( description!=null) return description;
 			
 		}
@@ -687,8 +687,8 @@ public class CompletionProposalLabelProvider {
 		if (compUnit!=null && compUnit.length>0)
 		{
 			JsGlobalScopeContainerInitializer init = JSDScopeUtil.findLibraryInitializer(new Path(new String(compUnit)),project);
-			if(init!=null && init instanceof IJsGlobalScopeContainerInitialzerExtension) {
-				ImageDescriptor description = ((IJsGlobalScopeContainerInitialzerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
+			if(init!=null && init instanceof IJsGlobalScopeContainerInitializerExtension) {
+				ImageDescriptor description = ((IJsGlobalScopeContainerInitializerExtension)init).getImage(new Path(new String(compUnit)),new String(propType), project);
 				if( description!=null) return description;
 			}
 		}

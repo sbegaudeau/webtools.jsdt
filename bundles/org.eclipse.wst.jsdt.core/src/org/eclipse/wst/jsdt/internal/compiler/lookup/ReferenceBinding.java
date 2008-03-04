@@ -1024,7 +1024,7 @@ public boolean isThrowable() {
  * @see org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding#isUncheckedException(boolean)
  */
 public boolean isUncheckedException(boolean includeSupertype) {
-	if (JavaCore.IS_EMCASCRIPT4)	// no checked exceptions for now
+	if (JavaCore.IS_ECMASCRIPT4)	// no checked exceptions for now
 	{
 	switch (this.id) {
 			case TypeIds.T_JavaLangError :

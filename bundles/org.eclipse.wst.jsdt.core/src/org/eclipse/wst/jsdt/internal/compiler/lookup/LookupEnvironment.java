@@ -480,7 +480,7 @@ public ReferenceBinding convertToParameterizedType(ReferenceBinding originalType
 }
 
 public TypeBinding convertToRawType(TypeBinding type) {
-	if (JavaCore.IS_EMCASCRIPT4)
+	if (JavaCore.IS_ECMASCRIPT4)
 	{
 		int dimension;
 		TypeBinding originalType;

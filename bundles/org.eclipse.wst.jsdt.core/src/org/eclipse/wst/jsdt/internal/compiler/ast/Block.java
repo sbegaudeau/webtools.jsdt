@@ -77,7 +77,7 @@ public class Block extends Statement implements IBlock {
 		}
 		if (statements != null) {
 			scope =
-				(!JavaCore.IS_EMCASCRIPT4 || explicitDeclarations == 0)
+				(!JavaCore.IS_ECMASCRIPT4 || explicitDeclarations == 0)
 					? upperScope
 					: new BlockScope(upperScope, explicitDeclarations);
 			for (int i = 0, length = statements.length; i < length; i++) {

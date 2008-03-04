@@ -155,8 +155,8 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 	private void initGroupingActions() {
 		fGroupProjectAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_project, SearchMessages.JavaSearchResultPage_groupby_project_tooltip, this, LevelTreeContentProvider.LEVEL_PROJECT); 
 		JavaPluginImages.setLocalImageDescriptors(fGroupProjectAction, "prj_mode.gif"); //$NON-NLS-1$
-		if(JavaCore.IS_EMCASCRIPT4) fGroupPackageAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_package, SearchMessages.JavaSearchResultPage_groupby_package_tooltip, this, LevelTreeContentProvider.LEVEL_PACKAGE); 
-		if(JavaCore.IS_EMCASCRIPT4) JavaPluginImages.setLocalImageDescriptors(fGroupPackageAction, "package_mode.gif"); //$NON-NLS-1$
+		if(JavaCore.IS_ECMASCRIPT4) fGroupPackageAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_package, SearchMessages.JavaSearchResultPage_groupby_package_tooltip, this, LevelTreeContentProvider.LEVEL_PACKAGE); 
+		if(JavaCore.IS_ECMASCRIPT4) JavaPluginImages.setLocalImageDescriptors(fGroupPackageAction, "package_mode.gif"); //$NON-NLS-1$
 		fGroupFileAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_file, SearchMessages.JavaSearchResultPage_groupby_file_tooltip, this, LevelTreeContentProvider.LEVEL_FILE); 
 		JavaPluginImages.setLocalImageDescriptors(fGroupFileAction, "file_mode.gif"); //$NON-NLS-1$
 		fGroupTypeAction= new GroupAction(SearchMessages.JavaSearchResultPage_groupby_type, SearchMessages.JavaSearchResultPage_groupby_type_tooltip, this, LevelTreeContentProvider.LEVEL_TYPE); 
@@ -256,7 +256,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 	private void addGroupActions(IToolBarManager mgr) {
 		mgr.appendToGroup(IContextMenuConstants.GROUP_VIEWER_SETUP, new Separator(GROUP_GROUPING));
 		mgr.appendToGroup(GROUP_GROUPING, fGroupProjectAction);
-		if(JavaCore.IS_EMCASCRIPT4) mgr.appendToGroup(GROUP_GROUPING, fGroupPackageAction);
+		if(JavaCore.IS_ECMASCRIPT4) mgr.appendToGroup(GROUP_GROUPING, fGroupPackageAction);
 		mgr.appendToGroup(GROUP_GROUPING, fGroupFileAction);
 		mgr.appendToGroup(GROUP_GROUPING, fGroupTypeAction);
 		
@@ -266,7 +266,7 @@ public class JavaSearchResultPage extends AbstractTextSearchViewPage implements 
 
 	private void updateGroupingActions() {
 		fGroupProjectAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_PROJECT);
-		if(JavaCore.IS_EMCASCRIPT4) fGroupPackageAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_PACKAGE);
+		if(JavaCore.IS_ECMASCRIPT4) fGroupPackageAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_PACKAGE);
 		fGroupFileAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_FILE);
 		fGroupTypeAction.setChecked(fCurrentGrouping == LevelTreeContentProvider.LEVEL_TYPE);
 	}

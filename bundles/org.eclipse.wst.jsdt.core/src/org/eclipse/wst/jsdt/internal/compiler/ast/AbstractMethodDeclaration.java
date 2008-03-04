@@ -373,10 +373,10 @@ public abstract class AbstractMethodDeclaration
 
 		try {
 			bindArguments();
-			if (JavaCore.IS_EMCASCRIPT4)
+			if (JavaCore.IS_ECMASCRIPT4)
 				bindThrownExceptions();
 			resolveJavadoc();
-			if (JavaCore.IS_EMCASCRIPT4)
+			if (JavaCore.IS_ECMASCRIPT4)
 				resolveAnnotations(scope, this.annotations, this.binding);
 			resolveStatements();
 			// check @Deprecated annotation presence

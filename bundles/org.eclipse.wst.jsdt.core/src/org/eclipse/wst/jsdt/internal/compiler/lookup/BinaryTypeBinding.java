@@ -105,7 +105,7 @@ public static AnnotationBinding[] createAnnotations(IBinaryAnnotation[] annotati
 public static ReferenceBinding resolveType(ReferenceBinding type, LookupEnvironment environment, boolean convertGenericToRawType) {
 	if (type instanceof UnresolvedReferenceBinding)
 		return ((UnresolvedReferenceBinding) type).resolve(environment, convertGenericToRawType);
-	if (JavaCore.IS_EMCASCRIPT4)
+	if (JavaCore.IS_ECMASCRIPT4)
 	{
 		if (type.isParameterizedType())
 			return ((ParameterizedTypeBinding) type).resolve();

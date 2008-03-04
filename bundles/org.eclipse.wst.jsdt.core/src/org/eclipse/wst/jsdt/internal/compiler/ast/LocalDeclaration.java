@@ -298,7 +298,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 		}
 
 		// only resolve annotation at the end, for constant to be positionned before (96991)
-		if (JavaCore.IS_EMCASCRIPT4)
+		if (JavaCore.IS_ECMASCRIPT4)
 		resolveAnnotations(scope, this.annotations, this.binding);
 	}
 	public StringBuffer printStatement(int indent, StringBuffer output) {

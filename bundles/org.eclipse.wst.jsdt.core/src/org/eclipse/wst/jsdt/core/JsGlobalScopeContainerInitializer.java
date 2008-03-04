@@ -48,7 +48,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
  * @see IJsGlobalScopeContainer
  * @since 2.0
  */
-public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitialzer,  IJsGlobalScopeContainer {
+public abstract class JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitializer,  IJsGlobalScopeContainer {
 
 	/**
 	 * Status code indicating that an attribute is not supported.

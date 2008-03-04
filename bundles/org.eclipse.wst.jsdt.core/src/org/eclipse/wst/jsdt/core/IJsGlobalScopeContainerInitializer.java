@@ -13,7 +13,7 @@ import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
  * @author childsb
  *
  */
-public interface IJsGlobalScopeContainerInitialzer {
+public interface IJsGlobalScopeContainerInitializer {
 	/**
 	 * Binds a classpath container to a <code>IJsGlobalScopeContainer</code> for a given project,
 	 * or silently fails if unable to do so.
