@@ -108,10 +108,11 @@ public ReferenceBinding askForType(char[][] compoundName) {
 		typeRequestor.accept(answer.getBinaryType(), computePackageFrom(compoundName), answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		if (!acceptedCompilationUnits.contains(compilationUnit))
+		String fileName=new String(compilationUnit.getFileName());
+		if (!acceptedCompilationUnits.contains(fileName))
 		{
 		// the type was found as a .js file, try to build it then search the cache
-			acceptedCompilationUnits.add(compilationUnit);
+			acceptedCompilationUnits.add(fileName);
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	} else if (answer.isSourceType())
@@ -147,18 +148,20 @@ void addUnitsContainingBinding(PackageBinding packageBinding, char[] name, int m
 		typeRequestor.accept(answer.getBinaryType(), packageBinding, answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		if (!acceptedCompilationUnits.contains(compilationUnit))
+		String fileName=new String(compilationUnit.getFileName());
+		if (!acceptedCompilationUnits.contains(fileName))
 		{
 			// the type was found as a .js file, try to build it then search the cache
-			acceptedCompilationUnits.add(compilationUnit);
+			acceptedCompilationUnits.add(fileName);
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	}else if (answer.isCompilationUnits()) {
 			ICompilationUnit[] compilationUnits = answer.getCompilationUnits();
 			for (int i = 0; i < compilationUnits.length; i++) {
-				if (!acceptedCompilationUnits.contains(compilationUnits[i])) {
+				String fileName=new String(compilationUnits[i].getFileName());
+				if (!acceptedCompilationUnits.contains(fileName)) {
 					// the type was found as a .js file, try to build it then search the cache
-					acceptedCompilationUnits.add(compilationUnits[i]);
+					acceptedCompilationUnits.add(fileName);
 					typeRequestor.accept(compilationUnits[i], answer
 							.getAccessRestriction());
 				}
@@ -186,10 +189,11 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 		typeRequestor.accept(answer.getBinaryType(), packageBinding, answer.getAccessRestriction());
 	else if (answer.isCompilationUnit()) {
 		ICompilationUnit compilationUnit = answer.getCompilationUnit();
-		if (!acceptedCompilationUnits.contains(compilationUnit))
+		String fileName=new String(compilationUnit.getFileName());
+		if (!acceptedCompilationUnits.contains(fileName))
 		{
 			// the type was found as a .js file, try to build it then search the cache
-			acceptedCompilationUnits.add(compilationUnit);
+			acceptedCompilationUnits.add(fileName);
 			typeRequestor.accept(compilationUnit, answer.getAccessRestriction());
 		}
 	} else if (answer.isSourceType())
