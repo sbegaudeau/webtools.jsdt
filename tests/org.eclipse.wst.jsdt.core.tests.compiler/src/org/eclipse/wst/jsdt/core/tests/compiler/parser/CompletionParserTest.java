@@ -35,10 +35,10 @@ public void testA() {
 		"\n";
 
 	String testName = "<complete on methods/fields>";
-	String completeBehind = "";
-	String expectedCompletionNodeToString = "<CompleteOnName:>";
+	String completeBehind = "s.";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:s.>";
 	String completionIdentifier = "";
-	String expectedReplacedSource = "s.";
+	String expectedReplacedSource = "";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
@@ -47,7 +47,7 @@ public void testA() {
 		"      {\n" + 
 		"      }\n" + 
 		"  var s = \"hello\";\n" + 
-		"  <CompleteOnName:s.>;\n" + 
+		"  <CompleteOnMemberAccess:s.>;\n" + 
 		"}" + 
 		"\n";
 
@@ -79,6 +79,7 @@ public void testAA_1() {
 		"function foo() {\n" + 
 		"  var maxUnits = 0;\n" + 
 		"  var unitResult = <CompleteOnName:n>;\n" + 
+		"  CompilationUnitResult(null, i, maxUnits);\n"+
 		"}\n";
 	String expectedReplacedSource = "new";
 	String testName = "<complete on initializer (new)>";
@@ -97,12 +98,12 @@ public void testAA_1() {
 public void testAA_2() {
 	String str =
 		"// test unicode \\u000a var c = 1; \n" +
-		"var b = 2; \n";
+		"var b =c; \n";
 	String testName = "<unicode in comment complete on variable>";
 	String expectedCompletionNodeToString = "<CompleteOnName:c>";
 	String completionIdentifier = "c";
 	String expectedReplacedSource = "c";
-	int cursorLocation = str.indexOf("var b =") -1 /*+ completeBehind.length() - 1*/;
+	int cursorLocation = str.indexOf("var b =c") -1 /*+ completeBehind.length() - 1*/;
 	String expectedUnitDisplayString =
 		"// test unicode \\u000a var c = 1; \n" +
 		"var b = <CompleteOnName:c>;\n";
@@ -116,25 +117,25 @@ public void testAA_2() {
 		testName); 
 }
 
-public void testAA_3() {
-	String str =
-		"'abc\\u0027def';\n";
-	String testName = "<unicode in comment complete on variable>";
-	String expectedCompletionNodeToString = "<CompleteOnName:c>";
-	String completionIdentifier = "c";
-	String expectedReplacedSource = "c";
-	int cursorLocation = str.indexOf("var b =") -1 /*+ completeBehind.length() - 1*/;
-	String expectedUnitDisplayString =
-		"'abc\\u0027def';\n";
-	checkMethodParse(
-		str.toCharArray(), 
-		cursorLocation, 
-		expectedCompletionNodeToString,
-		expectedUnitDisplayString,
-		completionIdentifier,
-		expectedReplacedSource,
-		testName); 
-}
+//public void testAA_3() {
+//	String str =
+//		"'abc\\u0027def';\n";
+//	String testName = "<unicode in comment complete on variable>";
+//	String expectedCompletionNodeToString = "<CompleteOnName:c>";
+//	String completionIdentifier = "c";
+//	String expectedReplacedSource = "c";
+//	int cursorLocation = str.indexOf("var b =") -1 /*+ completeBehind.length() - 1*/;
+//	String expectedUnitDisplayString =
+//		"'abc\\u0027def';\n";
+//	checkMethodParse(
+//		str.toCharArray(), 
+//		cursorLocation, 
+//		expectedCompletionNodeToString,
+//		expectedUnitDisplayString,
+//		completionIdentifier,
+//		expectedReplacedSource,
+//		testName); 
+//}
 
 //public void testAA_3() {
 //	String str = 
@@ -452,7 +453,7 @@ public void testB() {
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
 		"function B() {\n" + 
-		"  var o = new   <CompleteOnName:Object>;\n" + 
+		"  var o = new   <CompleteOnType:Object>;\n" + 
 		"}\n";
 
 	checkDietParse(
@@ -713,7 +714,7 @@ public void testMsgSend2() {
 	String completeBehind = "titi";
 	String expectedCompletionNodeToString = "<CompleteOnMessageSend:abc.titi()>";
 	String completionIdentifier = "titi";
-	String expectedReplacedSource = "abc.titi()";
+	String expectedReplacedSource = "titi()";
 	int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
 		"<CompleteOnMessageSend:abc.titi()>;" + 
@@ -740,7 +741,7 @@ public void testMsgSend3() {
 	String completeBehind = "titi";
 	String expectedCompletionNodeToString = "<CompleteOnMessageSend:toto(Test.vvv).titi(removed)>";
 	String completionIdentifier = "titi";
-	String expectedReplacedSource = "toto(Test.vvv).titi(removed)";
+	String expectedReplacedSource = "titi(removed)";
 	int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
@@ -771,14 +772,14 @@ public void testBC_1FJ4GSG_3() {
 
 	String testName = "<complete on method/field>";
 	String completeBehind = "v.";
-	String expectedCompletionNodeToString = "<CompleteOnName:v.>";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:v.>";
 	String completionIdentifier = "";
 	String expectedReplacedSource = "v.";
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
 	String expectedUnitDisplayString =
 		"function foo() {\n" + 
 		"  var v = new   Vector();\n" + 
-		"  var ans = <CompleteOnName:v.>;\n" + 
+		"  var ans = <CompleteOnMemberAccess:v.>;\n" + 
 		"}" + 
 		"\n";
 
@@ -828,12 +829,12 @@ public void testCA_1FGPJQZ() {
 
 	String testName = "<complete on method/field>";
 	String completeBehind = "unknownField.";
-	String expectedCompletionNodeToString = "<CompleteOnName:unknownField.>";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:unknownField.>";
 	String completionIdentifier = "";
-	String expectedReplacedSource = "unknownField.";
+	String expectedReplacedSource = "";
 	String expectedUnitDisplayString =
 		"function moo() {\n" + 
-		"  <CompleteOnName:unknownField.>;\n" + 
+		"  <CompleteOnMemberAccess:unknownField.>;\n" + 
 		"}\n";
 
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
@@ -1026,8 +1027,6 @@ public void testCB_1FHSKQ9_2() {
 //}
 public void testD_2() {
 	String str = 
-		"	var i;\n" + 
-		"	var j;\n" + 
 		"	var a = new Vector();\n" + 
 		"	function foo(s) {\n" + 
 		"		var string = null;\n" + 
@@ -1042,18 +1041,16 @@ public void testD_2() {
 
 	String testName = "<complete on method/field>";
 	String completeBehind = "string.";
-	String expectedCompletionNodeToString = "<CompleteOnName:string.>";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:string.>";
 	String completionIdentifier = "";
 	String expectedReplacedSource = "string.";
 	String expectedUnitDisplayString =
-		"var i;\n" + 
-		"var j;\n" + 
-		"var a;\n" + 
+		"var a = new Vector();\n" + 
 		"function foo(s) {\n" + 
-		"  var string;\n" + 
+		"  var string = null;\n" + 
 		"  var soso;\n" + 
 		"  var f;\n" + 
-		"  <CompleteOnName:string.>;\n" + 
+		"  <CompleteOnMemberAccess:string.>;\n" + 
 		"}\n";
 
 	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
@@ -1066,6 +1063,59 @@ public void testD_2() {
 		expectedReplacedSource,
 		testName); 
 }
+public void testD_2b() {
+	String str = 
+		"	function foo(s) {\n" + 
+		"		foo(string.regionMatches);\n" + 
+		"}\n";
+
+	String testName = "<complete on method/field>";
+	String completeBehind = "string.";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:string.>";
+	String completionIdentifier = "string.";
+	String expectedReplacedSource = "regionMatches";
+	String expectedUnitDisplayString =
+		"function foo(s) {\n" + 
+		"  foo(<CompleteOnMemberAccess:string.>);\n" + 
+		"}\n";
+
+	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+	checkMethodParse(
+		str.toCharArray(), 
+		cursorLocation, 
+		expectedCompletionNodeToString,
+		expectedUnitDisplayString,
+		completionIdentifier,
+		expectedReplacedSource,
+		testName); 
+}
+public void testD_2c() {
+	String str = 
+		"	var obj= {\n" + 
+		"	a: string.regionMatches\n" + 
+		"}\n";
+
+	String testName = "<complete on method/field>";
+	String completeBehind = "string.";
+	String expectedCompletionNodeToString = "<CompleteOnMemberAccess:string.>";
+	String completionIdentifier = "";
+	String expectedReplacedSource = "regionMatches";
+	String expectedUnitDisplayString =
+		"var obj = {\n" + 
+		"  a : <CompleteOnMemberAccess:string.>\n" + 
+		"};\n";
+
+	int cursorLocation = str.indexOf(completeBehind) + completeBehind.length() - 1;
+	checkMethodParse(
+		str.toCharArray(), 
+		cursorLocation, 
+		expectedCompletionNodeToString,
+		expectedUnitDisplayString,
+		completionIdentifier,
+		expectedReplacedSource,
+		testName); 
+}
+
 public void testDA_1() {
 	String str = 
 			"package p; \n" + 
