@@ -201,7 +201,7 @@ public int getNextToken() throws InvalidInputException {
 				 	while(getNextCharAsJavaIdentifierPart()){/*empty*/}
 				 	this.eofPosition = temp;
 				 	this.endOfEmptyToken = this.currentPosition - 1;
-					this.currentPosition = this.startPosition; // for being detected as empty free identifier
+//					this.currentPosition = this.startPosition; // for being detected as empty free identifier
 					return (currentToken=TokenNameIdentifier);
 				}
 				if (AssistParser.STOP_AT_CURSOR)

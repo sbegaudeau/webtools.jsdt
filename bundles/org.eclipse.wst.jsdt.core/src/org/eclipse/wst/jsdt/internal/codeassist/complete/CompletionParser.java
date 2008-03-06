@@ -2961,7 +2961,7 @@ protected void consumeToken(int token) {
 			&& this.identifierStack[this.identifierPtr] == assistIdentifier()
 			&& this.currentElement == null
 			&& this.isIndirectlyInsideFieldInitialization()) {
-		this.scanner.eofPosition = cursorLocation < Integer.MAX_VALUE ? cursorLocation+1 : cursorLocation;
+//		this.scanner.eofPosition = cursorLocation < Integer.MAX_VALUE ? cursorLocation+1 : cursorLocation;
 	}
 
 	// if in a method or if in a field initializer
