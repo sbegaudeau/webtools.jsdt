@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.ast;
 
+import java.util.ArrayList;
+
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IFieldReference;
@@ -27,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
@@ -485,27 +488,64 @@ public boolean isPrototype()
 
 public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location)
 {
+	char [][]qualifiedName=asQualifiedName();
 	TypeBinding typeBinding=null;
-	this.receiverType = receiver.resolveType(scope);
-	if (this.receiverType == null) {
-		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
-		constant = Constant.NotAConstant;
-		this.resolvedType=TypeBinding.ANY;
-		return null;
+	if (qualifiedName!=null)
+	{
+		typeBinding=scope.getType(CharOperation.concatWith(qualifiedName, '.'));
 	}
-	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
-	if( memberBinding instanceof MethodBinding && memberBinding.isValidBinding()){
-		this.resolvedType= ((MethodBinding)memberBinding).allocationType;
-		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
-		if( memberBinding.isValidBinding() )
-			return this.resolvedType;
-		return null;
+	if (typeBinding==null || !typeBinding.isValidBinding())
+	{
+		this.receiverType = receiver.resolveType(scope);
+		if (this.receiverType == null) {
+			this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
+			constant = Constant.NotAConstant;
+			this.resolvedType=TypeBinding.ANY;
+			return null;
+		}
+		Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
+		if( memberBinding instanceof MethodBinding && memberBinding.isValidBinding()){
+			this.resolvedType= ((MethodBinding)memberBinding).allocationType;
+			this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
+			if( memberBinding.isValidBinding() )
+				return this.resolvedType;
+		}
+		
+	}
+	if (typeBinding==null)
+	{
+		if (qualifiedName==null)
+			qualifiedName=new char[][]{token};
+		typeBinding=new  ProblemReferenceBinding(qualifiedName,null,ProblemReasons.NotFound);
 	}
 	return typeBinding;
 }
 public int getASTType() {
 	return IASTNode.FIELD_REFERENCE;
 
+}
+
+public char [][] asQualifiedName()
+{
+	ArrayList list=new ArrayList();
+	list.add(token);
+	FieldReference fieldReference=this;
+	while (fieldReference!=null)
+	{
+		if ( fieldReference.receiver instanceof SingleNameReference)
+		{
+			list.add(0,((SingleNameReference)fieldReference.receiver).token);
+			fieldReference=null;
+		}
+		else if (fieldReference.receiver instanceof FieldReference)
+		{
+			fieldReference=(FieldReference)fieldReference.receiver;
+			list.add(0,fieldReference.token);
+		}
+		else
+			return null;
+	}
+	return (char [][])list.toArray(new char[list.size()][]);
 }
 
 }
