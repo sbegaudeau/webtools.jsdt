@@ -201,6 +201,9 @@ public TypeBinding resolveType(BlockScope scope) {
 	constant = Constant.NotAConstant;
 	if (this.member!=null) {
 		this.resolvedType=this.member.resolveForAllocation(scope, this);
+		if (this.resolvedType!=null && !this.resolvedType.isValidBinding()) {
+			scope.problemReporter().invalidType(this, this.resolvedType);
+		}
 	}
 	else if (this.type == null) {
 		// initialization of an enum constant
@@ -289,7 +292,9 @@ public TypeBinding resolveType(BlockScope scope) {
 		scope.problemReporter().cannotInstantiate(type, this.resolvedType);
 		return this.resolvedType;
 	}
-	if (this.resolvedType instanceof ReferenceBinding)
+	if (!this.resolvedType.isValidBinding())
+		return null;
+	if (this.resolvedType instanceof ReferenceBinding )
 	{
 		ReferenceBinding allocationType = (ReferenceBinding) this.resolvedType;
 		if (!(binding = scope.getConstructor(allocationType, argumentTypes, this)).isValidBinding()) {
