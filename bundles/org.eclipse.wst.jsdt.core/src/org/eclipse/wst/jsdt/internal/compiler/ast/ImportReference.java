@@ -12,6 +12,7 @@ package org.eclipse.wst.jsdt.internal.compiler.ast;
 
 import org.eclipse.wst.jsdt.core.ast.IASTNode;
 import org.eclipse.wst.jsdt.core.ast.IImportReference;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
@@ -40,6 +41,24 @@ public class ImportReference extends ASTNode implements IImportReference {
 		this.sourceEnd = (int) (sourcePositions[sourcePositions.length-1] & 0x00000000FFFFFFFF);
 		this.sourceStart = (int) (sourcePositions[0] >>> 32);
 		this.modifiers = modifiers;
+	}
+
+
+	public ImportReference(		// for internal imports
+			char[] name, int startPosition, int endPosition, int nameStartPosition) {
+
+		this.tokens = CharOperation.splitOn('.', name);
+		this.sourcePositions = new long[tokens.length];
+		for (int i = 0; i < tokens.length; i++) {
+			this.sourcePositions[i] =
+				(((long) nameStartPosition) << 32) + (nameStartPosition+tokens[i].length - 1);
+			nameStartPosition+=tokens[i].length + 1;
+		}
+		this.bits |= ASTNode.IsFileImport;
+		this.bits |= ASTNode.OnDemand;
+		this.sourceStart = startPosition;
+		this.sourceEnd = endPosition;
+		this.modifiers = ClassFileConstants.AccDefault;
 	}
 
 	public boolean isStatic() {
@@ -81,4 +100,14 @@ public class ImportReference extends ASTNode implements IImportReference {
 		return IASTNode.IMPORT_REFERENCE;
 	
 	}
+	public boolean isInternal()
+	{
+	  return (this.bits&ASTNode.IsFileImport)!=0;
+	}
+	
+	public boolean isFileImport()
+	{
+	  return (this.bits&ASTNode.IsFileImport)!=0;
+	}
+
 }

@@ -301,6 +301,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 		// Switch the current policy and compilation result for this unit to the requested one.
 		CompilationResult unitResult =
 			new CompilationResult(sourceUnit, totalUnits, totalUnits, this.options.maxProblemsPerUnit);
+		unitResult.packageName=sourceUnit.getPackageName();
 		try {
 			if (options.verbose) {
 				String count = String.valueOf(totalUnits + 1);

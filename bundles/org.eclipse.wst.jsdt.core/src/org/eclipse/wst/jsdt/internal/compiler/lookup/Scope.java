@@ -1434,10 +1434,12 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		char[] typeName,
 		int mask,
 		PackageBinding declarationPackage,
-		PackageBinding invocationPackage) {
+		PackageBinding invocationPackage, boolean searchEnvironment) {
 
 		compilationUnitScope().recordReference(declarationPackage.compoundName, typeName);
-		Binding typeBinding = declarationPackage.getBinding(typeName,mask);
+		Binding typeBinding = 
+			(searchEnvironment) ? declarationPackage.getBinding(typeName,mask) :
+			declarationPackage.getBinding0(typeName, mask);
 		if (typeBinding == null)
 			return null;
 
@@ -1455,7 +1457,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 		PackageBinding declarationPackage,
 		PackageBinding invocationPackage) {
 
-		return (ReferenceBinding)findBinding(typeName, Binding.TYPE|Binding.PACKAGE, declarationPackage, invocationPackage);
+		return (ReferenceBinding)findBinding(typeName, Binding.TYPE|Binding.PACKAGE, declarationPackage, invocationPackage, true);
 	}
 
 	public LocalVariableBinding findVariable(char[] variable) {
@@ -2007,11 +2009,10 @@ public abstract class Scope implements TypeConstants, TypeIds {
 			}
 			MethodBinding[] methods = receiverType.getMethods(TypeConstants.INIT);
 			if (methods == Binding.NO_METHODS)
-				return new ProblemMethodBinding(
-					TypeConstants.INIT,
-					argumentTypes,
-					ProblemReasons.NotFound);
-
+			{
+				return new MethodBinding(0, TypeConstants.INIT, TypeBinding.UNKNOWN, null, null,receiverType);
+ 
+			}
 			MethodBinding[] compatible = new MethodBinding[methods.length];
 			int compatibleIndex = 0;
 			MethodBinding problemMethod = null;
@@ -2901,6 +2902,37 @@ public abstract class Scope implements TypeConstants, TypeIds {
 				}
 			}
 
+
+			// check on file imports
+			if (imports != null) {
+				boolean foundInImport = false;
+				Binding type = null;
+				for (int i = 0, length = imports.length; i < length; i++) {
+					ImportBinding someImport = imports[i];
+					if (someImport.reference!=null && someImport.reference.isFileImport())
+					{
+						Binding resolvedImport = someImport.resolvedImport;
+						Binding temp = null;
+
+						if (resolvedImport instanceof CompilationUnitBinding) {
+							CompilationUnitBinding compilationUnitBinding =(CompilationUnitBinding)resolvedImport;
+							
+							temp = findBinding(name, mask, compilationUnitBinding.getPackage(), unitScope.getDefaultPackage(), false);
+							if (temp!=null && temp.isValidBinding())
+							{
+								ImportReference importReference = someImport.reference;
+								importReference.bits |= ASTNode.Used;
+								if (typeOrPackageCache != null)
+									typeOrPackageCache.put(name, temp);
+								return temp; // type is always visible to its own package
+							}
+						}
+						
+
+					}
+				}
+			}
+			
 			// check if the name is in the current package, skip it if its a sub-package
 			PackageBinding currentPackage = unitScope.getDefaultPackage();
 			unitScope.recordReference(currentPackage.compoundName, name);
@@ -2927,7 +2959,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						Binding resolvedImport = someImport.resolvedImport;
 						Binding temp = null;
 						if (resolvedImport instanceof PackageBinding) {
-							temp = findBinding(name, mask, (PackageBinding) resolvedImport, currentPackage);
+							temp = findBinding(name, mask, (PackageBinding) resolvedImport, currentPackage, false);
 						} else if (someImport.isStatic()) {
 							temp = findMemberType(name, (ReferenceBinding) resolvedImport); // static imports are allowed to see inherited member types
 //							if (temp != null && !temp.isStatic())

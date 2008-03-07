@@ -120,13 +120,15 @@ private void buildFields() {
 		if (field.isStatic)
 			modifiers|=ClassFileConstants.AccStatic;
 			InferredType fieldType = field.type;
-			TypeBinding fieldTypeBinding;
+			TypeBinding fieldTypeBinding=null;
 			if(fieldType!=null) {
 				//fieldTypeBinding = BaseTypeBinding.UNKNOWN;
-				fieldTypeBinding = scope.getType(fieldType.getName());
-			}else {
-				fieldTypeBinding = TypeBinding.UNKNOWN;
+//				fieldTypeBinding = scope.getType(fieldType.getName());
+				fieldTypeBinding = fieldType.resolveType(scope, field.node);
 			}
+			if (fieldTypeBinding==null)
+				fieldTypeBinding = TypeBinding.UNKNOWN;
+			
 			FieldBinding fieldBinding = new FieldBinding(field, fieldTypeBinding, modifiers | ExtraCompilerModifiers.AccUnresolved, this);
 			fieldBinding.id = count;
 			// field's type will be resolved when needed for top level types

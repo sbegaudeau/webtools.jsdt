@@ -397,7 +397,7 @@ public void computeId() {
 //						this.id = TypeIds.T_JavaLangAssertionError;
 //					return;
 				case 'B' :
-					if (CharOperation.equals(typeName, TypeConstants.BOOLEAN_OBJECT[1]))
+					if (CharOperation.equals(typeName, TypeConstants.BOOLEAN_OBJECT[0]))
 						this.id = TypeIds.T_boolean;
 //					else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_BYTE[2]))
 //						this.id = TypeIds.T_JavaLangByte;
@@ -419,7 +419,7 @@ public void computeId() {
 //						this.id = TypeIds.T_JavaLangDeprecated;
 //					return;
 				case 'E' :
-					if (CharOperation.equals(typeName, TypeConstants.ERROR[1]))
+					if (CharOperation.equals(typeName, TypeConstants.ERROR[0]))
 						this.id = TypeIds.T_JavaLangError;
 //					else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_EXCEPTION[2]))
 //						this.id = TypeIds.T_JavaLangException;
@@ -427,7 +427,7 @@ public void computeId() {
 //						this.id = TypeIds.T_JavaLangEnum;
 					return;
 				case 'F' :
-					if (CharOperation.equals(typeName, TypeConstants.FUNCTION[1]))
+					if (CharOperation.equals(typeName, TypeConstants.FUNCTION[0]))
 						this.id = TypeIds.T_function;
 //					if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_FLOAT[2]))
 //						this.id = TypeIds.T_JavaLangFloat;
@@ -445,11 +445,11 @@ public void computeId() {
 //						this.id = TypeIds.T_JavaLangLong;
 //					return;
 				case 'N' :
-					if (CharOperation.equals(typeName, TypeConstants.NUMBER[1]))
+					if (CharOperation.equals(typeName, TypeConstants.NUMBER[0]))
 						this.id = TypeIds.T_int;
 					return;
 				case 'O' :
-					if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_OBJECT[1]))
+					if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_OBJECT[0]))
 						this.id = TypeIds.T_JavaLangObject;
 //					else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_OVERRIDE[2]))
 //						this.id = TypeIds.T_JavaLangOverride;
@@ -459,7 +459,7 @@ public void computeId() {
 //						this.id = 	TypeIds.T_JavaLangRuntimeException;
 //					break;
 				case 'S' :
-					if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_STRING[1]))
+					if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_STRING[0]))
 						this.id = TypeIds.T_JavaLangString;
 //					else if (CharOperation.equals(typeName, TypeConstants.JAVA_LANG_STRINGBUFFER[2]))
 //						this.id = TypeIds.T_JavaLangStringBuffer;

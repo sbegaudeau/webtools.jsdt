@@ -25,4 +25,7 @@ public interface IScriptFileDeclaration extends IASTNode{
 	 * @return the inference ID for the script, could be null 
 	 */
 	String getInferenceID();
+	
+	public void addImport(char [] importName, int startPosition, int endPosition, int nameStartPosition);
+	
 }

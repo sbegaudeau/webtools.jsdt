@@ -630,6 +630,8 @@ public class CodeFormatterVisitor extends ASTVisitor {
 	}
 
 	private void format(ImportReference importRef, boolean isLast) {
+		if (importRef.isInternal())
+			return;
 		this.scribe.printNextToken(TerminalTokens.TokenNameimport);
 		this.preferences.number_of_empty_lines_to_preserve = this.preferences.blank_lines_between_import_groups;
 		this.scribe.space();

@@ -12,7 +12,7 @@ public class MultipleTypeBinding extends ReferenceBinding {
 	public ReferenceBinding[] types;
 	int problemID = ProblemReasons.NoError;
 	
-	public MultipleTypeBinding(BlockScope scope, char[][] names) {
+	public MultipleTypeBinding(Scope scope, char[][] names) {
 
 		  char [][] name={};
 		  ArrayList resolveTypes=new ArrayList(names.length);
@@ -113,7 +113,10 @@ public class MultipleTypeBinding extends ReferenceBinding {
 	}
 
 	public boolean isSuperclassOf(ReferenceBinding otherType) {
-		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
+		for (int i = 0; i < this.types.length ; i++) 
+			if (types[i].isSuperclassOf(otherType))
+				return true;
+		return false;
 	}
 
 	public MethodBinding[] methods() {

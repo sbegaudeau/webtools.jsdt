@@ -308,6 +308,8 @@ public class CompilationUnitDeclaration
 		}
 		if (imports != null)
 			for (int i = 0; i < imports.length; i++) {
+				if (imports[i].isInternal())
+					continue;
 				printIndent(indent, output).append("import "); //$NON-NLS-1$
 				ImportReference currentImport = imports[i];
 				if (currentImport.isStatic()) {
@@ -654,5 +656,20 @@ public class CompilationUnitDeclaration
 		return null;
 	}
 	
-	
+	public void addImport(char [] importName, int startPosition, int endPosition, int nameStartPosition)
+	{
+		ImportReference importReference=new ImportReference(importName, startPosition,  endPosition,  nameStartPosition);
+		if (imports==null)
+		{
+			imports=new ImportReference[]{importReference};
+		}
+		else
+		{
+			ImportReference[] newImports=new ImportReference[imports.length+1];
+			System.arraycopy(this.imports, 0, newImports, 0, this.imports.length);
+			newImports[this.imports.length]=importReference;
+			this.imports=newImports;
+		}
+	}
+
 }

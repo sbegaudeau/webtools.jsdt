@@ -805,6 +805,29 @@ public class NameLookup implements SuffixConstants {
 
 	public Answer findBinding(String typeName, String packageName,int type, boolean partialMatch,
 			int acceptFlags, boolean checkRestrictions, boolean returnMultiple , String excludePath){
+		
+		if ((type&Binding.COMPILATION_UNIT)!=0)
+		{
+			String fullName=typeName;
+			if (packageName.length()>0)
+				fullName=packageName+"."+typeName;
+			ICompilationUnit compilationUnit = findCompilationUnit(fullName);
+			if (compilationUnit!=null )
+			{
+				return new Answer(compilationUnit, null);
+			}
+			type &= ~Binding.COMPILATION_UNIT;
+			if (type==0)
+				return null;
+		}
+		
+		if ((type&Binding.PACKAGE)!=0)
+		{
+			type &= ~Binding.PACKAGE;
+			if (type==0)
+				return null;
+		}
+		
 		if (USE_BINDING_SEARCH)
 		return findBindingSearch(typeName,
 			packageName,

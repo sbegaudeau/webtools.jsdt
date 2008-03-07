@@ -10,11 +10,11 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ArrayBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ClassScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MultipleTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TagBits;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
@@ -71,7 +71,8 @@ public class InferredType extends ASTNode {
 		if (attribute==null)
 		{
 			attribute=new InferredAttribute(name, this ,definer.sourceStart(),definer.sourceEnd());
-
+			attribute.node=(ASTNode)definer;
+			
 			if (this.numberAttributes == this.attributes.length)
 
 				System.arraycopy(
@@ -150,7 +151,7 @@ public class InferredType extends ASTNode {
 
 	}
 
-	public TypeBinding resolveType(BlockScope scope, ASTNode node) {
+	public TypeBinding resolveType(Scope scope, ASTNode node) {
 		// handle the error here
 		if (this.resolvedType != null) // is a shared type reference which was already resolved
 			return this.resolvedType.isValidBinding() ? this.resolvedType : null; // already reported error
@@ -179,11 +180,11 @@ public class InferredType extends ASTNode {
 
 		if (this.resolvedType == null)
 			return null; // detected cycle while resolving hierarchy
-		if (!this.resolvedType.isValidBinding()) {
+		if (node!=null && !this.resolvedType.isValidBinding()) {
 			scope.problemReporter().invalidType(node, this.resolvedType);
 			return null;
 		}
-		if (node.isTypeUseDeprecated(this.resolvedType, scope))
+		if (node!=null && node.isTypeUseDeprecated(this.resolvedType, scope))
 			scope.problemReporter().deprecatedType(this.resolvedType, node);
 		this.resolvedType = scope.environment().convertToRawType(this.resolvedType);
 

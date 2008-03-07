@@ -12,6 +12,7 @@ import org.eclipse.wst.jsdt.core.ast.ILocalDeclaration;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteral;
 import org.eclipse.wst.jsdt.core.ast.IObjectLiteralField;
 import org.eclipse.wst.jsdt.core.ast.IReturnStatement;
+import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
@@ -47,7 +48,7 @@ public class InferEngine extends ASTVisitor {
     Context [] contexts=new Context[100];
     int contextPtr=-1;
     Context currentContext=new Context();
-    int passNumber=1;
+    protected int passNumber=1;
 
     boolean isTopLevelAnonymousFunction;
     int anonymousCount=0;
@@ -1462,5 +1463,10 @@ public class InferEngine extends ASTVisitor {
 	protected boolean isPossibleClassName(char[]name)
 	{
 		return false;
+	}
+	
+	public IScriptFileDeclaration getScriptFileDeclaration()
+	{
+		return this.compUnit;
 	}
 }

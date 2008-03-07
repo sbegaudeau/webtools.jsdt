@@ -23,6 +23,7 @@ public class PackageBinding extends Binding implements TypeConstants {
 //	HashtableOfType knownTypes;
 	HashtableOfBinding[] knownBindings=new HashtableOfBinding[NUMBER_BASIC_BINDING];
 	HashtableOfPackage knownPackages;
+	HashtableOfBinding knownCompUnits;
 
 
 
@@ -77,9 +78,19 @@ void addType(ReferenceBinding element) {
 }
 
 public void addBinding(Binding element, char[] name, int mask) {
-	if (knownBindings[mask] == null)
-		knownBindings[mask] = new HashtableOfBinding(25);
-	knownBindings[mask].put(name, element);
+	if (mask<knownBindings.length)
+	{
+		if (knownBindings[mask] == null)
+			knownBindings[mask] = new HashtableOfBinding(25);
+		knownBindings[mask].put(name, element);
+	}
+	else if ( (mask&(Binding.COMPILATION_UNIT))!=0)
+	{
+		if (knownCompUnits == null)
+			knownCompUnits = new HashtableOfBinding(25);
+		knownCompUnits.put(name, element);
+		
+	}
 }
 /* API
 * Answer the receiver's binding type from Binding.BindingID.
@@ -206,6 +217,13 @@ Binding getBinding0(char[] name, int mask) {
 		if (binding!=null)
 			return binding;
 	}
+	if ( (mask&(Binding.COMPILATION_UNIT))!=0)
+	{
+		if (knownCompUnits == null)
+			return null;
+		return knownCompUnits.get(name);
+		
+	}
 	return null;
 }
 
@@ -234,7 +252,7 @@ public Binding getTypeOrPackage(char[] name, int mask) {
 	if (packageBinding != null && packageBinding != LookupEnvironment.TheNotFoundPackage)
 		return packageBinding;
 
-	if (typeBinding == null) { // have not looked for it before
+	if (typeBinding == null && mask!=Binding.PACKAGE) { // have not looked for it before
 		if ((typeBinding = environment.askForBinding(this, name,mask)) != null) {
 //			if (typeBinding.isNestedType())
 //				return new ProblemReferenceBinding(name, typeBinding, ProblemReasons.InternalNameProvided);

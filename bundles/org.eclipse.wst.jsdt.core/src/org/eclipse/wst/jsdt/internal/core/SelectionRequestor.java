@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
+import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
@@ -877,7 +878,7 @@ protected IType resolveType(char[] packageName, char[] fileName, char[] typeName
 
 	if (fileName!=null)
 	{
-		ICompilationUnit compilationUnit = (ICompilationUnit)resolveCompilationUnit(packageName, fileName);
+		ITypeRoot compilationUnit = (ITypeRoot)resolveCompilationUnit(packageName, fileName);
 		if (compilationUnit!=null && compilationUnit.exists())
 		{
 			 type=compilationUnit.getType(new String(typeName));

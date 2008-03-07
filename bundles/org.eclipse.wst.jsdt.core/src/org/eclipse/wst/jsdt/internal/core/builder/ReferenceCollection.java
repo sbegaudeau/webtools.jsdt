@@ -127,7 +127,7 @@ static final char[][][] WellKnownQualifiedNames = new char[][][] {
 static final char[][] WellKnownSimpleNames = new char[][] {
 //	TypeConstants.JAVA_LANG_RUNTIMEEXCEPTION[2],
 //	TypeConstants.JAVA_LANG_THROWABLE[2],
-	TypeConstants.JAVA_LANG_OBJECT[1],
+	TypeConstants.JAVA_LANG_OBJECT[0],
 //	TypeConstants.JAVA,
 //	TypeConstants.LANG,
 //	new char[] {'o', 'r', 'g'},

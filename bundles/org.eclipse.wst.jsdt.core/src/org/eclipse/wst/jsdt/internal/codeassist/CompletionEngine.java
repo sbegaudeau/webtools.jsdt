@@ -352,7 +352,7 @@ public final class CompletionEngine
 
 	private final static char[] JAVA_LANG_OBJECT_SIGNATURE =
 		createTypeSignature(
-				SYSTEMJS,
+				new char[]{},
 				OBJECT);
 	private final static char[] JAVA_LANG_NAME =
 		CharOperation.concatWith(JAVA_LANG, '.');

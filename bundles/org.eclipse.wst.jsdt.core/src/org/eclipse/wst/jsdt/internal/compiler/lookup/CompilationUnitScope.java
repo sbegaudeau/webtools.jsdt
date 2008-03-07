@@ -42,7 +42,7 @@ public class CompilationUnitScope extends BlockScope {
 public LookupEnvironment environment;
 public CompilationUnitDeclaration referenceContext;
 public char[][] currentPackageName;
-//public PackageBinding fPackage;
+public PackageBinding fPackage;
 public ImportBinding[] imports;
 public HashtableOfObject typeOrPackageCache; // used in Scope.getTypeOrPackage()
 
@@ -88,7 +88,10 @@ class DeclarationVisitor extends ASTVisitor
 			if (methodBinding != null && methodBinding.selector!=null) // is null if binding could not be created
 				methods.add(methodBinding);
 			if (methodBinding.selector!=null)
+			{
 				environment.defaultPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+				fPackage.addBinding(methodBinding, methodBinding.selector,Binding.METHOD);
+			}
 			methodDeclaration.binding=methodBinding;
 		}
 		return false;
@@ -107,9 +110,9 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 
 	/* bc - start bug 218398 - NPE when doing source->cleanup */
 	
-	//char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.getPackageName() : unit.currentPackage.tokens;
-	//this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
-	this.currentPackageName = CharOperation.NO_CHAR_CHAR;
+	char [][]pkgName= unit.currentPackage == null ? unit.compilationResult.getPackageName() : unit.currentPackage.tokens;
+	this.currentPackageName = pkgName == null ? CharOperation.NO_CHAR_CHAR : pkgName;
+//	this.currentPackageName = CharOperation.NO_CHAR_CHAR;
 	/* bc - end bug 218398 - NPE when doing source->cleanup */
 	
 	
@@ -147,8 +150,8 @@ void buildFieldsAndMethods() {
 void buildTypeBindings(AccessRestriction accessRestriction) {
 	topLevelTypes = new SourceTypeBinding[0]; // want it initialized if the package cannot be resolved
 //	boolean firstIsSynthetic = false;
-//	if (referenceContext.compilationResult.compilationUnit != null) {
-//		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
+	if (referenceContext.compilationResult.compilationUnit != null) {
+		char[][] expectedPackageName = referenceContext.compilationResult.compilationUnit.getPackageName();
 //		if (expectedPackageName != null
 //				&& !CharOperation.equals(currentPackageName, expectedPackageName)) {
 //
@@ -158,16 +161,17 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //					|| referenceContext.imports != null) {
 //				problemReporter().packageIsNotExpectedPackage(referenceContext);
 //			}
-//			currentPackageName = expectedPackageName.length == 0 ? CharOperation.NO_CHAR_CHAR : expectedPackageName;
+			currentPackageName = (expectedPackageName==null || expectedPackageName.length == 0 ) ? CharOperation.NO_CHAR_CHAR : expectedPackageName;
 //		}
-//	}
-//	if (currentPackageName == CharOperation.NO_CHAR_CHAR) {
+	}
+	if (currentPackageName == CharOperation.NO_CHAR_CHAR) {
+		fPackage = environment.defaultPackage;
 //		if ((fPackage = environment.defaultPackage) == null) {
 //			problemReporter().mustSpecifyPackage(referenceContext);
 //			return;
 //		}
-//	} else {
-//		if ((fPackage = environment.createPackage(currentPackageName)) == null) {
+	} else {
+		if ((fPackage = environment.createPackage(currentPackageName)) == null) {
 //			problemReporter().packageCollidesWithType(referenceContext);
 //			return;
 //		} else if (referenceContext.isPackageInfo()) {
@@ -180,9 +184,9 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //				declaration.modifiers = ClassFileConstants.AccDefault | ClassFileConstants.AccInterface;
 //				firstIsSynthetic = true;
 //			}
-//		}
+		}
 //		recordQualifiedReference(currentPackageName); // always dependent on your own package
-//	}
+	}
 
 //	// Skip typeDeclarations which know of previously reported errors
 //	TypeDeclaration[] types = referenceContext.types;
@@ -227,6 +231,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 //		System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);
 //
 
+	this.faultInImports();
 
 	// Skip typeDeclarations which know of previously reported errors
 	int typeLength = referenceContext.numberInferredTypes;
@@ -307,6 +312,7 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 							existingBinding.addNextType(type);
 					}
 					environment.defaultPackage.addType(existingBinding);
+					fPackage.addType(existingBinding);
 				}
 				else
 					if (typeDecl.isNamed() )
@@ -327,6 +333,8 @@ void buildTypeBindings(AccessRestriction accessRestriction) {
 	char [] path=CharOperation.concatWith(this.currentPackageName, '/');
 	referenceContext.compilationUnitBinding=new CompilationUnitBinding(this,environment.defaultPackage,path, superBinding);
 
+	if (fPackage!=environment.defaultPackage)
+		fPackage.addBinding(referenceContext.compilationUnitBinding, referenceContext.getMainTypeName(), Binding.COMPILATION_UNIT);
 
 	DeclarationVisitor visitor = new DeclarationVisitor();
 	this.referenceContext.traverse(visitor, this);
@@ -466,6 +474,7 @@ SourceTypeBinding buildType(InferredType inferredType, SourceTypeBinding enclosi
 
 	SourceTypeBinding sourceType = inferredType.binding;
 	environment().setAccessRestriction(sourceType, accessRestriction);
+	environment().defaultPackage.addType(sourceType);
 	sourceType.fPackage.addType(sourceType);
 	return sourceType;
 }
@@ -478,6 +487,7 @@ public PackageBinding getDefaultPackage() {
 public  void addLocalVariable(LocalVariableBinding binding) {
 	super.addLocalVariable(binding);
 	environment.defaultPackage.addBinding(binding, binding.name, Binding.VARIABLE);
+	fPackage.addBinding(binding, binding.name, Binding.VARIABLE);
 }
 
 void checkAndSetImports() {
@@ -811,11 +821,14 @@ private Binding findImport(char[][] compoundName, int length) {
 	foundNothingOrType: if (binding != null) {
 		PackageBinding packageBinding = (PackageBinding) binding;
 		while (i < length) {
-			binding = packageBinding.getTypeOrPackage(compoundName[i++], Binding.TYPE | Binding.PACKAGE);
+			int type = (i+1==length)?Binding.COMPILATION_UNIT: Binding.PACKAGE;
+			binding = packageBinding.getTypeOrPackage(compoundName[i++], type);
 			if (binding == null || !binding.isValidBinding()) {
 				binding = null;
 				break foundNothingOrType;
 			}
+			if (i==length && (binding instanceof CompilationUnitBinding))
+				return binding;
 			if (!(binding instanceof PackageBinding))
 		 		break foundNothingOrType;
 

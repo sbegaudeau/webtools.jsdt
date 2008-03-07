@@ -225,6 +225,7 @@ public abstract class ASTNode implements TypeConstants, TypeIds, IASTNode {
 	// for import reference
 	public static final int OnDemand = Bit18;
 	public static final int Used = Bit2;
+	public static final int IsFileImport = Bit5;
 
 	// for parameterized qualified/single type ref
 	public static final int DidResolve = Bit19;

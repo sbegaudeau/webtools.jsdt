@@ -1330,7 +1330,8 @@ class ASTConverter {
 		if (imports != null) {
 			int importLength = imports.length;
 			for (int i = 0; i < importLength; i++) {
-				compilationUnit.imports().add(convertImport(imports[i]));
+				if (!imports[i].isInternal())
+					compilationUnit.imports().add(convertImport(imports[i]));
 			}
 		}
 
