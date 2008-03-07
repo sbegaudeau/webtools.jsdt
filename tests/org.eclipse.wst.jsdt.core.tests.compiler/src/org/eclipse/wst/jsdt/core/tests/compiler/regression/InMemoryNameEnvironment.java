@@ -31,7 +31,7 @@ public InMemoryNameEnvironment(String[] compilationUnits, INameEnvironment[] cla
 			dirName = fileName.substring(0, lastSlash);
 		}
 		char[] packageName = dirName.replace('/', '.').toCharArray();
-		char[] cuName = fileName.substring(lastSlash == -1 ? 0 : lastSlash + 1, fileName.length() - 5).toCharArray(); // remove ".java"
+		char[] cuName = fileName.substring(lastSlash == -1 ? 0 : lastSlash + 1, fileName.length() - 3).toCharArray(); // remove ".java"
 		HashtableOfObject cus = (HashtableOfObject)this.compilationUnits.get(packageName);
 		if (cus == null) {
 			cus = new HashtableOfObject();
@@ -47,15 +47,28 @@ public NameEnvironmentAnswer findType(char[][] compoundTypeName, ITypeRequestor 
 		CharOperation.subarray(compoundTypeName, 0, compoundTypeName.length - 1),requestor);
 }
 public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, int type, ITypeRequestor requestor, boolean returnMultiple, String excludePath) {
-	HashtableOfObject cus = (HashtableOfObject)this.compilationUnits.get(CharOperation.concatWith(packageName, '.'));
-	if (cus == null) {
+  if ((type&Binding.COMPILATION_UNIT)!=0)
+  {
+			HashtableOfObject cus = (HashtableOfObject)this.compilationUnits.get(CharOperation.concatWith(packageName, '.'));
+			if (cus!=null)
+			{
+				CompilationUnit unit = (CompilationUnit)cus.get(typeName);
+				unit.packageName=packageName;
+				if (unit != null) 
+					return new NameEnvironmentAnswer(unit, null /*no access restriction*/);
+				
+			}
+  }
+	
+	//	HashtableOfObject cus = (HashtableOfObject)this.compilationUnits.get(CharOperation.concatWith(packageName, '.'));
+//	if (cus == null) {
 		return this.findTypeFromClassLibs(typeName, packageName,type,requestor);
-	}
-	CompilationUnit unit = (CompilationUnit)cus.get(typeName);
-	if (unit == null) {
-		return this.findTypeFromClassLibs(typeName, packageName,type,requestor);
-	}
-	return new NameEnvironmentAnswer(unit, null /*no access restriction*/);
+//	}
+//	CompilationUnit unit = (CompilationUnit)cus.get(typeName);
+//	if (unit == null) {
+//		return this.findTypeFromClassLibs(typeName, packageName,type,requestor);
+//	}
+//	return new NameEnvironmentAnswer(unit, null /*no access restriction*/);
 }
 
 public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITypeRequestor requestor) {

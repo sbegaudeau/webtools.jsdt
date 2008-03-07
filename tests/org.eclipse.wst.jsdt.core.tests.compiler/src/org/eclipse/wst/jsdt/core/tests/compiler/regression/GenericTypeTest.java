@@ -34599,7 +34599,8 @@ public void test1093() {
 		false /* do not show category */, 
 		false /* do not show warning token */, 
 		false  /* do not skip javac for this peculiar test */,
-		false  /* do not perform statements recovery */);
+		false  /* do not perform statements recovery */,
+		null);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=167268
 public void test1094() {
@@ -34680,7 +34681,8 @@ public void test1095() {
 		false /* do not show category */, 
 		false /* do not show warning token */, 
 		false  /* do not skip javac for this peculiar test */,
-		false  /* do not perform statements recovery */);
+		false  /* do not perform statements recovery */,
+		null);
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=167952
 //invalid bug - regression test only

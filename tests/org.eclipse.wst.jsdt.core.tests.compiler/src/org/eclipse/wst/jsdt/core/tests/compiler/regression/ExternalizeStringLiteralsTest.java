@@ -506,7 +506,8 @@ public void test017() {
 		false,
 		false,
 		false,
-		true);	
+		true,
+		null);	
 }
 public static Class testClass() {
 	return ExternalizeStringLiteralsTest.class;

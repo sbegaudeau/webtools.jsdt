@@ -400,6 +400,13 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 		this.classpaths = classPaths == null ? getDefaultClassPaths() : classPaths;
 		return new InMemoryNameEnvironment(testFiles, getClassLibs());
 	}
+
+	protected INameEnvironment getNameEnvironment(final String[] testFiles, String [] files, String[] classPaths) {
+		this.classpaths = classPaths == null ? getDefaultClassPaths() : classPaths;
+		InMemoryNameEnvironment inMemoryNameEnvironment = new InMemoryNameEnvironment(testFiles, getClassLibs());
+		return inMemoryNameEnvironment;
+	}
+
 	protected IProblemFactory getProblemFactory() {
 		return new DefaultProblemFactory(Locale.getDefault());
 	}
@@ -958,7 +965,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			false /* do not show category */, 
 			false /* do not show warning token */, 
 			false  /* do not skip javac for this peculiar test */,
-			false  /* do not perform statements recovery */);
+			false  /* do not perform statements recovery */,
+			null);
 	}
 	/**
 	 * Log contains all problems (warnings+errors)
@@ -978,7 +986,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			false /* do not show category */, 
 			false /* do not show warning token */, 
 			false  /* do not skip javac for this peculiar test */,
-			false  /* do not perform statements recovery */);
+			false  /* do not perform statements recovery */,
+			null);
 	} 
 	/**
 	 * Log contains all problems (warnings+errors)
@@ -999,7 +1008,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			false /* do not show category */, 
 			false /* do not show warning token */, 
 			false  /* do not skip javac for this peculiar test */,
-			false  /* do not perform statements recovery */);
+			false  /* do not perform statements recovery */,
+			null);
 	}
 	/**
 	 * Log contains all problems (warnings+errors)
@@ -1023,7 +1033,8 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 		  showCategory,
 		  showWarningToken,
 		  false  /* do not skip javac for this peculiar test */,
-		  false  /* do not perform statements recovery */);
+		  false  /* do not perform statements recovery */,
+		  null);
 	}
 	 
 	/**
@@ -1039,12 +1050,16 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 		boolean showCategory,
 		boolean showWarningToken,
 		boolean skipJavac,
-		boolean performStatementsRecovery) {
+		boolean performStatementsRecovery,
+		String[] otherFiles 
+		) {
 		// Non-javac part
 		try {
 			if (shouldFlushOutputDirectory)
 				Util.flushDirectoryContent(new File(OUTPUT_DIR));
 	
+			if (otherFiles==null)
+				otherFiles = new String[]{};
 			IProblemFactory problemFactory = getProblemFactory();
 			Requestor requestor = 
 				new Requestor(
@@ -1063,7 +1078,7 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 			compilerOptions.performStatementsRecovery = performStatementsRecovery;
 			Compiler batchCompiler = 
 				new Compiler(
-					getNameEnvironment(new String[]{}, classLib), 
+					getNameEnvironment(otherFiles, classLib), 
 					getErrorHandlingPolicy(), 
 					compilerOptions,
 					requestor, 

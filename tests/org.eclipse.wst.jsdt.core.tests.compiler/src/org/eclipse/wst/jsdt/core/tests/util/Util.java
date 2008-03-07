@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.tests.compiler.regression.Requestor;
@@ -148,7 +149,15 @@ public static CompilationUnit[] compilationUnits(String[] testFiles) {
 	CompilationUnit[] result = new CompilationUnit[length];
 	int index = 0;
 	for (int i = 0; i < length; i++) {
-		result[i] = new CompilationUnit(testFiles[index + 1].toCharArray(), testFiles[index], null);
+		String fileName = testFiles[index];
+		result[i] = new CompilationUnit(testFiles[index + 1].toCharArray(), fileName, null);
+		char [] fileNameChars=fileName.toCharArray();
+		int lastIndexOf = CharOperation.lastIndexOf('/', fileNameChars);
+		if (lastIndexOf>=0)
+		{
+			char[] subarray = CharOperation.subarray(fileNameChars, 0, lastIndexOf);
+			result[i].packageName=CharOperation.splitOn('/', subarray);
+		}
 		index += 2;
 	}
 	return result;

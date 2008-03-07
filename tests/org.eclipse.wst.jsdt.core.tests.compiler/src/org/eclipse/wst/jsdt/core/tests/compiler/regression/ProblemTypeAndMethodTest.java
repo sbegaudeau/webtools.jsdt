@@ -72,7 +72,8 @@ public void test001() {
 		false /* do not show category */, 
 		false /* do not show warning token */, 
 		false  /* do not skip javac for this peculiar test */,
-		false  /* do not perform statements recovery */);
+		false  /* do not perform statements recovery */,
+		null);
 //	ClassFileReader reader = this.getClassFileReader(OUTPUT_DIR + File.separator  +"X$W.class", "X$W");
 //	IBinaryMethod[] methods = reader.getMethods();
 //	assertEquals("Wrong size", 2, methods.length);
