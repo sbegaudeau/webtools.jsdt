@@ -442,12 +442,16 @@ public TypeBinding resolveType(BlockScope scope) {
 //			}
 		}
 	} else {
-		// static message invoked through receiver? legal but unoptimal (optional warning).
-		if (!(receiver.isImplicitThis() || receiver.isSuper() || receiverIsType)) {
-			scope.problemReporter().nonStaticAccessToStaticMethod(this, binding);
-		}
-		if (!receiver.isImplicitThis() && binding.declaringClass != actualReceiverType) {
-			scope.problemReporter().indirectAccessToStaticMethod(this, binding);
+		if (receiver!=null) {
+			// static message invoked through receiver? legal but unoptimal (optional warning).
+			if (!(receiver.isImplicitThis() || receiver.isSuper() || receiverIsType)) {
+				scope.problemReporter().nonStaticAccessToStaticMethod(this,
+						binding);
+			}
+			if (!receiver.isImplicitThis()
+					&& binding.declaringClass != actualReceiverType) {
+				//			scope.problemReporter().indirectAccessToStaticMethod(this, binding);
+			}
 		}
 	}
 //	checkInvocationArguments(scope, this.receiver, actualReceiverType, binding, this.arguments, argumentTypes, argsContainCast, this);

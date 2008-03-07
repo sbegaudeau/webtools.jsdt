@@ -562,7 +562,7 @@ public int nullStatus(FlowInfo flowInfo) {
 			typeBinding=((MethodBinding)binding).returnType;
 		else if (binding!=null && !binding.isValidBinding())
 		{
-			scope.problemReporter().invalidType(location, new ProblemReferenceBinding(memberName,null,binding.problemId()));
+			typeBinding=new ProblemReferenceBinding(memberName,null,binding.problemId());
 		}
 		return typeBinding;
 	}
