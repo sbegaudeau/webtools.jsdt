@@ -395,6 +395,7 @@ void setSourceStart(int sourceStart);
 	/** @since 3.0 */
 	int IndirectAccessToStaticMethod = Internal + MethodRelated + 119;
 	int WrongNumberOfArguments = Internal + MethodRelated + 120;
+	int NotAFunction = Internal + MethodRelated + 121;
 
 	// constructors
 	int UndefinedConstructor = ConstructorRelated + 130;

@@ -1125,6 +1125,7 @@ public int computeSeverity(int problemID){
 		/*
 		 * JS Type mismatch is set to default as Warning
 		 */
+ 		case IProblem.NotAFunction:
  		case IProblem.TypeMismatch:
  			return ProblemSeverities.Warning;
 
@@ -3241,6 +3242,9 @@ public void invalidMethod(MessageSend messageSend, MethodBinding method) {
 			break;
 		case ProblemReasons.Ambiguous :
 			id = IProblem.AmbiguousMethod;
+			break;
+		case ProblemReasons.NotAFunction :
+			id = IProblem.NotAFunction;
 			break;
 		case ProblemReasons.InheritedNameHidesEnclosingName :
 			id = IProblem.InheritedMethodHidesEnclosingName;

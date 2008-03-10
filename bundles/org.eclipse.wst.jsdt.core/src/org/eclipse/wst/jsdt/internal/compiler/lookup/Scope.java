@@ -2183,9 +2183,14 @@ public abstract class Scope implements TypeConstants, TypeIds {
 					insideStaticContext |= methodScope.isStatic;
 					insideConstructorCall |= methodScope.isConstructorCall;
 					insideTypeAnnotation = methodScope.insideTypeAnnotation;
-					MethodBinding binding = methodScope.findMethod(selector,argumentTypes);
+					MethodBinding binding = methodScope.findMethod(selector,argumentTypes,true);
 					if (binding!=null)
 						return binding;
+					LocalVariableBinding variable = methodScope.findVariable(selector);
+					if (variable!=null)
+					{
+						
+					}
 					break;
 				case WITH_SCOPE :
 					WithScope withScope = (WithScope) scope;
@@ -2300,7 +2305,7 @@ public abstract class Scope implements TypeConstants, TypeIds {
 						if (methodBinding == null)
 							methodBinding = compilationUnitScope.findMethod(receiverType, selector, argumentTypes, invocationSite);
 						if (methodBinding == null)
-							methodBinding = compilationUnitScope.findMethod(selector, argumentTypes);
+							methodBinding = compilationUnitScope.findMethod(selector, argumentTypes,true);
 						if (methodBinding != null) { // skip it if we did not find anything
 							if (methodBinding.problemId() == ProblemReasons.Ambiguous) {
 								if (foundMethod == null || foundMethod.problemId() == ProblemReasons.NotVisible) {

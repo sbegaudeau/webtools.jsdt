@@ -235,7 +235,7 @@ public FlowInfo analyseCode(BlockScope currentScope, FlowContext flowContext, Fl
 //						scope.compilationUnitScope().recordTypeConversion(variableType, initializationType);
 					if (initializationType.isFunctionType())
 					{
-						MethodBinding existingMethod = scope.findMethod(this.name, null);
+						MethodBinding existingMethod = scope.findMethod(this.name, null,false);
 						if (existingMethod!=null)
 						{
 							MethodBinding functionBinding = ((FunctionTypeBinding)initializationType).functionBinding;

@@ -274,13 +274,31 @@ public final ReferenceBinding findLocalType(char[] name) {
 	}
 	return null;
 }
-public MethodBinding findMethod(char[] methodName,TypeBinding[]argumentTypes) {
+public MethodBinding findMethod(char[] methodName,TypeBinding[]argumentTypes, boolean checkVars) {
 	int methodLength = methodName.length;
 	for (int i = this.numberMethods-1; i >= 0; i--) {
 		MethodBinding method;
 		char[] name;
 		if ((name = (method = this.methods[i]).selector).length == methodLength && CharOperation.equals(name, methodName))
 			return method;
+	}
+	if (checkVars)
+	{
+		LocalVariableBinding variable = findVariable(methodName);
+		if (variable!=null)
+		{
+			MethodBinding binding;
+			if (!(variable.type.isAnyType() || variable.type.isFunctionType()))
+			{
+			  binding=new ProblemMethodBinding(methodName,null,ProblemReasons.NotAFunction);	
+			}
+			else	
+			 binding = new MethodBinding(ClassFileConstants.AccPublic,
+					methodName,TypeBinding.UNKNOWN,null,null,variable.declaringScope.enclosingTypeBinding());
+			
+			addLocalMethod(binding);
+			return binding;
+		}
 	}
 	return null;
 }
