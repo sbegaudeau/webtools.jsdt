@@ -35,7 +35,6 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.SingleNameReference;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.BlockScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class CompletionOnSingleNameReference extends SingleNameReference {
@@ -68,7 +67,7 @@ public class CompletionOnSingleNameReference extends SingleNameReference {
 		throw new CompletionNodeFound(this, scope);
 	}
 
-	public TypeBinding resolveForAllocation(Scope scope, ASTNode location) {
+	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location) {
 		throw new CompletionNodeFound(this, scope);
 	}	
 	public boolean isSpecialNode()

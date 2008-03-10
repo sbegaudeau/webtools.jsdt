@@ -38,7 +38,6 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemFieldBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReasons;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.ProblemReferenceBinding;
-import org.eclipse.wst.jsdt.internal.compiler.lookup.Scope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.TypeBinding;
 
 public class SelectionOnSingleNameReference extends SingleNameReference {
@@ -79,7 +78,7 @@ public TypeBinding resolveType(BlockScope scope) {
 	throw new SelectionNodeFound(binding);
 }
 
-public TypeBinding resolveForAllocation(Scope scope, ASTNode location) {
+public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location) {
 	TypeBinding typeBinding=null;
 	this.binding=	
 			scope.getBinding(this.token, (Binding.TYPE|Binding.METHOD | bits)  & RestrictiveFlagMASK, this, true /*resolve*/);

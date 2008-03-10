@@ -30,7 +30,8 @@ public class CompletionOnSingleTypeName extends SingleNameReference  {
 		throw new CompletionNodeFound(this, scope);
 	}
 
-	public TypeBinding resolveForAllocation(Scope scope, ASTNode location) {
+	public TypeBinding resolveForAllocation(BlockScope scope, ASTNode location)
+	{
 		throw new CompletionNodeFound(this, scope);
 	}
 }
