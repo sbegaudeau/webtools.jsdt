@@ -948,6 +948,10 @@ public class SourceContainerWorkbookPage extends BuildPathBasePage {
 	}
 
 	private void refresh(List insertedElements, List removedElements, List modifiedElements, IPath outputLocation) {
+		if (removedElements==null)
+			removedElements=new ArrayList();
+		if (modifiedElements==null)
+			modifiedElements=new ArrayList();
 		fFoldersList.addElements(insertedElements);
 		for (Iterator iter= insertedElements.iterator(); iter.hasNext();) {
 			CPListElement element= (CPListElement)iter.next();
