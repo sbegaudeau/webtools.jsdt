@@ -873,4 +873,36 @@ public class BasicResolveTests extends AbstractRegressionTest {
 	}
 	
 	
+	public void test060()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function foo(p1){\n"  
+						+"p1();\n" 
+						+"}\n" 
+						+"" 
+				},
+				""
+		);
+	}
+
+	public void test061()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"function foo(){\n"
+						+"p1=1;\n" 
+						+"p1();\n" 
+						+"}\n" 
+						+"" 
+				},
+				"----------\n" + 
+				"1. WARNING in X.js (at line 3)\n" + 
+				"	p1();\n" + 
+				"	^^\n" + 
+				"p1 is not a function \n" + 
+				"----------\n"
+		);
+	}
+
 }
