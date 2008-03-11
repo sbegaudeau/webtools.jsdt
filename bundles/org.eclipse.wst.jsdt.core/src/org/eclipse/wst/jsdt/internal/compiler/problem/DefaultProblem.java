@@ -286,4 +286,10 @@ public String toString() {
 	}
 	return s;
 }
+
+
+public void setMessage(String msg)
+{
+	this.message=msg;
+}
 }
