@@ -333,6 +333,7 @@ public void testBug29832() throws Exception {
 		cu.codeComplete(cursorLocation, requestor);
 
 		assertEquals(
+			"element:z    completion:z    relevance:"+ (R_DEFAULT+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n" +		
 			"element:z    completion:z    relevance:"+(R_DEFAULT+R_RESOLVED+R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED),
 			requestor.getResults());
 	} finally {
@@ -463,6 +464,7 @@ public void testBug33560() throws Exception {
 		cu.codeComplete(cursorLocation, requestor);
 
 		assertEquals(
+					"element:z    completion:z    relevance:"+ (R_DEFAULT+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n" +
 					"element:z    completion:z    relevance:"+(R_DEFAULT+R_RESOLVED+R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED),
 					requestor.getResults());
 		} finally {

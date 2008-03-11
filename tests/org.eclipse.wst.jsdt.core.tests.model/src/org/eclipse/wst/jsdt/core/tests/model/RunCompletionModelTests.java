@@ -26,7 +26,7 @@ public class RunCompletionModelTests extends junit.framework.TestCase {
 	public final static List COMPLETION_SUITES = new ArrayList();
 	static {
 		if (!ONLY_JAVADOC) {
-			if(false) COMPLETION_SUITES.add(CompletionTests.class);
+			COMPLETION_SUITES.add(CompletionTests.class);
 			COMPLETION_SUITES.add(CompletionTests2.class);
 			//COMPLETION_SUITES.add(CompletionTests_1_5.class);
 			if(false) COMPLETION_SUITES.add(CompletionContextTests.class);
