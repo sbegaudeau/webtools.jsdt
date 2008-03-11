@@ -6,7 +6,7 @@
          <meta.schema plugin="org.eclipse.jdt.core" id="validationParticipant" name="Compilation Participants"/>
       </appInfo>
       <documentation>
-         This extension point allows clients to participate in the compilation process by receiving notifications at various stages of build and reconcile, via a org.eclipse.jdt.core.compiler.validationParticipant.
+         This extension point allows clients to participate in the validation process by receiving notifications at various stages of build and reconcile, via a org.eclipse.jdt.core.compiler.validationParticipant.
       </documentation>
    </annotation>
 
