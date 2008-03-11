@@ -148,4 +148,9 @@ public String[] getExtraMarkerAttributeNames() {
 public Object[] getExtraMarkerAttributeValues() {
 	return DefaultProblem.EMPTY_VALUES;
 }
+
+public void setMessage(String msg)
+{
+	
+}
 }

@@ -17,18 +17,11 @@ package org.eclipse.wst.jsdt.core.compiler;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 
 /**
- * A compilation participant is notified of events occuring during the compilation process.
- * The compilation process not only involves generating .class files (i.e. building), it also involves
- * cleaning the output directory, reconciling a working copy, etc.
- * So the notified events are the result of a build action, a clean action, a reconcile operation
+ * A validation participant is notified of events occuring during the validation process.
+ * The notified events are the result of a build action, a clean action, a reconcile operation
  * (for a working copy), etc.
  * <p>
- * Code that participates in the build should in general be implemented with a separate Builder,
- * rather than a validationParticipant. It is only necessary to use a validationParticipant if
- * the build step needs to interact with the Java build, for instance by creating additional
- * Java source files that must themselves in turn be compiled.
- * <p>
- * Clients wishing to participate in the compilation process must suclass this class, and implement
+ * Clients wishing to participate in the validation process must subclass this class, and implement
  * {@link #isActive(IJavaProject)}, {@link #aboutToBuild(IJavaProject)},
  * {@link #reconcile(ReconcileContext)}, etc.
 * </p><p>
@@ -36,13 +29,13 @@ import org.eclipse.wst.jsdt.core.IJavaProject;
  * </p>
  * @since 3.2
  */
-public abstract class validationParticipant {
+public abstract class ValidationParticipant {
 
 public static int READY_FOR_BUILD = 1;
 public static int NEEDS_FULL_BUILD = 2;
 
 /**
- * Notifies this participant that a build is about to start and provides it the opportunity to
+ * Notifies this participant that a validation is about to start and provides it the opportunity to
  * create missing source folders for generated source files. Additional source folders
  * should be marked as optional so the project can be built when the folders do not exist.
  * Only sent to participants interested in the project.
@@ -57,8 +50,8 @@ public int aboutToBuild(IJavaProject project) {
 }
 
 /**
- * Notifies this participant that a compile operation is about to start and provides it the opportunity to
- * generate source files based on the source files about to be compiled.
+ * Notifies this participant that a validation operation is about to start and provides it the opportunity to
+ * generate source files based on the source files about to be validated.
  * When isBatchBuild is true, then files contains all source files in the project.
  * Only sent to participants interested in the current build project.
  *
@@ -106,7 +99,7 @@ public boolean isAnnotationProcessor() {
 }
 
 /**
- * Notifies this participant that a compile operation has found source files using Annotations.
+ * Notifies this participant that a validation operation has found source files using Annotations.
  * Only sent to participants interested in the current build project that answer true to isAnnotationProcessor().
  * Each BuildContext was informed whether its source file currently hasAnnotations().
  *

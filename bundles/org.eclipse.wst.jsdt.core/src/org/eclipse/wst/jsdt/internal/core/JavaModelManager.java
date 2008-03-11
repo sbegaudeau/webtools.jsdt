@@ -104,7 +104,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.ValidationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
@@ -301,7 +301,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 		private Object[][] registeredParticipants = null;
 		private HashSet managedMarkerTypes;
 
-		public validationParticipant[] getvalidationParticipants(IJavaProject project) {
+		public ValidationParticipant[] getvalidationParticipants(IJavaProject project) {
 			final Object[][] participantsPerSource = getRegisteredParticipants();
 			if (participantsPerSource == NO_PARTICIPANTS)
 				return null;
@@ -309,7 +309,7 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 			final int sourceLevelIndex = indexForSourceLevel(sourceLevel);
 			final Object[] participants = participantsPerSource[sourceLevelIndex];
 			int length = participants.length;
-			validationParticipant[] result = new validationParticipant[length];
+			ValidationParticipant[] result = new ValidationParticipant[length];
 			int index = 0;
 			for (int i = 0; i < length; i++) {
 				if (participants[i] instanceof IConfigurationElement) {
@@ -326,14 +326,14 @@ public class JavaModelManager implements ISaveParticipant, IContentTypeChangeLis
 						}
 					});
 				}
-				validationParticipant participant = (validationParticipant) participants[i];
+				ValidationParticipant participant = (ValidationParticipant) participants[i];
 				if (participant != null && participant.isActive(project))
 					result[index++] = participant;
 			}
 			if (index == 0)
 				return null;
 			if (index < length)
-				System.arraycopy(result, 0, result = new validationParticipant[index], 0, index);
+				System.arraycopy(result, 0, result = new ValidationParticipant[index], 0, index);
 			return result;
 		}
 

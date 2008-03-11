@@ -495,10 +495,10 @@ protected BuildContext[] notifyParticipants(SourceFile[] unitsAboutToCompile) {
 		this.javaBuilder.participants[i].buildStarting(results, this instanceof BatchImageBuilder);
 
 	SimpleSet uniqueFiles = null;
-	validationParticipantResult[] toAdd = null;
+	ValidationParticipantResult[] toAdd = null;
 	int added = 0;
 	for (int i = results.length; --i >= 0;) {
-		validationParticipantResult result = results[i];
+		ValidationParticipantResult result = results[i];
 		if (result == null) continue;
 
 		IFile[] deletedGeneratedFiles = result.deletedFiles;
@@ -516,14 +516,14 @@ protected BuildContext[] notifyParticipants(SourceFile[] unitsAboutToCompile) {
 						uniqueFiles.add(unitsAboutToCompile[f]);
 				}
 				if (uniqueFiles.addIfNotIncluded(sourceFile) == sourceFile) {
-					validationParticipantResult newResult = new BuildContext(sourceFile);
+					ValidationParticipantResult newResult = new BuildContext(sourceFile);
 					// is there enough room to add all the addedGeneratedFiles.length ?
 					if (toAdd == null) {
-						toAdd = new validationParticipantResult[addedGeneratedFiles.length];
+						toAdd = new ValidationParticipantResult[addedGeneratedFiles.length];
 					} else {
 						int length = toAdd.length;
 						if (added == length)
-							System.arraycopy(toAdd, 0, toAdd = new validationParticipantResult[length + addedGeneratedFiles.length], 0, length);
+							System.arraycopy(toAdd, 0, toAdd = new ValidationParticipantResult[length + addedGeneratedFiles.length], 0, length);
 					}
 					toAdd[added++] = newResult;
 				}
@@ -539,7 +539,7 @@ protected BuildContext[] notifyParticipants(SourceFile[] unitsAboutToCompile) {
 	return results;
 }
 
-protected abstract void processAnnotationResults(validationParticipantResult[] results);
+protected abstract void processAnnotationResults(ValidationParticipantResult[] results);
 
 protected void processAnnotations(BuildContext[] results) {
 	boolean hasAnnotationProcessor = false;
@@ -549,7 +549,7 @@ protected void processAnnotations(BuildContext[] results) {
 
 	boolean foundAnnotations = this.filesWithAnnotations != null && this.filesWithAnnotations.elementSize > 0;
 	for (int i = results.length; --i >= 0;)
-		((validationParticipantResult) results[i]).reset(foundAnnotations && this.filesWithAnnotations.includes(results[i].sourceFile));
+		((ValidationParticipantResult) results[i]).reset(foundAnnotations && this.filesWithAnnotations.includes(results[i].sourceFile));
 
 	// even if no files have annotations, must still tell every annotation processor in case the file used to have them
 	for (int i = 0, l = this.javaBuilder.participants.length; i < l; i++)
@@ -558,7 +558,7 @@ protected void processAnnotations(BuildContext[] results) {
 	processAnnotationResults(results);
 }
 
-protected void recordParticipantResult(validationParticipantResult result) {
+protected void recordParticipantResult(ValidationParticipantResult result) {
 	// any added/changed/deleted generated files have already been taken care
 	// just record the problems and dependencies - do not expect there to be many
 	// must be called after we're finished with the compilation unit results but before incremental loop adds affected files

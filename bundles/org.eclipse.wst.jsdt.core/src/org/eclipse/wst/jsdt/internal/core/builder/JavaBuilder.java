@@ -36,7 +36,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.ValidationParticipant;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.JavaModel;
@@ -50,7 +50,7 @@ public class JavaBuilder extends IncrementalProjectBuilder {
 IProject currentProject;
 JavaProject javaProject;
 IWorkspaceRoot workspaceRoot;
-validationParticipant[] participants;
+ValidationParticipant[] participants;
 NameEnvironment nameEnvironment;
 SimpleLookupTable binaryLocationsPerProject; // maps a project to its binary resources (output folders, class folders, zip/jar files)
 public State lastState;
@@ -596,7 +596,7 @@ private int initializeBuilder(int kind, boolean forBuild) throws CoreException {
 		this.participants = JavaModelManager.getJavaModelManager().validationParticipants.getvalidationParticipants(this.javaProject);
 		if (this.participants != null)
 			for (int i = 0, l = this.participants.length; i < l; i++)
-				if (this.participants[i].aboutToBuild(this.javaProject) == validationParticipant.NEEDS_FULL_BUILD)
+				if (this.participants[i].aboutToBuild(this.javaProject) == ValidationParticipant.NEEDS_FULL_BUILD)
 					kind = FULL_BUILD;
 
 		// Flush the existing external files cache if this is the beginning of a build cycle

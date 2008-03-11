@@ -13,19 +13,19 @@
 package org.eclipse.wst.jsdt.core.compiler;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.wst.jsdt.internal.core.builder.validationParticipantResult;
+import org.eclipse.wst.jsdt.internal.core.builder.ValidationParticipantResult;
 import org.eclipse.wst.jsdt.internal.core.builder.SourceFile;
 
 /**
  * The context of a build event that is notified to interested compilation
- * participants when {@link validationParticipant#buildStarting(BuildContext[], boolean) a build is starting},
- * or to annotations processors when {@link validationParticipant#processAnnotations(BuildContext[]) a source file has annotations}.
+ * participants when {@link ValidationParticipant#buildStarting(BuildContext[], boolean) a build is starting},
+ * or to annotations processors when {@link ValidationParticipant#processAnnotations(BuildContext[]) a source file has annotations}.
  * <p>
  * This class is not intended to be instanciated or subclassed by clients.
  * </p>
  * @since 3.2
  */
-public class BuildContext extends validationParticipantResult {
+public class BuildContext extends ValidationParticipantResult {
 
 /**
  * Creates a build context for the given source file.
@@ -60,7 +60,7 @@ public IFile getFile() {
 /**
  * Returns whether the compilation unit contained any annotations when it was compiled.
  *
- * NOTE: This is only valid during {@link validationParticipant#processAnnotations(BuildContext[])}.
+ * NOTE: This is only valid during {@link ValidationParticipant#processAnnotations(BuildContext[])}.
  *
  * @return whether the compilation unit contained any annotations when it was compiled
  */
