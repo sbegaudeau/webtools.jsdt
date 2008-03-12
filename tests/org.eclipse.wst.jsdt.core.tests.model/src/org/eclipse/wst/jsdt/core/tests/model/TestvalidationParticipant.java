@@ -11,12 +11,12 @@
 package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.ValidationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.ReconcileContext;
 
-public class TestvalidationParticipant extends validationParticipant {
+public class TestvalidationParticipant extends ValidationParticipant {
 	
-	public static validationParticipant PARTICIPANT;
+	public static ValidationParticipant PARTICIPANT;
 
 	public boolean isActive(IJavaProject project) {
 		return PARTICIPANT != null && PARTICIPANT.isActive(project);

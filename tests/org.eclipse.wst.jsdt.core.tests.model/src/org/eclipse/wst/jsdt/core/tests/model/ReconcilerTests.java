@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
-import org.eclipse.wst.jsdt.core.compiler.validationParticipant;
+import org.eclipse.wst.jsdt.core.compiler.ValidationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.ReconcileContext;
 import org.eclipse.wst.jsdt.core.dom.AST;
@@ -66,7 +66,7 @@ public class ReconcilerTests extends ModifyingResourceTests {
 		}		
 	}
 	
-	class ReconcileParticipant extends validationParticipant {
+	class ReconcileParticipant extends ValidationParticipant {
 		IJavaElementDelta delta;
 		org.eclipse.wst.jsdt.core.dom.CompilationUnit ast;
 		ReconcileParticipant() {
