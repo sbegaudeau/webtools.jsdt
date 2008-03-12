@@ -64,6 +64,7 @@ public final class PackagesMessages extends NLS {
 	public static String JsGlobalScopeContainer_unknown_label;
 	public static String PackageExplorerPart_workspace;
 	public static String PackageExplorerPart_workingSetModel;
+	public static String PackageExplorerContentProvider_update_job_description;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, PackagesMessages.class);

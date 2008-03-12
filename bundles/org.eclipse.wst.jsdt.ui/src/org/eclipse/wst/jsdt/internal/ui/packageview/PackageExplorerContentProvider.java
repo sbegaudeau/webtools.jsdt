@@ -16,11 +16,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IBasicPropertyConstants;
@@ -29,7 +33,9 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkingSet;
+import org.eclipse.ui.progress.UIJob;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
@@ -119,10 +125,10 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 	protected final void executeRunnables(final Collection runnables) {
 
 		// now post all collected runnables
-		Control ctrl= fViewer.getControl();
+		final Control ctrl= fViewer.getControl();
 		if (ctrl != null && !ctrl.isDisposed()) {
 			//Are we in the UIThread? If so spin it until we are done
-			if (ctrl.getDisplay().getThread() == Thread.currentThread()) {
+			if ((ctrl.getDisplay().getThread() == Thread.currentThread()) /*&& !fViewer.isBusy()*/) {
 				runUpdates(runnables);
 			} else {
 				synchronized (this) {
@@ -134,12 +140,28 @@ public class PackageExplorerContentProvider extends StandardJavaElementContentPr
 				}
 				ctrl.getDisplay().asyncExec(new Runnable(){
 					public void run() {
-						runPendingUpdates();
+						postAsyncUpdate(ctrl.getDisplay());
 					}
 				});
 			}
 		}
 	}
+	
+	private void postAsyncUpdate(final Display display) {
+		UIJob updateJob= new UIJob(display, PackagesMessages.PackageExplorerContentProvider_update_job_description) {
+			public IStatus runInUIThread(IProgressMonitor monitor) {
+				TreeViewer viewer= fViewer;
+				if (viewer != null && viewer.isBusy()) {
+					schedule(100); // reschedule when viewer is busy: bug 184991
+				} else {
+					runPendingUpdates();
+				}
+				return Status.OK_STATUS;
+			}
+		};
+		updateJob.setSystem(true);
+		updateJob.schedule();
+	} 	         
 	
 	/**
 	 * Run all of the runnables that are the widget updates. Must be called in the display thread.
@@ -999,8 +1021,10 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				// refresh one level above to deal with empty package filtering properly
 				postRefresh(internalGetParent(parent), PARENT, parent, runnables);
 				return true;
-			} else 
+			} else {
 				postRemove(resource, runnables);
+				return false;
+			}
 		}
 		if ((status & IResourceDelta.ADDED) != 0) {
 			if (parent instanceof IPackageFragment) {
@@ -1008,7 +1032,10 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 				postRefresh(internalGetParent(parent), PARENT, parent, runnables);	
 				return true;
 			} else
+			{
 				postAdd(parent, resource, runnables);
+				return false;
+			}
 		}
 		// open/close state change of a project
 		if ((flags & IResourceDelta.OPEN) != 0) {
@@ -1016,6 +1043,18 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 			return true;		
 		}
 		IResourceDelta[] resourceDeltas= delta.getAffectedChildren();
+		 
+		int count= 0;
+		for (int i= 0; i < resourceDeltas.length; i++) {
+			int kind= resourceDeltas[i].getKind();
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED) {
+				count++;
+				if (count > 1) {
+					postRefresh(parent, PARENT, resource, runnables);
+					return true;
+				}
+			}
+		}
 		for (int i= 0; i < resourceDeltas.length; i++) {
 			if (processResourceDelta(resourceDeltas[i], resource, runnables)) {
 				return false; // early return, element got refreshed
