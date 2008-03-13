@@ -1295,7 +1295,7 @@ public void notifySourceElementRequestor( InferredType type ) {
 		requestor.enterField(fieldInfo);
 
 		//If this field is of an anonymous type, need to notify so that it shows as a child
-		if( field.type != null && field.type.isAnonymous  ){
+		if( field.type != null && field.type.isAnonymous && !field.type.isNamed() ){
 			notifySourceElementRequestor( field.type );
 		}
 
