@@ -219,6 +219,7 @@ Binding getBinding0(char[] name, int mask) {
 	}
 	if ( (mask&(Binding.COMPILATION_UNIT))!=0)
 	{
+		name=CharOperation.replaceOnCopy(name, CompilationUnitScope.FILENAME_DOT_SUBSTITUTION, '.');
 		if (knownCompUnits == null)
 			return null;
 		return knownCompUnits.get(name);

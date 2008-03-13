@@ -1472,5 +1472,10 @@ public String getInferenceID() {
 	return null;
 }
 
+public SearchableEnvironment newSearchableNameEnvironment(WorkingCopyOwner owner) throws JavaModelException {
+	SearchableEnvironment env=super.newSearchableNameEnvironment(owner);
+	env.setCompilationUnit(this);
+	return env;
+}
 
 }

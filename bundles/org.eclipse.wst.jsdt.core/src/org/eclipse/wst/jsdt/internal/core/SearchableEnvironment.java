@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.UnimplementedException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -765,5 +766,10 @@ public class SearchableEnvironment implements INameEnvironment,
 
 	public void cleanup() {
 		// nothing to do
+	}
+	
+	public void setCompilationUnit(IInferenceFile file)
+	{
+		nameLookup.setScriptFile(file);
 	}
 }

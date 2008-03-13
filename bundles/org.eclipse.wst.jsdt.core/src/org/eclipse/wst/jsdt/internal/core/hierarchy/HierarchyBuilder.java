@@ -70,6 +70,7 @@ public abstract class HierarchyBuilder {
 		org.eclipse.wst.jsdt.core.ICompilationUnit unitToLookInside = focusType == null ? null : focusType.getCompilationUnit();
 		org.eclipse.wst.jsdt.core.ICompilationUnit[] workingCopies = this.hierarchy.workingCopies;
 		org.eclipse.wst.jsdt.core.ICompilationUnit[] unitsToLookInside;
+		ICompilationUnit mainFile=null;
 		if (unitToLookInside != null) {
 			int wcLength = workingCopies == null ? 0 : workingCopies.length;
 			if (wcLength == 0) {
@@ -79,11 +80,16 @@ public abstract class HierarchyBuilder {
 				unitsToLookInside[0] = unitToLookInside;
 				System.arraycopy(workingCopies, 0, unitsToLookInside, 1, wcLength);
 			}
+			mainFile=(ICompilationUnit)unitToLookInside;
 		} else {
 			unitsToLookInside = workingCopies;
+			if (workingCopies!=null && workingCopies.length>0)
+				mainFile=(ICompilationUnit)workingCopies[0];
 		}
 		if (project != null) {
 			SearchableEnvironment searchableEnvironment = project.newSearchableNameEnvironment(unitsToLookInside);
+			if (mainFile!=null)
+				searchableEnvironment.setCompilationUnit(mainFile);
 			this.nameLookup = searchableEnvironment.nameLookup;
 			this.hierarchyResolver =
 				new HierarchyResolver(

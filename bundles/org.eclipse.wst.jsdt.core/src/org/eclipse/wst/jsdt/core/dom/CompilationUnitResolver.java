@@ -503,6 +503,7 @@ class CompilationUnitResolver extends Compiler {
 		CompilationUnitResolver resolver = null;
 		try {
 			environment = new CancelableNameEnvironment(((JavaProject)javaProject), owner, monitor);
+			environment.setCompilationUnit(sourceUnit);
 			problemFactory = new CancelableProblemFactory(monitor);
 			resolver =
 				new CompilationUnitResolver(

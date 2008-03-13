@@ -1,9 +1,12 @@
 package org.eclipse.wst.jsdt.core.infer;
 
-import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 
 /**
  *  Implemented by extenders of org.eclipse.wst.jsdt.core.infer.inferrenceSupport extension point
+ */
+/**
+ * @author Phil Berkland
+ *
  */
 public interface InferrenceProvider {
 	
@@ -24,11 +27,19 @@ public interface InferrenceProvider {
 	 * @return  InferrenceProvider.ONLY_THIS, InferrenceProvider.NOT_THIS, or InferrenceProvider.MAYBE_THIS, depending on how much
 	 * this inference provider applies to the specified script.
 	 */
-	public int applysTo(IScriptFileDeclaration scriptFile);
+	public int applysTo(IInferenceFile scriptFile);
+
+
 	/**
 	 * Get the inference provider ID
 	 * @return the id of this inference provider
 	 */
 	public String getID();
 	
+
+	/**
+	 * @return the ResolutionConfiguration used to resolve the inferred classes
+	 */
+	public ResolutionConfiguration getResolutionConfiguration();
+
 }

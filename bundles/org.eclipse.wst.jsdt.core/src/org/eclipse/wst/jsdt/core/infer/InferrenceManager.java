@@ -51,7 +51,7 @@ public class InferrenceManager {
 	}
 
 
-	public InferrenceProvider [] getInferenceProviders(CompilationUnitDeclaration script)
+	public InferrenceProvider [] getInferenceProviders(IInferenceFile script)
 	{
 		InferrenceProvider[] inferenceProviders = getInferenceProviders();
 		ArrayList extProviders=new ArrayList();

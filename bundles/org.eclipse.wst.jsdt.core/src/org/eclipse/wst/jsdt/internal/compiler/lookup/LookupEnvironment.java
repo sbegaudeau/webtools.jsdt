@@ -764,8 +764,8 @@ public PackageBinding createPackage(char[][] compoundName) {
 			// catches the case of a package statement of: package java.lang.Object;
 			// since the package can be added after a set of source files have already been compiled,
 			// we need to check whenever a package is created
-			if (nameEnvironment.findType(compoundName[i], parent.compoundName,this.typeRequestor) != null)
-				return null;
+//			if (nameEnvironment.findType(compoundName[i], parent.compoundName,this.typeRequestor) != null)
+//				return null;
 
 			packageBinding = new PackageBinding(CharOperation.subarray(compoundName, 0, i + 1), parent, this);
 			parent.addPackage(packageBinding);

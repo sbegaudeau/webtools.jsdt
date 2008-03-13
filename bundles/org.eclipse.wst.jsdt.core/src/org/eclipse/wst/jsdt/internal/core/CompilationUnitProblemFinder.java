@@ -222,9 +222,11 @@ public class CompilationUnitProblemFinder extends Compiler {
 			environment = new CancelableNameEnvironment(project, accessRequestor, workingCopyOwner, monitor);
 
 
-
 			if (unitElement instanceof CompilationUnit)
+			{
 				environment.unitToSkip=(CompilationUnit)unitElement;
+				environment.setCompilationUnit(environment.unitToSkip);
+			}
 			else if (unitElement instanceof CompilationUnit)
 				environment.unitToSkip=(CompilationUnit)unitElement;
 			problemFactory = new CancelableProblemFactory(monitor);

@@ -40,6 +40,10 @@ import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
+import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
+import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
+import org.eclipse.wst.jsdt.core.infer.ResolutionConfiguration;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchPattern;
@@ -48,6 +52,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
@@ -133,6 +138,8 @@ public class NameLookup implements SuffixConstants {
 	private static final IType[] NO_TYPES = {};
 	private static final IJavaElement[] NO_BINDINGS = {};
 
+	private boolean searchFiles=true;
+	
 	/**
 	 * The <code>IPackageFragmentRoot</code>'s associated
 	 * with the classpath of this NameLookup facility's
@@ -505,6 +512,7 @@ public class NameLookup implements SuffixConstants {
 			pkgName= Util.splitOn('.', qualifiedTypeName, 0, index);
 			cuName= qualifiedTypeName.substring(index + 1);
 		}
+		cuName=cuName.replace(CompilationUnitScope.FILENAME_DOT_SUBSTITUTION, '.');
 		index= cuName.indexOf('$');
 		if (index != -1) {
 			cuName= cuName.substring(0, index);
@@ -782,7 +790,7 @@ public class NameLookup implements SuffixConstants {
 	 */
 	public Answer findType(String typeName, String packageName, boolean partialMatch, int acceptFlags, boolean checkRestrictions) {
 
-		if (USE_BINDING_SEARCH)
+		if (USE_BINDING_SEARCH && this.searchFiles)
 		{
 			Answer answer =findBindingSearch(typeName, packageName, Binding.TYPE, partialMatch, acceptFlags, true, true, checkRestrictions, null,false,null);
 			if (answer!=null && answer.type==null && answer.element instanceof ITypeRoot)
@@ -828,7 +836,7 @@ public class NameLookup implements SuffixConstants {
 				return null;
 		}
 		
-		if (USE_BINDING_SEARCH)
+		if (USE_BINDING_SEARCH && searchFiles)
 		return findBindingSearch(typeName,
 			packageName,
 			type,
@@ -1243,7 +1251,7 @@ public class NameLookup implements SuffixConstants {
 //			packageName= name.substring(0, index);
 //			className= name.substring(index + 1);
 //		}
-		if (USE_BINDING_SEARCH)
+		if (USE_BINDING_SEARCH && searchFiles)
 			return findBindingSearch(className, packageName, Binding.TYPE, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor,false,null);
 		return findType(className, packageName, partialMatch, acceptFlags, considerSecondaryTypes, waitForIndexes, checkRestrictions, monitor);
 	}
@@ -1320,9 +1328,12 @@ public class NameLookup implements SuffixConstants {
 
 			IJavaElement[] children;
 			try {
-				children = packageFragmentRoots[i].getChildren();
-				for (int j = 0; j < children.length; j++) {
-					requestor.acceptPackageFragment((IPackageFragment)children[j]);
+				if (this.searchFiles || packageFragmentRoots[i].isLibrary())
+				{
+					children = packageFragmentRoots[i].getChildren();
+					for (int j = 0; j < children.length; j++) {
+						requestor.acceptPackageFragment((IPackageFragment)children[j]);
+					}
 				}
 			} catch (JavaModelException e) {}
 
@@ -2261,4 +2272,16 @@ public class NameLookup implements SuffixConstants {
 
 		}
 
+
+		public void setScriptFile(IInferenceFile compUnit)
+		{
+			InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders(compUnit);
+			if (inferenceProviders!=null && inferenceProviders.length>0)
+			{
+				ResolutionConfiguration resolutionConfiguration = inferenceProviders[0].getResolutionConfiguration();
+				if (resolutionConfiguration!=null)
+					searchFiles=resolutionConfiguration.searchAllFiles();
+			}
+		}
+		
 }

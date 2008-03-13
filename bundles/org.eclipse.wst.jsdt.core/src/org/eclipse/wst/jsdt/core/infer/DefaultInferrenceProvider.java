@@ -1,13 +1,12 @@
 package org.eclipse.wst.jsdt.core.infer;
 
-import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 
 public class DefaultInferrenceProvider implements InferrenceProvider {
 
 	public static final String ID="org.eclipse.wst.jsdt.core.infer.DefaultInferrenceProvider";
 	
 
-	public int applysTo(IScriptFileDeclaration scriptFile) {
+	public int applysTo(IInferenceFile scriptFile) {
 		char[] fileNameChars = scriptFile.getFileName();
 		if (fileNameChars!=null)
 		{
@@ -34,6 +33,11 @@ public class DefaultInferrenceProvider implements InferrenceProvider {
 
 	public String getID() {
 		return ID;
+	}
+
+
+	public ResolutionConfiguration getResolutionConfiguration() {
+		return new ResolutionConfiguration();
 	}
 
 }

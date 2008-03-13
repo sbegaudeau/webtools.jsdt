@@ -18,6 +18,8 @@ import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
+import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
+import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.CompilationUnitDeclaration;
@@ -66,6 +68,8 @@ public int temporaryAnalysisIndex;
 
 
 public HashSet externalCompilationUnits=new HashSet();
+
+public static final char FILENAME_DOT_SUBSTITUTION='#';
 
 
 class DeclarationVisitor extends ASTVisitor
@@ -682,7 +686,8 @@ void faultInImports() {
 	}
 
 	// allocate the import array, add java.lang.* by default
-	int numberOfImports = numberOfStatements + 1;
+	ImportBinding[] defaultImports = getDefaultImports();
+	int numberOfImports = numberOfStatements + defaultImports.length;
 	for (int i = 0; i < numberOfStatements; i++) {
 		ImportReference importReference = referenceContext.imports[i];
 		if (((importReference.bits & ASTNode.OnDemand) != 0) && CharOperation.equals(JAVA_LANG, importReference.tokens) && !importReference.isStatic()) {
@@ -691,8 +696,8 @@ void faultInImports() {
 		}
 	}
 	ImportBinding[] resolvedImports = new ImportBinding[numberOfImports];
-	resolvedImports[0] = getDefaultImports()[0];
-	int index = 1;
+	System.arraycopy(defaultImports, 0, resolvedImports, 0, defaultImports.length);
+	int index = defaultImports.length;
 
 	// keep static imports with normal imports until there is a reason to split them up
 	// on demand imports continue to be packages & types. need to check on demand type imports for fields/methods
@@ -934,6 +939,8 @@ ImportBinding[] getDefaultImports() {
 	// initialize the default imports if necessary... share the default java.lang.* import
 	if (environment.defaultImports != null) return environment.defaultImports;
 
+	
+	
 	Binding importBinding = environment.defaultPackage;
 //	if (importBinding != null)
 //		importBinding = ((PackageBinding) importBinding).getTypeOrPackage(JAVA_LANG[1]);
@@ -944,7 +951,38 @@ ImportBinding[] getDefaultImports() {
 		MissingBinaryTypeBinding missingObject = environment.cacheMissingBinaryType(JAVA_LANG_OBJECT, this.referenceContext);
 		importBinding = missingObject.fPackage;
 	}
-	return environment.defaultImports = new ImportBinding[] {new ImportBinding(new char[][] {SystemLibraryLocation.SYSTEM_LIBARAY_NAME}, true, importBinding, (ImportReference)null)};
+	
+	ImportBinding systemJSBinding = new ImportBinding(new char[][] {SystemLibraryLocation.SYSTEM_LIBARAY_NAME}, true, importBinding, (ImportReference)null);
+	String[] contextIncludes=null;
+	InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders(this.referenceContext);
+    if (inferenceProviders!=null &&inferenceProviders.length>0)
+    {
+    	contextIncludes = inferenceProviders[0].getResolutionConfiguration().getContextIncludes();
+    }
+    if (contextIncludes!=null && contextIncludes.length>0)
+    {
+      ArrayList list = new ArrayList();
+      list.add(systemJSBinding);
+      for (int i = 0; i < contextIncludes.length; i++) {
+		String include=contextIncludes[i];
+		if (include!=null)
+		{
+			if (include.endsWith(".js"))
+				include=include.substring(0,include.length()-3);
+			include=include.replace('.', FILENAME_DOT_SUBSTITUTION);
+			char [][] qualifiedName=CharOperation.splitOn('/', include.toCharArray());
+			Binding binding=findImport(qualifiedName, qualifiedName.length);
+			if (binding.isValidBinding())
+			{
+				list.add(new ImportBinding(qualifiedName, true, binding, null));
+			}
+		}
+	  }
+      environment.defaultImports = ( ImportBinding[])list.toArray( new ImportBinding[list.size()]);
+    }
+    else
+    	environment.defaultImports = new ImportBinding[] {systemJSBinding};
+	return environment.defaultImports ;
 }
 // NOT Public API
 public final Binding getImport(char[][] compoundName, boolean onDemand, boolean isStaticImport) {

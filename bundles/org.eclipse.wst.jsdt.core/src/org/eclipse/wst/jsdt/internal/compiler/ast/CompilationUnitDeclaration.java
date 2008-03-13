@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.ast.IProgramElement;
 import org.eclipse.wst.jsdt.core.ast.IScriptFileDeclaration;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
 import org.eclipse.wst.jsdt.core.infer.InferredMethod;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ASTVisitor;
@@ -46,7 +47,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 
 public class CompilationUnitDeclaration
 	extends ASTNode
-	implements ProblemSeverities, ReferenceContext, IScriptFileDeclaration {
+	implements ProblemSeverities, ReferenceContext, IScriptFileDeclaration, IInferenceFile {
 
 	protected void finalize() throws Throwable {
 //		System.out.println("finalize "+hashCode());
