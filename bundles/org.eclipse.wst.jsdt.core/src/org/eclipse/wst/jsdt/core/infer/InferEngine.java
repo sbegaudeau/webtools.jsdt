@@ -535,6 +535,7 @@ public class InferEngine extends ASTVisitor {
 			functionExpression=(FunctionExpression)((AllocationExpression)assignment.expression).member;
 		else if (assignment.expression instanceof Assignment)
 			functionExpression=(FunctionExpression)((Assignment)assignment.expression).expression;
+		MethodDeclaration methodDeclaration = functionExpression.methodDeclaration;
 
 		char [] possibleTypeName = constructTypeName( assignment.lhs );
 
@@ -546,6 +547,11 @@ public class InferEngine extends ASTVisitor {
 			{
 				type=addType(possibleTypeName,true);
 			}
+			if (type==null && methodDeclaration.getJsDoc()!=null && ((Javadoc)methodDeclaration.getJsDoc()).isConstructor)
+			{
+				type=addType(possibleTypeName,true);
+				handleJSDocConstructor(type, methodDeclaration, assignment.sourceStart);
+			}
 		}
 
 		if (type!=null)	// isConstructor
@@ -555,7 +561,7 @@ public class InferEngine extends ASTVisitor {
 				this.currentContext.currentType=type;
 				this.currentContext.currentType=type;
 				type.isDefinition=true;
-				InferredMethod method = type.addMethod(type.name, functionExpression.methodDeclaration,true);
+				InferredMethod method = type.addMethod(type.name, methodDeclaration,true);
 				method.nameStart=assignment.lhs.sourceStart;
 			}
 
@@ -572,12 +578,12 @@ public class InferEngine extends ASTVisitor {
 				if( receiverType != null ){
 
 					//check if there is a member method already created
-					InferredMethod method = receiverType.findMethod( fieldReference.token, functionExpression.methodDeclaration );
+					InferredMethod method = receiverType.findMethod( fieldReference.token, methodDeclaration );
 
 					if( method == null ){
 						//create member method if it does not exist
 
-						method = receiverType.addMethod( fieldReference.token, functionExpression.methodDeclaration ,false);
+						method = receiverType.addMethod( fieldReference.token, methodDeclaration ,false);
 						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd); // @GINO: not sure if necessary
 						method.nameStart = nameStart;
 						receiverType.isDefinition=true;
@@ -605,7 +611,7 @@ public class InferEngine extends ASTVisitor {
 					receiverType = getInferredType2(fieldReference.receiver);
 					if (receiverType!=null)
 					{
-						InferredMethod method = receiverType.addMethod(fieldReference.token,functionExpression.methodDeclaration,false);
+						InferredMethod method = receiverType.addMethod(fieldReference.token,methodDeclaration,false);
 						method.isStatic=receiverType.isAnonymous;
 						method.nameStart=nameStart;
 						receiverType.updatePositions(assignment.sourceStart, assignment.sourceEnd);
@@ -965,6 +971,7 @@ public class InferEngine extends ASTVisitor {
 		}
 
 		this.isTopLevelAnonymousFunction=false; 
+		char[] methodName = methodDeclaration.getName();
 		if (passNumber==1)
 		{
 			buildDefinedMembers((ProgramElement[])methodDeclaration.getStatements(),(Argument[])methodDeclaration.getArguments());
@@ -972,26 +979,17 @@ public class InferEngine extends ASTVisitor {
 			{
 				InferredMethod method=null;
 				Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
-				if (javadoc.isConstructor)
+				if (javadoc.isConstructor && methodName!=null)
 				{
-					InferredType type = this.addType(methodDeclaration.getName());
-					type.isDefinition=true;
-					method = type.addMethod(methodDeclaration.getName(), methodDeclaration,true);
-					method.nameStart=methodDeclaration.sourceStart();
-					method.isConstructor=true;
-
-					if (javadoc.extendsType!=null)
-					{
-						InferredType superType=this.addType(javadoc.extendsType.getSimpleTypeName());
-						type.superClass=superType;
-					}
+					InferredType type = this.addType(methodName);
+					handleJSDocConstructor(type, methodDeclaration, methodDeclaration.sourceStart());
 				}
 				else if (javadoc.memberOf!=null)
 				{
 					InferredType type = this.addType(javadoc.memberOf.getSimpleTypeName(),true);
-					char [] name=methodDeclaration.getName();
+					char [] name=methodName;
 					if (name!=null)
-						method=type.addMethod(methodDeclaration.getName(), methodDeclaration,false);
+						method=type.addMethod(methodName, methodDeclaration,false);
 				}
 
 				if (javadoc.returnType!=null)
@@ -1009,14 +1007,14 @@ public class InferEngine extends ASTVisitor {
 		if (passNumber==2)
 		{
 
-			if (methodDeclaration.getName()!=null) {
+			if (methodName!=null) {
 				InferredType type = compUnit
-						.findInferredType(methodDeclaration.getName());
+						.findInferredType(methodName);
 				if (type != null) {
 					this.currentContext.currentType = type;
 					type.isDefinition = true;
 					InferredMethod method = type.addMethod(
-							methodDeclaration.getName(), methodDeclaration,true);
+							methodName, methodDeclaration,true);
 					method.nameStart=methodDeclaration.sourceStart();
 					method.isConstructor = true;
 					methodDeclaration.setInferredType(type);
@@ -1029,6 +1027,21 @@ public class InferEngine extends ASTVisitor {
 		if (methodDeclaration.getInferredType()==null)
 			methodDeclaration.setInferredType(VoidType);
 		return true;
+	}
+	
+	protected void handleJSDocConstructor(InferredType type,IFunctionDeclaration methodDeclaration, int nameStart) {
+		Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
+		type.isDefinition=true;
+		InferredMethod method = type.addMethod(type.name, methodDeclaration,true);
+		method.nameStart=nameStart;
+		method.isConstructor=true;
+
+		if (javadoc.extendsType!=null)
+		{
+			InferredType superType=this.addType(javadoc.extendsType.getSimpleTypeName());
+			type.superClass=superType;
+		}
+		
 	}
 
 	protected void handleFunctionDeclarationArguments(IFunctionDeclaration methodDeclaration) {
