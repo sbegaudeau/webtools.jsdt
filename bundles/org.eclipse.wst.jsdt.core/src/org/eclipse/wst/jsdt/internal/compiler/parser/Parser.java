@@ -6411,6 +6411,7 @@ private void consumeLiteralField() {
 	if (!(this.diet && this.dietInt==0) && this.scanner.commentPtr >= 0) {
 		flushCommentsDefinedPriorTo(literalField.sourceEnd);
 	}
+	resetModifiers();
 }
 
 private void consumeFieldList() {
