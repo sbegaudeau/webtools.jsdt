@@ -1251,6 +1251,8 @@ public void notifySourceElementRequestor( InferredType type ) {
 	if ( !type.isDefinition)
 		return;
 
+	if (type.isAnonymous && !type.isNamed())
+		return;
 				// prevent possible recurrsion
 	if (notifiedTypes.containsKey(type.getName()))
 		return;
