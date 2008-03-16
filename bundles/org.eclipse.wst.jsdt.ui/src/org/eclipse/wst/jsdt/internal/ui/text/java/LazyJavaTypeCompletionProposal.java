@@ -25,8 +25,13 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ContextSensitiveImportRewriteContext;
+import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
+import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.QualifiedTypeNameHistory;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
+import org.eclipse.wst.jsdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.wst.jsdt.ui.PreferenceConstants;
 import org.eclipse.wst.jsdt.ui.text.java.JavaContentAssistInvocationContext;
 
@@ -45,7 +50,7 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 	private String fQualifiedName;
 	private String fSimpleName;
 	private ImportRewrite fImportRewrite;
-//	private ContextSensitiveImportRewriteContext fImportContext;
+	private ContextSensitiveImportRewriteContext fImportContext;
 
 	public LazyJavaTypeCompletionProposal(CompletionProposal proposal, JavaContentAssistInvocationContext context) {
 		super(proposal, context);
@@ -73,56 +78,56 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 
 //		/* No import rewriting ever from within the import section. */
 //		if (isImportCompletion())
-	        return replacement;
+//	        return replacement;
 		
-//		/* Always use the simple name for non-formal javadoc references to types. */
-//		// TODO fix
-//		 if (fProposal.getKind() == CompletionProposal.TYPE_REF &&  fInvocationContext.getCoreContext().isInJavadocText())
-//			 return getSimpleTypeName();
-//		
-//		String qualifiedTypeName= getQualifiedTypeName();
-// 		if (qualifiedTypeName.indexOf('.') == -1)
-// 			// default package - no imports needed 
-// 			return qualifiedTypeName;
-//
-// 		/*
-//		 * If the user types in the qualification, don't force import rewriting on him - insert the
-//		 * qualified name.
-//		 */
-// 		IDocument document= fInvocationContext.getDocument();
-//		if (document != null) {
-//			String prefix= getPrefix(document, getReplacementOffset() + getReplacementLength());
-//			int dotIndex= prefix.lastIndexOf('.');
-//			// match up to the last dot in order to make higher level matching still work (camel case...)
-//			if (dotIndex != -1 && qualifiedTypeName.toLowerCase().startsWith(prefix.substring(0, dotIndex + 1).toLowerCase()))
-//				return qualifiedTypeName;
-//		}
-//		
-//		/*
-//		 * The replacement does not contain a qualification (e.g. an inner type qualified by its
-//		 * parent) - use the replacement directly.
-//		 */
-//		if (replacement.indexOf('.') == -1) {
-//			if (isInJavadoc())
-//				return getSimpleTypeName(); // don't use the braces added for javadoc link proposals
-//			return replacement;
-//		}
-//		
-//		/* Add imports if the preference is on. */
-//		fImportRewrite= createImportRewrite();
-//		if (fImportRewrite != null) {
-//			return fImportRewrite.addImport(qualifiedTypeName, fImportContext);
-//		}
-//		
-//		// fall back for the case we don't have an import rewrite (see allowAddingImports)
-//		
-//		/* No imports for implicit imports. */
-//		if (fCompilationUnit != null && JavaModelUtil.isImplicitImport(Signature.getQualifier(qualifiedTypeName), fCompilationUnit)) {
-//			return Signature.getSimpleName(qualifiedTypeName);
-//		}
-//		
+		/* Always use the simple name for non-formal javadoc references to types. */
+		// TODO fix
+		 if (fProposal.getKind() == CompletionProposal.TYPE_REF &&  fInvocationContext.getCoreContext().isInJavadocText())
+			 return getSimpleTypeName();
+		
+		String qualifiedTypeName= getQualifiedTypeName();
+ 		if (qualifiedTypeName.indexOf('.') == -1)
+ 			// default package - no imports needed 
+ 			return qualifiedTypeName;
+
+ 		/*
+		 * If the user types in the qualification, don't force import rewriting on him - insert the
+		 * qualified name.
+		 */
+ 		IDocument document= fInvocationContext.getDocument();
+		if (document != null) {
+			String prefix= getPrefix(document, getReplacementOffset() + getReplacementLength());
+			int dotIndex= prefix.lastIndexOf('.');
+			// match up to the last dot in order to make higher level matching still work (camel case...)
+			if (dotIndex != -1 && qualifiedTypeName.toLowerCase().startsWith(prefix.substring(0, dotIndex + 1).toLowerCase()))
+				return qualifiedTypeName;
+		}
+		
+		/*
+		 * The replacement does not contain a qualification (e.g. an inner type qualified by its
+		 * parent) - use the replacement directly.
+		 */
+		if (replacement.indexOf('.') == -1) {
+			if (isInJavadoc())
+				return getSimpleTypeName(); // don't use the braces added for javadoc link proposals
+			return replacement;
+		}
+		
+		/* Add imports if the preference is on. */
+		fImportRewrite= createImportRewrite();
+		if (fImportRewrite != null) {
+			return fImportRewrite.addImport(qualifiedTypeName, fImportContext);
+		}
+		
+		// fall back for the case we don't have an import rewrite (see allowAddingImports)
+		
+		/* No imports for implicit imports. */
+		if (fCompilationUnit != null && JavaModelUtil.isImplicitImport(Signature.getQualifier(qualifiedTypeName), fCompilationUnit)) {
+			return Signature.getSimpleName(qualifiedTypeName);
+		}
+		
 		/* Default: use the fully qualified type name. */
-//		return qualifiedTypeName;
+		return qualifiedTypeName;
 	}
 
 	protected final boolean isImportCompletion() {
@@ -138,29 +143,29 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 		return last == ';' || last == '.';
 	}
 
-//	private ImportRewrite createImportRewrite() {
-//		if (fCompilationUnit != null && allowAddingImports()) {
-//			try {
-//				CompilationUnit cu= getASTRoot(fCompilationUnit);
-//				if (cu == null) {
-//					ImportRewrite rewrite= StubUtility.createImportRewrite(fCompilationUnit, true);
-//					fImportContext= null;
-//					return rewrite;
-//				} else {
-//					ImportRewrite rewrite= StubUtility.createImportRewrite(cu, true);
-//					fImportContext= new ContextSensitiveImportRewriteContext(cu, fInvocationContext.getInvocationOffset(), rewrite);
-//					return rewrite;
-//				}
-//			} catch (CoreException x) {
-//				JavaPlugin.log(x);
-//			}
-//		}
-//		return null;
-//	}
+	private ImportRewrite createImportRewrite() {
+		if (fCompilationUnit != null && allowAddingImports()) {
+			try {
+				CompilationUnit cu= getASTRoot(fCompilationUnit);
+				if (cu == null) {
+					ImportRewrite rewrite= StubUtility.createImportRewrite(fCompilationUnit, true);
+					fImportContext= null;
+					return rewrite;
+				} else {
+					ImportRewrite rewrite= StubUtility.createImportRewrite(cu, true);
+					fImportContext= new ContextSensitiveImportRewriteContext(cu, fInvocationContext.getInvocationOffset(), rewrite);
+					return rewrite;
+				}
+			} catch (CoreException x) {
+				JavaPlugin.log(x);
+			}
+		}
+		return null;
+	}
 
-//	private CompilationUnit getASTRoot(ICompilationUnit compilationUnit) {
-//		return JavaPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
-//	}
+	private CompilationUnit getASTRoot(ICompilationUnit compilationUnit) {
+		return JavaPlugin.getDefault().getASTProvider().getAST(compilationUnit, ASTProvider.WAIT_NO, new NullProgressMonitor());
+	}
 
 	/*
 	 * @see org.eclipse.wst.jsdt.internal.ui.text.java.LazyJavaCompletionProposal#apply(org.eclipse.jface.text.IDocument, char, int)
