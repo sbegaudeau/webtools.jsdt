@@ -57,6 +57,9 @@ public class JavadocParser extends AbstractCommentParser {
 	private TypeReference returnType=null;
 	private TypeReference extendsType=null;
 
+	private TypeReference classDef=null;
+	private TypeReference methodDef=null;
+
 	private boolean isConstructor;
 
 
@@ -537,7 +540,7 @@ public class JavadocParser extends AbstractCommentParser {
 							valid =true;
 						} else	if (length == TAG_CLASS_LENGTH && CharOperation.equals(TAG_CLASS, tagName)) {
 							this.tagValue = TAG_CLASS_VALUE;
-							valid =true;
+							valid =parseClass() ;
 						} else
 								if (length == TAG_CONSTRUCTOR_LENGTH && CharOperation.equals(TAG_CONSTRUCTOR, tagName)) {
 									this.tagValue = TAG_CONSTRUCTOR_VALUE;
@@ -632,6 +635,10 @@ public class JavadocParser extends AbstractCommentParser {
 						else if (length == TAG_MEMBEROF_LENGTH && CharOperation.equals(TAG_MEMBEROF, tagName)) {
 							this.tagValue = TAG_MEMBEROF_VALUE;
 							valid = parseMember();
+						}
+						else if (length == TAG_METHOD_LENGTH && CharOperation.equals(TAG_METHOD, tagName)) {
+							this.tagValue = TAG_METHOD_VALUE;
+							valid = parseMethod();
 						}
 						break;
 					case 'n':
@@ -749,6 +756,17 @@ public class JavadocParser extends AbstractCommentParser {
 		return this.namespace!=null;
 	}
 
+
+	private boolean parseClass() throws InvalidInputException {
+		this.classDef=(TypeReference) parseQualifiedName(true);
+		return this.classDef!=null;
+	}
+	
+	private boolean parseMethod() throws InvalidInputException {
+		this.methodDef=(TypeReference) parseQualifiedName(true);
+		return this.methodDef!=null;
+	}
+	
 	private boolean parseMember() throws InvalidInputException {
 		this.memberOf=(TypeReference) parseQualifiedName(true);
 		return this.memberOf!=null;
@@ -901,6 +919,8 @@ public class JavadocParser extends AbstractCommentParser {
 		this.docComment.memberOf=this.memberOf;
 		this.docComment.returnType=this.returnType;
 		this.docComment.extendsType=this.extendsType;
+		this.docComment.classDef=this.classDef;
+		this.docComment.methodDef=this.methodDef;
 
 		this.docComment.isConstructor=this.isConstructor;
 

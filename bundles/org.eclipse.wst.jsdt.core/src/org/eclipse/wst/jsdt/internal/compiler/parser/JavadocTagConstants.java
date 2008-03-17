@@ -58,6 +58,10 @@ public interface JavadocTagConstants {
 	public static final char[] TAG_REQUIRES = "requires".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_FINAL = "final".toCharArray(); //$NON-NLS-1$
 
+	// ?? from jsdoc2
+	public static final char[] TAG_METHOD = "method".toCharArray(); //$NON-NLS-1$
+
+	
 	// from scriptdoc.org
 	public static final char[] TAG_ALIAS = "alias".toCharArray(); //$NON-NLS-1$
 	public static final char[] TAG_CLASSDECRIPTION = "classDescription".toCharArray(); //$NON-NLS-1$
@@ -103,7 +107,9 @@ public interface JavadocTagConstants {
 	public static final int TAG_CLASS_LENGTH = TAG_CLASS.length;
 	public static final int TAG_REQUIRES_LENGTH = TAG_REQUIRES.length;
 	public static final int TAG_FINAL_LENGTH = TAG_FINAL.length;
-
+	
+	public static final int TAG_METHOD_LENGTH = TAG_METHOD.length;
+	
 	// tags value
 	public static final int NO_TAG_VALUE = 0;
 	public static final int TAG_DEPRECATED_VALUE = 1;
@@ -142,6 +148,7 @@ public interface JavadocTagConstants {
 	public static final int TAG_RETURNS_VALUE = 32;
 	public static final int TAG_REQUIRES_VALUE = 33;
 
+	public static final int TAG_METHOD_VALUE = 34;
 
 
 

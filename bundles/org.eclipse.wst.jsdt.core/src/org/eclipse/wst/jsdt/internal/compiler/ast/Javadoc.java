@@ -53,6 +53,9 @@ public class Javadoc extends ASTNode implements IJsDoc {
 	public TypeReference returnType=null;
 	public TypeReference extendsType=null;
 
+	public TypeReference classDef=null;
+	public TypeReference methodDef=null;
+	
 	public boolean isConstructor;
 
 

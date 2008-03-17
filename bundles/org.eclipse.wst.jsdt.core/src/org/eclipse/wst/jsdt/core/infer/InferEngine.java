@@ -94,7 +94,8 @@ public class InferEngine extends ASTVisitor {
 	{
 		InferredType currentType;
 		MethodDeclaration currentMethod;
-
+		boolean isJsDocClass;
+		
 		private HashtableOfObject definedMembers;
 
 		/*
@@ -117,6 +118,7 @@ public class InferEngine extends ASTVisitor {
 
 			currentType = parent.currentType;
 			currentMethod = parent.currentMethod;
+			this.isJsDocClass=parent.isJsDocClass;
 		}
 
 		public Object getMember( char [] key ){
@@ -204,6 +206,7 @@ public class InferEngine extends ASTVisitor {
 		if (localDeclaration.getJsDoc()!=null)
 		{
 			Javadoc javadoc = (Javadoc)localDeclaration.getJsDoc();
+			createTypeIfNecessary(javadoc);
 			InferredAttribute attribute = null;
 			if (javadoc.memberOf!=null)
 			{
@@ -228,6 +231,26 @@ public class InferEngine extends ASTVisitor {
 			localDeclaration.setInferredType(getTypeOf(localDeclaration.getInitialization()));
 		}
 		return true;
+	}
+
+	private void createTypeIfNecessary(Javadoc javadoc) {
+		if (javadoc.classDef!=null)
+		{
+			char [][]namespace={};
+			char[][] typeName = javadoc.classDef.getTypeName();
+			if (javadoc.namespace!=null)
+			{
+				namespace=javadoc.namespace.getTypeName();
+			}
+			char [] name=CharOperation.concat(
+					CharOperation.concatWith(namespace, '.'),
+					CharOperation.concatWith(typeName, '.'),
+					'.');
+			this.currentContext.currentType=addType(name);
+			this.currentContext.isJsDocClass=true;
+			
+		}
+		
 	}
 
 	public boolean visit(IAssignment assignment) {
@@ -979,10 +1002,16 @@ public class InferEngine extends ASTVisitor {
 			{
 				InferredMethod method=null;
 				Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
-				if (javadoc.isConstructor && methodName!=null)
+				createTypeIfNecessary(javadoc);
+				if (javadoc.isConstructor)
 				{
-					InferredType type = this.addType(methodName);
-					handleJSDocConstructor(type, methodDeclaration, methodDeclaration.sourceStart());
+					InferredType type;
+					if (!this.currentContext.isJsDocClass && methodName!=null)
+					  type = this.addType(methodName);
+					else
+						type=this.currentContext.currentType;
+					if (type!=null)
+						handleJSDocConstructor(type, methodDeclaration, methodDeclaration.sourceStart());
 				}
 				else if (javadoc.memberOf!=null)
 				{
@@ -990,6 +1019,19 @@ public class InferEngine extends ASTVisitor {
 					char [] name=methodName;
 					if (name!=null)
 						method=type.addMethod(methodName, methodDeclaration,false);
+				}
+				else if (javadoc.methodDef!=null && this.currentContext.isJsDocClass)
+				{
+					InferredType type=this.currentContext.currentType;
+					char[][] methName = javadoc.methodDef.getTypeName();
+					if (methName.length==1)
+						method=type.addMethod(methName[0], methodDeclaration,false);
+					else
+					{
+						method=type.addMethod(methName[methName.length-1], methodDeclaration,false);
+						method.isStatic=true;
+					}
+						
 				}
 
 				if (javadoc.returnType!=null)

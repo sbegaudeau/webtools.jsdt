@@ -1021,19 +1021,21 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	 */
 	protected Object parseQualifiedName(boolean reset) throws InvalidInputException {
 
-		// Reset identifier stack if requested
-		if (reset) {
-			this.identifierPtr = -1;
-			this.identifierLengthPtr = -1;
-		}
-
-		// Scan tokens
-		int primitiveToken = -1;
-		int parserKind = this.kind & PARSER_KIND;
-		nextToken : for (int iToken = 0; ; iToken++) {
-			int token = readTokenSafely();
-			switch (token) {
-				case TerminalTokens.TokenNameIdentifier :
+		boolean tokenizeWhiteSpace=this.scanner.tokenizeWhiteSpace;
+        this.scanner.tokenizeWhiteSpace=false;
+		try {
+			// Reset identifier stack if requested
+			if (reset) {
+				this.identifierPtr = -1;
+				this.identifierLengthPtr = -1;
+			}
+			// Scan tokens
+			int primitiveToken = -1;
+			int parserKind = this.kind & PARSER_KIND;
+			nextToken: for (int iToken = 0;; iToken++) {
+				int token = readTokenSafely();
+				switch (token) {
+				case TerminalTokens.TokenNameIdentifier:
 					if (((iToken & 1) != 0)) { // identifiers must be odd tokens
 						break nextToken;
 					}
@@ -1041,22 +1043,22 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					consumeToken();
 					break;
 
-				case TerminalTokens.TokenNameDOT :
+				case TerminalTokens.TokenNameDOT:
 					if ((iToken & 1) == 0) { // dots must be even tokens
 						throw new InvalidInputException();
 					}
 					consumeToken();
 					break;
 
-				case TerminalTokens.TokenNamevoid :
-				case TerminalTokens.TokenNameboolean :
-				case TerminalTokens.TokenNamebyte :
-				case TerminalTokens.TokenNamechar :
-				case TerminalTokens.TokenNamedouble :
-				case TerminalTokens.TokenNamefloat :
-				case TerminalTokens.TokenNameint :
-				case TerminalTokens.TokenNamelong :
-				case TerminalTokens.TokenNameshort :
+				case TerminalTokens.TokenNamevoid:
+				case TerminalTokens.TokenNameboolean:
+				case TerminalTokens.TokenNamebyte:
+				case TerminalTokens.TokenNamechar:
+				case TerminalTokens.TokenNamedouble:
+				case TerminalTokens.TokenNamefloat:
+				case TerminalTokens.TokenNameint:
+				case TerminalTokens.TokenNamelong:
+				case TerminalTokens.TokenNameshort:
 					if (iToken > 0) {
 						throw new InvalidInputException();
 					}
@@ -1065,45 +1067,48 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 					consumeToken();
 					break nextToken;
 
-				default :
+				default:
 					if (iToken == 0) {
-						if (this.identifierPtr>=0) {
+						if (this.identifierPtr >= 0) {
 							this.lastIdentifierEndPosition = (int) this.identifierPositionStack[this.identifierPtr];
 						}
 						return null;
 					}
 					if ((iToken & 1) == 0) { // cannot leave on a dot
 						switch (parserKind) {
-							case COMPLETION_PARSER:
-								if (this.identifierPtr>=0) {
-									this.lastIdentifierEndPosition = (int) this.identifierPositionStack[this.identifierPtr];
-								}
-								return syntaxRecoverQualifiedName(primitiveToken);
-							case DOM_PARSER:
-								if (this.currentTokenType != -1) {
-									// Reset position: we want to rescan last token
-									this.index = this.tokenPreviousPosition;
-									this.scanner.currentPosition = this.tokenPreviousPosition;
-									this.currentTokenType = -1;
-								}
-								// fall through default case to raise exception
-							default:
-								throw new InvalidInputException();
+						case COMPLETION_PARSER:
+							if (this.identifierPtr >= 0) {
+								this.lastIdentifierEndPosition = (int) this.identifierPositionStack[this.identifierPtr];
+							}
+							return syntaxRecoverQualifiedName(primitiveToken);
+						case DOM_PARSER:
+							if (this.currentTokenType != -1) {
+								// Reset position: we want to rescan last token
+								this.index = this.tokenPreviousPosition;
+								this.scanner.currentPosition = this.tokenPreviousPosition;
+								this.currentTokenType = -1;
+							}
+							// fall through default case to raise exception
+						default:
+							throw new InvalidInputException();
 						}
 					}
 					break nextToken;
+				}
 			}
+			// Reset position: we want to rescan last token
+			if (parserKind != COMPLETION_PARSER && this.currentTokenType != -1) {
+				this.index = this.tokenPreviousPosition;
+				this.scanner.currentPosition = this.tokenPreviousPosition;
+				this.currentTokenType = -1;
+			}
+			if (this.identifierPtr >= 0) {
+				this.lastIdentifierEndPosition = (int) this.identifierPositionStack[this.identifierPtr];
+			}
+			return createTypeReference(primitiveToken);
+		} finally {
+			this.scanner.tokenizeWhiteSpace=tokenizeWhiteSpace;
 		}
-		// Reset position: we want to rescan last token
-		if (parserKind != COMPLETION_PARSER && this.currentTokenType != -1) {
-			this.index = this.tokenPreviousPosition;
-			this.scanner.currentPosition = this.tokenPreviousPosition;
-			this.currentTokenType = -1;
-		}
-		if (this.identifierPtr>=0) {
-			this.lastIdentifierEndPosition = (int) this.identifierPositionStack[this.identifierPtr];
-		}
-		return createTypeReference(primitiveToken);
 	}
 
 	/*
