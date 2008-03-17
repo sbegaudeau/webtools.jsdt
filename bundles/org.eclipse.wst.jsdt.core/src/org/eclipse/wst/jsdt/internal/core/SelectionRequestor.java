@@ -881,7 +881,13 @@ protected IType resolveType(char[] packageName, char[] fileName, char[] typeName
 		ITypeRoot compilationUnit = (ITypeRoot)resolveCompilationUnit(packageName, fileName);
 		if (compilationUnit!=null && compilationUnit.exists())
 		{
-			 type=compilationUnit.getType(new String(typeName));
+			 String fulltypeName=null;
+			 if (packageName==null || packageName.length==0)
+			    fulltypeName=new String(typeName);
+			 else {
+				fulltypeName=new String(CharOperation.concat(packageName, typeName, '.'));
+			}
+			 type=compilationUnit.getType(fulltypeName);
 			 if (type!=null && type.exists())
 				 return type;
 		}
