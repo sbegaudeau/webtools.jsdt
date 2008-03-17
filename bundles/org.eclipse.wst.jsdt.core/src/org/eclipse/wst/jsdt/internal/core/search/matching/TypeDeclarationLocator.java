@@ -42,15 +42,24 @@ public int match(TypeDeclaration node, MatchingNodeSet nodeSet) {
 }
 //public int match(TypeReference node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(InferredType node, MatchingNodeSet nodeSet) {
-	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, node.getName()))
+	char[] typeName = node.getName();
+	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, typeName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
-
+	if (this.pattern.pkg!=null && this.pattern.pkg.length>0 &&
+			matchesName(CharOperation.concat(this.pattern.pkg, this.pattern.simpleName, '.'), typeName))
+		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 	return IMPOSSIBLE_MATCH;
 }
 public int resolveLevel(ASTNode node) {
-	if (!(node instanceof TypeDeclaration)) return IMPOSSIBLE_MATCH;
+	Binding binding=null;
+	if (node instanceof TypeDeclaration)
+		binding=((TypeDeclaration) node).binding;
+	else if (node instanceof InferredType)
+		binding=((InferredType) node).binding;
+	else
+		return IMPOSSIBLE_MATCH;
 
-	return resolveLevel(((TypeDeclaration) node).binding);
+	return resolveLevel(binding);
 }
 public int resolveLevel(Binding binding) {
 	if (binding == null) return INACCURATE_MATCH;

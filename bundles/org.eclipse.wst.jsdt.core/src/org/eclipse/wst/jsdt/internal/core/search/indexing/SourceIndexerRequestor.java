@@ -170,7 +170,15 @@ private void enterClass(TypeInfo typeInfo) {
 			typeParameterSignatures[i] = Signature.createTypeParameterSignature(typeParameterInfo.name, typeParameterInfo.bounds == null ? CharOperation.NO_CHAR_CHAR : typeParameterInfo.bounds);
 		}
 	}
-	this.indexer.addClassDeclaration(typeInfo.modifiers, this.packageName, typeInfo.name, typeNames, typeInfo.superclass, typeInfo.superinterfaces, typeParameterSignatures, typeInfo.secondary);
+	char [] typeName=typeInfo.name;
+	char [] pkgName=this.packageName;
+	int index;
+	if ( (index=CharOperation.indexOf('.',typeName)) >0)
+	{
+		pkgName=CharOperation.subarray(typeName, 0, index);
+		typeName=CharOperation.subarray(typeName, index+1, typeName.length);
+	}
+	this.indexer.addClassDeclaration(typeInfo.modifiers, pkgName, typeName, typeNames, typeInfo.superclass, typeInfo.superinterfaces, typeParameterSignatures, typeInfo.secondary);
 	this.pushTypeName(typeInfo.name);
 }
 /**

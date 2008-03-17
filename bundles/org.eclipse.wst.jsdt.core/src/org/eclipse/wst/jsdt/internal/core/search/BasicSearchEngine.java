@@ -595,6 +595,8 @@ public class BasicSearchEngine {
 
 				case Binding.TYPE :
 				{
+					
+
 					suffix = IIndexConstants.CLASS_SUFFIX;
 					searchPattern = new TypeDeclarationPattern(
 							packageName,

@@ -140,6 +140,14 @@ public TypeDeclarationPattern(
 	int matchRule) {
 
 	this(matchRule);
+	
+		int index;
+		if ( (index=CharOperation.indexOf('.',simpleName)) >0)
+		{
+			pkg=CharOperation.subarray(simpleName, 0, index);
+			simpleName=CharOperation.subarray(simpleName, index+1, simpleName.length);
+		}
+	
 
 	this.pkg = isCaseSensitive() ? pkg : CharOperation.toLowerCase(pkg);
 	if (isCaseSensitive() || enclosingTypeNames == null) {
