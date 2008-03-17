@@ -55,6 +55,7 @@ public class InferredType extends ASTNode {
 	public InferredType(char [] className)
 	{
 		this.name=className;
+		this.sourceStart=-1;
 	}
 
 	public char [] getName() {
@@ -258,7 +259,7 @@ public class InferredType extends ASTNode {
 
 	public void updatePositions(int start, int end)
 	{
-		if (start>=0 && start<this.sourceStart)
+		if (this.sourceStart==-1 ||(start>=0 && start<this.sourceStart))
 			this.sourceStart=start;
 		if (end>0&&end>this.sourceEnd)
 			this.sourceEnd=end;
