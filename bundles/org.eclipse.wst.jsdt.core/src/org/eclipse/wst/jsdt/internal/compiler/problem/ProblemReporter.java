@@ -570,7 +570,7 @@ public void abstractMethodCannotBeOverridden(SourceTypeBinding type, MethodBindi
 }
 public void abstractMethodInAbstractClass(SourceTypeBinding type, AbstractMethodDeclaration methodDecl) {
 
-	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.selector)};
+	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.getSafeName())};
 	this.handle(
 		IProblem.AbstractMethodInAbstractClass,
 		arguments,
@@ -752,7 +752,7 @@ public void anonymousClassCannotExtendFinalClass(Expression expression, TypeBind
 		expression.sourceEnd);
 }
 public void argumentTypeCannotBeVoid(SourceTypeBinding type, AbstractMethodDeclaration methodDecl, Argument arg) {
-	String[] arguments = new String[] {new String(methodDecl.selector), new String(arg.name)};
+	String[] arguments = new String[] {new String(methodDecl.getSafeName()), new String(arg.name)};
 	this.handle(
 		IProblem.ArgumentTypeCannotBeVoid,
 		arguments,
@@ -1393,11 +1393,11 @@ public void duplicateEnumSpecialMethod(SourceTypeBinding type, AbstractMethodDec
 	this.handle(
 		IProblem.CannotDeclareEnumSpecialMethod,
 		new String[] {
-	        new String(methodDecl.selector),
+	        new String(methodDecl.getSafeName()),
 			new String(method.declaringClass.readableName()),
 			typesAsString(method.isVarargs(), method.parameters, false)},
 		new String[] {
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 			new String(method.declaringClass.shortReadableName()),
 			typesAsString(method.isVarargs(), method.parameters, true)},
 		methodDecl.sourceStart,
@@ -1486,12 +1486,12 @@ public void duplicateMethodInType( Binding type, AbstractMethodDeclaration metho
 		this.handle(
 			IProblem.DuplicateMethodErasure,
 			new String[] {
-		        new String(methodDecl.selector),
+		        new String(methodDecl.getSafeName()),
 				new String(method.declaringClass.readableName()),
 				typesAsString(method.isVarargs(), method.parameters, false),
 				typesAsString(method.isVarargs(), erasures, false) } ,
 			new String[] {
-				new String(methodDecl.selector),
+				new String(methodDecl.getSafeName()),
 				new String(method.declaringClass.shortReadableName()),
 				typesAsString(method.isVarargs(), method.parameters, true),
 				typesAsString(method.isVarargs(), erasures, true) },
@@ -1501,11 +1501,11 @@ public void duplicateMethodInType( Binding type, AbstractMethodDeclaration metho
 		this.handle(
 			IProblem.DuplicateMethod,
 			new String[] {
-		        new String(methodDecl.selector),
+		        new String(methodDecl.getSafeName()),
 				new String(method.declaringClass.readableName()),
 				typesAsString(method.isVarargs(), method.parameters, false)},
 			new String[] {
-				new String(methodDecl.selector),
+				new String(methodDecl.getSafeName()),
 				new String(method.declaringClass.shortReadableName()),
 				typesAsString(method.isVarargs(), method.parameters, true)},
 			methodDecl.sourceStart,
@@ -1532,8 +1532,8 @@ public void duplicateModifierForField(ReferenceBinding type, FieldDeclaration fi
 public void duplicateModifierForMethod(ReferenceBinding type, AbstractMethodDeclaration methodDecl) {
 	this.handle(
 		IProblem.DuplicateModifierForMethod,
-		new String[] {new String(type.sourceName()), new String(methodDecl.selector)},
-		new String[] {new String(type.shortReadableName()), new String(methodDecl.selector)},
+		new String[] {new String(type.sourceName()), new String(methodDecl.getSafeName())},
+		new String[] {new String(type.shortReadableName()), new String(methodDecl.getSafeName())},
 		methodDecl.sourceStart,
 		methodDecl.sourceEnd);
 }
@@ -1975,7 +1975,7 @@ public void hierarchyHasProblems(SourceTypeBinding type) {
 		type.sourceEnd());
 }
 public void illegalAbstractModifierCombinationForMethod(ReferenceBinding type, AbstractMethodDeclaration methodDecl) {
-	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.selector)};
+	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.getSafeName())};
 	this.handle(
 		IProblem.IllegalAbstractModifierCombinationForMethod,
 		arguments,
@@ -2102,11 +2102,11 @@ public void illegalModifierForAnnotationMember(AbstractMethodDeclaration methodD
 		IProblem.IllegalModifierForAnnotationMethod,
 		new String[] {
 			new String(methodDecl.binding.declaringClass.readableName()),
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 		},
 		new String[] {
 			new String(methodDecl.binding.declaringClass.shortReadableName()),
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 		},
 		methodDecl.sourceStart,
 		methodDecl.sourceEnd);
@@ -2204,12 +2204,12 @@ public void illegalModifierForInterfaceMethod(AbstractMethodDeclaration methodDe
 		IProblem.IllegalModifierForInterfaceMethod,
 		new String[] {
 			new String(methodDecl.binding.declaringClass.readableName()),
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 			typesAsString(methodDecl.binding.isVarargs(), methodDecl.binding.parameters, false),
 		},
 		new String[] {
 			new String(methodDecl.binding.declaringClass.shortReadableName()),
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 			typesAsString(methodDecl.binding.isVarargs(), methodDecl.binding.parameters, true),
 		},
 		methodDecl.sourceStart,
@@ -2264,12 +2264,12 @@ public void illegalModifierForMethod(AbstractMethodDeclaration methodDecl) {
 	this.handle(
 		IProblem.IllegalModifierForMethod,
 		new String[] {
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 			typesAsString(methodDecl.binding.isVarargs(), methodDecl.binding.parameters, false),
 			new String(methodDecl.binding.declaringClass.readableName()),
 		},
 		new String[] {
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 			typesAsString(methodDecl.binding.isVarargs(), methodDecl.binding.parameters, true),
 			new String(methodDecl.binding.declaringClass.shortReadableName()),
 		},
@@ -2328,7 +2328,7 @@ public void illegalUsageOfQualifiedTypeReference(QualifiedTypeReference qualifie
 		qualifiedTypeReference.sourceEnd);
 }
 public void illegalVararg(Argument argType, AbstractMethodDeclaration methodDecl) {
-	String[] arguments = new String[] {CharOperation.toString(argType.type.getTypeName()), new String(methodDecl.selector)};
+	String[] arguments = new String[] {CharOperation.toString(argType.type.getTypeName()), new String(methodDecl.getSafeName())};
 	this.handle(
 		IProblem.IllegalVararg,
 		arguments,
@@ -2355,7 +2355,7 @@ public void illegalVisibilityModifierCombinationForMemberType(SourceTypeBinding 
 		type.sourceEnd());
 }
 public void illegalVisibilityModifierCombinationForMethod(ReferenceBinding type, AbstractMethodDeclaration methodDecl) {
-	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.selector)};
+	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.getSafeName())};
 	this.handle(
 		IProblem.IllegalVisibilityModifierCombinationForMethod,
 		arguments,
@@ -2751,12 +2751,12 @@ public void invalidAnnotationMemberType(MethodDeclaration methodDecl) {
 		IProblem.InvalidAnnotationMemberType,
 		new String[] {
 			new String(methodDecl.binding.returnType.readableName()),
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 			new String(methodDecl.binding.declaringClass.readableName()),
 		},
 		new String[] {
 			new String(methodDecl.binding.returnType.shortReadableName()),
-			new String(methodDecl.selector),
+			new String(methodDecl.getSafeName()),
 			new String(methodDecl.binding.declaringClass.shortReadableName()),
 		},
 		methodDecl.returnType.sourceStart,
@@ -4897,7 +4897,7 @@ public void mustUseAStaticMethod(MessageSend messageSend, MethodBinding method) 
 		messageSend.sourceEnd);
 }
 public void nativeMethodsCannotBeStrictfp(ReferenceBinding type, AbstractMethodDeclaration methodDecl) {
-	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.selector)};
+	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.getSafeName())};
 	this.handle(
 		IProblem.NativeMethodsCannotBeStrictfp,
 		arguments,
@@ -6328,7 +6328,7 @@ public void unexpectedStaticModifierForField(SourceTypeBinding type, FieldDeclar
 		fieldDecl.sourceEnd);
 }
 public void unexpectedStaticModifierForMethod(ReferenceBinding type, AbstractMethodDeclaration methodDecl) {
-	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.selector)};
+	String[] arguments = new String[] {new String(type.sourceName()), new String(methodDecl.getSafeName())};
 	this.handle(
 		IProblem.UnexpectedStaticModifierForMethod,
 		arguments,
@@ -6727,13 +6727,13 @@ public void unusedDeclaredThrownException(ReferenceBinding exceptionType, Abstra
 			IProblem.UnusedMethodDeclaredThrownException,
 			new String[] {
 				new String(method.binding.declaringClass.readableName()),
-				new String(method.selector),
+				new String(method.getSafeName()),
 				typesAsString(method.binding.isVarargs(), method.binding.parameters, false),
 				new String(exceptionType.readableName()),
 			 },
 			new String[] {
 				new String(method.binding.declaringClass.shortReadableName()),
-				new String(method.selector),
+				new String(method.getSafeName()),
 				typesAsString(method.binding.isVarargs(), method.binding.parameters, true),
 				new String(exceptionType.shortReadableName()),
 			 },

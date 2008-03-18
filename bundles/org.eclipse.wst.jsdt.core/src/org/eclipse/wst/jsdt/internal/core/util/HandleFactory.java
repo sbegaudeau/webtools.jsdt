@@ -236,7 +236,7 @@ public class HandleFactory {
 				} else {
 					// method element
 					AbstractMethodDeclaration method = methodScope.referenceMethod();
-					newElement = parentType.getMethod(new String(method.selector), Util.typeParameterSignatures(method));
+					newElement = parentType.getMethod(new String(method.getSafeName()), Util.typeParameterSignatures(method));
 					if (newElement != null) {
 						knownScopes.put(scope, newElement);
 					}

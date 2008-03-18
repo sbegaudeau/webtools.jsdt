@@ -477,4 +477,14 @@ public abstract class AbstractMethodDeclaration
 	{
 		return this.inferredType;
 	}
+	
+	public char [] getSafeName()
+	{
+		if (this.selector!=null)
+			return this.selector;
+		if (this.inferredMethod!=null && this.inferredMethod.name!=null)
+			return this.inferredMethod.name;
+		return new char []{};
+			
+	}
 }

@@ -140,7 +140,7 @@ public int match(MethodDeclaration node, MatchingNodeSet nodeSet) {
 	if (!this.pattern.findDeclarations) return IMPOSSIBLE_MATCH;
 
 	// Verify method name
-	if (!matchesName(this.pattern.selector, node.selector)) return IMPOSSIBLE_MATCH;
+	if (!matchesName(this.pattern.selector, node.getSafeName())) return IMPOSSIBLE_MATCH;
 
 	// Verify parameters types
 	boolean resolve = ((InternalSearchPattern)this.pattern).mustResolve;
