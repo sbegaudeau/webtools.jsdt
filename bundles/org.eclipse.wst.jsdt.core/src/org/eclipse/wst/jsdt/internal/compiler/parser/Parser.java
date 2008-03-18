@@ -3225,7 +3225,8 @@ protected void consumeEnterVariable() {
 	// EnterVariable ::= $empty
 	// do nothing by default
 	checkComment();
-
+   resetModifiers();
+	
 	char[] identifierName = this.identifierStack[this.identifierPtr];
 	long namePosition = this.identifierPositionStack[this.identifierPtr];
 //	int extendedDimension = this.intStack[this.intPtr--];
@@ -6385,6 +6386,7 @@ private void consumeLiteralField() {
 	// MemberValuePair ::= SimpleName '=' MemberValue
 	this.modifiersSourceStart=-1;
 	this.checkComment();
+	this.resetModifiers();
 
 	Expression value = this.expressionStack[this.expressionPtr--];
 	this.expressionLengthPtr--;

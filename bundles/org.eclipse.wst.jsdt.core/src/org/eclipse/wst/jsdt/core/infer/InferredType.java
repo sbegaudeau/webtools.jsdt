@@ -93,6 +93,31 @@ public class InferredType extends ASTNode {
 		return attribute;
 	}
 
+	public InferredAttribute addAttribute(InferredAttribute newAttribute)
+	{
+		IASTNode definer=newAttribute.node;
+		InferredAttribute attribute = findAttribute(newAttribute.name);
+		if (attribute==null)
+		{
+
+			if (this.numberAttributes == this.attributes.length)
+
+				System.arraycopy(
+						this.attributes,
+						0,
+						this.attributes = new InferredAttribute[this.numberAttributes  * 2],
+						0,
+						this.numberAttributes );
+						this.attributes [this.numberAttributes  ++] = newAttribute;
+
+
+			attributesHash.put(name, newAttribute);
+
+			if( !isAnonymous )
+				this.updatePositions(definer.sourceStart(), definer.sourceEnd());
+		}
+		return newAttribute;
+	}
 	public InferredAttribute findAttribute(char [] name)
 	{
 		return (InferredAttribute)attributesHash.get(name);

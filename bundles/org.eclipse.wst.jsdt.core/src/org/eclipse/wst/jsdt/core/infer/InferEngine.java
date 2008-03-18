@@ -934,12 +934,51 @@ public class InferEngine extends ASTVisitor {
 					} else
 						continue; //not supporting this case right now
 
+					Javadoc javaDoc = (Javadoc)field.getJsDoc();
+					InferredType returnType=null;
+					if (javaDoc!=null)
+					{
+						if (javaDoc.memberOf!=null)
+						{
+							char[] typeName = javaDoc.memberOf.getSimpleTypeName();
+							convertAnonymousTypeToNamed(type,typeName);
+							type.isDefinition=true;
+						}
+						else if (this.currentContext.isJsDocClass && javaDoc.property!=null)
+						{
+							if (type.isAnonymous )
+							{
+								InferredType previousType = this.currentContext.currentType;
+								if (previousType!=null)
+								{
+									copyAnonymousTypeToNamed(type,previousType);
+									objLit.inferredType=type=this.currentContext.currentType=previousType;
+								}
+									
+							}
+						}
+						if (javaDoc.returnType!=null)
+						{
+							returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
+						}
+					}
+					
 					//need to build the members of the annonymous inferred type
 					if (field.initializer instanceof FunctionExpression) {
 						FunctionExpression functionExpression = (FunctionExpression) field.initializer;
 						InferredMember method = type.addMethod(name,
 								functionExpression.methodDeclaration, false);
 						method.nameStart = nameStart;
+						if (javaDoc!=null)
+						{
+						    functionExpression.methodDeclaration.modifiers=javaDoc.modifiers;
+						  handleFunctionDeclarationArguments(functionExpression.methodDeclaration,javaDoc);
+						}
+					    if (returnType!=null)
+					    {
+					    	functionExpression.methodDeclaration.inferredType=returnType;
+					    }
+
 
 					} else //attribute
 					{
@@ -948,7 +987,10 @@ public class InferEngine extends ASTVisitor {
 						attribute.nameStart = nameStart;
 
 						//@GINO: recursion might not be the best idea
-						attribute.type = getTypeOf(field.initializer);
+						if (returnType!=null)
+							attribute.type=returnType;
+						else
+						  attribute.type = getTypeOf(field.initializer);
 					}
 				}
 			}
@@ -1031,6 +1073,7 @@ public class InferEngine extends ASTVisitor {
 						method=type.addMethod(methName[methName.length-1], methodDeclaration,false);
 						method.isStatic=true;
 					}
+					method.nameStart=((MethodDeclaration)methodDeclaration).sourceStart;
 						
 				}
 
@@ -1043,7 +1086,7 @@ public class InferEngine extends ASTVisitor {
 
 			}
 			if (methodDeclaration.getArguments()!=null)
-				handleFunctionDeclarationArguments((MethodDeclaration)methodDeclaration);
+				handleFunctionDeclarationArguments((MethodDeclaration)methodDeclaration,(Javadoc)methodDeclaration.getJsDoc());
 		}
 		// check if this is a constructor
 		if (passNumber==2)
@@ -1086,11 +1129,11 @@ public class InferEngine extends ASTVisitor {
 		
 	}
 
-	protected void handleFunctionDeclarationArguments(IFunctionDeclaration methodDeclaration) {
-		Javadoc javadoc = (Javadoc)methodDeclaration.getJsDoc();
+	protected void handleFunctionDeclarationArguments(IFunctionDeclaration methodDeclaration, Javadoc javadoc) {
 		if (javadoc==null)
 			return;
 		IArgument[] arguments = methodDeclaration.getArguments();
+		if (arguments!=null)
 		for (int i = 0; i < arguments.length; i++) {
 			JavadocSingleNameReference param = javadoc.findParam(arguments[i].getName());
 			if (param!=null)
@@ -1134,64 +1177,98 @@ public class InferEngine extends ASTVisitor {
 
 
 	public void endVisit(IObjectLiteralField field) {
-		if (field.getJsDoc()!=null)
+//		if (field.getJsDoc()!=null)
+//		{
+//			Javadoc javaDoc = (Javadoc)field.getJsDoc();
+//			InferredType inClass=this.currentContext.currentType;
+//			char [] name=null;
+//			int nameStart=-1;
+//			InferredType returnType=null;
+////			boolean isFunction=field.initializer instanceof FunctionExpression;
+// 			if (field.getFieldName() instanceof SingleNameReference)
+// 			{
+// 				SingleNameReference singleNameReference=(SingleNameReference)field.getFieldName();
+// 				name=singleNameReference.token;
+// 				nameStart=singleNameReference.sourceStart;
+// 			}
+//			if (javaDoc.memberOf!=null)
+//			{
+//				char[] typeName = javaDoc.memberOf.getSimpleTypeName();
+//				convertAnonymousTypeToNamed(inClass,typeName);
+//				inClass.isDefinition=true;
+//			}
+//			else if (this.currentContext.isJsDocClass && javaDoc.property!=null)
+//			{
+//				if (this.currentContext.currentType.isAnonymous && this.currentContext.parent!=null)
+//				{
+//					InferredType previousType = this.currentContext.parent.currentType;
+//					if (previousType!=null)
+//					{
+//						copyAnonymousTypeToNamed(inClass,previousType);
+//						this.currentContext.currentType=previousType;
+//					}
+//						
+//				}
+//			}
+//			if (javaDoc.returnType!=null)
+//			{
+//				returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
+//			}
+//
+//			if (inClass!=null && name!=null)
+//			{
+//				if (field.getInitializer() instanceof FunctionExpression) {
+//					FunctionExpression functionExpression = (FunctionExpression) field.getInitializer();
+//				    InferredMember method = inClass.addMethod(name, functionExpression.methodDeclaration,false);
+//				    method.nameStart=nameStart;
+//				    functionExpression.methodDeclaration.modifiers=javaDoc.modifiers;
+//				    if (returnType!=null)
+//				    {
+//				    	functionExpression.methodDeclaration.inferredType=returnType;
+//				    }
+////				    else
+////				    	method.inferredType=functionExpression.methodDeclaration.inferredType;
+//				}
+//				else	//attribute
+//				{
+//					InferredAttribute attribute = inClass.addAttribute(name, field.getFieldName());
+//					attribute.nameStart=field.getFieldName().sourceStart();
+//					if (returnType!=null)
+//						attribute.type=returnType;
+//				}
+//			}
+//
+//		}
+//		//no jsdoc
+//		else{
+//
+//			if( field.getInitializer() instanceof ObjectLiteral ){
+//
+//			}
+//
+//
+//		}
+	}
+
+	private void copyAnonymousTypeToNamed(InferredType inClass,
+			InferredType toType) {
+		compUnit.inferredTypesHash.removeKey(inClass.name);
+		if (inClass.methods!=null)
 		{
-			Javadoc javaDoc = (Javadoc)field.getJsDoc();
-			InferredType inClass=this.currentContext.currentType;
-			char [] name=null;
-			int nameStart=-1;
-			InferredType returnType=null;
-//			boolean isFunction=field.initializer instanceof FunctionExpression;
- 			if (field.getFieldName() instanceof SingleNameReference)
- 			{
- 				SingleNameReference singleNameReference=(SingleNameReference)field.getFieldName();
- 				name=singleNameReference.token;
- 				nameStart=singleNameReference.sourceStart;
- 			}
-			if (javaDoc.memberOf!=null)
-			{
-				char[] typeName = javaDoc.memberOf.getSimpleTypeName();
-				convertAnonymousTypeToNamed(inClass,typeName);
-				inClass.isDefinition=true;
-			}
-			if (javaDoc.returnType!=null)
-			{
-				returnType=this.addType(javaDoc.returnType.getSimpleTypeName());
-			}
-
-			if (inClass!=null && name!=null)
-			{
-				if (field.getInitializer() instanceof FunctionExpression) {
-					FunctionExpression functionExpression = (FunctionExpression) field.getInitializer();
-				    InferredMember method = inClass.addMethod(name, functionExpression.methodDeclaration,false);
-				    method.nameStart=nameStart;
-				    functionExpression.methodDeclaration.modifiers=javaDoc.modifiers;
-				    if (returnType!=null)
-				    {
-				    	functionExpression.methodDeclaration.inferredType=returnType;
-				    }
-//				    else
-//				    	method.inferredType=functionExpression.methodDeclaration.inferredType;
-				}
-				else	//attribute
-				{
-					InferredAttribute attribute = inClass.addAttribute(name, field.getFieldName());
-					attribute.nameStart=field.getFieldName().sourceStart();
-					if (returnType!=null)
-						attribute.type=returnType;
-				}
-			}
-
+			if (toType!=null)
+				toType.methods.addAll(inClass.methods);
+			else 
+				toType.methods=inClass.methods;
+			
 		}
-		//no jsdoc
-		else{
-
-			if( field.getInitializer() instanceof ObjectLiteral ){
-
+		if (inClass.attributes!=null)
+		{
+			for (int i = 0; i < inClass.numberAttributes; i++) {
+				toType.addAttribute(inClass.attributes[i]);
 			}
-
-
 		}
+		
+		
 	}
 
 	private void convertAnonymousTypeToNamed(InferredType inClass, char[] typeName) {

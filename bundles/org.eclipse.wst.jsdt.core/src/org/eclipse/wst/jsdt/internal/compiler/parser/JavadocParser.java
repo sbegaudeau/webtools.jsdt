@@ -59,14 +59,12 @@ public class JavadocParser extends AbstractCommentParser {
 
 	private TypeReference classDef=null;
 	private TypeReference methodDef=null;
-
+	JavadocSingleNameReference property=null;
 	private boolean isConstructor;
 
 
 
 	protected boolean commentParse() {
-		// TODO Auto-generated method stub
-		boolean result= super.commentParse();
 		this.isConstructor=false;
 		this.namespace=null;
 		this.flags=0;
@@ -75,6 +73,11 @@ public class JavadocParser extends AbstractCommentParser {
 		this.memberOf=null;
 		this.returnType=null;
 		this.extendsType=null;
+		this.property=null;
+		this.classDef=null;
+		this.methodDef=null;
+		// TODO Auto-generated method stub
+		boolean result= super.commentParse();
 	return result;
 	}
 
@@ -577,6 +580,7 @@ public class JavadocParser extends AbstractCommentParser {
 						} else
 							if (length == TAG_FINAL_LENGTH && CharOperation.equals(TAG_FINAL, tagName)) {
 								this.tagValue = TAG_FINAL_VALUE;
+								this.flags|=ClassFileConstants.AccFinal;
 								valid = true;
 							} 
 						break;
@@ -654,10 +658,20 @@ public class JavadocParser extends AbstractCommentParser {
 						}
 						else if (length == TAG_PRIVATE_LENGTH && CharOperation.equals(TAG_PRIVATE, tagName)) {
 							this.tagValue = TAG_PRIVATE_VALUE;
+							this.flags|=ClassFileConstants.AccPrivate;
 							valid = true;
 						}
 						else if (length == TAG_PROJECT_DESCRIPTION_LENGTH && CharOperation.equals(TAG_PROJECT_DESCRIPTION, tagName)) {
 							this.tagValue = TAG_PROJECT_DESCRIPTION_VALUE;
+							valid = true;
+						}
+						else if (length == TAG_PROPERTY_LENGTH && CharOperation.equals(TAG_PROPERTY, tagName)) {
+							this.tagValue = TAG_PROPERTY_VALUE;
+							valid = parseProperty();
+						}	
+						else if (length == TAG_PROTECTED_LENGTH && CharOperation.equals(TAG_PROTECTED, tagName)) {
+							this.tagValue = TAG_PRIVATE_VALUE;
+							this.flags|=ClassFileConstants.AccProtected;
 							valid = true;
 						}
 						break;
@@ -731,6 +745,11 @@ public class JavadocParser extends AbstractCommentParser {
 				this.flags|=ClassFileConstants.AccPrivate;
 				valid=true;
 				break;
+			case TerminalTokens.TokenNameprotected :
+				this.tagValue = TAG_PROTECTED_VALUE;
+				this.flags|=ClassFileConstants.AccProtected;
+				valid=true;
+				break;
 			case TerminalTokens.TokenNamefinal :
 				this.tagValue = TAG_FINAL_VALUE;
 				this.flags|=ClassFileConstants.AccFinal;
@@ -748,7 +767,7 @@ public class JavadocParser extends AbstractCommentParser {
 
 	private boolean parseType() throws InvalidInputException {
 		this.returnType=(TypeReference)parseQualifiedName(true);
-		return this.namespace!=null;
+		return this.returnType!=null;
 	}
 
 	private boolean parseNamespace() throws InvalidInputException {
@@ -756,7 +775,126 @@ public class JavadocParser extends AbstractCommentParser {
 		return this.namespace!=null;
 	}
 
+    private boolean parseProperty() throws InvalidInputException {
+		// Store current state
+		int start = this.tagSourceStart;
+		int end = this.tagSourceEnd;
+		boolean tokenWhiteSpace = this.scanner.tokenizeWhiteSpace;
+		this.scanner.tokenizeWhiteSpace = true;
+		Object []typeReference=null;
 
+	 
+		// Get first non whitespace token
+		this.identifierPtr = -1;
+		this.identifierLengthPtr = -1;
+		boolean hasMultiLines = this.scanner.currentPosition > (this.lineEnd+1);
+		boolean valid = true, empty = true;
+		boolean isParmType=false;
+		int token = -1;
+		nextToken: while (true) {
+			this.currentTokenType = -1;
+			try {
+				token = readToken();
+			} catch (InvalidInputException e) {
+				valid = false;
+			}
+			switch (token) {
+				case TerminalTokens.TokenNameIdentifier :
+					if (valid) {
+						// store param name id
+						pushIdentifier(true, false);
+						start = this.scanner.getCurrentTokenStartPosition();
+						end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
+						break nextToken;
+					}
+
+					// fall through next case to report error
+				default:
+					if (valid && !hasMultiLines) start = this.scanner.getCurrentTokenStartPosition();
+					valid = false;
+					if (!hasMultiLines) {
+						empty = false;
+						end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
+						break;
+					}
+					end = this.lineEnd;
+					// when several lines, fall through next case to report problem immediately
+				case TerminalTokens.TokenNameWHITESPACE:
+					if (this.scanner.currentPosition > (this.lineEnd+1)) hasMultiLines = true;
+					if (valid) break;
+					// if not valid fall through next case to report error
+				case TerminalTokens.TokenNameEOF:
+					if (this.reportProblems)
+						if (empty)
+							this.sourceParser.problemReporter().javadocMissingParamName(start, end, this.sourceParser.modifiers);
+						else
+							this.sourceParser.problemReporter().javadocInvalidParamTagName(start, end);
+
+					this.currentTokenType = -1;
+					this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
+					return false;
+				case TerminalTokens.TokenNameLBRACE:
+					this.scanner.tokenizeWhiteSpace = false;
+					  typeReference=parseTypeReference();
+					  isParmType=true;
+						this.identifierPtr = -1;
+						this.identifierLengthPtr = -1;
+						this.scanner.tokenizeWhiteSpace = true;
+					break;
+
+			}
+		}
+
+
+		// Verify that tag name is well followed by white spaces
+		if (valid) {
+			this.currentTokenType = -1;
+			int restart = this.scanner.currentPosition;
+			try {
+				token = readToken();
+			} catch (InvalidInputException e) {
+				valid = false;
+			}
+			if (token == TerminalTokens.TokenNameWHITESPACE) {
+				this.scanner.currentPosition = restart;
+				this.index = restart;
+				this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
+				valid= pushParamName(false);
+				if (valid  )
+				{
+					  JavadocSingleNameReference nameRef=(JavadocSingleNameReference)this.astStack[this.astPtr];
+					  TypeReference [] refs=null;
+					  if (typeReference!=null && isParmType)
+					  {
+						  refs = new TypeReference[typeReference.length];
+						  System.arraycopy(typeReference, 0, refs, 0, typeReference.length);
+					  }
+					  nameRef.types=refs;
+					  this.property=nameRef;
+				}
+				  return valid;
+			}
+		}
+
+
+		// Report problem
+		this.currentTokenType = -1;
+ 
+		end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
+		while ((token=readToken()) != TerminalTokens.TokenNameWHITESPACE && token != TerminalTokens.TokenNameEOF) {
+			this.currentTokenType = -1;
+			end = hasMultiLines ? this.lineEnd: this.scanner.getCurrentTokenEndPosition();
+		}
+		if (this.reportProblems)
+				this.sourceParser.problemReporter().javadocInvalidParamTagName(start, end);
+		this.scanner.currentPosition = start;
+		this.index = start;
+		this.currentTokenType = -1;
+		this.scanner.tokenizeWhiteSpace = tokenWhiteSpace;
+		return false;
+
+	}
+	
 	private boolean parseClass() throws InvalidInputException {
 		this.classDef=(TypeReference) parseQualifiedName(true);
 		return this.classDef!=null;
@@ -921,6 +1059,7 @@ public class JavadocParser extends AbstractCommentParser {
 		this.docComment.extendsType=this.extendsType;
 		this.docComment.classDef=this.classDef;
 		this.docComment.methodDef=this.methodDef;
+		this.docComment.property=this.property;
 
 		this.docComment.isConstructor=this.isConstructor;
 

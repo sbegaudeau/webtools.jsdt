@@ -43,7 +43,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	public Scanner scanner;
 	public char[] source;
 	protected Parser sourceParser;
-	private int currentTokenType = -1;
+	protected int currentTokenType = -1;
 
 	// Options
 	public boolean checkDocComment = false;
@@ -906,7 +906,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	protected abstract void createParamType(Object[] typeReference) ;
 
 
-	private Object [] parseTypeReference() {
+	protected Object [] parseTypeReference() {
 		int currentPosition = this.scanner.currentPosition;
 		try {
 			ArrayList  typeRefs = new ArrayList();

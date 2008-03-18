@@ -60,6 +60,8 @@ public interface JavadocTagConstants {
 
 	// ?? from jsdoc2
 	public static final char[] TAG_METHOD = "method".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_PROPERTY = "property".toCharArray(); //$NON-NLS-1$
+	public static final char[] TAG_PROTECTED = "protected".toCharArray(); //$NON-NLS-1$
 
 	
 	// from scriptdoc.org
@@ -109,6 +111,8 @@ public interface JavadocTagConstants {
 	public static final int TAG_FINAL_LENGTH = TAG_FINAL.length;
 	
 	public static final int TAG_METHOD_LENGTH = TAG_METHOD.length;
+	public static final int TAG_PROPERTY_LENGTH = TAG_PROPERTY.length;
+	public static final int TAG_PROTECTED_LENGTH = TAG_PROTECTED.length;
 	
 	// tags value
 	public static final int NO_TAG_VALUE = 0;
@@ -149,6 +153,8 @@ public interface JavadocTagConstants {
 	public static final int TAG_REQUIRES_VALUE = 33;
 
 	public static final int TAG_METHOD_VALUE = 34;
+	public static final int TAG_PROPERTY_VALUE = 35;
+	public static final int TAG_PROTECTED_VALUE = 36;
 
 
 

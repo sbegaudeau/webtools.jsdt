@@ -234,7 +234,9 @@ public class MethodScope extends BlockScope {
 		// is necessary to ensure error reporting
 		this.referenceContext = method;
 		method.scope = this;
-		int modifiers = method.modifiers | ExtraCompilerModifiers.AccUnresolved | ClassFileConstants.AccPublic;
+		int modifiers = method.modifiers | ExtraCompilerModifiers.AccUnresolved;
+		if ((method.modifiers &(ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected))==0)
+			modifiers|=ClassFileConstants.AccPublic;
 		if (method.inferredMethod!=null &&  method.inferredMethod.isStatic)
 			modifiers|= ClassFileConstants.AccStatic;
 		if (method.isConstructor() || isConstructor) {
