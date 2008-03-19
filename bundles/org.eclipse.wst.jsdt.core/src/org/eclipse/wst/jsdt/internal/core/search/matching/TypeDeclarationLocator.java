@@ -55,7 +55,12 @@ public int resolveLevel(ASTNode node) {
 	if (node instanceof TypeDeclaration)
 		binding=((TypeDeclaration) node).binding;
 	else if (node instanceof InferredType)
-		binding=((InferredType) node).binding;
+	{
+		InferredType type=(InferredType) node;
+		if (!type.isDefinition || (type.isAnonymous && !type.isNamed()))
+			return IMPOSSIBLE_MATCH;
+		binding=type.binding;
+	}
 	else
 		return IMPOSSIBLE_MATCH;
 

@@ -91,8 +91,13 @@ public boolean matchesDecodedKey(SearchPattern decodedPattern) {
 	}
 
 	// check name
-	return matchesName(this.simpleName, pattern.simpleName) &&
-		(this.qualification == null || this.packagePattern == null || this.packagePattern.matchesName(this.qualification, pattern.qualification));
+	if  (matchesName(this.simpleName, pattern.simpleName) )
+	{
+		if (this.qualification!=null && this.packagePattern!=null)
+			return matchesName(this.qualification,pattern.qualification);
+		return (this.qualification == null || this.packagePattern == null || this.packagePattern.matchesName(this.qualification, pattern.qualification));
+	}
+	return false;
 }
 protected StringBuffer print(StringBuffer output) {
 	switch (this.typeSuffix){
