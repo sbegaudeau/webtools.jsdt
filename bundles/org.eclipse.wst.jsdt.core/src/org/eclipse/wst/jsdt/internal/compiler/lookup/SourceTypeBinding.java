@@ -1319,7 +1319,9 @@ public MethodBinding[] methods() {
 			}
 
 			// find & report collision cases
-			boolean complyTo15 = this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5;
+			
+			boolean complyTo15 = 
+				(this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5);
 			for (int i = 0, length = this.methods.length; i < length; i++) {
 				MethodBinding method = resolvedMethods[i];
 				if (method == null)
@@ -1506,7 +1508,7 @@ private FieldBinding resolveTypeFor(FieldBinding field) {
 	if ((field.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return field;
 
-	if (this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
+	if (this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
 		if ((field.getAnnotationTagBits() & TagBits.AnnotationDeprecated) != 0)
 			field.modifiers |= ClassFileConstants.AccDeprecated;
 	}
@@ -1562,7 +1564,7 @@ public MethodBinding resolveTypesFor(MethodBinding method) {
 	if ((method.modifiers & ExtraCompilerModifiers.AccUnresolved) == 0)
 		return method;
 
-	if (this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
+	if (this.scope!=null && this.scope.compilerOptions().sourceLevel >= ClassFileConstants.JDK1_5) {
 		if ((method.getAnnotationTagBits() & TagBits.AnnotationDeprecated) != 0)
 			method.modifiers |= ClassFileConstants.AccDeprecated;
 	}
@@ -1916,6 +1918,8 @@ void verifyMethods(MethodVerifier verifier) {
 }
 
 public AbstractMethodDeclaration sourceMethod(MethodBinding binding) {
+	if (this.classScope==null)
+		return null;
 	InferredType inferredType=this.classScope.inferredType;
 	InferredMethod inferredMethod = inferredType.findMethod(binding.selector, null);
 	if (inferredMethod!=null)
