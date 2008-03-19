@@ -2211,8 +2211,8 @@ public class JavaProject
 	 * @see IJavaProject
 	 */
 	public boolean isOnClasspath(IResource resource) {
-		IPath exactPath = resource.getFullPath();
-		IPath path = exactPath;
+		IPath exactPath = resource.getLocation();
+		IPath path = resource.getFullPath();
 
 		// ensure that folders are only excluded if all of their children are excluded
 		int resourceType = resource.getType();
@@ -2227,7 +2227,7 @@ public class JavaProject
 		for (int i = 0; i < classpath.length; i++) {
 			IClasspathEntry entry = classpath[i];
 			IPath entryPath = entry.getPath();
-			if (entryPath.equals(exactPath)) { // package fragment roots must match exactly entry pathes (no exclusion there)
+			if (entryPath.equals(exactPath) || entryPath.equals(exactPath)) { // package fragment roots must match exactly entry pathes (no exclusion there)
 				return true;
 			}
 			if (entryPath.isPrefixOf(path)

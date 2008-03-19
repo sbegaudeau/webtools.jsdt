@@ -353,8 +353,9 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	//	this.timeStamps = new Long[arrayLength];
 		System.arraycopy(newImports, 0, this.includedFiles, 0, arrayLength);
 	//	System.arraycopy(newTimestamps, 0, this.timeStamps, 0, arrayLength);
-		updateClasspathIfNeeded();
 		dojoHack();
+		updateClasspathIfNeeded();
+	
 		
 	}
 	private void dojoHack() {
