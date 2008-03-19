@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -187,10 +188,14 @@ public IClassFile getClassFile(String classFileName) {
 	}
 	// don't hold on the .class file extension to save memory
 	// also make sure to not use substring as the resulting String may hold on the underlying char[] which might be much bigger than necessary
-	int length = classFileName.length() - SUFFIX_CLASS.length;
-	char[] nameWithoutExtension = new char[length];
-	classFileName.getChars(0, length, nameWithoutExtension, 0);
-	return new ClassFile(this, new String(nameWithoutExtension));
+//	int length = classFileName.length() - SUFFIX_CLASS.length;
+//	char[] nameWithoutExtension = new char[length];
+//	classFileName.getChars(0, length, nameWithoutExtension, 0);
+	String filename= "";
+	if (this.getResource()!=null)
+	  filename= this.getResource().getRawLocation().toOSString()+File.separator+classFileName;
+	
+	return new ClassFile(this,filename);
 }
 /**
  * Returns a the collection of class files in this - a folder package fragment which has a root
