@@ -247,6 +247,11 @@ public class InferEngine extends ASTVisitor {
 					CharOperation.concatWith(typeName, '.'),
 					'.');
 			this.currentContext.currentType=addType(name);
+			if (javadoc.extendsType!=null)
+			{
+				char[] superName = CharOperation.concatWith(javadoc.extendsType.getTypeName(),'.');
+				this.currentContext.currentType.superClass=addType(superName);
+			}
 			this.currentContext.isJsDocClass=true;
 			
 		}
