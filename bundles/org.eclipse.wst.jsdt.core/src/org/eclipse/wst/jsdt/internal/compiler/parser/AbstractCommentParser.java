@@ -46,7 +46,7 @@ public abstract class AbstractCommentParser implements JavadocTagConstants {
 	protected int currentTokenType = -1;
 
 	// Options
-	public boolean checkDocComment = false;
+	public boolean checkDocComment = true;
 	public boolean reportProblems;
 	protected long complianceLevel;
 	protected long sourceLevel;

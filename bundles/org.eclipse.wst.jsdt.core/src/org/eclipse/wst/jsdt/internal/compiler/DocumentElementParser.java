@@ -64,7 +64,7 @@ public DocumentElementParser(
 	this.requestor = requestor;
 	intArrayStack = new int[30][];
 	this.options = options;
-	this.javadocParser.checkDocComment = false;
+	this.javadocParser.checkDocComment = true;
 
 	this.setMethodsFullRecovery(false);
 	this.setStatementsRecovery(false);

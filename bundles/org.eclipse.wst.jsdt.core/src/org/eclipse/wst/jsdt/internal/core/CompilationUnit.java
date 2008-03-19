@@ -190,8 +190,8 @@ protected boolean buildStructure(OpenableElementInfo info, final IProgressMonito
 	parser.setMethodsFullRecovery(true);
 	parser.setStatementsRecovery((reconcileFlags & ICompilationUnit.ENABLE_STATEMENTS_RECOVERY) != 0);
 
-	if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
-		parser.javadocParser.checkDocComment = false;
+//	if (!computeProblems && !resolveBindings && !createAST) // disable javadoc parsing if not computing problems, not resolving and not creating ast
+//		parser.javadocParser.checkDocComment = false;
 	requestor.parser = parser;
 	CompilationUnitDeclaration unit = parser.parseCompilationUnit(
 		new org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit() {
