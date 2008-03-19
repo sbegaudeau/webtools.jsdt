@@ -1330,6 +1330,10 @@ public class InferEngine extends ASTVisitor {
 		compUnit.traverse(this );
 		passNumber=2;
 		compUnit.traverse(this );
+		for (int i = 0; i < compUnit.numberInferredTypes; i++) {
+			if (compUnit.inferredTypes[i].sourceStart<0)
+				compUnit.inferredTypes[i].sourceStart=0;
+		}
 		this.compUnit=null;
 }
 
