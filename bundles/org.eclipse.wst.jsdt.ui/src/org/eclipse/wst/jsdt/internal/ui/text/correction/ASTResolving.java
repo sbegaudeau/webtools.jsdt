@@ -516,7 +516,7 @@ public class ASTResolving {
 		final ArrayList result= new ArrayList();
 		
 		// test if selector is a object method
-		ITypeBinding binding= searchRoot.getAST().resolveWellKnownType("java.lang.Object"); //$NON-NLS-1$
+		ITypeBinding binding= searchRoot.getAST().resolveWellKnownType("Object"); //$NON-NLS-1$
 		IMethodBinding[] objectMethods= binding.getDeclaredMethods();
 		for (int i= 0; i < objectMethods.length; i++) {
 			IMethodBinding meth= objectMethods[i];
