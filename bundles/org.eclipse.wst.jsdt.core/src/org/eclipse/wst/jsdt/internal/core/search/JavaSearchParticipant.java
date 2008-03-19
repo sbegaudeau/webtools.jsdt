@@ -56,7 +56,7 @@ public class JavaSearchParticipant extends SearchParticipant {
 	 * @see org.eclipse.wst.jsdt.core.search.SearchParticipant#getName()
 	 */
 	public String getDescription() {
-		return "Java"; //$NON-NLS-1$
+		return "JavaScript"; //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
