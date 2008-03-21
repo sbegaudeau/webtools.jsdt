@@ -104,7 +104,7 @@ public class MethodScope extends BlockScope {
 		int realModifiers = modifiers & ExtraCompilerModifiers.AccJustFlag;
 
 		// check for abnormal modifiers
-		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStrictfp);
+		final int UNEXPECTED_MODIFIERS = ~(ClassFileConstants.AccStatic | ClassFileConstants.AccPublic | ClassFileConstants.AccPrivate | ClassFileConstants.AccProtected | ClassFileConstants.AccStrictfp);
 		if (declaringClass.isEnum() && !((ConstructorDeclaration) referenceContext).isDefaultConstructor) {
 			final int UNEXPECTED_ENUM_CONSTR_MODIFIERS = ~(ClassFileConstants.AccPrivate | ClassFileConstants.AccStrictfp);
 			if ((realModifiers & UNEXPECTED_ENUM_CONSTR_MODIFIERS) != 0) {
