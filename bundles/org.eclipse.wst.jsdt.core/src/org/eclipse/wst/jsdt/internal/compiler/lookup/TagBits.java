@@ -114,6 +114,7 @@ public interface TagBits {
 	
 	long IsInferredJsDocType = ASTNode.Bit55L;
 	long IsInferredType = ASTNode.Bit56L;
+	long IsObjectLiteralType = ASTNode.Bit57L;
 	
 	
 }

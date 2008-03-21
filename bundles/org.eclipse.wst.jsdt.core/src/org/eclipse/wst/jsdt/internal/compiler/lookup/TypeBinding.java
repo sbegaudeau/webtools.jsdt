@@ -347,6 +347,11 @@ public final boolean isAnonymousType() {
 	return (this.tagBits & TagBits.IsAnonymousType) != 0;
 }
 
+
+public final boolean isObjectLiteralType() {
+	return (this.tagBits & TagBits.IsObjectLiteralType) != 0;
+}
+
 /* Answer true if the receiver is an array
  */
 public final boolean isArrayType() {

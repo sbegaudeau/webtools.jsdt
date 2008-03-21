@@ -168,10 +168,15 @@ void checkAgainstInheritedMethods(MethodBinding currentMethod, MethodBinding[] m
 			} else {
 				currentMethod.modifiers |= ExtraCompilerModifiers.AccOverriding;
 			}
-
+ 
 			if (!areReturnTypesCompatible(currentMethod, inheritedMethod))
+			{
+				if (!(currentMethod.returnType!=null && currentMethod.returnType.isObjectLiteralType()
+					&& inheritedMethod.returnType!=null && inheritedMethod.returnType.isObjectLiteralType()))
 				if (reportIncompatibleReturnTypeError(currentMethod, inheritedMethod))
 					continue nextMethod;
+				
+			}
 
 			if (currentMethod.thrownExceptions != Binding.NO_EXCEPTIONS)
 				checkExceptions(currentMethod, inheritedMethod);
