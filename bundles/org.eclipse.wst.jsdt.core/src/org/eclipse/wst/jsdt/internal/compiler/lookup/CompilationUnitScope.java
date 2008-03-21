@@ -937,10 +937,6 @@ MethodBinding findStaticMethod(ReferenceBinding currentType, char[] selector) {
 }
 ImportBinding[] getDefaultImports() {
 	// initialize the default imports if necessary... share the default java.lang.* import
-	if (environment.defaultImports != null) return environment.defaultImports;
-
-	
-	
 	Binding importBinding = environment.defaultPackage;
 //	if (importBinding != null)
 //		importBinding = ((PackageBinding) importBinding).getTypeOrPackage(JAVA_LANG[1]);
@@ -951,8 +947,20 @@ ImportBinding[] getDefaultImports() {
 		MissingBinaryTypeBinding missingObject = environment.cacheMissingBinaryType(JAVA_LANG_OBJECT, this.referenceContext);
 		importBinding = missingObject.fPackage;
 	}
+	ImportBinding systemJSBinding = null;
+	if (environment.defaultImports != null)
+	{
+		systemJSBinding=environment.defaultImports[0];
+	}
+	else
+	{
+		systemJSBinding=new ImportBinding(new char[][] {SystemLibraryLocation.SYSTEM_LIBARAY_NAME}, true, importBinding, (ImportReference)null);
+		environment.defaultImports=new ImportBinding[]{systemJSBinding};
+	}
+
 	
-	ImportBinding systemJSBinding = new ImportBinding(new char[][] {SystemLibraryLocation.SYSTEM_LIBARAY_NAME}, true, importBinding, (ImportReference)null);
+	
+	ImportBinding[] defaultImports=null;
 	String[] contextIncludes=null;
 	InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders(this.referenceContext);
     if (inferenceProviders!=null &&inferenceProviders.length>0)
@@ -978,11 +986,11 @@ ImportBinding[] getDefaultImports() {
 			}
 		}
 	  }
-      environment.defaultImports = ( ImportBinding[])list.toArray( new ImportBinding[list.size()]);
+      defaultImports = ( ImportBinding[])list.toArray( new ImportBinding[list.size()]);
     }
     else
-    	environment.defaultImports = new ImportBinding[] {systemJSBinding};
-	return environment.defaultImports ;
+    	defaultImports = new ImportBinding[] {systemJSBinding};
+	return defaultImports ;
 }
 // NOT Public API
 public final Binding getImport(char[][] compoundName, boolean onDemand, boolean isStaticImport) {
