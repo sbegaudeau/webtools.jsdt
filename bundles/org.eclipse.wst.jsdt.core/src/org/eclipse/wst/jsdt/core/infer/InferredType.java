@@ -40,6 +40,7 @@ public class InferredType extends ASTNode {
 
 	public boolean isArray=false;
 	public boolean isAnonymous=false;
+	public boolean isObjectLiteral=false;
 
 	public String inferenceProviderID;
 	public String inferenceStyle;
@@ -144,6 +145,8 @@ public class InferredType extends ASTNode {
 				if (isConstructor)
 				{
 					methodDeclaration.inferredMethod.inType=this;
+					method.isStatic=methodDeclaration.inferredMethod.isStatic;
+					method.bits=methodDeclaration.inferredMethod.bits;
 					methodDeclaration.inferredMethod = method;
 				} else if (methodDeclaration.inferredMethod.isConstructor)
 					method.inType=methodDeclaration.inferredMethod.inType;

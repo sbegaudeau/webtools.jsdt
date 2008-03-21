@@ -1223,6 +1223,8 @@ public class ClassScope extends Scope {
 			//@GINO: Anonymous set bits
 			if( inferredType.isAnonymous )
 				inferredType.binding.tagBits |= TagBits.AnonymousTypeMask;
+			if( inferredType.isObjectLiteral )
+				inferredType.binding.tagBits |= TagBits.IsObjectLiteralType;
 		} else {
 //			char[][] className = CharOperation.deepCopy(enclosingType.compoundName);
 //			className[className.length - 1] =

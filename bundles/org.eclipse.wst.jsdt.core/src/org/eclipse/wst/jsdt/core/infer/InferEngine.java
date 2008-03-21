@@ -543,6 +543,7 @@ public class InferEngine extends ASTVisitor {
 
 		InferredType anonType = addType(name,true);
 		anonType.isAnonymous=true;
+		anonType.isObjectLiteral=true;
 		anonType.superClass = ObjectType;
 
 		anonType.sourceStart = objLit.sourceStart;
