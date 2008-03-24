@@ -88,7 +88,7 @@ public class ProjectLibraryRoot implements IAdaptable{
 				roots = project.getPackageFragmentRoots();
 			}
 			catch (JavaModelException e1) {}
-			for (int i= 0; i < roots.length; i++) {
+			next: for (int i= 0; i < roots.length; i++) {
 				IPackageFragmentRoot root= roots[i];
 				IClasspathEntry classpathEntry=null;
 				try {
@@ -100,7 +100,7 @@ public class ProjectLibraryRoot implements IAdaptable{
 				IClasspathAttribute[] attribs = classpathEntry.getExtraAttributes();
 				
 				for(int k = 0;attribs!=null && k<attribs.length;k++) {
-					if(attribs[k]==IClasspathAttribute.HIDE) continue;
+					if(attribs[k]==IClasspathAttribute.HIDE) continue next;
 					
 				}
 				
