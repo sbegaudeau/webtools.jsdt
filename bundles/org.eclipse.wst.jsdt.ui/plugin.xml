@@ -564,6 +564,7 @@
          </description>
       </wizard>
  -->
+ 	<!--
       <wizard
             name="%NewSourceFolderCreationWizard.label"
             icon="$nl$/icons/full/etool16/newpackfolder_wiz.gif"
@@ -574,6 +575,7 @@
             %NewSourceFolderCreationWizard.description
          </description>
       </wizard>
+      -->
 <!--      
       <wizard
             name="%NewEnumType.label"
