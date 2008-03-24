@@ -528,6 +528,16 @@
             %NewJavaProject.description
          </description>
       </wizard>
+      	<wizard
+			id="org.eclipse.wst.jsdt.ui.NewJSWizard"
+			name="%wizard.name.0"
+			class="org.eclipse.wst.jsdt.internal.ui.wizards.NewJSWizard"
+			category="org.eclipse.wst.jsdt.ui.java"
+			icon="$nl$/icons/full/etool16/newjscript_wiz.gif">
+			<description>%wizard.description.0</description>
+			<selection class="org.eclipse.core.resources.IResource" />
+		</wizard>
+
 <!--      
       <wizard
             name="%NewJavaPackage.label"
