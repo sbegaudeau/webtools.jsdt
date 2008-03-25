@@ -264,7 +264,7 @@ public void testBug29832() throws Exception {
 //			"element:ZZZ    completion:pz.ZZZ    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED),
 //			requestor.getResults());
 		assertEquals(
-					"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED+R_UNQUALIFIED) + "\n"+
+					"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED) + "\n"+
 					"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
 					"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
 					"element:z    completion:z    relevance:"+ (R_DEFAULT+R_RESOLVED+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED),
@@ -396,7 +396,7 @@ public void testBug33560() throws Exception {
 		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
 		cu.codeComplete(cursorLocation, requestor);
 		assertEquals(
-		"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED+R_UNQUALIFIED) + "\n"+
+		"element:ZZZ    completion:ZZZ    relevance:" +(R_DEFAULT+R_RESOLVED+R_INTERESTING+R_NON_RESTRICTED ) + "\n"+
 		"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
 		"element:ZZZ    completion:ZZZ()    relevance:" + (R_DEFAULT+R_INTERESTING+R_UNQUALIFIED+R_NON_RESTRICTED) + "\n"+
 		"element:z    completion:z    relevance:"+ (R_DEFAULT+R_RESOLVED+R_INTERESTING+R_CASE+R_EXACT_NAME+R_UNQUALIFIED+R_NON_RESTRICTED),
