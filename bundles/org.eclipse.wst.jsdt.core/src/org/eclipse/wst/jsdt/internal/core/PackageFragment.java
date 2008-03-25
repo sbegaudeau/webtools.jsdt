@@ -193,7 +193,7 @@ public IClassFile getClassFile(String classFileName) {
 //	classFileName.getChars(0, length, nameWithoutExtension, 0);
 	String filename= "";
 	if (this.getResource()!=null)
-	  filename= this.getResource().getRawLocation().toOSString()+File.separator+classFileName;
+	  filename= this.getResource().getLocation().toOSString()+File.separator+classFileName;
 	
 	return new ClassFile(this,filename);
 }
