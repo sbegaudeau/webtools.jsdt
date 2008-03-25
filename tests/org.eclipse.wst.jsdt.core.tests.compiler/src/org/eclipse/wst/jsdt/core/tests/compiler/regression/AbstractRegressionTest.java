@@ -40,7 +40,6 @@ import org.eclipse.wst.jsdt.core.tests.util.AbstractCompilerTest;
 import org.eclipse.wst.jsdt.core.tests.util.CompilerTestSetup;
 import org.eclipse.wst.jsdt.core.tests.util.TestVerifier;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
-import org.eclipse.wst.jsdt.core.util.ClassFormatException;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.Compiler;
 import org.eclipse.wst.jsdt.internal.compiler.DefaultErrorHandlingPolicies;
@@ -130,51 +129,51 @@ public abstract class AbstractRegressionTest extends AbstractCompilerTest implem
 	public AbstractRegressionTest(String name) {
 		super(name);
 	}
-	protected void checkClassFile(String className, String source, String expectedOutput) throws ClassFormatException, IOException {
-//		this.checkClassFile("", className, source, expectedOutput, ClassFileBytesDisassembler.SYSTEM);
-	}
-	protected void checkClassFile(String className, String source, String expectedOutput, int mode) throws ClassFormatException, IOException {
-		this.checkClassFile("", className, source, expectedOutput, mode);
-	}
-	protected void checkClassFile(String directoryName, String className, String disassembledClassName, String source, String expectedOutput, int mode) throws ClassFormatException, IOException {
-//		compileAndDeploy(source, directoryName, className);
-//		try {
-//			File directory = new File(EVAL_DIRECTORY, directoryName);
-//			if (!directory.exists()) {
-//				assertTrue(".class file not generated properly in " + directory, false);
-//			}
-//			File f = new File(directory, disassembledClassName + ".class");
-//			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
-//			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
-//			String result = disassembler.disassemble(classFileBytes, "\n", mode);
-//			int index = result.indexOf(expectedOutput);
-//			if (index == -1 || expectedOutput.length() == 0) {
-//				System.out.println(Util.displayString(result, 3));
-//			}
-//			if (index == -1) {
-//				assertEquals("Wrong contents", expectedOutput, result);
-//			}
-//			
-//			try {
-//				FileInputStream stream = new FileInputStream(f);
-//				ClassFileReader.read(stream, className + ".class", true);
-//				stream.close();
-//			} catch (org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException e) {
-//				e.printStackTrace();
-//				assertTrue("ClassFormatException", false);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//				assertTrue("IOException", false);
-//			}
-//		} finally {
-//			removeTempClass(className);
-//		}
-	}
-
-	protected void checkClassFile(String directoryName, String className, String source, String expectedOutput, int mode) throws ClassFormatException, IOException {
-		this.checkClassFile(directoryName, className, className, source, expectedOutput, mode);
-	}
-
+//	protected void checkClassFile(String className, String source, String expectedOutput) throws ClassFormatException, IOException {
+////		this.checkClassFile("", className, source, expectedOutput, ClassFileBytesDisassembler.SYSTEM);
+//	}
+//	protected void checkClassFile(String className, String source, String expectedOutput, int mode) throws ClassFormatException, IOException {
+//		this.checkClassFile("", className, source, expectedOutput, mode);
+//	}
+//	protected void checkClassFile(String directoryName, String className, String disassembledClassName, String source, String expectedOutput, int mode) throws ClassFormatException, IOException {
+////		compileAndDeploy(source, directoryName, className);
+////		try {
+////			File directory = new File(EVAL_DIRECTORY, directoryName);
+////			if (!directory.exists()) {
+////				assertTrue(".class file not generated properly in " + directory, false);
+////			}
+////			File f = new File(directory, disassembledClassName + ".class");
+////			byte[] classFileBytes = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileByteContent(f);
+////			ClassFileBytesDisassembler disassembler = ToolFactory.createDefaultClassFileBytesDisassembler();
+////			String result = disassembler.disassemble(classFileBytes, "\n", mode);
+////			int index = result.indexOf(expectedOutput);
+////			if (index == -1 || expectedOutput.length() == 0) {
+////				System.out.println(Util.displayString(result, 3));
+////			}
+////			if (index == -1) {
+////				assertEquals("Wrong contents", expectedOutput, result);
+////			}
+////			
+////			try {
+////				FileInputStream stream = new FileInputStream(f);
+////				ClassFileReader.read(stream, className + ".class", true);
+////				stream.close();
+////			} catch (org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFormatException e) {
+////				e.printStackTrace();
+////				assertTrue("ClassFormatException", false);
+////			} catch (IOException e) {
+////				e.printStackTrace();
+////				assertTrue("IOException", false);
+////			}
+////		} finally {
+////			removeTempClass(className);
+////		}
+//	}
+//
+//	protected void checkClassFile(String directoryName, String className, String source, String expectedOutput, int mode) throws ClassFormatException, IOException {
+//		this.checkClassFile(directoryName, className, className, source, expectedOutput, mode);
+//	}
+//
 	protected void checkDisassembledClassFile(String fileName, String className, String expectedOutput) {
 //		this.checkDisassembledClassFile(fileName, className, expectedOutput, ClassFileBytesDisassembler.DETAILED);
 	}
