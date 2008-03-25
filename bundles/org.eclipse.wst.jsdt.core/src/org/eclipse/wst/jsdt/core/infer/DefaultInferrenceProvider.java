@@ -40,4 +40,8 @@ public class DefaultInferrenceProvider implements InferrenceProvider {
 		return new ResolutionConfiguration();
 	}
 
+	public RefactoringSupport getRefactoringSupport() {
+		return null;
+	}
+
 }

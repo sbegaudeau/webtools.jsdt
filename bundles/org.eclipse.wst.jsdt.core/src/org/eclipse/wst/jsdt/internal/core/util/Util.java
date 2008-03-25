@@ -60,11 +60,6 @@ import org.eclipse.wst.jsdt.core.dom.SimpleType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.infer.InferEngine;
-import org.eclipse.wst.jsdt.core.util.IClassFileAttribute;
-import org.eclipse.wst.jsdt.core.util.IClassFileReader;
-import org.eclipse.wst.jsdt.core.util.ICodeAttribute;
-import org.eclipse.wst.jsdt.core.util.IFieldInfo;
-import org.eclipse.wst.jsdt.core.util.IMethodInfo;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Argument;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference;
@@ -720,45 +715,45 @@ public class Util {
 		return null;
 	}
 
-	public static IClassFileAttribute getAttribute(IClassFileReader classFileReader, char[] attributeName) {
-		IClassFileAttribute[] attributes = classFileReader.getAttributes();
-		for (int i = 0, max = attributes.length; i < max; i++) {
-			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
-				return attributes[i];
-			}
-		}
-		return null;
-	}
+//	public static IClassFileAttribute getAttribute(IClassFileReader classFileReader, char[] attributeName) {
+//		IClassFileAttribute[] attributes = classFileReader.getAttributes();
+//		for (int i = 0, max = attributes.length; i < max; i++) {
+//			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
+//				return attributes[i];
+//			}
+//		}
+//		return null;
+//	}
 
-	public static IClassFileAttribute getAttribute(ICodeAttribute codeAttribute, char[] attributeName) {
-		IClassFileAttribute[] attributes = codeAttribute.getAttributes();
-		for (int i = 0, max = attributes.length; i < max; i++) {
-			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
-				return attributes[i];
-			}
-		}
-		return null;
-	}
+//	public static IClassFileAttribute getAttribute(ICodeAttribute codeAttribute, char[] attributeName) {
+//		IClassFileAttribute[] attributes = codeAttribute.getAttributes();
+//		for (int i = 0, max = attributes.length; i < max; i++) {
+//			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
+//				return attributes[i];
+//			}
+//		}
+//		return null;
+//	}
 
-	public static IClassFileAttribute getAttribute(IFieldInfo fieldInfo, char[] attributeName) {
-		IClassFileAttribute[] attributes = fieldInfo.getAttributes();
-		for (int i = 0, max = attributes.length; i < max; i++) {
-			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
-				return attributes[i];
-			}
-		}
-		return null;
-	}
-
-	public static IClassFileAttribute getAttribute(IMethodInfo methodInfo, char[] attributeName) {
-		IClassFileAttribute[] attributes = methodInfo.getAttributes();
-		for (int i = 0, max = attributes.length; i < max; i++) {
-			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
-				return attributes[i];
-			}
-		}
-		return null;
-	}
+//	public static IClassFileAttribute getAttribute(IFieldInfo fieldInfo, char[] attributeName) {
+//		IClassFileAttribute[] attributes = fieldInfo.getAttributes();
+//		for (int i = 0, max = attributes.length; i < max; i++) {
+//			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
+//				return attributes[i];
+//			}
+//		}
+//		return null;
+//	}
+//
+//	public static IClassFileAttribute getAttribute(IMethodInfo methodInfo, char[] attributeName) {
+//		IClassFileAttribute[] attributes = methodInfo.getAttributes();
+//		for (int i = 0, max = attributes.length; i < max; i++) {
+//			if (CharOperation.equals(attributes[i].getAttributeName(), attributeName)) {
+//				return attributes[i];
+//			}
+//		}
+//		return null;
+//	}
 
 	/**
 	 * Returns the registered Java like extensions.

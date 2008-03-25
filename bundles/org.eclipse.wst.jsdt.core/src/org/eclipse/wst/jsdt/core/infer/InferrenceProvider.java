@@ -42,4 +42,8 @@ public interface InferrenceProvider {
 	 */
 	public ResolutionConfiguration getResolutionConfiguration();
 
+	/**
+	 * @return the RefactoringSupport used to provide refactoring for the inferred type.
+	 */
+	public RefactoringSupport getRefactoringSupport();
 }
