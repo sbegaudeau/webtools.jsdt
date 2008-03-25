@@ -904,5 +904,37 @@ public class BasicResolveTests extends AbstractRegressionTest {
 				"----------\n"
 		);
 	}
+	
+	
+	public void test062()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var cc=function(){\n"  
+						+"  function inner(){}\n" 
+						+"  var dd=inner;\n" 
+						+"}\n" 
+						+"" 
+				},
+				""
+		);
+	}
+
+	
+	public void test063()	{
+		this.runNegativeTest(
+				new String[] {
+						"X.js",
+						"var cc=function(){\n"  
+						+"  var ii;\n" 
+						+"  function inner(){\n" 
+						+"    var dd=ii;\n" 
+						+"  }\n" 
+						+"}\n" 
+						+"" 
+				},
+				""
+		);
+	}
 
 }
