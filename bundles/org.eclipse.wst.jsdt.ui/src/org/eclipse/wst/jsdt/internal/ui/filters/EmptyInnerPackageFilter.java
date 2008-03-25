@@ -30,7 +30,7 @@ public class EmptyInnerPackageFilter extends ViewerFilter {
 			IPackageFragment pkg= (IPackageFragment)element;
 			try {
 				if (pkg.isDefaultPackage())
-					return pkg.hasChildren();
+					return true;//pkg.hasChildren();
 				return !pkg.hasSubpackages() || pkg.hasChildren() || (pkg.getNonJavaResources().length > 0);
 			} catch (JavaModelException e) {
 				return false;
