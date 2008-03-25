@@ -173,7 +173,7 @@ private void enterClass(TypeInfo typeInfo) {
 	char [] typeName=typeInfo.name;
 	char [] pkgName=this.packageName;
 	int index;
-	if ( (index=CharOperation.indexOf('.',typeName)) >0)
+	if ( (index=CharOperation.lastIndexOf('.',typeName)) >0)
 	{
 		pkgName=CharOperation.subarray(typeName, 0, index);
 		typeName=CharOperation.subarray(typeName, index+1, typeName.length);

@@ -45,8 +45,9 @@ public int match(InferredType node, MatchingNodeSet nodeSet) {
 	char[] typeName = node.getName();
 	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, typeName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
-	if (this.pattern.pkg!=null && this.pattern.pkg.length>0 &&
-			matchesName(CharOperation.concat(this.pattern.pkg, this.pattern.simpleName, '.'), typeName))
+	char [] pkg=(this.pattern instanceof QualifiedTypeDeclarationPattern)? ((QualifiedTypeDeclarationPattern)this.pattern).qualification : this.pattern.pkg;
+	if (pkg!=null && pkg.length>0 &&
+			matchesName(CharOperation.concat(pkg, this.pattern.simpleName, '.'), typeName))
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
 	return IMPOSSIBLE_MATCH;
 }

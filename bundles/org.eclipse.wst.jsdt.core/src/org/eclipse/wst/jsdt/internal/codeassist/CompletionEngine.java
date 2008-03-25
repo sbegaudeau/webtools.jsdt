@@ -715,7 +715,7 @@ public final class CompletionEngine
 							accessibility,
 							typeName,
 							fullyQualifiedName,
-							false,scope);
+							true,scope);
 					continue next;
 
 //				} else {
