@@ -1738,9 +1738,50 @@ public abstract class Scope implements TypeConstants, TypeIds {
 
 			if ( (mask&Binding.METHOD)!=0)
 			{
-				MethodBinding methodBinding = findMethod(null, name, Binding.NO_PARAMETERS, invocationSite);
-				if (methodBinding!=null && methodBinding.isValidBinding())
-					return methodBinding;
+				
+				Scope scope = this;
+
+				done : while (true) { // done when a COMPILATION_UNIT_SCOPE is found
+					switch (scope.kind) {
+						case METHOD_SCOPE :
+							MethodScope methodScope = (MethodScope) scope;
+							binding = methodScope.findMethod(name, Binding.NO_PARAMETERS,true);
+							if (binding!=null)
+								return binding;
+							break;
+						case WITH_SCOPE :
+							WithScope withScope = (WithScope) scope;
+							ReferenceBinding withType = withScope.referenceContext;
+							// retrieve an exact visible match (if possible)
+							// compilationUnitScope().recordTypeReference(receiverType);   not needed since receiver is the source type
+							MethodBinding methBinding = withScope.findExactMethod(withType, name, Binding.NO_PARAMETERS, invocationSite);
+							if (methBinding == null)
+								methBinding = withScope.findMethod(withType,name, Binding.NO_PARAMETERS, invocationSite);
+							if (methBinding != null) { // skip it if we did not find anything
+									if (methBinding.isValidBinding()) {
+											return methBinding;
+										}
+							}
+							break;
+						case CLASS_SCOPE :
+							ClassScope classScope = (ClassScope) scope;
+							ReferenceBinding receiverType = classScope.enclosingReceiverType();
+							break;
+						case COMPILATION_UNIT_SCOPE :
+							CompilationUnitScope compilationUnitScope = (CompilationUnitScope) scope;
+							CompilationUnitBinding compilationUnitBinding = compilationUnitScope.enclosingCompilationUnit();
+							 receiverType = compilationUnitBinding;
+								MethodBinding methodBinding =
+										  compilationUnitScope.findExactMethod(receiverType, name, Binding.NO_PARAMETERS, invocationSite);
+								if (methodBinding != null) { // skip it if we did not find anything
+											return methodBinding;
+								}
+
+							break done;
+					}
+					scope = scope.parent;
+				}
+
 			}
 			// We did not find a local or instance variable.
 			if ((mask & Binding.TYPE|Binding.VARIABLE|Binding.METHOD) != 0) {
