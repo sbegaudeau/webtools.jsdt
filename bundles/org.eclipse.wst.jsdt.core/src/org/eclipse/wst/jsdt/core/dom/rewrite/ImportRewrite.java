@@ -40,6 +40,10 @@ import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
+import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
+import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
+import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
+import org.eclipse.wst.jsdt.core.infer.RefactoringSupport;
 import org.eclipse.wst.jsdt.internal.core.dom.rewrite.ImportRewriteAnalyzer;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 
@@ -201,6 +205,11 @@ public final class ImportRewrite {
 		ITypeRoot typeRoot = astRoot.getTypeRoot();
 		if (!(typeRoot instanceof ICompilationUnit)) {
 			throw new IllegalArgumentException("AST must have been constructed from a Java element"); //$NON-NLS-1$
+		}
+		InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders( (IInferenceFile)typeRoot);
+		if (inferenceProviders.length>0 && inferenceProviders[0].getRefactoringSupport()!=null)
+		{
+			RefactoringSupport refactoringSupport = inferenceProviders[0].getRefactoringSupport();
 		}
 		List existingImport= null;
 		if (restoreExistingImports) {
