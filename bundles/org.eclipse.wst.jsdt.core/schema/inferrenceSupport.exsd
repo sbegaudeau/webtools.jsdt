@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
+<!-- [217709] patch from Matthias Kempka (mkempka@innoopract.com) -->
 <schema targetNamespace="org.eclipse.wst.jsdt.core">
 <annotation>
       <appInfo>
@@ -44,11 +45,14 @@
 
    <element name="inferenceProvider">
       <complexType>
-         <attribute name="class" type="string">
+         <attribute name="class" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
+               <appInfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.wst.jsdt.internal.infer.InferrenceProvider"/>
+               </appInfo>
             </annotation>
          </attribute>
       </complexType>
