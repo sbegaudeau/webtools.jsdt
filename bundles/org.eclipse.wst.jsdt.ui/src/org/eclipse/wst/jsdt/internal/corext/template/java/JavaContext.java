@@ -455,7 +455,7 @@ public class JavaContext extends CompilationUnitContext {
 					context= null;
 				else
 					context= new ContextSensitiveImportRewriteContext(root, getCompletionOffset(), rewrite);
-				rewrite.addImport(type, context);
+				rewrite.addImport(type, type, context);
 				JavaModelUtil.applyEdit(cu, rewrite.rewriteImports(null), false, null);
 				
 				setCompletionOffset(position.getOffset());

@@ -1031,4 +1031,20 @@ public final class JavaModelUtil {
 		return false;
 	}
 	
+	
+	public static String getFilePackage(IJavaElement javaElement)
+	{
+		IJavaElement fileAncestor = javaElement.getAncestor(IJavaElement.COMPILATION_UNIT);
+		if (fileAncestor==null)
+			fileAncestor=javaElement.getAncestor(IJavaElement.CLASS_FILE);
+		IPath filePath= fileAncestor.getResource().getFullPath();
+		IJavaElement rootElement=fileAncestor.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+		IPath rootPath = rootElement.getResource().getFullPath();
+		String relativePath = filePath.removeFirstSegments(rootPath.segmentCount()).toPortableString();
+		if (relativePath.endsWith(".js"))
+			relativePath=relativePath.substring(0,relativePath.length()-3);
+		relativePath=relativePath.replace('/', '.');
+		return relativePath;
+		
+	}
 }

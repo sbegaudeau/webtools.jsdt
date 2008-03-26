@@ -52,6 +52,11 @@ public class ImportDeclaration extends ASTNode {
 	public static final SimplePropertyDescriptor STATIC_PROPERTY =
 		new SimplePropertyDescriptor(ImportDeclaration.class, "static", boolean.class, MANDATORY); //$NON-NLS-1$
 
+
+	public static final SimplePropertyDescriptor ISFILE_PROPERTY =
+		new SimplePropertyDescriptor(ImportDeclaration.class, "isFile", boolean.class, MANDATORY); //$NON-NLS-1$
+
+	
 	/**
 	 * A list of property descriptors (element type:
 	 * {@link StructuralPropertyDescriptor}),
@@ -73,6 +78,7 @@ public class ImportDeclaration extends ASTNode {
 		createPropertyList(ImportDeclaration.class, properyList);
 		addProperty(NAME_PROPERTY, properyList);
 		addProperty(ON_DEMAND_PROPERTY, properyList);
+		addProperty(ISFILE_PROPERTY, properyList);
 		PROPERTY_DESCRIPTORS_2_0 = reapPropertyList(properyList);
 
 		properyList = new ArrayList(4);
@@ -80,6 +86,7 @@ public class ImportDeclaration extends ASTNode {
 		addProperty(STATIC_PROPERTY, properyList);
 		addProperty(NAME_PROPERTY, properyList);
 		addProperty(ON_DEMAND_PROPERTY, properyList);
+		addProperty(ISFILE_PROPERTY, properyList);
 		PROPERTY_DESCRIPTORS_3_0 = reapPropertyList(properyList);
 	}
 
@@ -120,6 +127,7 @@ public class ImportDeclaration extends ASTNode {
 	 */
 	private boolean isStatic = false;
 
+	private boolean isFile = false;
 	/**
 	 * Creates a new AST node for an import declaration owned by the
 	 * given AST. The import declaration initially is a regular (non-static)
@@ -163,6 +171,14 @@ public class ImportDeclaration extends ASTNode {
 				return false;
 			}
 		}
+		if (property == ISFILE_PROPERTY) {
+			if (get) {
+				return isFileImport();
+			} else {
+				setIsFileImport(value);
+				return false;
+			}
+		}
 		// allow default implementation to flag the error
 		return super.internalGetSetBooleanProperty(property, get, value);
 	}
@@ -197,6 +213,7 @@ public class ImportDeclaration extends ASTNode {
 		ImportDeclaration result = new ImportDeclaration(target);
 		result.setSourceRange(this.getStartPosition(), this.getLength());
 		result.setOnDemand(isOnDemand());
+		result.setIsFileImport(isFileImport());
 		if (this.ast.apiLevel >= AST.JLS3) {
 			result.setStatic(isStatic());
 		}
@@ -301,6 +318,12 @@ public class ImportDeclaration extends ASTNode {
 		postValueChange(ON_DEMAND_PROPERTY);
 	}
 
+	public void setIsFileImport(boolean isFileImport) {
+		preValueChange(ISFILE_PROPERTY);
+		this.isFile = isFileImport;
+		postValueChange(ISFILE_PROPERTY);
+	}
+
 	/**
 	 * Returns whether this import declaration is a static import (added in JLS3 API).
 	 *
@@ -372,6 +395,11 @@ public class ImportDeclaration extends ASTNode {
 		return
 			memSize()
 			+ (importName == null ? 0 : getName().treeSize());
+	}
+	
+	public boolean isFileImport()
+	{
+		return isFile;
 	}
 }
 

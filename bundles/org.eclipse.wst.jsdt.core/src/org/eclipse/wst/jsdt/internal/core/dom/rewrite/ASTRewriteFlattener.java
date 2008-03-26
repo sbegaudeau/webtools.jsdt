@@ -629,6 +629,8 @@ public class ASTRewriteFlattener extends ASTVisitor {
 	 * @see ASTVisitor#visit(ImportDeclaration)
 	 */
 	public boolean visit(ImportDeclaration node) {
+		if (node.isFileImport())
+			return false;
 		this.result.append("import "); //$NON-NLS-1$
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (getBooleanAttribute(node, ImportDeclaration.STATIC_PROPERTY)) {

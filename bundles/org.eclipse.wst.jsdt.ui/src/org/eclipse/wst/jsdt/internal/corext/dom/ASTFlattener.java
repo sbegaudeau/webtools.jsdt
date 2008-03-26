@@ -685,6 +685,8 @@ public class ASTFlattener extends GenericVisitor {
 	 * @see ASTVisitor#visit(ImportDeclaration)
 	 */
 	public boolean visit(ImportDeclaration node) {
+		if (node.isFileImport())
+			return false;
 		this.fBuffer.append("import ");//$NON-NLS-1$
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (node.isStatic()) {

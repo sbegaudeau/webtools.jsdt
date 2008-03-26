@@ -1330,7 +1330,6 @@ class ASTConverter {
 		if (imports != null) {
 			int importLength = imports.length;
 			for (int i = 0; i < importLength; i++) {
-				if (!imports[i].isInternal())
 					compilationUnit.imports().add(convertImport(imports[i]));
 			}
 		}
@@ -3024,8 +3023,10 @@ class ASTConverter {
 				recordNodes(name, importReference);
 			}
 		}
+		boolean isFile=(importReference.bits&org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode.IsFileImport)!=0;
 		importDeclaration.setSourceRange(importReference.declarationSourceStart, importReference.declarationEnd - importReference.declarationSourceStart + 1);
-		importDeclaration.setOnDemand(onDemand);
+		importDeclaration.setOnDemand(onDemand && !isFile);
+		importDeclaration.setIsFileImport(isFile);
 		int modifiers = importReference.modifiers;
 		if (modifiers != ClassFileConstants.AccDefault) {
 			switch(this.ast.apiLevel) {
@@ -3994,7 +3995,6 @@ class ASTConverter {
 						if (expression instanceof org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference) {
 							typeRef = (org.eclipse.wst.jsdt.internal.compiler.ast.TypeReference) expression;
 						}
-						// TODO (frederic) remove following line to fix bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=62650
 						recordNodes(name, compilerNode);
 					}
 					// record name and qualifier

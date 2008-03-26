@@ -2314,6 +2314,8 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(ImportDeclaration)
 	 */
 	public boolean visit(ImportDeclaration node) {
+		if (node.isFileImport())
+			return false;
 		if (!hasChildrenChanges(node)) {
 			return doVisitUnchangedChildren(node);
 		}

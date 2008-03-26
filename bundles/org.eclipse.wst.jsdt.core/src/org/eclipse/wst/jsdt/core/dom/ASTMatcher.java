@@ -999,6 +999,9 @@ public class ASTMatcher {
 				return false;
 			}
 		}
+		if (node.isFileImport() != o.isFileImport()) {
+			return false;
+		}
 		return (
 			safeSubtreeMatch(node.getName(), o.getName())
 				&& node.isOnDemand() == o.isOnDemand());

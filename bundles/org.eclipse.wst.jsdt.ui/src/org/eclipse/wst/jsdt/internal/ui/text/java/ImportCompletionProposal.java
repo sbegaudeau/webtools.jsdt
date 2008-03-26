@@ -91,7 +91,7 @@ public class ImportCompletionProposal extends AbstractJavaCompletionProposal {
  		fImportRewrite= createImportRewrite();
  		if (fImportRewrite != null) {
 	 		if (proposalKind == CompletionProposal.TYPE_IMPORT) {
-	 			String simpleType= fImportRewrite.addImport(qualifiedTypeName, fImportContext);
+	 			String simpleType= fImportRewrite.addImport(qualifiedTypeName, qualifiedTypeName,fImportContext);
 		 		if (fParentProposalKind == CompletionProposal.METHOD_REF)
 		 			return simpleType + "."; //$NON-NLS-1$
  			} else

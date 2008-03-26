@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
 import org.eclipse.wst.jsdt.core.ITypeRoot;
+import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
@@ -41,6 +42,7 @@ import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.WildcardType;
 import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
+import org.eclipse.wst.jsdt.core.infer.ImportRewriteSupport;
 import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
 import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
 import org.eclipse.wst.jsdt.core.infer.RefactoringSupport;
@@ -152,6 +154,9 @@ public final class ImportRewrite {
 	private boolean filterImplicitImports;
 
 	private boolean writeImports=false;
+	
+	private ImportRewriteSupport importRewriteExtension;
+	private boolean isImportMatchesType=true;
 
 	/**
 	 * Creates a {@link ImportRewrite} from a {@link ICompilationUnit}. If <code>restoreExistingImports</code>
@@ -171,6 +176,14 @@ public final class ImportRewrite {
 		if (cu == null) {
 			throw new IllegalArgumentException("Compilation unit must not be null"); //$NON-NLS-1$
 		}
+		ImportRewriteSupport importRewriteExtension=null;
+		InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders( (IInferenceFile)cu);
+		if (inferenceProviders.length>0 && inferenceProviders[0].getRefactoringSupport()!=null)
+		{
+			RefactoringSupport refactoringSupport = inferenceProviders[0].getRefactoringSupport();
+			if (refactoringSupport!=null)
+				importRewriteExtension=refactoringSupport.getImportRewriteSupport();
+		}
 		List existingImport= null;
 		if (restoreExistingImports) {
 			existingImport= new ArrayList();
@@ -181,7 +194,7 @@ public final class ImportRewrite {
 				existingImport.add(prefix + curr.getElementName());
 			}
 		}
-		return new ImportRewrite(cu, null, existingImport);
+		return new ImportRewrite(cu, null, existingImport,importRewriteExtension);
 	}
 
 	/**
@@ -206,10 +219,13 @@ public final class ImportRewrite {
 		if (!(typeRoot instanceof ICompilationUnit)) {
 			throw new IllegalArgumentException("AST must have been constructed from a Java element"); //$NON-NLS-1$
 		}
+		ImportRewriteSupport importRewriteExtension=null;
 		InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders( (IInferenceFile)typeRoot);
 		if (inferenceProviders.length>0 && inferenceProviders[0].getRefactoringSupport()!=null)
 		{
 			RefactoringSupport refactoringSupport = inferenceProviders[0].getRefactoringSupport();
+			if (refactoringSupport!=null)
+				importRewriteExtension=refactoringSupport.getImportRewriteSupport();
 		}
 		List existingImport= null;
 		if (restoreExistingImports) {
@@ -227,12 +243,18 @@ public final class ImportRewrite {
 				existingImport.add(buf.toString());
 			}
 		}
-		return new ImportRewrite((ICompilationUnit) typeRoot, astRoot, existingImport);
+		return new ImportRewrite((ICompilationUnit) typeRoot, astRoot, existingImport, importRewriteExtension);
 	}
 
-	private ImportRewrite(ICompilationUnit cu, CompilationUnit astRoot, List existingImports) {
+	private ImportRewrite(ICompilationUnit cu, CompilationUnit astRoot, List existingImports, ImportRewriteSupport importRewriteExtension) {
 		this.compilationUnit= cu;
 		this.astRoot= astRoot; // might be null
+		this.importRewriteExtension=importRewriteExtension;
+		if (this.importRewriteExtension!=null)
+		{
+			this.isImportMatchesType=this.importRewriteExtension.isImportMatchesType();
+			this.writeImports=true;
+		}
 		if (existingImports != null) {
 			this.existingImports= existingImports;
 			this.restoreExistingImports= !existingImports.isEmpty();
@@ -433,7 +455,7 @@ public final class ImportRewrite {
 
 				String erasureName= Signature.toString(erasureSig);
 				if (erasureSig.charAt(0) == Signature.C_RESOLVED) {
-					erasureName= internalAddImport(erasureName, context);
+					erasureName= internalAddImport(erasureName, erasureName, context);
 				}
 				Type baseType= ast.newSimpleType(ast.newName(erasureName));
 				String[] typeArguments= Signature.getTypeArguments(typeSig);
@@ -543,7 +565,7 @@ public final class ImportRewrite {
 
 		String qualifiedName= getRawQualifiedName(normalizedBinding);
 		if (qualifiedName.length() > 0) {
-			String str= internalAddImport(qualifiedName, context);
+			String str= internalAddImport(qualifiedName, qualifiedName, context);
 
 			ITypeBinding[] typeArguments= normalizedBinding.getTypeArguments();
 			if (typeArguments.length > 0) {
@@ -687,7 +709,7 @@ public final class ImportRewrite {
 
 		String qualifiedName= getRawQualifiedName(normalizedBinding);
 		if (qualifiedName.length() > 0) {
-			String res= internalAddImport(qualifiedName, context);
+			String res= internalAddImport(qualifiedName, qualifiedName, context);
 
 			ITypeBinding[] typeArguments= normalizedBinding.getTypeArguments();
 			if (typeArguments.length > 0) {
@@ -726,16 +748,24 @@ public final class ImportRewrite {
 	 * @return returns a type to which the type binding can be assigned to. The returned type contains is unqualified
 	 * when an import could be added or was already known. It is fully qualified, if an import conflict prevented the import.
 	 */
-	public String addImport(String qualifiedTypeName, ImportRewriteContext context) {
-		int angleBracketOffset= qualifiedTypeName.indexOf('<');
-		if (angleBracketOffset != -1) {
-			return internalAddImport(qualifiedTypeName.substring(0, angleBracketOffset), context) + qualifiedTypeName.substring(angleBracketOffset);
+	public String addImport(String qualifiedTypeName, String packageName,  ImportRewriteContext context) {
+		if (packageName==null)
+			packageName=qualifiedTypeName;
+		if (JavaCore.IS_ECMASCRIPT4) {
+			int angleBracketOffset = qualifiedTypeName.indexOf('<');
+			if (angleBracketOffset != -1) {
+				return internalAddImport(qualifiedTypeName.substring(0,
+						angleBracketOffset), packageName, context)
+						+ qualifiedTypeName.substring(angleBracketOffset);
+			}
+			int bracketOffset = qualifiedTypeName.indexOf('[');
+			if (bracketOffset != -1) {
+				return internalAddImport(qualifiedTypeName.substring(0,
+						bracketOffset), packageName, context)
+						+ qualifiedTypeName.substring(bracketOffset);
+			}
 		}
-		int bracketOffset= qualifiedTypeName.indexOf('[');
-		if (bracketOffset != -1) {
-			return internalAddImport(qualifiedTypeName.substring(0, bracketOffset), context) + qualifiedTypeName.substring(bracketOffset);
-		}
-		return internalAddImport(qualifiedTypeName, context);
+		return internalAddImport(qualifiedTypeName, packageName, context);
 	}
 
 	/**
@@ -753,7 +783,7 @@ public final class ImportRewrite {
 	 * when an import could be added or was already known. It is fully qualified, if an import conflict prevented the import.
 	 */
 	public String addImport(String qualifiedTypeName) {
-		return addImport(qualifiedTypeName, this.defaultContext);
+		return addImport(qualifiedTypeName, qualifiedTypeName, this.defaultContext);
 	}
 
 	/**
@@ -872,15 +902,17 @@ public final class ImportRewrite {
 		return simpleName;
 	}
 
-	private String internalAddImport(String fullTypeName, ImportRewriteContext context) {
-		int idx= fullTypeName.lastIndexOf('.');
+	private String internalAddImport(String fullTypeName, String packageName,ImportRewriteContext context) {
+		String importName=(this.isImportMatchesType)? fullTypeName : packageName;
+		
+		int idx= importName.lastIndexOf('.');
 		String typeContainerName, typeName;
 		if (idx != -1) {
-			typeContainerName= fullTypeName.substring(0, idx);
-			typeName= fullTypeName.substring(idx + 1);
+			typeContainerName= importName.substring(0, idx);
+			typeName= importName.substring(idx + 1);
 		} else {
 			typeContainerName= ""; //$NON-NLS-1$
-			typeName= fullTypeName;
+			typeName= importName;
 		}
 
 		if (typeContainerName.length() == 0 && PrimitiveType.toCode(typeName) != null) {
@@ -895,9 +927,9 @@ public final class ImportRewrite {
 			return fullTypeName;
 		}
 		if (res == ImportRewriteContext.RES_NAME_UNKNOWN) {
-			addEntry(NORMAL_PREFIX + fullTypeName);
+			addEntry(NORMAL_PREFIX + importName);
 		}
-		return typeName;
+		return (this.isImportMatchesType)?typeName: fullTypeName;
 	}
 
 	private void addEntry(String entry) {
@@ -1116,6 +1148,10 @@ public final class ImportRewrite {
 			}
 		}
 		return (String[]) res.toArray(new String[res.size()]);
+	}
+
+	public boolean isImportMatchesType() {
+		return isImportMatchesType;
 	}
 
 }

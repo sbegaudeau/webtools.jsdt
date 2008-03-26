@@ -19,13 +19,14 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.wst.jsdt.core.CompletionProposal;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
-import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.ContextSensitiveImportRewriteContext;
 import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
@@ -115,8 +116,15 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 		
 		/* Add imports if the preference is on. */
 		fImportRewrite= createImportRewrite();
+		String packageName=null;
+		try {
+			IJavaElement javaElement = this.getProposalInfo().getJavaElement();
+			 packageName=JavaModelUtil.getFilePackage(javaElement);
+		} catch (JavaModelException e) {
+			JavaPlugin.log(e);
+		}
 		if (fImportRewrite != null) {
-			return fImportRewrite.addImport(qualifiedTypeName, fImportContext);
+			return fImportRewrite.addImport(qualifiedTypeName,packageName, fImportContext);
 		}
 		
 		// fall back for the case we don't have an import rewrite (see allowAddingImports)
