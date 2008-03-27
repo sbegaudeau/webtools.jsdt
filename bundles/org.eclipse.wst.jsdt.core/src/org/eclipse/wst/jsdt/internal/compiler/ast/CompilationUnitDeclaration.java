@@ -75,6 +75,7 @@ public class CompilationUnitDeclaration
 	public InferredType [] inferredTypes = new InferredType[10];
 	public int numberInferredTypes=0;
 	public HashtableOfObject inferredTypesHash=new HashtableOfObject();
+	public boolean typesHaveBeenInferred=false;
 
 	public boolean ignoreFurtherInvestigation = false;	// once pointless to investigate due to errors
 	public boolean ignoreMethodBodies = false;

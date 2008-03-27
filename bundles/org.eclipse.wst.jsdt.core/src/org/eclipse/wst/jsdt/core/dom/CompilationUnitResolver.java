@@ -347,6 +347,7 @@ class CompilationUnitResolver extends Compiler {
 				org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit sourceUnit = (org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit) compilationUnits[i];
 				CompilationResult compilationResult = new CompilationResult(sourceUnit, 0, 0, compilerOptions.maxProblemsPerUnit);
 				CompilationUnitDeclaration compilationUnitDeclaration = parser.dietParse(sourceUnit, compilationResult);
+				parser.inferTypes(compilationUnitDeclaration, compilerOptions);
 
 				if (compilationUnitDeclaration.ignoreMethodBodies) {
 					compilationUnitDeclaration.ignoreFurtherInvestigation = true;
@@ -397,6 +398,7 @@ class CompilationUnitResolver extends Compiler {
 		CompilationResult compilationResult = new CompilationResult(sourceUnit, 0, 0, compilerOptions.maxProblemsPerUnit);
 		CompilationUnitDeclaration compilationUnitDeclaration = parser.dietParse(sourceUnit, compilationResult);
 
+		parser.inferTypes(compilationUnitDeclaration, compilerOptions);
 		if (compilationUnitDeclaration.ignoreMethodBodies) {
 			compilationUnitDeclaration.ignoreFurtherInvestigation = true;
 			// if initial diet parse did not work, no need to dig into method bodies.

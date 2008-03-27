@@ -10330,6 +10330,8 @@ protected void updateSourcePosition(Expression exp) {
 }
 
 public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions compileOptions) {
+	if (parsedUnit.typesHaveBeenInferred)
+		return;
 	if (compileOptions==null)
 		compileOptions=this.options;
 	
@@ -10344,6 +10346,7 @@ public void inferTypes(CompilationUnitDeclaration parsedUnit, CompilerOptions co
 			engine.doInfer();
 
 	}
+	parsedUnit.typesHaveBeenInferred=true;
 }
 
 
