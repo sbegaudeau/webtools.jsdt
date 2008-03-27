@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *       	 Etienne Pfister <epfister@hsr.ch> bug 224333
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.parser;
 
@@ -4434,6 +4435,7 @@ protected void consumeMethodDeclaration(boolean isNotAbstract) {
 	// store the this.endPosition (position just before the '}') in case there is
 	// a trailing comment behind the end of the method
 	md.bodyEnd = this.endPosition;
+	md.sourceEnd = this.endPosition;
 	md.declarationSourceEnd = flushCommentsDefinedPriorTo(this.endStatementPosition);
 }
 protected void consumeMethodHeader() {
