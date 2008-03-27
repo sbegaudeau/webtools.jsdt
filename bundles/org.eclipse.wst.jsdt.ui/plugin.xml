@@ -2103,17 +2103,6 @@
                id="openTypeInHierarchy">
          </action>
          <action
-               id="openType"
-               toolbarPath="org.eclipse.search.searchActionSet/Search"
-               class="org.eclipse.wst.jsdt.internal.ui.actions.OpenTypeAction"
-               definitionId="org.eclipse.wst.jsdt.ui.navigate.open.type"
-               icon="$nl$/icons/full/etool16/opentype.gif"
-               helpContextId="org.eclipse.wst.jsdt.ui.open_type_action"
-               label="%OpenTypeAction.label"
-               menubarPath="navigate/open.ext2"
-               tooltip="%OpenTypeAction.tooltip">
-         </action>
-         <action
                definitionId="org.eclipse.wst.jsdt.ui.generate.javadoc"
                label="%GenerateJavadocAction.label"
                helpContextId="org.eclipse.wst.jsdt.ui.generate_javadoc_action"
@@ -2124,6 +2113,28 @@
          </action>
       </actionSet>
    </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="%JavaActionSet.label"
+            description="%JavaActionSet.description"
+            visible="true"
+            id="org.eclipse.wst.jsdt.ui.JavaActionSet2">
+         <action
+               id="openType"
+               toolbarPath="org.eclipse.search.searchActionSet/Search"
+               class="org.eclipse.wst.jsdt.internal.ui.actions.OpenTypeAction"
+               definitionId="org.eclipse.wst.jsdt.ui.navigate.open.type"
+               icon="$nl$/icons/full/etool16/opentype.gif"
+               helpContextId="org.eclipse.wst.jsdt.ui.open_type_action"
+               label="%OpenTypeAction.label"
+               menubarPath="navigate/open.ext2"
+               tooltip="%OpenTypeAction.tooltip">
+         </action>
+      </actionSet>
+   </extension>
+   
    
    
 <!-- with an A_                                                                -->

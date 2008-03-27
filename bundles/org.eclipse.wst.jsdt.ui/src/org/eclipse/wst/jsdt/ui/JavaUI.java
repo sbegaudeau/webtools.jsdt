@@ -94,6 +94,8 @@ public final class JavaUI {
 	 */
 	public static final String ID_ACTION_SET= "org.eclipse.wst.jsdt.ui.JavaActionSet"; //$NON-NLS-1$
 
+	public static final String ID_ACTION_SET2= "org.eclipse.wst.jsdt.ui.JavaActionSet2"; //$NON-NLS-1$
+
 	/**
 	 * The id of the Java Element Creation action set
 	 * (value <code>"org.eclipse.wst.jsdt.ui.JavaElementCreationActionSet"</code>).

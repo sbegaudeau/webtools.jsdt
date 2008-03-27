@@ -49,6 +49,7 @@ public class JavaPerspectiveFactory implements IPerspectiveFactory {
 		
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
+		layout.addActionSet(JavaUI.ID_ACTION_SET2);
 //		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		
