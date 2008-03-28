@@ -26,7 +26,6 @@ import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
@@ -34,6 +33,7 @@ import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
+import org.eclipse.wst.jsdt.core.infer.ImportRewriteSupport;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
@@ -61,8 +61,13 @@ public final class ImportRewriteAnalyzer {
 	private static final int F_NEEDS_TRAILING_DELIM= 4;
 
 	private static final String JAVA_LANG= "java.lang"; //$NON-NLS-1$
+	
+	private ImportRewriteSupport importRewriteExtension;
+	
+    private boolean isRewriteExisting=true;
 
-	public ImportRewriteAnalyzer(ICompilationUnit cu, CompilationUnit root, String[] importOrder, int threshold, int staticThreshold, boolean restoreExistingImports) {
+	public ImportRewriteAnalyzer(ICompilationUnit cu, CompilationUnit root, String[] importOrder, int threshold, int staticThreshold, boolean restoreExistingImports,
+			ImportRewriteSupport importRewriteExtension) {
 		this.compilationUnit= cu;
 		this.importOnDemandThreshold= threshold;
 		this.staticImportOnDemandThreshold= staticThreshold;
@@ -74,6 +79,9 @@ public final class ImportRewriteAnalyzer {
 		this.importsCreated= new ArrayList();
 		this.staticImportsCreated= new ArrayList();
 		this.flags= 0;
+		this.importRewriteExtension=importRewriteExtension;
+		if (importRewriteExtension!=null)
+			isRewriteExisting=importRewriteExtension.isRewriteExisting();
 
 		this.replaceRange= evaluateReplaceRange(root);
 		if (restoreExistingImports) {
@@ -382,18 +390,19 @@ public final class ImportRewriteAnalyzer {
 	}
 
 	private static boolean isImplicitImport(String qualifier, ICompilationUnit cu) {
-		if (JAVA_LANG.equals(qualifier)) {
-			return true;
-		}
-		String packageName= cu.getParent().getElementName();
-		if (qualifier.equals(packageName)) {
-			return true;
-		}
-		String mainTypeName= JavaCore.removeJavaLikeExtension(cu.getElementName());
-		if (packageName.length() == 0) {
-			return qualifier.equals(mainTypeName);
-		}
-		return qualifier.equals(packageName +'.' + mainTypeName);
+//		if (JAVA_LANG.equals(qualifier)) {
+//			return true;
+//		}
+//		String packageName= cu.getParent().getElementName();
+//		if (qualifier.equals(packageName)) {
+//			return true;
+//		}
+//		String mainTypeName= JavaCore.removeJavaLikeExtension(cu.getElementName());
+//		if (packageName.length() == 0) {
+//			return qualifier.equals(mainTypeName);
+//		}
+//		return qualifier.equals(packageName +'.' + mainTypeName);
+		return false;
 	}
 
 	public void addImport(String fullTypeName, boolean isStatic) {
@@ -480,7 +489,16 @@ public final class ImportRewriteAnalyzer {
 			}
 			return new Region(startPos, endPos - startPos);
 		} else {
-			int start= getPackageStatementEndPos(root);
+			
+			int start= -1;
+			if (this.importRewriteExtension!=null)
+			{
+				start=this.importRewriteExtension.getImportStartPosition(root);
+			}
+			if (start==-1)
+			  start=getPackageStatementEndPos(root);
+			else
+				this.flags |= F_NEEDS_TRAILING_DELIM;
 			return new Region(start, 0);
 		}
 	}
@@ -703,21 +721,27 @@ public final class ImportRewriteAnalyzer {
 	}
 
 	private String getNewImportString(String importName, boolean isStatic, String lineDelim) {
-		StringBuffer buf= new StringBuffer();
-		buf.append("import "); //$NON-NLS-1$
-		if (isStatic) {
-			buf.append("static "); //$NON-NLS-1$
+		String newImportString=null;
+		if (this.importRewriteExtension!=null)
+			newImportString=this.importRewriteExtension.getImportString(importName, isStatic, lineDelim);
+		
+		if (newImportString==null) {
+			StringBuffer buf = new StringBuffer();
+			buf.append("import "); //$NON-NLS-1$
+			if (isStatic) {
+				buf.append("static "); //$NON-NLS-1$
+			}
+			buf.append(importName);
+			buf.append(';');
+			buf.append(lineDelim);
+			newImportString=buf.toString();
 		}
-		buf.append(importName);
-		buf.append(';');
-		buf.append(lineDelim);
-
 		if (isStatic) {
 			this.staticImportsCreated.add(importName);
 		} else {
 			this.importsCreated.add(importName);
 		}
-		return buf.toString();
+		return newImportString;
 	}
 
 	private static int getFirstTypeBeginPos(CompilationUnit root) {
@@ -887,7 +911,7 @@ public final class ImportRewriteAnalyzer {
 					}
 				}
 			}
-			if (insertPosition == -1) {
+			if (insertPosition == -1 ) {
 				this.importEntries.add(imp);
 			} else {
 				this.importEntries.add(insertPosition, imp);

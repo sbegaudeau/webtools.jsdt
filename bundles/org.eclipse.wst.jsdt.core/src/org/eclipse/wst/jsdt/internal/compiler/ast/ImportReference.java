@@ -56,8 +56,8 @@ public class ImportReference extends ASTNode implements IImportReference {
 		}
 		this.bits |= ASTNode.IsFileImport;
 		this.bits |= ASTNode.OnDemand;
-		this.sourceStart = startPosition;
-		this.sourceEnd = endPosition;
+		this.declarationSourceStart=this.sourceStart = startPosition;
+		this.declarationSourceEnd=this.declarationEnd=this.sourceEnd = endPosition;
 		this.modifiers = ClassFileConstants.AccDefault;
 	}
 
