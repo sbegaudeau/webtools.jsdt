@@ -22,7 +22,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -49,8 +48,8 @@ import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
-import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.wst.jsdt.internal.ui.util.CoreUtility;
@@ -80,7 +79,7 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 	private File fDotProjectBackup;
 	private File fDotClasspathBackup;
 	private Boolean fIsAutobuild;
-
+	private static final String SUPER_TYPE_NAME = "Window"; //$NON-NLS-1$
 	/**
 	 * Constructor for JavaProjectWizardSecondPage.
 	 * @param mainPage the first page of the wizard
@@ -254,9 +253,15 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}
-			
-            init(JavaCore.create(fCurrProject),  entries, false);
-			configureJavaProject(new SubProgressMonitor(monitor, 3)); // create the Java project to allow the use of the new source folder page
+			IJavaProject javaProject = JavaCore.create(fCurrProject);
+            init(javaProject,  entries, false);
+			if(fFirstPage.isWebEnabled()) {
+				LibrarySuperType superType = new LibrarySuperType(new Path( JavaRuntime.BASE_BROWSER_LIB),  getJavaProject(), SUPER_TYPE_NAME);
+				configureJavaProject(new SubProgressMonitor(monitor, 3), superType); // create the Java project to allow the use of the new source folder page
+			}else {
+				configureJavaProject(new SubProgressMonitor(monitor, 3)); // create the Java project to allow the use of the new source folder page
+			}
+		
 		} finally {
 			monitor.done();
 		}
@@ -271,18 +276,35 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 	}
 	
 	private IClasspathEntry[] getDefaultClasspathEntry() {
-		IClasspathEntry[] defaultJRELibrary= PreferenceConstants.getDefaultJRELibrary();
-		String compliance= fFirstPage.getCompilerCompliance();
+		
+		
+		boolean browserlib= fFirstPage.isWebEnabled();
 		IPath jreContainerPath= new Path(JavaRuntime.JRE_CONTAINER);
-		if (compliance == null || defaultJRELibrary.length > 1 || !jreContainerPath.isPrefixOf(defaultJRELibrary[0].getPath())) {
+		IPath BROWSER_LIB = new Path(JavaRuntime.BASE_BROWSER_LIB);
+		 
+		if (fFirstPage.isWebEnabled()) {
 			// use default
-			return defaultJRELibrary;
+			return new IClasspathEntry[] { JavaCore.newContainerEntry(jreContainerPath),
+																	   JavaCore.newContainerEntry(BROWSER_LIB)  };
+		}else {
+			return new IClasspathEntry[] { JavaCore.newContainerEntry(jreContainerPath)};
 		}
-		IPath newPath= fFirstPage.getJREContainerPath();
-		if (newPath != null) {
-			return new IClasspathEntry[] { JavaCore.newContainerEntry(newPath) };
-		}
-		return defaultJRELibrary;
+		
+		
+//		IClasspathEntry[] defaultJRELibrary= PreferenceConstants.getDefaultJRELibrary();
+//		boolean browserlib= fFirstPage.isWebEnabled();
+//		IPath jreContainerPath= new Path(JavaRuntime.JRE_CONTAINER);
+//		IPath BROWSER_LIB = new Path(JavaRuntime.BASE_BROWSER_LIB);
+//		 
+//		if (compliance == null || defaultJRELibrary.length > 1 || !jreContainerPath.isPrefixOf(defaultJRELibrary[0].getPath())) {
+//			// use default
+//			return defaultJRELibrary;
+//		}
+//		IPath newPath= fFirstPage.getJREContainerPath();
+//		if (newPath != null) {
+//			return new IClasspathEntry[] { JavaCore.newContainerEntry(newPath) };
+//		}
+//		return defaultJRELibrary;
 	}
 	
 	private void deleteProjectFile(URI projectLocation) throws CoreException {
@@ -393,16 +415,16 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
 			}
 			configureJavaProject(new SubProgressMonitor(monitor, 2));
 			
-			if (!fKeepContent) {
-				String compliance= fFirstPage.getCompilerCompliance();
-				if (compliance != null) {
-					IJavaProject project= JavaCore.create(fCurrProject);
-					Map options= project.getOptions(false);
-					JavaModelUtil.setCompilanceOptions(options, compliance);
-					JavaModelUtil.setDefaultClassfileOptions(options, compliance); // complete compliance options
-					project.setOptions(options);
-				}
-			}
+//			if (!fKeepContent) {
+//				String compliance= fFirstPage.getCompilerCompliance();
+//				if (compliance != null) {
+//					IJavaProject project= JavaCore.create(fCurrProject);
+//					Map options= project.getOptions(false);
+//					JavaModelUtil.setCompilanceOptions(options, compliance);
+//					JavaModelUtil.setDefaultClassfileOptions(options, compliance); // complete compliance options
+//					project.setOptions(options);
+//				}
+//			}
 		} finally {
 			monitor.done();
 			fCurrProject= null;

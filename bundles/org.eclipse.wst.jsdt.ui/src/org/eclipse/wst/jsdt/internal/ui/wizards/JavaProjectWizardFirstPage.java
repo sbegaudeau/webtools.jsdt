@@ -47,6 +47,7 @@ import org.eclipse.wst.jsdt.internal.ui.preferences.CompliancePreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.NewJavaProjectPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.preferences.PropertyAndPreferencePage;
 import org.eclipse.wst.jsdt.internal.ui.wizards.buildpaths.BuildPathSupport;
+import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
@@ -310,53 +311,56 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		}
 	}
 	
-//	private final class JREGroup implements Observer, SelectionListener, IDialogFieldListener {
-//
-//		private final SelectionButtonDialogField fUseDefaultJRE, fUseProjectJRE;
-//		private final ComboDialogField fJRECombo;
-//		private final Group fGroup;
-//		private String[] fComplianceLabels;
-//		private String[] fComplianceData;
-//		private final Link fPreferenceLink;
-//		private IVMInstall[] fInstalledJVMs;
-//		
-//		public JREGroup(Composite composite) {
-//			fGroup= new Group(composite, SWT.NONE);
-//			fGroup.setFont(composite.getFont());
-//			fGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-//			fGroup.setLayout(initGridLayout(new GridLayout(3, false), true));
-//			fGroup.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_title); 
-//						
-//			fUseDefaultJRE= new SelectionButtonDialogField(SWT.RADIO);
-//			fUseDefaultJRE.setLabelText(getDefaultJVMLabel());
-//			fUseDefaultJRE.doFillIntoGrid(fGroup, 2);
-//			
-//			fPreferenceLink= new Link(fGroup, SWT.NONE);
-//			fPreferenceLink.setFont(fGroup.getFont());
-//			fPreferenceLink.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_link_description);
-//			fPreferenceLink.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
-//			fPreferenceLink.addSelectionListener(this);
-//		
-//			fUseProjectJRE= new SelectionButtonDialogField(SWT.RADIO);
-//			fUseProjectJRE.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_specific_compliance);
-//			fUseProjectJRE.doFillIntoGrid(fGroup, 1);
-//			fUseProjectJRE.setDialogFieldListener(this);
-//						
-//			fJRECombo= new ComboDialogField(SWT.READ_ONLY);
-//			fillInstalledJREs(fJRECombo);
-//			fJRECombo.setDialogFieldListener(this);
-//
-//			Combo comboControl= fJRECombo.getComboControl(fGroup);
-//			comboControl.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, true, false)); // make sure column 2 is grabing (but no fill)
-//			comboControl.setVisibleItemCount(20);
-//			
-//			DialogField.createEmptySpace(fGroup);
-//			
-//			fUseDefaultJRE.setSelection(true);
-//			fJRECombo.setEnabled(fUseProjectJRE.isSelected());
-//		}
-//
-//		private void fillInstalledJREs(ComboDialogField comboField) {
+	private final class JREGroup implements Observer, SelectionListener, IDialogFieldListener {
+
+		private final SelectionButtonDialogField fEnableWebSupport;//, fUseProjectJRE;
+		//private final ComboDialogField fJRECombo;
+		private final Group fGroup;
+		private String[] fComplianceLabels;
+		private String[] fComplianceData;
+		//private final Link fPreferenceLink;
+		
+		
+		public JREGroup(Composite composite) {
+			fGroup= new Group(composite, SWT.NONE);
+			fGroup.setFont(composite.getFont());
+			fGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+			fGroup.setLayout(initGridLayout(new GridLayout(3, false), true));
+			fGroup.setText("Web Support"); 
+						
+			fEnableWebSupport= new SelectionButtonDialogField(SWT.CHECK);
+			fEnableWebSupport.setLabelText("Enable Web Support ");
+			fEnableWebSupport.doFillIntoGrid(fGroup, 2);
+			
+			//fPreferenceLink= new Link(fGroup, SWT.NONE);
+			//fPreferenceLink.setFont(fGroup.getFont());
+			//fPreferenceLink.setText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_link_description);
+			//fPreferenceLink.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
+		//	fPreferenceLink.addSelectionListener(this);
+		
+		//	fUseProjectJRE= new SelectionButtonDialogField(SWT.RADIO);
+		//	fUseProjectJRE.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_specific_compliance);
+		//	fUseProjectJRE.doFillIntoGrid(fGroup, 1);
+		//	fUseProjectJRE.setDialogFieldListener(this);
+						
+			//fJRECombo= new ComboDialogField(SWT.READ_ONLY);
+			//fillInstalledJREs(fJRECombo);
+			//fJRECombo.setDialogFieldListener(this);
+
+		//	Combo comboControl= fJRECombo.getComboControl(fGroup);
+			//comboControl.setLayoutData(new GridData(GridData.BEGINNING, GridData.CENTER, true, false)); // make sure column 2 is grabing (but no fill)
+			//comboControl.setVisibleItemCount(20);
+			
+			//DialogField.createEmptySpace(fGroup);
+			
+			fEnableWebSupport.setSelection(false);
+		//	fJRECombo.setEnabled(fUseProjectJRE.isSelected());
+		}
+
+		public boolean shouldEnableWebSupport() {
+			return fEnableWebSupport.isSelected();
+		}
+		private void fillInstalledJREs(ComboDialogField comboField) {
 //			String selectedItem= null;
 //			int selectionIndex= -1;
 //			if (fUseProjectJRE.isSelected()) {
@@ -405,82 +409,69 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 //			} else {
 //				fJRECombo.selectItem(selectedItem);
 //			}
-//		}
-//		
-//		private IVMInstall[] getWorkspaceJREs() {
-//			List standins = new ArrayList();
-//			IVMInstallType[] types = JavaRuntime.getVMInstallTypes();
-//			for (int i = 0; i < types.length; i++) {
-//				IVMInstallType type = types[i];
-//				IVMInstall[] installs = type.getVMInstalls();
-//				for (int j = 0; j < installs.length; j++) {
-//					IVMInstall install = installs[j];
-//					standins.add(new VMStandin(install));
-//				}
-//			}
-//			return ((IVMInstall[])standins.toArray(new IVMInstall[standins.size()]));	
-//		}
-//
-//		private String getDefaultJVMName() {
-//			return JavaRuntime.getDefaultVMInstall().getName();
-//		}
-//
-//		private String getDefaultJVMLabel() {
-//			return Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_default_compliance, getDefaultJVMName());
-//		}
-//
-//		public void update(Observable o, Object arg) {
-//			updateEnableState();
-//		}
-//
-//		private void updateEnableState() {
+		}
+		
+
+		private String getDefaultJVMName() {
+			return JavaRuntime.getDefaultVMInstall().getName();
+		}
+
+		private String getDefaultJVMLabel() {
+			return Messages.format(NewWizardMessages.JavaProjectWizardFirstPage_JREGroup_default_compliance, getDefaultJVMName());
+		}
+
+		public void update(Observable o, Object arg) {
+			updateEnableState();
+		}
+
+		private void updateEnableState() {
 //			final boolean detect= fDetectGroup.mustDetect();
 //			fUseDefaultJRE.setEnabled(!detect);
 //			fUseProjectJRE.setEnabled(!detect);
 //			fJRECombo.setEnabled(!detect && fUseProjectJRE.isSelected());
-//			fPreferenceLink.setEnabled(!detect);
+//			//fPreferenceLink.setEnabled(!detect);
 //			fGroup.setEnabled(!detect);
-//		}
-//		
-//		/* (non-Javadoc)
-//		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-//		 */
-//		public void widgetSelected(SelectionEvent e) {
-//			widgetDefaultSelected(e);
-//		}
-//
-//		/* (non-Javadoc)
-//		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-//		 */
-//		public void widgetDefaultSelected(SelectionEvent e) {
-//			String jreID= BuildPathSupport.JRE_PREF_PAGE_ID;
-//			String complianceId= CompliancePreferencePage.PREF_ID;
-//			Map data= new HashMap();
-//			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
-//			PreferencesUtil.createPreferenceDialogOn(getShell(), jreID, new String[] { jreID, complianceId  }, data).open();
-//			
-//			handlePossibleJVMChange();
-//			fDetectGroup.handlePossibleJVMChange();
-//		}
-//		
-//		public void handlePossibleJVMChange() {
-//			fUseDefaultJRE.setLabelText(getDefaultJVMLabel());
-//			fillInstalledJREs(fJRECombo);
-//		}
-//		
-//
-//		/* (non-Javadoc)
-//		 * @see org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField)
-//		 */
-//		public void dialogFieldChanged(DialogField field) {
-//			updateEnableState();
-//			fDetectGroup.handlePossibleJVMChange();
-//		}
-//		
-//		public boolean isUseSpecific() {
-//			return fUseProjectJRE.isSelected();
-//		}
-//		
+		}
+		
+		/* (non-Javadoc)
+		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
+		public void widgetSelected(SelectionEvent e) {
+			widgetDefaultSelected(e);
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
+		public void widgetDefaultSelected(SelectionEvent e) {
+			String jreID= BuildPathSupport.JRE_PREF_PAGE_ID;
+			String complianceId= CompliancePreferencePage.PREF_ID;
+			Map data= new HashMap();
+			data.put(PropertyAndPreferencePage.DATA_NO_LINK, Boolean.TRUE);
+			PreferencesUtil.createPreferenceDialogOn(getShell(), jreID, new String[] { jreID, complianceId  }, data).open();
+			
+			handlePossibleJVMChange();
+			//fDetectGroup.handlePossibleJVMChange();
+		}
+		
+		public void handlePossibleJVMChange() {
+			fEnableWebSupport.setLabelText(getDefaultJVMLabel());
+			//fillInstalledJREs(fJRECombo);
+		}
+		
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.IDialogFieldListener#dialogFieldChanged(org.eclipse.wst.jsdt.internal.ui.wizards.dialogfields.DialogField)
+		 */
+		public void dialogFieldChanged(DialogField field) {
+			updateEnableState();
+			//fDetectGroup.handlePossibleJVMChange();
+		}
+		
+		public boolean isUseSpecific() {
+		return false;//	return fUseProjectJRE.isSelected();
+		}
+		
 //		public IVMInstall getSelectedJVM() {
 //			if (fUseProjectJRE.isSelected()) {
 //				int index= fJRECombo.getSelectionIndex();
@@ -490,19 +481,19 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 //			}
 //			return null;
 //		}
-//		
-//		public String getSelectedCompilerCompliance() {
+		
+		public String getSelectedCompilerCompliance() {
 //			if (fUseProjectJRE.isSelected()) {
 //				int index= fJRECombo.getSelectionIndex();
 //				if (index >= 0 && index < fComplianceData.length) { // paranoia
 //					return fComplianceData[index];
 //				}
 //			}
-//			return null;
-//		}
-//	}
-//
-//	
+			return null;
+		}
+	}
+
+	
 	private final class WorkingSetGroup {
 		
 		private WorkingSetConfigurationBlock fWorkingSetBlock;
@@ -759,7 +750,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	private NameGroup fNameGroup;
 	private LocationGroup fLocationGroup;
 	private LayoutGroup fLayoutGroup;
-	//private JREGroup fJREGroup;
+	private JREGroup fJREGroup;
 	private DetectGroup fDetectGroup;
 	private Validator fValidator;
 
@@ -803,7 +794,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		// create UI elements
 		fNameGroup= new NameGroup(composite, fInitialName);
 		fLocationGroup= new LocationGroup(composite);
-		//fJREGroup= new JREGroup(composite);
+		fJREGroup= new JREGroup(composite);
 		fLayoutGroup= new LayoutGroup(composite);
 		fWorkingSetGroup= new WorkingSetGroup(composite, fInitWorkingSets);
 		fDetectGroup= new DetectGroup(composite);
@@ -811,7 +802,7 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 		// establish connections
 		fNameGroup.addObserver(fLocationGroup);
 		fDetectGroup.addObserver(fLayoutGroup);
-		//fDetectGroup.addObserver(fJREGroup);
+		fDetectGroup.addObserver(fJREGroup);
 		fLocationGroup.addObserver(fDetectGroup);
 
 		// initialize all elements
@@ -890,8 +881,9 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 	/**
 	 * @return the selected Compiler Compliance, or <code>null</code> iff the default Compiler Compliance should be used
 	 */
-	public String getCompilerCompliance() {
-		return null; //fJREGroup.getSelectedCompilerCompliance();
+	public boolean isWebEnabled() {
+		return fJREGroup.shouldEnableWebSupport();
+		//return null; //fJREGroup.getSelectedCompilerCompliance();
 	}
 	
 	/*

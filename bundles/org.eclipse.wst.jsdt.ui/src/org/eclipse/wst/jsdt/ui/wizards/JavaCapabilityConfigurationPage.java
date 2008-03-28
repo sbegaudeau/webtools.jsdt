@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.LibrarySuperType;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.wst.jsdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.wst.jsdt.internal.ui.wizards.IStatusChangeListener;
@@ -74,7 +75,7 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
         setDescription(NewWizardMessages.JavaCapabilityConfigurationPage_description); 
 	}
     
-    private BuildPathsBlock getBuildPathsBlock() {
+    protected BuildPathsBlock getBuildPathsBlock() {
         if (fBuildPathsBlock == null) {
             IStatusChangeListener listener= new IStatusChangeListener() {
                 public void statusChanged(IStatus status) {
@@ -239,7 +240,32 @@ public class JavaCapabilityConfigurationPage extends NewElementWizardPage {
 	public static void createProject(IProject project, URI locationURI, IProgressMonitor monitor) throws CoreException {
 		BuildPathsBlock.createProject(project, locationURI, monitor);
 	}
-	
+	/**
+	 * Adds the Java nature to the project (if not set yet) and configures the build classpath.
+	 * 
+	 * @param monitor a progress monitor to report progress or <code>null</code> if
+	 * progress reporting is not desired
+	 * @throws CoreException Thrown when the configuring the Java project failed.
+	 * @throws InterruptedException Thrown when the operation has been canceled.
+	 */
+	public void configureJavaProject(IProgressMonitor monitor, LibrarySuperType superType) throws CoreException, InterruptedException {
+		if (monitor == null) {
+			monitor= new NullProgressMonitor();
+		}
+		
+		int nSteps= 6;			
+		monitor.beginTask(NewWizardMessages.JavaCapabilityConfigurationPage_op_desc_java, nSteps); 
+		
+		try {
+			IProject project= getJavaProject().getProject();
+			BuildPathsBlock.addJavaNature(project, new SubProgressMonitor(monitor, 1));
+			getBuildPathsBlock().configureJavaProject(new SubProgressMonitor(monitor, 5), superType);
+		} catch (OperationCanceledException e) {
+			throw new InterruptedException();
+		} finally {
+			monitor.done();
+		}			
+	}
 	/**
 	 * Adds the Java nature to the project (if not set yet) and configures the build classpath.
 	 * 

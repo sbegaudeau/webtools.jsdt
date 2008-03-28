@@ -867,11 +867,14 @@ public class BuildPathsBlock {
 			}
 		}
 	}
-	
 	public void configureJavaProject(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
+		configureJavaProject(monitor, getSuperType());
+	}
+	
+	public void configureJavaProject(IProgressMonitor monitor, LibrarySuperType superType) throws CoreException, OperationCanceledException {
 		aboutToDispose();
 		//flush(fClassPathList.getElements(), getOutputLocation(), getJavaProject(), monitor);
-		flush(fClassPathList.getElements(),  getJavaProject(), getSuperType(), monitor);
+		flush(fClassPathList.getElements(),  getJavaProject(), superType, monitor);
 		initializeTimeStamps();
 		
 		updateUI();
