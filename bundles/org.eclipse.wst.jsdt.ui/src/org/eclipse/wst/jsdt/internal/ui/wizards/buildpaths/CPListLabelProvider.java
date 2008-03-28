@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.util.JSDScopeUiUtil;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.ImageDescriptorRegistry;
 import org.eclipse.wst.jsdt.internal.ui.viewsupport.JavaElementImageProvider;
 import org.eclipse.wst.jsdt.internal.ui.wizards.NewWizardMessages;
@@ -322,11 +323,12 @@ public class CPListLabelProvider extends LabelProvider {
 	
 	private ImageDescriptor getCPListElementBaseImage(CPListElement cpentry) {
 		
-		JsGlobalScopeContainerInitializer init = cpentry.getContainerInitializer();
 		
-		if(init!=null && init instanceof IJsGlobalScopeContainerInitializerExtension) {
+		
+		IJsGlobalScopeContainerInitializerExtension init = JSDScopeUiUtil.getContainerUiInitializer(cpentry.getPath());
+		if(init!=null ) {
 			IPath entPath = cpentry.getPath();
-			ImageDescriptor image = ((IJsGlobalScopeContainerInitializerExtension)init).getImage(init.getPath(), entPath.toString(), cpentry.getJavaProject());
+			ImageDescriptor image = init.getImage(entPath, cpentry.toString(), cpentry.getJavaProject());
 			if(image!=null) return image;
 		}
 		

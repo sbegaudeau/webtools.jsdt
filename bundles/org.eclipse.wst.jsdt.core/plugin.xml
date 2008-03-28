@@ -221,5 +221,19 @@
       point="org.eclipse.core.runtime.preferences">
    <modifier class="org.eclipse.wst.jsdt.internal.core.JavaCorePreferenceModifyListener"/>
 </extension>
+   <extension
+         point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+      <JsGlobalScopeContainerInitializer
+            class="org.eclipse.wst.jsdt.launching.JREContainerInitializer"
+            id="org.eclipse.wst.jsdt.launching.JRE_CONTAINER">
+      </JsGlobalScopeContainerInitializer>
+   </extension>   
 
+    <extension
+      point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
+      <JsGlobalScopeContainerInitializer
+            class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryJsGlobalScopeContainerInitializer"
+            id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
+      </JsGlobalScopeContainerInitializer>
+   </extension>
 </plugin>

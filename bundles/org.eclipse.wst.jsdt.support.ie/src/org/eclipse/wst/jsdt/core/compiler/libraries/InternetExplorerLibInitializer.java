@@ -3,17 +3,17 @@ package org.eclipse.wst.jsdt.core.compiler.libraries;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 
 
-public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitializerExtension {
-	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.InternetExplorer";
-	private static final String ContainerDescription = "Internet Explorer Support Library";
+public class InternetExplorerLibInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitializer {
+	protected static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.InternetExplorer";
+	protected static final String ContainerDescription = "Internet Explorer Support Library";
 	//private static final char[][] LIBRARY_FILE_NAMES = { { 'I','n','t','e','r','n','e','t','E','x','p','l','o','r','e','r','.','j','s' } };
-	private static final String PLUGIN_ID = "org.eclipse.wst.jsdt.support.ie";
+	protected static final String PLUGIN_ID = "org.eclipse.wst.jsdt.support.ie";
 
 
 	class IeLibLocation extends SystemLibraryLocation {

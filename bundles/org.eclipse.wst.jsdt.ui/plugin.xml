@@ -14,6 +14,7 @@
    <extension-point id="javaCompletionProposalSorters" name="%javaCompletionProposalSorters" schema="schema/javaCompletionProposalSorters.exsd"/>
    <extension-point id="classpathAttributeConfiguration" name="%classpathAttributeConfiguration" schema="schema/classpathAttributeConfiguration.exsd"/>
    <extension-point id="documentationProvider" name="%documentationProvider" schema="schema/DocumentationProvider.exsd"/>
+   <extension-point id="JsGlobalScopeUIInitializer" name="%extension-point.name.1" schema="schema/JsGlobalScopeUIInitializer.exsd"/>
 
 <extension
 	point="org.eclipse.ui.decorators">
@@ -6206,27 +6207,14 @@
    From Launching
    -->
    
-   <extension
-         point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
-      <JsGlobalScopeContainerInitializer
-            class="org.eclipse.wst.jsdt.launching.JREContainerInitializer"
-            id="org.eclipse.wst.jsdt.launching.JRE_CONTAINER">
-      </JsGlobalScopeContainerInitializer>
-   </extension>   
-      <extension point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
+   <extension point="org.eclipse.wst.jsdt.ui.JsGlobalScopeContainerPage">
   	  <JsGlobalScopeContainerPage
             name="%BaseWebBrowserLibrary"
             class="org.eclipse.wst.jsdt.ui.wizards.BaseLibraryWizardPage"
             id="org.eclipse.wst.jsdt.BASE">
       </JsGlobalScopeContainerPage>
    </extension>
-    <extension
-      point="org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer">
-      <JsGlobalScopeContainerInitializer
-            class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryJsGlobalScopeContainerInitializer"
-            id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary">
-      </JsGlobalScopeContainerInitializer>
-   </extension>
+
    
    <!--  JSDT context menu contributions for the JavaScript Support object  -->
    
@@ -6286,6 +6274,16 @@
             id="org.eclipse.wst.jsdt.internal.ui.configure.javascript.properties">
       	</action>      	
    		</objectContribution>
+   </extension>
+   
+   
+   
+   
+   <extension point="org.eclipse.wst.jsdt.ui.JsGlobalScopeUIInitializer">
+     <JsGlobalScopeUIInitializer
+     	id="org.eclipse.wst.jsdt.launching.baseBrowserLibrary"
+     	class="org.eclipse.wst.jsdt.libraries.BasicBrowserLibraryJsGlobalScopeContainerInitializer">
+     </JsGlobalScopeUIInitializer>
    </extension>
    
    

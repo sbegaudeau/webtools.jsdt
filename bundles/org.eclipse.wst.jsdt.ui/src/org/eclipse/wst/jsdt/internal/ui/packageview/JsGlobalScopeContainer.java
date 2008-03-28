@@ -28,13 +28,14 @@ import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JSDScopeUtil;
+
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
 import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 import org.eclipse.wst.jsdt.internal.ui.JavaPluginImages;
+import org.eclipse.wst.jsdt.internal.ui.util.JSDScopeUiUtil;
 
 /**
  * Representation of class path containers in Java UI.
@@ -142,10 +143,10 @@ public class JsGlobalScopeContainer extends PackageFragmentRootContainer {
 	}
 
 	public ImageDescriptor getImageDescriptor() {
-		JsGlobalScopeContainerInitializer init = JSDScopeUtil.getContainerInitializer(fClassPathEntry.getPath());
-		if(init!=null && init instanceof IJsGlobalScopeContainerInitializerExtension) {
+		IJsGlobalScopeContainerInitializerExtension init = JSDScopeUiUtil.getContainerUiInitializer(fClassPathEntry.getPath());
+		if(init!=null ) {
 			IPath entPath = fClassPathEntry.getPath();
-			ImageDescriptor image = ((IJsGlobalScopeContainerInitializerExtension)init).getImage(entPath, fClassPathEntry.toString(), super.getJavaProject());
+			ImageDescriptor image = init.getImage(entPath, fClassPathEntry.toString(), super.getJavaProject());
 			if(image!=null) return image;
 		}
 		return JavaPluginImages.DESC_OBJS_LIBRARY;

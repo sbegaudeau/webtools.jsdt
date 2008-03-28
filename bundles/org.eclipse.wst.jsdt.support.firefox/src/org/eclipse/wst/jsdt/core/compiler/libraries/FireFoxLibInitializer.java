@@ -2,18 +2,17 @@ package org.eclipse.wst.jsdt.core.compiler.libraries;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainerInitializer;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 
 
-public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitializerExtension {
-	private static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.FireFoxBrowserLibrary";
-	private static final String ContainerDescription = "FireFox Browser Support Library";
-	private static final char[][] LIBRARY_FILE_NAMES = {{'F', 'i', 'r', 'e', 'F', 'o', 'x', '2', '.', '0', '.', '0', '.', '3', '.', 'j', 's'}};
-	private static final String PLUGIN_ID = "org.eclipse.wst.jsdt.support.firefox";
+public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer implements IJsGlobalScopeContainerInitializer {
+	protected static final String CONTAINER_ID = "org.eclipse.wst.jsdt.launching.FireFoxBrowserLibrary";
+	protected static final String ContainerDescription = "FireFox Browser Support Library";
+	protected static final char[][] LIBRARY_FILE_NAMES = {{'F', 'i', 'r', 'e', 'F', 'o', 'x', '2', '.', '0', '.', '0', '.', '3', '.', 'j', 's'}};
+	protected static final String PLUGIN_ID = "org.eclipse.wst.jsdt.support.firefox";
 
 
 	class FireFoxLibLocation extends SystemLibraryLocation {
@@ -45,23 +44,7 @@ public class FireFoxLibInitializer extends JsGlobalScopeContainerInitializer imp
 		return FireFoxLibInitializer.ContainerDescription;
 	}
 
-	public ImageDescriptor getImage(IPath containerPath, String element, IJavaProject project) {
-
-		if (containerPath == null) {
-			return null;
-		}
-		/* Dont use the rino image for the individual files */
-		String requestedContainerPath = new Path(element).lastSegment();
-		if ((element != null) && requestedContainerPath.equals(new String(LIBRARY_FILE_NAMES[0]))) {
-			return null;
-		}
-
-		return ImageDescriptor.createFromFile(this.getClass(), "FireFoxSmall.gif");
-		// System.out.println("Unimplemented
-		// method:BasicBrowserLibraryJsGlobalScopeContainerInitializer.getImage");
-		// return null;
-	}
-
+	
 	public IPath getPath() {
 		return new Path(FireFoxLibInitializer.CONTAINER_ID);
 	}
