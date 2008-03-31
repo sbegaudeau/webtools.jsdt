@@ -19,6 +19,7 @@ import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.JSDScopeUtil;
 
 import org.eclipse.wst.jsdt.internal.ui.IJsGlobalScopeContainerInitializerExtension;
+import org.eclipse.wst.jsdt.internal.ui.JavaPlugin;
 
 
 
@@ -60,7 +61,7 @@ public class JSDScopeUiUtil {
 		    }
 		    
 		}catch(Exception e) {
-			System.out.println(e);
+			JavaPlugin.log( e);
 		}
 		return null;
 		//IJsGlobalScopeContainerInitializer init = JSDScopeUtil.getContainerInitializer(compUnitPath);
