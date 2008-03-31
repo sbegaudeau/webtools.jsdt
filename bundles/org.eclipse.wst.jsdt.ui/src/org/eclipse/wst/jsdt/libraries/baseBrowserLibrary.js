@@ -181,24 +181,24 @@ DOMException.INVALID_ACCESS_ERR=15;
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-DOMException.prototype.code=new Number();
+DOMException.prototype.code=0;
 
 
 /**
   * Object DOMImplementation()
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class DOMImplementation
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-function DOMImplementation();
+function DOMImplementation(){};
 DOMImplementation.prototype = new Object();
 
 /**
   * function hasFeature()
-  * @type  method
+  * @type  boolean
   * @class DOMImplementation
   * @param feature String
   * @param version String
@@ -209,11 +209,11 @@ DOMImplementation.prototype = new Object();
 
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-DOMImplementation.prototype.hasFeature = new function(feature, version);
+DOMImplementation.prototype.hasFeature = function(feature, version){};
 
 /**
   * function createDocumentType()
-  * @type  method
+  * @type  Document
   * @class DOMImplementation
   * @param namespaceURI String
   * @param qualifiedName String
@@ -229,7 +229,7 @@ DOMImplementation.prototype.hasFeature = new function(feature, version);
 DOMImplementation.prototype.createDocument = function(namespaceURI, qualifiedName, doctype){};
 /**
   * function createDocumentType()
-  * @type  method
+  * @type  DocumentType
   * @class DOMImplementation
 
   * @param qualifiedName String
@@ -248,7 +248,7 @@ DOMImplementation.prototype.createDocumentType = function(qualifiedName, publicI
 /**
   * Object Node()
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class Node
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -399,7 +399,7 @@ Node.NOTATION_NODE=12;
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.nodeName = new String(); 
+Node.prototype.nodeName = ""; 
 /**
   * Property nodeName
   * @type String
@@ -411,7 +411,7 @@ Node.prototype.nodeName = new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.nodeValue = new String(); 
+Node.prototype.nodeValue = ""; 
 /**
   * Property nodeType
   * @type Number
@@ -423,7 +423,7 @@ Node.prototype.nodeValue = new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Node.prototype.nodeType = new Number(); 
+Node.prototype.nodeType = 0; 
 /**
   * Property parentNode 
   * @type Node
@@ -530,7 +530,7 @@ Node.prototype.ownerDocument = new Document();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.namespaceURI=new String(); 
+Node.prototype.namespaceURI=""; 
 /**
   * Property prefix   
   * @type String
@@ -542,7 +542,7 @@ Node.prototype.namespaceURI=new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.prefix = new String(); 
+Node.prototype.prefix = ""; 
 /**
   * Property localName   
   * @type String
@@ -553,10 +553,10 @@ Node.prototype.prefix = new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Node.prototype.localName= new String();
+Node.prototype.localName= "";
 /**
   * function insertBefore(newChild, refChild)   
-  * @type Method
+  * @type Node
   * @class Node
   * @param newChilds Node
   * @param refChild Node
@@ -568,10 +568,10 @@ Node.prototype.localName= new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Node.prototype.insertBefore = new function(newChild, refChild){}; 
+Node.prototype.insertBefore = function(newChild, refChild){}; 
 /**
   * function replaceChild(newChild, oldChild) 
-  * @type Method
+  * @type Node
   * @class Node
   * @param newChilds Node
   * @param oldChild Node
@@ -586,7 +586,7 @@ Node.prototype.insertBefore = new function(newChild, refChild){};
 Node.prototype.replaceChild = function(newChild, oldChild){}; 
  /**
   * function removeChild(oldChild) 
-  * @type Method
+  * @type Node
   * @class Node
   * @param oldChild Node
   * @return Node
@@ -600,7 +600,7 @@ Node.prototype.replaceChild = function(newChild, oldChild){};
 Node.prototype.removeChild = function(oldChild){}; 
  /**
   * function appendChild(newChild) 
-  * @type Method
+  * @type Node
   * @class Node
   * @param newChild Node
   * @return Node
@@ -614,7 +614,7 @@ Node.prototype.removeChild = function(oldChild){};
 Node.prototype.appendChild = function(newChild){}; 
  /**
   * function hasChildNodes() 
-  * @type Method
+  * @type Boolean
   * @class Node
   * @return Boolean
   * @see Node
@@ -626,7 +626,7 @@ Node.prototype.appendChild = function(newChild){};
 Node.prototype.hasChildNodes=function(){}; 
  /**
   * function hasChildNodes() 
-  * @type Method
+  * @type Node
   * @class Node
   * @param deep Boolean
   * @return Node
@@ -639,7 +639,6 @@ Node.prototype.hasChildNodes=function(){};
 Node.prototype.cloneNode=function(deep){}; 
  /**
   * function normalize() 
-  * @type Method
   * @class Node
   * @see Node
   * @since Standard ECMA-262 3rd. Edition 
@@ -650,7 +649,7 @@ Node.prototype.cloneNode=function(deep){};
 Node.prototype.normalize = function(){}; 
  /**
   * function isSupported(feature, version)  
-  * @type Method
+  * @type Boolean
   * @class Node
   * @param feature String
   * @param version String
@@ -664,7 +663,7 @@ Node.prototype.normalize = function(){};
 Node.prototype.isSupported=function(feature, version){}; 
  /**
   * function hasAttributes()   
-  * @type Method
+  * @type Boolean
   * @class Node
   * @return Boolean;
   * @see Node
@@ -676,7 +675,7 @@ Node.prototype.isSupported=function(feature, version){};
 Node.prototype.hasAttributes=function(){};
  /**
   * Object NodeList   
-  * @type constructor
+  * @constructor
   * @class NodeList
   * @see NodeList
   * @since Standard ECMA-262 3rd. Edition 
@@ -697,11 +696,11 @@ NodeList.prototype = new Object();
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
 
-NodeList.prototype.length=new Number(); 
+NodeList.prototype.length=0; 
  /**
   * function item(index) 
   *     Note: This object can also be dereferenced using square bracket notation (e.g. obj[1]). Dereferencing with an integer index is equivalent to invoking the item method with that index 
-  * @type Method
+  * @type Node
   * @class NodeList
   * @param index Number
   * @return Node;
@@ -717,7 +716,7 @@ NodeList.prototype.item = function(index){};
   * Object DocumentFragment()
   * DocumentFragment inherits all of the methods and properties from Document and Node.
   * @super Document
-  * @type  constructor
+  * @constructor
   * @see Document
   * @class  DocumentFragment
   * @since Standard ECMA-262 3rd. Edition
@@ -730,7 +729,7 @@ DocumentFragment.prototype=new Document();
   * Object Document()
   * Document inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
   * @see Node
   * @class  Document
   * @since Standard ECMA-262 3rd. Edition
@@ -774,7 +773,7 @@ Document.prototype.implementation = new DOMImplementation();
 Document.prototype.documentElement= new Element(); 
  /**
   * function createElement(tagName)  
-  * @type Method
+  * @type Element
   * @class Document
   * @param tagName String
   * @return Element;
@@ -790,7 +789,7 @@ Document.prototype.documentElement= new Element();
 Document.prototype.createElement=function(tagName){}; 
  /**
   * function createDocumentFragment()  
-  * @type Method
+  * @type DocumentFragment
   * @class Document
   * @return DocumentFragment;
   * @see Document
@@ -803,7 +802,7 @@ Document.prototype.createElement=function(tagName){};
 Document.prototype.createDocumentFragment=function(){}; 
  /**
   * function createTextNode(data)  
-  * @type Method
+  * @type Text
   * @class Document
   * @param data String
   * @return Text;
@@ -817,7 +816,7 @@ Document.prototype.createDocumentFragment=function(){};
 Document.prototype.createTextNode=function(data){}; 
  /**
   * function createComment(data)  
-  * @type Method
+  * @type Comment
   * @class Document
   * @param data String
   * @return Comment;
@@ -831,7 +830,7 @@ Document.prototype.createTextNode=function(data){};
 Document.prototype.createComment=function(data){}; 
  /**
   * function createCDATASection(data)  
-  * @type Method
+  * @type CDATASection
   * @class Document
   * @param data String
   * @return CDATASection
@@ -846,7 +845,7 @@ Document.prototype.createComment=function(data){};
 Document.prototype.createCDATASection(data) 
  /**
   * function createProcessingInstruction(target, data) 
-  * @type Method
+  * @type ProcessingInstruction
   * @class Document
   * @param target String
   * @param data String;
@@ -862,7 +861,7 @@ Document.prototype.createCDATASection(data)
 Document.prototype.createProcessingInstruction=function(target, data){}; 
  /**
   * function createAttribute(name)  
-  * @type Method
+  * @type Attr
   * @class Document
   * @param name String
   * @return  Attr
@@ -877,7 +876,7 @@ Document.prototype.createProcessingInstruction=function(target, data){};
 Document.prototype.createAttribute=function(name){}; 
  /**
   * function createEntityReference(name)  
-  * @type Method
+  * @type DOMException
   * @class Document
   * @param name String
   * @return  EntityReference
@@ -892,7 +891,7 @@ Document.prototype.createAttribute=function(name){};
 Document.prototype.createEntityReference=function(name){}; 
  /**
   * function getElementsByTagName(tagname)  
-  * @type Method
+  * @type NodeList
   * @class Document
   * @param tagname String
   * @return  NodeList
@@ -906,7 +905,7 @@ Document.prototype.createEntityReference=function(name){};
 Document.prototype.getElementsByTagName=function(tagname){}; 
  /**
   * function importNode(importedNode, deep)  
-  * @type Method
+  * @type Node
   * @class Document
   * @param importedNode Node
   * @param deep Boolean
@@ -922,7 +921,7 @@ Document.prototype.getElementsByTagName=function(tagname){};
 Document.prototype.importNode=function(importedNode, deep){}; 
  /**
   * function createElementNS(namespaceURI, qualifiedName) 
-  * @type Method
+  * @type Element
   * @class Document
   * @param namespaceURI String
   * @param qualifiedName String
@@ -938,7 +937,7 @@ Document.prototype.importNode=function(importedNode, deep){};
 Document.prototype.createElementNS=function(namespaceURI, qualifiedName){}; 
  /**
   * function createAttributeNS(namespaceURI, qualifiedName)
-  * @type Method
+  * @type Attr
   * @class Document
   * @param namespaceURI String
   * @param qualifiedName String
@@ -954,7 +953,7 @@ Document.prototype.createElementNS=function(namespaceURI, qualifiedName){};
 Document.prototype.createAttributeNS=function(namespaceURI, qualifiedName){}; 
 /**
   * function getElementsByTagNameNS(namespaceURI, localName)
-  * @type Method
+  * @type NodeList
   * @class Document
   * @param namespaceURI String
   * @param qualifiedName String
@@ -969,7 +968,7 @@ Document.prototype.createAttributeNS=function(namespaceURI, qualifiedName){};
 Document.prototype.getElementsByTagNameNS=function(namespaceURI, localName){}; 
 /**
   * function getElementById(elementId)
-  * @type Method
+  * @type Element
   * @class Document
   * @param elementId String
   * @return  Element
@@ -982,9 +981,51 @@ Document.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
  */ 
 Document.prototype.getElementById=function(elementId){}; 
 /**
+  * function write(text)
+  * @class Document
+  * @param text String
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.write=function(text){}; 
+/**
+  * function writeln(text)
+  * @class Document
+  * @param text String
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.writeln=function(text){}; 
+/**
+  * function close()
+  * @class Document
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.close=function(){}; 
+/**
+  * function open()
+  * @class Document
+  * @see Document
+  * @since Standard ECMA-262 3rd. Edition 
+  * @since Level 1 Document Object Model Core Definition.
+ 
+  * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
+ */ 
+Document.prototype.open=function(){}; 
+/**
   * Object NamedNodeMap()
   * @super Object
-  * @type  constructor
+  * @constructor
   * @class NamedNodeMap
   * @since Standard ECMA-262 3rd. Edition
   * @since Level 2 Document Object Model Core Definition.
@@ -1002,10 +1043,10 @@ NamedNodeMap.prototype = new Object();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-NamedNodeMap.prototype.length=new Number(); 
+NamedNodeMap.prototype.length=0; 
 /**
   * function getNamedItem(name) 
-  * @type Method
+  * @type Node
   * @class NamedNodeMap
   * @param Name String
   * @return  Node
@@ -1019,7 +1060,7 @@ NamedNodeMap.prototype.length=new Number();
 NamedNodeMap.prototype.getNamedItem=function(name){}; 
 /**
   * function setNamedItem(arg) 
-  * @type Method
+  * @type Node
   * @class NamedNodeMap
   * @param arg Node
   * @return  Node
@@ -1034,7 +1075,7 @@ NamedNodeMap.prototype.getNamedItem=function(name){};
 NamedNodeMap.prototype.setNamedItem=function(arg){}; 
 /**
   * function removeNamedItem(name)  
-  * @type Method
+  * @type Node
   * @class NamedNodeMap
   * @param name String
   * @return  Node
@@ -1050,7 +1091,7 @@ NamedNodeMap.prototype.removeNamedItem=function(name){};
 /**
   * function item(index)
   * Note: This object can also be dereferenced using square bracket notation (e.g. obj[1]). Dereferencing with an integer index is equivalent to invoking the item method with that index.
-  * @type Method
+  * @type Node
   * @class NamedNodeMap
   * @param index Number
   * @return  Node
@@ -1064,7 +1105,7 @@ NamedNodeMap.prototype.removeNamedItem=function(name){};
 NamedNodeMap.prototype.item=function(index){}; 
 /**
   * function getNamedItemNS(namespaceURI, localName) 
-  * @type Method
+  * @type Node
   * @class NamedNodeMap
   * @param namespaceURI String
   * @param localName String
@@ -1079,7 +1120,7 @@ NamedNodeMap.prototype.item=function(index){};
 NamedNodeMap.prototype.getNamedItemNS=function(namespaceURI, localName){}; 
 /**
   * function setNamedItemNS(arg) 
-  * @type Method
+  * @type Node
   * @class NamedNodeMap
   * @param arg Node
   * @param localName String
@@ -1095,7 +1136,7 @@ NamedNodeMap.prototype.getNamedItemNS=function(namespaceURI, localName){};
 NamedNodeMap.prototype.setNamedItemNS=function(arg){}; 
 /**
   * function removeNamedItemNS(namespaceURI, localName)  
-  * @type Method
+  * @type Node
   * @class NamedNodeMap
   * @param namespaceURI String
   * @param localName String
@@ -1113,7 +1154,7 @@ NamedNodeMap.prototype.removeNamedItemNS=function(namespaceURI, localName){};
   * Object CharacterData()
   * CharacterData inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
   * @see Node
   * @class  CharacterData
   * @since Standard ECMA-262 3rd. Edition
@@ -1133,7 +1174,7 @@ CharacterData.prototype=new Node();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-CharacterData.prototype.data=new String(); 
+CharacterData.prototype.data=""; 
 /**
   * property length
   * @type   Number
@@ -1144,10 +1185,10 @@ CharacterData.prototype.data=new String();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-CharacterData.prototype.length=new Number(); 
+CharacterData.prototype.length=0; 
 /**
   * function substringData(offset, count)   
-  * @type Method
+  * @type String
   * @class CharacterData
   * @param parameter Number
   * @param count Number
@@ -1162,7 +1203,7 @@ CharacterData.prototype.length=new Number();
 CharacterData.prototype.substringData=function(offset, count){}; 
 /**
   * function appendData(arg)    
-  * @type Method
+  * @type String
   * @class CharacterData
   * @param arg String
   * @return String
@@ -1176,7 +1217,7 @@ CharacterData.prototype.substringData=function(offset, count){};
 CharacterData.prototype.appendData=function(arg){}; 
 /**
   * function insertData(offset, arg)  
-  * @type Method
+ 
   * @class CharacterData
   * @param offset Number
   * @param arg String
@@ -1190,7 +1231,7 @@ CharacterData.prototype.appendData=function(arg){};
 CharacterData.prototype.insertData=function(offset, arg){};  
 /**
   * function deleteData(offset, count)  
-  * @type Method
+ 
   * @class CharacterData
   * @param offset Number
   * @param count Number
@@ -1204,7 +1245,7 @@ CharacterData.prototype.insertData=function(offset, arg){};
 CharacterData.prototype.deleteData=function(offset, count){}; 
 /**
   * function replaceData(offset, count, arg)
-  * @type Method
+ 
   * @class CharacterData
   * @param offset Number
   * @param count Number
@@ -1221,7 +1262,7 @@ CharacterData.prototype.replaceData=function(offset, count, arg){};
   * Object Attr()
   * Attr inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
   * @see Node
   * @class Attr
   * @since Standard ECMA-262 3rd. Edition
@@ -1241,7 +1282,7 @@ Attr.prototype=new Node();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Attr.prototype.name=new String(); 
+Attr.prototype.name=""; 
 /**
   * property specified
   * @type   Boolean
@@ -1253,7 +1294,7 @@ Attr.prototype.name=new String();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Attr.prototype.specified=new Boolean(); 
+Attr.prototype.specified=false; 
 /**
   * property value 
   * @type   Boolean
@@ -1265,7 +1306,7 @@ Attr.prototype.specified=new Boolean();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Attr.prototype.value=new String();
+Attr.prototype.value="";
 /**
   * property ownerElement 
   * @type   Element
@@ -1283,7 +1324,7 @@ Attr.prototype.ownerElement=new Element();
   * Object Element()
   * Element inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
   * @see Node
   * @class Attr
   * @since Standard ECMA-262 3rd. Edition
@@ -1304,10 +1345,10 @@ Element.prototype=new Node();
   * @since Level 2 Document Object Model Core Definition.
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Element.prototype.tagName=new String();
+Element.prototype.tagName="";
 /**
   * function getAttribute(name) 
-  * @type Method
+  * @type String
   * @class Element
   * @param name String
   * @return String
@@ -1320,7 +1361,7 @@ Element.prototype.tagName=new String();
 Element.prototype.getAttribute=function(name){}; 
 /**
   * function setAttribute(name, value) 
-  * @type Method
+  *
   * @class Element
   * @param name String
   * @param value String
@@ -1334,7 +1375,7 @@ Element.prototype.getAttribute=function(name){};
 Element.prototype.setAttribute=function(name, value){}; 
 /**
   * function removeAttribute(name)
-  * @type Method
+  
   * @class Element
   * @param name String
   * @throws DOMException
@@ -1347,7 +1388,7 @@ Element.prototype.setAttribute=function(name, value){};
 Element.prototype.removeAttribute=function(name){}; 
 /**
   * function getAttributeNode(name)
-  * @type Method
+  * @type Attr
   * @class Element
   * @param name String
   * @return Attr
@@ -1361,7 +1402,7 @@ Element.prototype.removeAttribute=function(name){};
 Element.prototype.getAttributeNode=function(name){}; 
 /**
   * function setAttributeNode(newAttr)
-  * @type Method
+  * @type Attr
   * @class Element
   * @param newAttr Attr
   * @return Attr
@@ -1377,7 +1418,7 @@ Element.prototype.getAttributeNode=function(name){};
 Element.prototype.setAttributeNode=function(newAttr){}; 
 /**
   * function removeAttributeNode(oldAttr) 
-  * @type Method
+  * @type Attr
   * @class Element
   * @param oldAttr Attr
   * @return Attr
@@ -1392,7 +1433,7 @@ Element.prototype.setAttributeNode=function(newAttr){};
 Element.prototype.removeAttributeNode=function(oldAttr){}; 
 /**
   * function getElementsByTagName(name)
-  * @type Method
+  * @type NodeList
   * @class Element
   * @param name String
   * @return NodeList
@@ -1406,7 +1447,7 @@ Element.prototype.removeAttributeNode=function(oldAttr){};
 Element.prototype.getElementsByTagName=function(name){}; 
 /**
   * function getAttributeNS(namespaceURI, localName) 
-  * @type Method
+  * @type String
   * @class Element
   * @param namespaceURI String
   * @param localName String
@@ -1420,7 +1461,7 @@ Element.prototype.getElementsByTagName=function(name){};
 Element.prototype.getAttributeNS=function(namespaceURI, localName){}; 
  /**
   * function setAttributeNS(namespaceURI, qualifiedName, value)  
-  * @type Method
+  
   * @class Element
   * @param namespaceURI String
   * @param qualifiedName String
@@ -1434,7 +1475,7 @@ Element.prototype.getAttributeNS=function(namespaceURI, localName){};
 Element.prototype.setAttributeNS=function(namespaceURI, qualifiedName, value){}; 
  /**
   * function removeAttributeNS(namespaceURI, localName)  
-  * @type Method
+  
   * @class Element
   * @param namespaceURI String
   * @param localName String
@@ -1447,7 +1488,7 @@ Element.prototype.setAttributeNS=function(namespaceURI, qualifiedName, value){};
 Element.prototype.removeAttributeNS=function(namespaceURI, localName){}; 
  /**
   * function getAttributeNodeNS(namespaceURI, localName)   
-  * @type Method
+  * @type Attr
   * @class Element
   * @param namespaceURI String
   * @param localName String
@@ -1462,7 +1503,7 @@ Element.prototype.removeAttributeNS=function(namespaceURI, localName){};
 Element.prototype.getAttributeNodeNS=function(namespaceURI, localName){}; 
  /**
   * function setAttributeNodeNS(newAttr)    
-  * @type Method
+  * @type Attr
   * @class Element
   * @param newAttr Attr
 
@@ -1477,7 +1518,7 @@ Element.prototype.getAttributeNodeNS=function(namespaceURI, localName){};
 Element.prototype.setAttributeNodeNS=function(newAttr){}; 
  /**
   * function getElementsByTagNameNS(namespaceURI, localName)   
-  * @type Method
+  * @type NodeList
   * @class Element
   * @param namespaceURI String
   * @param localName String
@@ -1493,7 +1534,7 @@ Element.prototype.setAttributeNodeNS=function(newAttr){};
 Element.prototype.getElementsByTagNameNS=function(namespaceURI, localName){}; 
  /**
   * function hasAttribute(name)   
-  * @type Method
+  * @type Boolean
   * @class Element
   
   * @param name String
@@ -1509,7 +1550,7 @@ Element.prototype.getElementsByTagNameNS=function(namespaceURI, localName){};
 Element.prototype.hasAttribute=function(name){}; 
  /**
   * function hasAttributeNS(namespaceURI, localName)    
-  * @type Method
+  * @type Boolean
   * @class Element
   * @param namespaceURI String
   * @param localName String
@@ -1527,7 +1568,7 @@ Element.prototype.hasAttributeNS=function(namespaceURI, localName){};
   * Object Text()
   * Text inherits all of the methods and properties from CharacterData.
   * @super CharacterData
-  * @type  constructor
+  * @constructor
 
   * @class Text
   * @see CharacterData
@@ -1536,10 +1577,10 @@ Element.prototype.hasAttributeNS=function(namespaceURI, localName){};
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
 function Text(){};
-Text.prototype = new ChracterData();
+Text.prototype = new CharacterData();
  /**
   * function splitText(offset)     
-  * @type Method
+  * @type Text
   * @class Text
   * @param offset Number
  
@@ -1558,7 +1599,7 @@ Text.prototype.splitText=function(offset){};
   * Object Comment()
   * Comment inherits all of the methods and properties from CharacterData.
   * @super CharacterData
-  * @type  constructor
+  * @constructor
 
   * @class Comment
   * @see CharacterData
@@ -1567,12 +1608,12 @@ Text.prototype.splitText=function(offset){};
   * @link   http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
 function Comment(){};
-Comment.prototype = new ChracterData();
+Comment.prototype = new CharacterData();
 /**
   * Object CDATASection()
   * Comment inherits all of the methods and properties from Text.
   * @super Text
-  * @type  constructor
+  * @constructor
 
   * @class CDATASection
   * @see Text
@@ -1586,7 +1627,7 @@ CDATASection.prototype = new Text();
   * Object DocumentType()
   * DocumentType inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
 
   * @class DocumenType
   * @see Node
@@ -1606,7 +1647,7 @@ DocumentType.prototype = new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-DocumentType.prototype.name=new String(); 
+DocumentType.prototype.name=""; 
 /**
   * read-only Property entities
   * @type NamedNodeMap
@@ -1641,7 +1682,7 @@ DocumentType.prototype.notations=new NamedNodeMap();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-DocumentType.prototype.publicId=new String(); 
+DocumentType.prototype.publicId=""; 
 /**
   * Read-Only Property systemId  
   * @type String
@@ -1652,7 +1693,7 @@ DocumentType.prototype.publicId=new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-DocumentType.prototype.systemId=new String(); 
+DocumentType.prototype.systemId=""; 
 /**
   * Read-Only Property internalSubset 
   * @type String
@@ -1663,12 +1704,12 @@ DocumentType.prototype.systemId=new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-DocumentType.prototype.internalSubset=new String();
+DocumentType.prototype.internalSubset="";
 /**
   * Object Notation()
   * Notation inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
 
   * @class Notation
   * @see Node
@@ -1688,7 +1729,7 @@ Notation.prototype=new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */  
-Notation.prototype.publicId=new String(); 
+Notation.prototype.publicId=""; 
 /**
   * Read-Only Property systemId 
   * @type String
@@ -1699,12 +1740,12 @@ Notation.prototype.publicId=new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Notation.prototype.systemId=new String();
+Notation.prototype.systemId="";
 /**
   * Object Entity()
   * Entity inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
 
   * @class Entity
   * @see Node
@@ -1724,7 +1765,7 @@ Entity.prototype=new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Entity.prototype.publicId=new String();
+Entity.prototype.publicId="";
  /**
   * Read-Only Property systemId 
   * @type String
@@ -1735,7 +1776,7 @@ Entity.prototype.publicId=new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-Entity.prototype.systemId=new String(); 
+Entity.prototype.systemId=""; 
  /**
   * Read-Only Property notationName 
   * @type String
@@ -1746,12 +1787,12 @@ Entity.prototype.systemId=new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */ 
-Entity.prototype.notationName=new String(); 
+Entity.prototype.notationName=""; 
 /**
   * Object EntityReference()
   * EntityReference inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
 
   * @class EntityReference
   * @see Node
@@ -1765,7 +1806,7 @@ EntityReference.prototype=new Node();
   * Object ProcessingInstruction()
   * ProcessingInstruction inherits all of the methods and properties from Node.
   * @super Node
-  * @type  constructor
+  * @constructor
 
   * @class ProcessingInstruction
   * @see Node
@@ -1786,7 +1827,7 @@ ProcessingInstruction.prototype=new Node();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-ProcessingInstruction.prototype.target=new String();
+ProcessingInstruction.prototype.target="";
  /**
   * Read-Only Property target  
   * @type String
@@ -1798,8 +1839,4 @@ ProcessingInstruction.prototype.target=new String();
  
   * @link    http://www.w3.org/TR/2000/REC-DOM-Level-2-Core-20001113/ecma-script-binding.html     
  */
-ProcessingInstruction.prototype.data=new String(); 
-
-
-
-
+ProcessingInstruction.prototype.data=""; 
