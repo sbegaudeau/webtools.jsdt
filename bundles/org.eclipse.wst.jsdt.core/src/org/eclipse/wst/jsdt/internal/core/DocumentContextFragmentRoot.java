@@ -456,8 +456,8 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 				try {
 					relative = fRelativeFile.getFullPath().removeLastSegments(1);
 				} catch (Exception ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
+					/* file usually outside of workspace in this instance */
+					return null;
 				}
 				IPath relRes = getResource().getFullPath();
 				if(relRes.isPrefixOf(relative)) {
@@ -511,7 +511,7 @@ public class DocumentContextFragmentRoot extends PackageFragmentRoot{
 	}
 
 	public int hashCode() {
-		return this.fRelativeFile.hashCode();
+		return fRelativeFile!=null?this.fRelativeFile.hashCode():super.hashCode();
 	}
 
 	public boolean isExternal() {
