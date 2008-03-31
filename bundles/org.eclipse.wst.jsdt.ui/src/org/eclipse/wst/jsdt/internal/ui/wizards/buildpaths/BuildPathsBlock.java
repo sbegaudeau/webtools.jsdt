@@ -370,6 +370,11 @@ public class BuildPathsBlock {
 		}
 	}
 
+	public void setSuperType(LibrarySuperType type) {
+		ordpage.getSuperField().setValue(type);
+		
+	}
+	
 	protected void doUpdateUI() {
 	//	fBuildPathDialogField.refresh();
 		fClassPathList.refresh();
@@ -561,34 +566,7 @@ public class BuildPathsBlock {
 	public static void setProjectSuperType(IJavaProject jproj, LibrarySuperType superType) {
 		
 		JavaProject javaProject = ((JavaProject)jproj);
-		
-		javaProject.setCommonSuperType(superType);
-		
-		
-		
-		
-		
-	
-//		String superTypeName = superType.getSuperTypeName();
-//		String superTypeContainer = superType.getRawContainerPath().toString();	
-//		
-//		try {
-//			javaProject.setSharedProperty(LibrarySuperType.SUPER_TYPE_NAME, superTypeName);
-//			javaProject.setSharedProperty(LibrarySuperType.SUPER_TYPE_CONTAINER, superTypeContainer);
-//		} catch (CoreException ex) {
-//			// TODO Auto-generated catch block
-//			ex.printStackTrace();
-//		}
-//		IPreferenceStore store= PreferenceConstants.getPreferenceStore();
-//		String superTypeName = superType.getSuperTypeName();
-//		String superTypeContainer = superType.getRawContainerPath().toString();	
-//		store.setValue(PreferenceConstants.SUPER_TYPE_CONTAINER, superTypeContainer);
-//		store.setValue(PreferenceConstants.SUPER_TYPE_NAME, superTypeName);
-		
-		
-		//String superTypeContainerPath= store.getString(PreferenceConstants.SUPER_TYPE_CONTAINER);
-		//String superTypeName= store.getString(PreferenceConstants.SUPER_TYPE_NAME);
-		
+		javaProject.setCommonSuperType(superType);	
 	}	
 
 	
@@ -867,14 +845,12 @@ public class BuildPathsBlock {
 			}
 		}
 	}
-	public void configureJavaProject(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
-		configureJavaProject(monitor, getSuperType());
-	}
+
 	
-	public void configureJavaProject(IProgressMonitor monitor, LibrarySuperType superType) throws CoreException, OperationCanceledException {
+	public void configureJavaProject(IProgressMonitor monitor) throws CoreException, OperationCanceledException {
 		aboutToDispose();
 		//flush(fClassPathList.getElements(), getOutputLocation(), getJavaProject(), monitor);
-		flush(fClassPathList.getElements(),  getJavaProject(), superType, monitor);
+		flush(fClassPathList.getElements(),  getJavaProject(), getSuperType(), monitor);
 		initializeTimeStamps();
 		
 		updateUI();

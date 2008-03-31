@@ -194,6 +194,7 @@ public class ClasspathOrderingWorkbookPage extends BuildPathBasePage {
 	public void aboutToShow() {
 		allCpElements = fClassPathList.getElements();
 		fClassPathList.setElements(filterNodes( fClassPathList.getElements()));
+		superTypeField.setText(superTypeField.getValue().toString());
 	}
 	
 	private LibrarySuperType openSuperTypeSelectionDialog(CPListElement[] existingCp, LibrarySuperType existingSuper) {

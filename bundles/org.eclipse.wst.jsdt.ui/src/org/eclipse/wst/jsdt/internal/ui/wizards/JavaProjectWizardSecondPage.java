@@ -257,7 +257,8 @@ public class JavaProjectWizardSecondPage extends JavaCapabilityConfigurationPage
             init(javaProject,  entries, false);
 			if(fFirstPage.isWebEnabled()) {
 				LibrarySuperType superType = new LibrarySuperType(new Path( JavaRuntime.BASE_BROWSER_LIB),  getJavaProject(), SUPER_TYPE_NAME);
-				configureJavaProject(new SubProgressMonitor(monitor, 3), superType); // create the Java project to allow the use of the new source folder page
+				getBuildPathsBlock().setSuperType(superType);
+				configureJavaProject(new SubProgressMonitor(monitor, 3)); // create the Java project to allow the use of the new source folder page
 			}else {
 				configureJavaProject(new SubProgressMonitor(monitor, 3)); // create the Java project to allow the use of the new source folder page
 			}
