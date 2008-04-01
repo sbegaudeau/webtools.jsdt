@@ -904,7 +904,7 @@ public IType[] getTypes() throws JavaModelException {
 		return chars;
 	}
 	public char[] getMainTypeName() {
-		return new char[]{};
+		return name.toCharArray();
 	}
 	public char[][] getPackageName() {
 		return new char[][] {getParent().getElementName().toCharArray()};

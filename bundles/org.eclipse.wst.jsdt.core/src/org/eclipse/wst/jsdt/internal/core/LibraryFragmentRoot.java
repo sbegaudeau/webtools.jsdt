@@ -5,17 +5,15 @@ import java.util.Map;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
-import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
 import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 
 
 
-public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtualParent {
+public class LibraryFragmentRoot extends PackageFragmentRoot{
 
 	protected final IPath libraryPath;
 	protected boolean[] fLangeRuntime= new boolean[] {false,false};
@@ -44,6 +42,14 @@ public class LibraryFragmentRoot extends PackageFragmentRoot implements IVirtual
 			return this.libraryPath;
 		} else {
 			return super.getPath();
+		}
+	}
+
+	public IPath getLocation() {
+		if (isExternal()) {
+			return this.libraryPath;
+		} else {
+			return super.getLocation();
 		}
 	}
 
@@ -174,19 +180,7 @@ protected boolean resourceExists() {
 
 	}
 
-	public JsGlobalScopeContainerInitializer getContainerInitializer() {
-		IClasspathEntry fClassPathEntry=null;
 
-		try {
-			fClassPathEntry =  getRawClasspathEntry();
-		} catch (JavaModelException ex) {}
-
-		if(fClassPathEntry==null) return null;
-
-
-		return  JavaCore.getJsGlobalScopeContainerInitializer(fClassPathEntry.getPath().segment(0));
-
-	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#isVirtual()

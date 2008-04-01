@@ -194,4 +194,6 @@ public interface IPackageFragment extends IParent, IJavaElement, IOpenable, ISou
 	 * @return true if this package fragment is a default package
 	 */
 	boolean isDefaultPackage();
+
+	boolean isSource();
 }

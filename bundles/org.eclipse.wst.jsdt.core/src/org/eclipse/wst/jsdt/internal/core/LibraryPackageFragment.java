@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Messages;
  *
  * @see org.eclipse.wst.jsdt.core.IPackageFragment
  */
-public class LibraryPackageFragment extends PackageFragment implements SuffixConstants, IVirtualParent {
+public class LibraryPackageFragment extends PackageFragment implements SuffixConstants {
 final static String[]DEFAULT_PACKAGE={""}; //$NON-NLS-1$
 /**
  * Constructs a package fragment that is contained within a jar or a zip.
@@ -162,10 +162,5 @@ public String getDisplayName() {
 	}
 	return  parent.getPath().lastSegment();
 }
-public JsGlobalScopeContainerInitializer getContainerInitializer() {
-	if(parent instanceof LibraryFragmentRoot) {
-		return ((LibraryFragmentRoot)parent).getContainerInitializer();
-	}
-	return null;
-}
+
 }

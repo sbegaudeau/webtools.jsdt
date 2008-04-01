@@ -503,7 +503,7 @@ public class NameLookup implements SuffixConstants {
 	 * <p>
 	 * The name must be fully qualified (eg "java.lang.Object", "java.util.Hashtable$Entry")
 	 */
-	public ICompilationUnit findCompilationUnit(String qualifiedTypeName) {
+	public ITypeRoot findCompilationUnit(String qualifiedTypeName) {
 		String[] pkgName = CharOperation.NO_STRINGS;
 		String cuName = qualifiedTypeName;
 
@@ -525,7 +525,7 @@ public class NameLookup implements SuffixConstants {
 				IPackageFragmentRoot[] roots = (IPackageFragmentRoot[]) value;
 				for (int i= 0; i < roots.length; i++) {
 					PackageFragmentRoot root= (PackageFragmentRoot) roots[i];
-					ICompilationUnit cu = findCompilationUnit(pkgName, cuName, root);
+					ITypeRoot cu = findCompilationUnit(pkgName, cuName, root);
 					if (cu != null)
 						return cu;
 				}
@@ -534,13 +534,19 @@ public class NameLookup implements SuffixConstants {
 		return null;
 	}
 
-	private ICompilationUnit findCompilationUnit(String[] pkgName, String cuName, PackageFragmentRoot root) {
+	private ITypeRoot findCompilationUnit(String[] pkgName, String cuName, PackageFragmentRoot root) {
 		if (!root.isArchive()) {
 			IPackageFragment pkg = root.getPackageFragment(pkgName);
 			try {
 				ICompilationUnit[] cus = pkg.getCompilationUnits();
 				for (int j = 0, length = cus.length; j < length; j++) {
 					ICompilationUnit cu = cus[j];
+					if (Util.equalsIgnoreJavaLikeExtension(cu.getElementName(), cuName))
+						return cu;
+				}
+				IClassFile[] classFiles = pkg.getClassFiles();
+				for (int j = 0, length = classFiles.length; j < length; j++) {
+					IClassFile cu = classFiles[j];
 					if (Util.equalsIgnoreJavaLikeExtension(cu.getElementName(), cuName))
 						return cu;
 				}
@@ -819,7 +825,7 @@ public class NameLookup implements SuffixConstants {
 			String fullName=typeName;
 			if (packageName.length()>0)
 				fullName=packageName+"."+typeName;
-			ICompilationUnit compilationUnit = findCompilationUnit(fullName);
+			ITypeRoot compilationUnit = findCompilationUnit(fullName);
 			if (compilationUnit!=null )
 			{
 				return new Answer(compilationUnit, null);

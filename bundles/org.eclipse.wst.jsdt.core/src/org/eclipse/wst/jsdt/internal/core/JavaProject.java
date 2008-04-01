@@ -1153,7 +1153,7 @@ public class JavaProject
 				}
 				// lookup cu
 				NameLookup lookup = newNameLookup(owner);
-				ICompilationUnit cu = lookup.findCompilationUnit(qualifiedName);
+				ITypeRoot cu = lookup.findCompilationUnit(qualifiedName);
 				if(cu!=null)	return cu;
 				// lookup type
 				

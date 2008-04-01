@@ -39,6 +39,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.core.util.MementoTokenizer;
@@ -48,7 +49,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * @see IPackageFragmentRoot
  */
-public class PackageFragmentRoot extends Openable implements IPackageFragmentRoot {
+public class PackageFragmentRoot extends Openable implements IPackageFragmentRoot,  IVirtualParent  {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.wst.jsdt.internal.core.JavaElement#isVirtual()
@@ -891,5 +892,22 @@ public IClasspathAttribute[] getClasspathAttributes() {
 }
 public boolean isLibrary() {
 	return false;
+}
+public JsGlobalScopeContainerInitializer getContainerInitializer() {
+	IClasspathEntry fClassPathEntry=null;
+
+	try {
+		fClassPathEntry =  getRawClasspathEntry();
+	} catch (JavaModelException ex) {}
+
+	if(fClassPathEntry==null) return null;
+
+
+	return  JavaCore.getJsGlobalScopeContainerInitializer(fClassPathEntry.getPath().segment(0));
+
+}
+
+public IPath getLocation() {
+	return getResource().getLocation();
 }
 }

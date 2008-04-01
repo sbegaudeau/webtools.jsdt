@@ -56,8 +56,9 @@ public class HandleFactory {
 	 * Cache package fragment root information to optimize speed performance.
 	 */
 	private String lastPkgFragmentRootPath;
-	private IPackageFragmentRoot lastPkgFragmentRoot;
-
+	private PackageFragmentRoot lastPkgFragmentRoot;
+	private boolean lastIsFullPath;
+	
 	/**
 	 * Cache package handles to optimize memory.
 	 */
@@ -82,40 +83,40 @@ public class HandleFactory {
 	 */
 	public Openable createOpenable(String resourcePath, IJavaSearchScope scope) {
 		int separatorIndex;
-		if ((separatorIndex= resourcePath.indexOf(IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR)) > -1) {
-			// path to a class file inside a jar
-			// Optimization: cache package fragment root handle and package handles
-			int rootPathLength;
-			if (this.lastPkgFragmentRootPath == null
-					|| (rootPathLength = this.lastPkgFragmentRootPath.length()) != resourcePath.length()
-					|| !resourcePath.regionMatches(0, this.lastPkgFragmentRootPath, 0, rootPathLength)) {
-				String jarPath= resourcePath.substring(0, separatorIndex);
-				IPackageFragmentRoot root= this.getJarPkgFragmentRoot(jarPath, scope);
-				if (root == null)
-					return null; // match is outside classpath
-				this.lastPkgFragmentRootPath= jarPath;
-				this.lastPkgFragmentRoot= root;
-				this.packageHandles= new HashtableOfArrayToObject(5);
-			}
-			// create handle
-			String classFilePath= resourcePath.substring(separatorIndex + 1);
-			String[] simpleNames = new Path(classFilePath).segments();
-			String[] pkgName;
-			int length = simpleNames.length-1;
-			if (length > 0) {
-				pkgName = new String[length];
-				System.arraycopy(simpleNames, 0, pkgName, 0, length);
-			} else {
-				pkgName = CharOperation.NO_STRINGS;
-			}
-			IPackageFragment pkgFragment= (IPackageFragment) this.packageHandles.get(pkgName);
-			if (pkgFragment == null) {
-				pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
-				this.packageHandles.put(pkgName, pkgFragment);
-			}
-			IClassFile classFile= pkgFragment.getClassFile(simpleNames[length]);
-			return (Openable) classFile;
-		} else {
+//		if ((separatorIndex= resourcePath.indexOf(IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR)) > -1) {
+//			// path to a class file inside a jar
+//			// Optimization: cache package fragment root handle and package handles
+//			int rootPathLength;
+//			if (this.lastPkgFragmentRootPath == null
+//					|| (rootPathLength = this.lastPkgFragmentRootPath.length()) != resourcePath.length()
+//					|| !resourcePath.regionMatches(0, this.lastPkgFragmentRootPath, 0, rootPathLength)) {
+//				String jarPath= resourcePath.substring(0, separatorIndex);
+//				PackageFragmentRoot root= this.getJarPkgFragmentRoot(jarPath, scope);
+//				if (root == null)
+//					return null; // match is outside classpath
+//				this.lastPkgFragmentRootPath= jarPath;
+//				this.lastPkgFragmentRoot= root;
+//				this.packageHandles= new HashtableOfArrayToObject(5);
+//			}
+//			// create handle
+//			String classFilePath= resourcePath.substring(separatorIndex + 1);
+//			String[] simpleNames = new Path(classFilePath).segments();
+//			String[] pkgName;
+//			int length = simpleNames.length-1;
+//			if (length > 0) {
+//				pkgName = new String[length];
+//				System.arraycopy(simpleNames, 0, pkgName, 0, length);
+//			} else {
+//				pkgName = CharOperation.NO_STRINGS;
+//			}
+//			IPackageFragment pkgFragment= (IPackageFragment) this.packageHandles.get(pkgName);
+//			if (pkgFragment == null) {
+//				pkgFragment= ((PackageFragmentRoot) this.lastPkgFragmentRoot).getPackageFragment(pkgName);
+//				this.packageHandles.put(pkgName, pkgFragment);
+//			}
+//			IClassFile classFile= pkgFragment.getClassFile(simpleNames[length]);
+//			return (Openable) classFile;
+//		} else {
 			// path to a file in a directory
 			// Optimization: cache package fragment root handle and package handles
 			int rootPathLength = -1;
@@ -126,7 +127,7 @@ public class HandleFactory {
 
 				if (resourcePath.endsWith("/")) //$NON-NLS-1$
 					resourcePath=resourcePath.substring(0,resourcePath.length()-1);
-				IPackageFragmentRoot root= this.getPkgFragmentRoot(resourcePath);
+				PackageFragmentRoot root= this.getPkgFragmentRoot(resourcePath);
 				if (root instanceof LibraryFragmentRoot)
 				{
 					return (Openable)((LibraryFragmentRoot)root).getPackageFragment(resourcePath).getClassFile(resourcePath);
@@ -134,7 +135,8 @@ public class HandleFactory {
 				if (root == null)
 					return null; // match is outside classpath
 				this.lastPkgFragmentRoot = root;
-				this.lastPkgFragmentRootPath = this.lastPkgFragmentRoot.getPath().toString();
+				this.lastPkgFragmentRootPath = this.lastIsFullPath ? 
+						this.lastPkgFragmentRoot.getLocation().toString() : this.lastPkgFragmentRoot.getPath().toString();
 				this.packageHandles = new HashtableOfArrayToObject(5);
 			}
 			// create handle
@@ -154,14 +156,15 @@ public class HandleFactory {
 				this.packageHandles.put(pkgName, pkgFragment);
 			}
 			String simpleName= simpleNames[length];
-			if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(simpleName)) {
+			
+			if (pkgFragment.isSource()) {
 				ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
 				return (Openable) unit;
 			} else {
 				IClassFile classFile= pkgFragment.getClassFile(simpleName);
 				return (Openable) classFile;
 			}
-		}
+//		}
 	}
 
 	/**
@@ -334,10 +337,11 @@ public class HandleFactory {
 	/**
 	 * Returns the package fragment root that contains the given resource path.
 	 */
-	private IPackageFragmentRoot getPkgFragmentRoot(String pathString) {
+	private PackageFragmentRoot getPkgFragmentRoot(String pathString) {
 
 		IPath path= new Path(pathString);
 		IProject[] projects= ResourcesPlugin.getWorkspace().getRoot().getProjects();
+		this.lastIsFullPath=false;
 		for (int i= 0, max= projects.length; i < max; i++) {
 			try {
 				IProject project = projects[i];
@@ -347,7 +351,13 @@ public class HandleFactory {
 				IPackageFragmentRoot[] roots= javaProject.getPackageFragmentRoots();
 				for (int j= 0, rootCount= roots.length; j < rootCount; j++) {
 					PackageFragmentRoot root= (PackageFragmentRoot)roots[j];
-					if (root.getPath().isPrefixOf(path) && !Util.isExcluded(path, root.fullInclusionPatternChars(), root.fullExclusionPatternChars(), false)) {
+					if ( root.getPath().isPrefixOf(path)			&& !Util.isExcluded(path, root.fullInclusionPatternChars(), root.fullExclusionPatternChars(), false))
+					{
+						return root;
+					}
+					if ( root.getLocation().isPrefixOf(path)
+							&& !Util.isExcluded(path, root.fullInclusionPatternChars(), root.fullExclusionPatternChars(), false)) {
+						this.lastIsFullPath=true;
 						return root;
 					}
 				}

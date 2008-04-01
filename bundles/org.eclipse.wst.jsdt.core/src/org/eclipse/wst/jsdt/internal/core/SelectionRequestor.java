@@ -964,7 +964,7 @@ protected IJavaElement resolveCompilationUnit(char[] packageName, char[] compila
 	String cuName=cuPath.lastSegment();
 
 	Openable cu = new HandleFactory().createOpenable(fullCUName,null);
-	if ((cu instanceof CompilationUnit || this.openable instanceof ClassFile)&& cu.exists()) 
+	if ((cu instanceof CompilationUnit || cu instanceof ClassFile)&& cu.exists()) 
 		return cu;
 	
 	if (this.openable instanceof CompilationUnit || this.openable instanceof ClassFile) {

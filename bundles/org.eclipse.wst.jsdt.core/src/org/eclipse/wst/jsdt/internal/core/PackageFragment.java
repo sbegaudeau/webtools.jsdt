@@ -33,6 +33,7 @@ import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager.PerProjectInfo;
@@ -43,7 +44,7 @@ import org.eclipse.wst.jsdt.internal.core.util.Util;
 /**
  * @see IPackageFragment
  */
-public class PackageFragment extends Openable implements IPackageFragment, SuffixConstants {
+public class PackageFragment extends Openable implements IPackageFragment, IVirtualParent, SuffixConstants {
 	/**
 	 * Constant empty list of class files
 	 */
@@ -514,5 +515,18 @@ public String getAttachedJavadoc(IProgressMonitor monitor) throws JavaModelExcep
 		projectInfo.javadocCache.put(this, contents);
 	}
 	return contents;
+}
+public JsGlobalScopeContainerInitializer getContainerInitializer() {
+	if(parent instanceof PackageFragmentRoot) {
+		return ((PackageFragmentRoot)parent).getContainerInitializer();
+	}
+	return null;
+}
+public boolean isSource() {
+	try {
+		return getPackageFragmentRoot().getKind() == IPackageFragmentRoot.K_SOURCE;
+	} catch (JavaModelException e) {
+	}
+	return true;
 }
 }
