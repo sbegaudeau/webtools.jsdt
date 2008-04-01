@@ -326,10 +326,10 @@ public class JavaProjectWizardFirstPage extends WizardPage {
 			fGroup.setFont(composite.getFont());
 			fGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			fGroup.setLayout(initGridLayout(new GridLayout(3, false), true));
-			fGroup.setText("Web Support"); 
+			fGroup.setText(NewWizardMessages.JavaProjectWizardFirstPage_0); 
 						
 			fEnableWebSupport= new SelectionButtonDialogField(SWT.CHECK);
-			fEnableWebSupport.setLabelText("Enable Web Support ");
+			fEnableWebSupport.setLabelText(NewWizardMessages.JavaProjectWizardFirstPage_1);
 			fEnableWebSupport.doFillIntoGrid(fGroup, 2);
 			
 			//fPreferenceLink= new Link(fGroup, SWT.NONE);
