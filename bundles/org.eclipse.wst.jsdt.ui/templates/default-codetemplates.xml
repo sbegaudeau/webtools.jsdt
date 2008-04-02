@@ -63,6 +63,7 @@ ${type_declaration}</template>
 <template name="classbody" id="org.eclipse.wst.jsdt.ui.text.codetemplates.classbody" description="%CodeTemplates.classbody" context="classbody_context" enabled="true">
 </template>
 
+<!--
 <template name="interfacebody" id="org.eclipse.wst.jsdt.ui.text.codetemplates.interfacebody" description="%CodeTemplates.interfacebody" context="interfacebody_context" enabled="true">
 </template>
 
@@ -71,6 +72,7 @@ ${type_declaration}</template>
 
 <template name="annotationbody" id="org.eclipse.wst.jsdt.ui.text.codetemplates.annotationbody" description="%CodeTemplates.annotationbody" context="annotationbody_context" enabled="true">
 </template>
+-->
 
 <template name="catchblock" id="org.eclipse.wst.jsdt.ui.text.codetemplates.catchblock" description="%CodeTemplates.catchblock" context="catchblock_context" enabled="true">// ${todo} %CodeTemplates.catchblock.tododesc
 ${exception_var}.printStackTrace();</template>

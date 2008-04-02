@@ -93,10 +93,10 @@ public final class Messages extends NLS {
 	public static String build_cannotSaveStates;
 	public static String build_initializationError;
 	public static String build_serializationError;
-	public static String build_classFileCollision;
-	public static String build_duplicateClassFile;
+//	public static String build_classFileCollision;
+//	public static String build_duplicateClassFile;
 	public static String build_duplicateResource;
-	public static String build_inconsistentClassFile;
+//	public static String build_inconsistentClassFile;
 	public static String build_inconsistentProject;
 	public static String build_incompleteClassPath;
 	public static String build_missingSourceFile;

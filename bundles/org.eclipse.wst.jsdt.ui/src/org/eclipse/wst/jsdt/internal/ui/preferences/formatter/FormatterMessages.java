@@ -77,10 +77,8 @@ final class FormatterMessages extends NLS {
 	public static String WhiteSpaceTabPage_switch_before_case_colon;
 	public static String WhiteSpaceTabPage_switch_before_default_colon;
 	public static String WhiteSpaceTabPage_do;
-	public static String WhiteSpaceTabPage_synchronized;
 	public static String WhiteSpaceTabPage_try;
 	public static String WhiteSpaceTabPage_if;
-	public static String WhiteSpaceTabPage_assert;
 	public static String WhiteSpaceTabPage_for;
 	public static String WhiteSpaceTabPage_for_before_comma_init;
 	public static String WhiteSpaceTabPage_for_after_comma_init;
@@ -89,8 +87,6 @@ final class FormatterMessages extends NLS {
 	public static String WhiteSpaceTabPage_labels;
 //	public static String WhiteSpaceTabPage_annotations;
 	public static String WhiteSpaceTabPage_annotation_types;
-	public static String WhiteSpaceTabPage_enums;
-	public static String WhiteSpaceTabPage_wildcardtype;
 	public static String WhiteSpaceTabPage_param_type_ref;
 	public static String WhiteSpaceTabPage_type_arguments;
 	public static String WhiteSpaceTabPage_type_parameters;
@@ -129,8 +125,6 @@ final class FormatterMessages extends NLS {
 	public static String WhiteSpaceTabPage_after_colon;
 	public static String WhiteSpaceTabPage_before_question;
 	public static String WhiteSpaceTabPage_after_question;
-	public static String WhiteSpaceTabPage_before_at;
-	public static String WhiteSpaceTabPage_after_at;
 	public static String WhiteSpaceTabPage_after_opening_angle_bracket;
 	public static String WhiteSpaceTabPage_after_closing_angle_bracket;
 	public static String WhiteSpaceTabPage_before_opening_angle_bracket;
@@ -166,7 +160,6 @@ final class FormatterMessages extends NLS {
 	public static String WhiteSpaceOptions_for;
 	public static String WhiteSpaceOptions_if;
 	public static String WhiteSpaceOptions_switch;
-	public static String WhiteSpaceOptions_synchronized;
 	public static String WhiteSpaceOptions_while;
 	public static String WhiteSpaceOptions_assert;
 	public static String WhiteSpaceOptions_member_function_declaration;
@@ -174,9 +167,6 @@ final class FormatterMessages extends NLS {
 	public static String WhiteSpaceOptions_method;
 	public static String WhiteSpaceOptions_method_call;
 	public static String WhiteSpaceOptions_paren_expr;
-	public static String WhiteSpaceOptions_enum_constant_body;
-	public static String WhiteSpaceOptions_enum_constant_arguments;
-	public static String WhiteSpaceOptions_enum_declaration;
 	public static String WhiteSpaceOptions_annotation_modifier;
 	public static String WhiteSpaceOptions_annotation_modifier_args;
 	public static String WhiteSpaceOptions_annotation_type_member;
@@ -250,8 +240,6 @@ final class FormatterMessages extends NLS {
 	public static String WhiteSpaceOptions_after_semicolon;
 	public static String WhiteSpaceOptions_before_question_mark;
 	public static String WhiteSpaceOptions_after_question_mark;
-	public static String WhiteSpaceOptions_before_at;
-	public static String WhiteSpaceOptions_after_at;
 	public static String WhiteSpaceOptions_before_and;
 	public static String WhiteSpaceOptions_after_and;
 	public static String WhiteSpaceOptions_before_ellipsis;
@@ -284,7 +272,6 @@ final class FormatterMessages extends NLS {
 	public static String LineWrappingTabPage_function_calls;
 	public static String LineWrappingTabPage_expressions;
 	public static String LineWrappingTabPage_statements;
-	public static String LineWrappingTabPage_enum_decls;
 	public static String LineWrappingTabPage_wrapping_policy_label_text;
 	public static String LineWrappingTabPage_indentation_policy_label_text;
 	public static String LineWrappingTabPage_force_split_checkbox_text;
@@ -306,7 +293,6 @@ final class FormatterMessages extends NLS {
 	public static String LineWrappingTabPage_width_indent_option_default_indent_array;
 	public static String LineWrappingTabPage_width_indent_option_default_indent_objlit;
 	public static String LineWrappingTabPage_error_invalid_value;
-	public static String LineWrappingTabPage_enum_superinterfaces;
 	public static String LineWrappingTabPage_assignment_alignment;
 	public static String LineWrappingTabPage_binary_expression_wrap_operator;
 	public static String LineWrappingTabPage_binary_expression;
@@ -352,8 +338,6 @@ final class FormatterMessages extends NLS {
 	public static String BracesTabPage_option_switch_case;
 	public static String BracesTabPage_option_array_initializer;
 	public static String BracesTabPage_option_keep_empty_array_initializer_on_one_line;
-	public static String BracesTabPage_option_enum_declaration;
-	public static String BracesTabPage_option_enumconst_declaration;
 	public static String BracesTabPage_option_annotation_type_declaration;
 	public static String BracesTabPage_option_function_declaration;
 	public static String BracesTabPage_option_object_initializer;
@@ -408,8 +392,6 @@ final class FormatterMessages extends NLS {
 	public static String IndentationTabPage_field_alignment_group_align_fields_in_columns;
 	public static String IndentationTabPage_indent_group_title;
 	public static String IndentationTabPage_class_group_option_indent_declarations_within_class_body;
-	public static String IndentationTabPage_class_group_option_indent_declarations_within_enum_const;
-	public static String IndentationTabPage_class_group_option_indent_declarations_within_enum_decl;
 	public static String IndentationTabPage_class_group_option_indent_declarations_within_annot_decl;
 	public static String IndentationTabPage_block_group_option_indent_statements_compare_to_body;
 	public static String IndentationTabPage_block_group_option_indent_statements_compare_to_block;
@@ -433,8 +415,6 @@ final class FormatterMessages extends NLS {
 	public static String NewLinesTabPage_newlines_group_option_empty_class_body;
 	public static String NewLinesTabPage_newlines_group_option_empty_annotation_decl_body;
 	public static String NewLinesTabPage_newlines_group_option_empty_anonymous_class_body;
-	public static String NewLinesTabPage_newlines_group_option_empty_enum_declaration;
-	public static String NewLinesTabPage_newlines_group_option_empty_enum_constant;
 	public static String NewLinesTabPage_newlines_group_option_empty_method_body;
 	public static String NewLinesTabPage_newlines_group_option_empty_block;
 	public static String NewLinesTabPage_newlines_group_option_empty_end_of_file;

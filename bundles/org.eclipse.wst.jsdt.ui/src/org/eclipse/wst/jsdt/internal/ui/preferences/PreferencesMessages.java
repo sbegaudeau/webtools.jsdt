@@ -62,7 +62,6 @@ public final class PreferencesMessages extends NLS {
 	public static String ImportOrganizePreferencePage_title;
 	public static String ImportOrganizeConfigurationBlock_order_label;
 	public static String ImportOrganizeConfigurationBlock_other_static;
-	public static String ImportOrganizeConfigurationBlock_other_static_label;
 	public static String ImportOrganizeConfigurationBlock_other_normal;
 	public static String ImportOrganizeConfigurationBlock_other_normal_label;
 	public static String ImportOrganizeConfigurationBlock_order_add_button;
