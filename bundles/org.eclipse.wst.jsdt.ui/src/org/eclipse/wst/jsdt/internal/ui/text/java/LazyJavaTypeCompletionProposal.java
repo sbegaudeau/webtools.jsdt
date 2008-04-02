@@ -116,14 +116,15 @@ public class LazyJavaTypeCompletionProposal extends LazyJavaCompletionProposal {
 		
 		/* Add imports if the preference is on. */
 		fImportRewrite= createImportRewrite();
-		String packageName=null;
-		try {
-			IJavaElement javaElement = this.getProposalInfo().getJavaElement();
-			 packageName=JavaModelUtil.getFilePackage(javaElement);
-		} catch (JavaModelException e) {
-			JavaPlugin.log(e);
-		}
+
 		if (fImportRewrite != null) {
+			String packageName=null;
+			try {
+				IJavaElement javaElement = this.getProposalInfo().getJavaElement();
+				 packageName=JavaModelUtil.getFilePackage(javaElement);
+			} catch (JavaModelException e) {
+				JavaPlugin.log(e);
+			}
 			return fImportRewrite.addImport(qualifiedTypeName,packageName, fImportContext);
 		}
 		
