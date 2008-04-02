@@ -417,6 +417,7 @@
             %java.perspective.description
          </description>
       </perspective>
+<!--      
       <perspective
             name="%typeHierarchyName"
             icon="$nl$/icons/full/eview16/hierch_persp.gif"
@@ -426,6 +427,7 @@
             %typeHierarchy.perspective.description
          </description>
       </perspective>
+-->      
    </extension>
    
    <extension
