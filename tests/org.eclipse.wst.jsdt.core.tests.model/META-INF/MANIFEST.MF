@@ -12,13 +12,13 @@ Export-Package: org.eclipse.wst.jsdt.core.tests,
  org.eclipse.wst.jsdt.core.tests.model,
  org.eclipse.wst.jsdt.core.tests.rewrite.describing,
  org.eclipse.wst.jsdt.core.tests.rewrite.modifying
-Require-Bundle: org.eclipse.core.resources;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.2.0,4.0.0)",
- org.junit;bundle-version="[3.8.1,4.0.0)",
- org.eclipse.wst.jsdt.core.tests.compiler,
- org.eclipse.team.core;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.text;bundle-version="[3.2.0,4.0.0)",
- com.ibm.icu;bundle-version="[3.4.4,4.0.0)",
- org.eclipse.wst.jsdt.core  
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.4.0,4.0.0)",
+ org.eclipse.core.runtime;bundle-version="[3.4.0,4.0.0)",
+ org.junit;bundle-version="[3.8.2,4.0.0)",
+ org.eclipse.wst.jsdt.core.tests.compiler;bundle-version="[1.0.0,2.0.0)",
+ org.eclipse.team.core;bundle-version="[3.3.100,4.0.0)",
+ org.eclipse.text;bundle-version="[3.4.0,4.0.0)",
+ com.ibm.icu;bundle-version="[3.8.1,4.0.0)",
+ org.eclipse.wst.jsdt.core;bundle-version="[1.0.0,2.0.0)"
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
