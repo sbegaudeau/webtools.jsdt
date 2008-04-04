@@ -49,16 +49,17 @@ Export-Package: org.eclipse.wst.jsdt.core,
  org.eclipse.wst.jsdt.launching
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.wst.jsdt.core.JavaCore
-Require-Bundle: org.eclipse.core.resources;bundle-version="[3.2.0,4.0.0)",
- org.eclipse.core.runtime;bundle-version="[3.3.0,4.0.0)",
- org.eclipse.core.filesystem;bundle-version="[1.0.0,2.0.0)",
- org.eclipse.text;bundle-version="[3.1.0,4.0.0)",
- org.eclipse.team.core;bundle-version="[3.1.0,4.0.0)";resolution:=optional,
- com.ibm.icu,
- org.eclipse.debug.core
+Require-Bundle: org.eclipse.core.resources;bundle-version="[3.4.0,4.0.0)",
+ org.eclipse.core.runtime;bundle-version="[3.4.0,4.0.0)",
+ org.eclipse.core.filesystem;bundle-version="[1.2.0,2.0.0)",
+ org.eclipse.text;bundle-version="[3.4.0,4.0.0)",
+ org.eclipse.team.core;bundle-version="[3.3.100,4.0.0)";resolution:=optional,
+ com.ibm.icu;bundle-version="[3.8.1,4.0.0)",
+ org.eclipse.debug.core;bundle-version="[3.4.0,4.0.0)"
 Eclipse-LazyStart: true
 Bundle-SymbolicName: org.eclipse.wst.jsdt.core; singleton:=true
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Main-Class: org.eclipse.wst.jsdt.internal.compiler.batch.Main
 Bundle-Localization: plugin
+Bundle-ActivationPolicy: lazy
 
