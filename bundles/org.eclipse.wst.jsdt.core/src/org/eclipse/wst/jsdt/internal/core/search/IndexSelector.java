@@ -22,6 +22,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SimpleSet;
 import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
+import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MatchLocator;
 import org.eclipse.wst.jsdt.internal.core.search.matching.MethodPattern;
@@ -89,7 +90,7 @@ public static boolean canSeeFocus(IJavaElement focus, JavaProject javaProject, I
 					return true;
 			}
 		}
-		if (focus instanceof JarPackageFragmentRoot) {
+		if (focus instanceof LibraryFragmentRoot) {
 			// focus is part of a jar
 			IPath focusPath = focus.getPath();
 			IClasspathEntry[] entries = javaProject.getExpandedClasspath();
@@ -134,7 +135,7 @@ private void initializeIndexLocations() {
 			SimpleSet jarsToCheck = new SimpleSet(length);
 			IClasspathEntry[] focusEntries = null;
 			if (this.pattern instanceof MethodPattern) { // should consider polymorphic search for method patterns
-				JavaProject focusProject = focus instanceof JarPackageFragmentRoot ? (JavaProject) focus.getParent() : (JavaProject) focus;
+				JavaProject focusProject = focus instanceof LibraryFragmentRoot ? (JavaProject) focus.getParent() : (JavaProject) focus;
 				focusEntries = focusProject.getExpandedClasspath();
 			}
 			IJavaModel model = JavaModelManager.getJavaModelManager().getJavaModel();
