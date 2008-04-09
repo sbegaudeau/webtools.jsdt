@@ -555,7 +555,7 @@ private void reportHierarchy(IType focus, CompilationUnitDeclaration parsedUnit,
 			Member declaringMember = ((Member)focus).getOuterMostLocalContext();
 			if (declaringMember == null) {
 				// top level or member type
-				char[] fullyQualifiedName = focus.getFullyQualifiedName().toCharArray();
+				char[] fullyQualifiedName = focus.getElementName().toCharArray();
 				setFocusType(CharOperation.splitOn('.', fullyQualifiedName));
 			} else {
 				// anonymous or local type
@@ -909,6 +909,14 @@ public ReferenceBinding setFocusType(char[][] compoundName) {
 	this.focusType = this.lookupEnvironment.getCachedType(compoundName);
 	if (this.focusType == null) {
 		this.focusType = this.lookupEnvironment.askForType(compoundName);
+	}
+	if (this.focusType==null)
+	{
+		char [][] singleName= {CharOperation.concatWith(compoundName, '.')};
+		this.focusType = this.lookupEnvironment.getCachedType(singleName);
+		if (this.focusType == null) {
+			this.focusType = this.lookupEnvironment.askForType(singleName);
+		}
 	}
 	return this.focusType;
 }
