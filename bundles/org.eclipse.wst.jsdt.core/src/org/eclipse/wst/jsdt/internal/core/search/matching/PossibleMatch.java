@@ -81,7 +81,7 @@ public char[] getContents() {
  * @see PackageReferenceLocator#isDeclaringPackageFragment(org.eclipse.wst.jsdt.core.IPackageFragment, org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding)
  */
 public char[] getFileName() {
-	return this.openable.getElementName().toCharArray();
+	return this.openable.getPath().toString().toCharArray();
 }
 public char[] getMainTypeName() {
 	// The file is no longer opened to get its name => remove fix for bug 32182

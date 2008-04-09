@@ -994,4 +994,8 @@ public boolean isFunctionType()
 {
 	return false;
 }
+public char[] getFileName()
+{
+	return new char[]{};
+}
 }

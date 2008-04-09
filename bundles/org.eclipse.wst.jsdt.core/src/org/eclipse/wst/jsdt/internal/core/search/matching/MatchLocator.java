@@ -2363,6 +2363,7 @@ protected void reportMatching(CompilationUnitDeclaration unit, boolean mustResol
 			if (enclosingElement == null) return;
 			boolean typeInHierarchy = true;
 			boolean matchedClassContainer=true;
+			enclosingElement=((ITypeRoot)enclosingElement).getType(new String(inferredType.getName()));
 
 			Integer level = (Integer) nodeSet.matchingNodes.removeKey(inferredType);
 			int accuracy = (level != null && matchedClassContainer) ? level.intValue() : -1;

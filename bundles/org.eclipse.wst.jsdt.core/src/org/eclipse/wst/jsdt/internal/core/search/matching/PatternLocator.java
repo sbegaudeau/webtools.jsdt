@@ -137,7 +137,7 @@ public static char[] qualifiedPattern(char[] simpleNamePattern, char[] qualifica
 	} else {
 		return qualificationPattern == null
 			? CharOperation.concat(ONE_STAR, simpleNamePattern)
-			: CharOperation.concat(qualificationPattern, simpleNamePattern, '.');
+			: CharOperation.concat(qualificationPattern, simpleNamePattern, '/');
 	}
 }
 public static char[] qualifiedSourceName(TypeBinding binding) {
@@ -801,15 +801,33 @@ protected int resolveLevelForType(char[] qualifiedPattern, TypeBinding type) {
 	if (type.isTypeVariable()) return IMPOSSIBLE_MATCH;
 
 	// NOTE: if case insensitive search then qualifiedPattern is assumed to be lowercase
-
+    char [] filePath=new char[]{};
+    char [] bindingPath=filePath;
+	int index;
+	if ( (index=CharOperation.lastIndexOf('/', qualifiedPattern))>-1)
+	{
+		filePath=CharOperation.subarray(qualifiedPattern, 0, index);
+		qualifiedPattern=CharOperation.subarray(qualifiedPattern, index+1, qualifiedPattern.length);
+		bindingPath=type.getFileName();
+		index=CharOperation.lastIndexOf('/', bindingPath);
+		if (index>-1)
+			bindingPath=CharOperation.subarray(bindingPath, 0, index);
+	}
+	
 	char[] qualifiedPackageName = type.qualifiedPackageName();
 	char[] qualifiedSourceName = qualifiedSourceName(type);
 	char[] fullyQualifiedTypeName = qualifiedPackageName.length == 0
 		? qualifiedSourceName
 		: CharOperation.concat(qualifiedPackageName, qualifiedSourceName, '.');
-	return CharOperation.match(qualifiedPattern, fullyQualifiedTypeName, this.isCaseSensitive)
-		? ACCURATE_MATCH
-		: IMPOSSIBLE_MATCH;
+	if (CharOperation.match(qualifiedPattern, fullyQualifiedTypeName, this.isCaseSensitive))
+	{
+		if (filePath.length>0)
+		{
+		   return (CharOperation.endsWith(bindingPath, filePath)) ? ACCURATE_MATCH:IMPOSSIBLE_MATCH;	
+		}
+		return ACCURATE_MATCH;
+	}
+	return IMPOSSIBLE_MATCH;
 }
 /* (non-Javadoc)
  * Resolve level for type with a given binding with all pattern information.
