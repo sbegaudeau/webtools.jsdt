@@ -384,7 +384,7 @@ private Object[] getLibraryChildren(IPackageFragmentRoot container) {
 						result.add(fragments[j]);
 					}
 				} else {
-				//	result.add(root);
+					result.add(root);
 				}
 			}
 		}
