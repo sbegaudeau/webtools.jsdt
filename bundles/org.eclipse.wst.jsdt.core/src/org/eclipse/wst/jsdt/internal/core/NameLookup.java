@@ -1047,6 +1047,7 @@ public class NameLookup implements SuffixConstants {
 					path = ((SourceType)element).getPath().toString().toCharArray();
 				}
 				if(path!=null && !getRestrictedAccessRequestor().acceptBinding(bindingType, acceptFlags, packageName.toCharArray(), bindingName.toCharArray(), new String(path), accessRestriction)){
+					element = null;
 					continue;
 				}
 //
