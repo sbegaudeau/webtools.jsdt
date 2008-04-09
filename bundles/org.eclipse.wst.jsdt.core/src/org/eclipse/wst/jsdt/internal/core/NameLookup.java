@@ -53,6 +53,8 @@ import org.eclipse.wst.jsdt.internal.compiler.env.AccessRestriction;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.Binding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.CompilationUnitScope;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.ReferenceBinding;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.SourceTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.search.BasicSearchEngine;
@@ -1035,16 +1037,18 @@ public class NameLookup implements SuffixConstants {
 				if (checkRestrictions) {
 					accessRestriction = getViolatedRestriction(bindingName, packageName, element, accessRestriction);
 				}
-//				char[] path = null;
-//
-//				if(element instanceof SourceTypeBinding) {
-//					path = ((SourceTypeBinding)element).getFileName();
-//				}else if ( element instanceof ReferenceBinding) {
-//					path = ((ReferenceBinding)element).getFileName();
-//				}
-//				if(!getRestrictedAccessRequestor().acceptBinding(bindingType, acceptFlags, packageName.toCharArray(), bindingName.toCharArray(), new String(path), accessRestriction)){
-//					continue;
-//				}
+				char[] path = null;
+
+				if(element instanceof SourceTypeBinding) {
+					path = ((SourceTypeBinding)element).getFileName();
+				}else if ( element instanceof ReferenceBinding) {
+					path = ((ReferenceBinding)element).getFileName();
+				}else if(element instanceof SourceType){
+					path = ((SourceType)element).getPath().toString().toCharArray();
+				}
+				if(path!=null && !getRestrictedAccessRequestor().acceptBinding(bindingType, acceptFlags, packageName.toCharArray(), bindingName.toCharArray(), new String(path), accessRestriction)){
+					continue;
+				}
 //
 				Answer answer = new Answer(element, accessRestriction);
 				if (!answer.ignoreIfBetter()) {
