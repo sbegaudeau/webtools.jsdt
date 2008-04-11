@@ -577,9 +577,6 @@ public class MethodDeclaration extends BodyDeclaration {
 	 * </ul>
 	 */
 	public void setName(SimpleName methodName) {
-		if (methodName == null) {
-			throw new IllegalArgumentException();
-		}
 		ASTNode oldChild = this.methodName;
 		preReplaceChild(oldChild, methodName, NAME_PROPERTY);
 		this.methodName = methodName;
