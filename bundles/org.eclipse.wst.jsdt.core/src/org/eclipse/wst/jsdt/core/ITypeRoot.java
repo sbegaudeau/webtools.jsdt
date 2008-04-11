@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * 	was already implemented in this interface since version 3.0.
  * @since 3.3
  */
-public interface ITypeRoot extends IJavaElement, IParent, IOpenable, ISourceReference, ICodeAssist {
+public interface ITypeRoot extends IJavaElement, IParent, IOpenable, ISourceReference, ICodeAssist, IMethodContainer {
 
 /**
  * Finds the primary type of this Java type root (that is, the type with the same name as the
@@ -95,60 +95,5 @@ IJavaElement getElementAt(int position) throws JavaModelException;
  */
 ICompilationUnit getWorkingCopy(WorkingCopyOwner owner, IProgressMonitor monitor) throws JavaModelException;
 
-
-/**
- * Returns the field with the specified name
- * in this type (for example, <code>"bar"</code>).
- * This is a handle-only method.  The field may or may not exist.
- *
- * @param name the given name
- * @return the field with the specified name in this type
- */
-IField getField(String name);
-/**
- * Returns the fields declared by this type.
- * If this is a source type, the results are listed in the order
- * in which they appear in the source, otherwise, the results are
- * in no particular order.  For binary types, this includes synthetic fields.
- *
- * @exception JavaModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource.
- * @return the fields declared by this type
- */
-IField[] getFields() throws JavaModelException;
-
-/**
- * Returns the method with the specified name and parameter types
- * in this type (for example, <code>"foo", {"I", "QString;"}</code>).
- * To get the handle for a constructor, the name specified must be the
- * simple name of the enclosing type.
- * This is a handle-only method.  The method may or may not be present.
- * <p>
- * The type signatures may be either unresolved (for source types)
- * or resolved (for binary types), and either basic (for basic types)
- * or rich (for parameterized types). See {@link Signature} for details.
- * </p>
- *
- * @param name the given name
- * @param parameterTypeSignatures the given parameter types
- * @return the method with the specified name and parameter types in this type
- */
-IMethod getMethod(String name, String[] parameterTypeSignatures);
-
-/**
- * Returns the methods and constructors declared by this type.
- * For binary types, this may include the special <code>&lt;clinit&gt</code>; method
- * and synthetic methods.
- * If this is a source type, the results are listed in the order
- * in which they appear in the source, otherwise, the results are
- * in no particular order.
- *
- * @exception JavaModelException if this element does not exist or if an
- *		exception occurs while accessing its corresponding resource.
- * @return the methods and constructors declared by this type
- */
-IMethod[] getMethods() throws JavaModelException;
-
-IType getType(String name);
 
 }

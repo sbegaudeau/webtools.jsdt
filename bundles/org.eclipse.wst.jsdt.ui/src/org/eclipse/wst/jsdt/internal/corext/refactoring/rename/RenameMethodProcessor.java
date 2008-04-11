@@ -38,6 +38,7 @@ import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IMethodContainer;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import org.eclipse.wst.jsdt.core.JavaConventions;
@@ -509,7 +510,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 			for (Iterator iter= fMethodsToRename.iterator(); iter.hasNext(); i++) {
 				IMethod method= (IMethod) iter.next();
 				ICompilationUnit newCu= RenameAnalyzeUtil.findWorkingCopyForCu(newDeclarationWCs, method.getCompilationUnit());
-				IType typeWc= (IType) JavaModelUtil.findInCompilationUnit(newCu, method.getDeclaringType());
+				IMethodContainer typeWc= (IMethodContainer) JavaModelUtil.findInCompilationUnit(newCu, method.getParent());
 				if (typeWc == null)
 					continue;
 				wcOldMethods[i]= getMethodInWorkingCopy(method, getCurrentElementName(), typeWc);
@@ -626,7 +627,7 @@ public abstract class RenameMethodProcessor extends JavaRenameProcessor implemen
 		return (ICompilationUnit[]) cus.toArray(new ICompilationUnit[cus.size()]);
 	}
 	
-	private IMethod getMethodInWorkingCopy(IMethod method, String elementName, IType typeWc) throws CoreException{
+	private IMethod getMethodInWorkingCopy(IMethod method, String elementName, IMethodContainer typeWc) throws CoreException{
 		String[] paramTypeSignatures= method.getParameterTypes();
 		return typeWc.getMethod(elementName, paramTypeSignatures);
 	}

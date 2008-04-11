@@ -16,27 +16,26 @@ import java.io.InputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
- * Represents either a source type in a compilation unit (either a top-level
- * type, a member type, a local type or an anonymous type)
- * or a binary type in a class file. Enumeration classes and annotation
- * types are subkinds of classes and interfaces, respectively.
- * <p>
- * Note that the element name of an anonymous source type is always empty.
- * </p><p>
- * If a binary type cannot be parsed, its structure remains unknown.
- * Use <code>IJavaElement.isStructureKnown</code> to determine whether this
- * is the case.
+ * Represents  a source type in a JavaScript file (either a top-level
+ * type, a member type, or a local type)
  * </p>
  * <p>
  * The children are of type <code>IMember</code>, which includes <code>IField</code>,
  * <code>IMethod</code>, <code>IInitializer</code> and <code>IType</code>.
- * The children are listed in the order in which they appear in the source or class file.
+ * The children are listed in the order in which they appear in the source file.
  * </p>
  * <p>
  * This interface is not intended to be implemented by clients.
  * </p>
+ * <p>
+ * Provisional API: This class/interface is part of an interim API that is still under development and expected to 
+ * change significantly before reaching stability. It is being made available at this early stage to solicit feedback 
+ * from pioneering adopters on the understanding that any code that uses this API will almost certainly be broken 
+ * (repeatedly) as the API evolves.
+ * </p>
+ *  
  */
-public interface IType extends IMember {
+public interface IType extends IMember, IMethodContainer {
 	/**
 	 * Do code completion inside a code snippet in the context of the current type.
 	 *
