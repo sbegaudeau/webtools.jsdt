@@ -36,6 +36,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfObject;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfType;
 import org.eclipse.wst.jsdt.internal.compiler.util.ObjectVector;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleNameVector;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 
 
@@ -977,8 +978,9 @@ ImportBinding[] getDefaultImports() {
 		String include=contextIncludes[i];
 		if (include!=null)
 		{
-			if (include.endsWith(".js"))
-				include=include.substring(0,include.length()-3);
+			int index=Util.indexOfJavaLikeExtension(include);
+			if (index>=0)
+				include=include.substring(0,index);
 			include=include.replace('.', FILENAME_DOT_SUBSTITUTION);
 			char [][] qualifiedName=CharOperation.splitOn('/', include.toCharArray());
 			Binding binding=findImport(qualifiedName, qualifiedName.length);

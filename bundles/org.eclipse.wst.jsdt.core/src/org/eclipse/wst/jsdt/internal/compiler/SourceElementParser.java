@@ -1265,8 +1265,8 @@ public void notifySourceElementRequestor( InferredType type ) {
 
 	typeInfo.name = type.getName();
 
-	typeInfo.nameSourceStart = type.sourceStart;
-	typeInfo.nameSourceEnd = -1;
+	typeInfo.nameSourceStart = type.getNameStart();
+	typeInfo.nameSourceEnd = typeInfo.nameSourceStart+typeInfo.name.length-1;
 	typeInfo.superclass = type.getSuperClassName();
 	typeInfo.superinterfaces = null;
 //		typeInfo.typeParameters = getTypeParameterInfos(typeDeclaration.typeParameters);

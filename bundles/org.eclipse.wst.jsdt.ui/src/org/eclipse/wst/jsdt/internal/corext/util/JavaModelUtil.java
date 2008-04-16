@@ -56,6 +56,7 @@ import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 import org.eclipse.wst.jsdt.internal.corext.CorextMessages;
 import org.eclipse.wst.jsdt.internal.corext.ValidateEditException;
 import org.eclipse.wst.jsdt.internal.ui.JavaUIStatus;
@@ -1041,8 +1042,9 @@ public final class JavaModelUtil {
 		IJavaElement rootElement=fileAncestor.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 		IPath rootPath = rootElement.getResource().getFullPath();
 		String relativePath = filePath.removeFirstSegments(rootPath.segmentCount()).toPortableString();
-		if (relativePath.endsWith(".js"))
-			relativePath=relativePath.substring(0,relativePath.length()-3);
+		int index=Util.indexOfJavaLikeExtension(relativePath);
+		if (index>=0)
+			relativePath=relativePath.substring(0,index);
 		relativePath=relativePath.replace('/', '.');
 		return relativePath;
 		

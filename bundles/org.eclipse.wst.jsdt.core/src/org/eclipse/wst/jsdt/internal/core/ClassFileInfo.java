@@ -76,7 +76,7 @@ private void generateInnerClassHandles(IType type, IBinaryType typeInfo, ArrayLi
 		IPackageFragment pkg = (IPackageFragment) type.getAncestor(IJavaElement.PACKAGE_FRAGMENT);
 		for (int i = 0, typeCount = innerTypes.length; i < typeCount; i++) {
 			IBinaryNestedType binaryType = innerTypes[i];
-			IClassFile parentClassFile= pkg.getClassFile(new String(ClassFile.unqualifiedName(binaryType.getName())) + SUFFIX_STRING_class);
+			IClassFile parentClassFile= pkg.getClassFile(new String(ClassFile.unqualifiedName(binaryType.getName())) + SUFFIX_STRING_java);
 			IType innerType = new BinaryType((JavaElement) parentClassFile, ClassFile.simpleName(binaryType.getName()));
 			childrenHandles.add(innerType);
 		}

@@ -237,7 +237,7 @@ public IType getDeclaringType() {
 				return null;
 			}
 
-			return getPackageFragment().getClassFile(new String(enclosingTypeName) + SUFFIX_STRING_class).getType();
+			return getPackageFragment().getClassFile(new String(enclosingTypeName) + SUFFIX_STRING_java).getType();
 		} catch (JavaModelException npe) {
 			return null;
 		}
@@ -260,7 +260,7 @@ public IType getDeclaringType() {
 			return null;
 		} else {
 			String enclosingName = classFileName.substring(0, lastDollar);
-			String enclosingClassFileName = enclosingName + SUFFIX_STRING_class;
+			String enclosingClassFileName = enclosingName + SUFFIX_STRING_java;
 			return
 				new BinaryType(
 					(JavaElement)this.getPackageFragment().getClassFile(enclosingClassFileName),
@@ -635,7 +635,7 @@ public String[] getTypeParameterSignatures() throws JavaModelException {
  * @see IType#getType(String)
  */
 public IType getType(String typeName) {
-	IClassFile classFile= getPackageFragment().getClassFile(getTypeQualifiedName() + "$" + typeName + SUFFIX_STRING_class); //$NON-NLS-1$
+	IClassFile classFile= getPackageFragment().getClassFile(getTypeQualifiedName() + "$" + typeName + SUFFIX_STRING_java); //$NON-NLS-1$
 	return new BinaryType((JavaElement)classFile, typeName);
 }
 public ITypeParameter getTypeParameter(String typeParameterName) {

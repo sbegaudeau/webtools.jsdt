@@ -58,7 +58,7 @@ public abstract class ClasspathLocation implements FileSystem.Classpath,
 		if (this.accessRuleSet == null)
 			return null;
 		char [] qualifiedTypeName = qualifiedBinaryFileName.
-			substring(0, qualifiedBinaryFileName.length() - SUFFIX_CLASS.length)
+			substring(0, qualifiedBinaryFileName.length() - SUFFIX_java.length)
 			.toCharArray();
 		if (File.separatorChar == '\\') {
 			CharOperation.replace(qualifiedTypeName, File.separatorChar, '/');

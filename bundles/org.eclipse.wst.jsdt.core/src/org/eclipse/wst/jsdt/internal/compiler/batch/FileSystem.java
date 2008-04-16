@@ -220,7 +220,7 @@ private static String convertPathSeparators(String path) {
 private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeName, boolean asBinaryOnly){
 	if (this.knownFileNames.contains(qualifiedTypeName)) return null; // looking for a file which we know was provided at the beginning of the compilation
 
-	String qualifiedBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
+	String qualifiedBinaryFileName = qualifiedTypeName + SUFFIX_STRING_java;
 	String qualifiedPackageName =
 		qualifiedTypeName.length() == typeName.length
 			? Util.EMPTY_STRING

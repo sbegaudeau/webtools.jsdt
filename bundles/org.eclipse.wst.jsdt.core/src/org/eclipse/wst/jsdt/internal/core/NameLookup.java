@@ -1413,10 +1413,13 @@ public class NameLookup implements SuffixConstants {
 //	private String [] splitPackageName(String name)
 //	{
 //		String[] strings;
-//		if (name.endsWith(".js"))
+//		int index=Util.indexOfJavaLikeExtension(name);
+//		if (index>=0)
 //		{
-//			strings= Util.splitOn('.', name, 0, name.length()-3);
-//			strings[strings.length-1]=strings[strings.length-1]+".js";
+//			String extension=name.substring(index+1);
+//			name=name.substring(0,index);
+//			strings= Util.splitOn('.', name, 0, name.length());
+//			strings[strings.length-1]=strings[strings.length-1]+extension;
 //		}
 //		else
 //		strings  = Util.splitOn('.', name, 0, name.length());

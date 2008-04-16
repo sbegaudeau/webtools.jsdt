@@ -143,7 +143,7 @@ private NameEnvironmentAnswer findClass(String qualifiedTypeName, char[] typeNam
 			}
 		} else {
 			if (binaryFileName == null) {
-				qBinaryFileName = qualifiedTypeName + SUFFIX_STRING_class;
+				qBinaryFileName = qualifiedTypeName + SUFFIX_STRING_java;
 				binaryFileName = qBinaryFileName;
 				qPackageName =  ""; //$NON-NLS-1$
 				if (qualifiedTypeName.length() > typeName.length) {

@@ -333,12 +333,12 @@ public class Util implements SuffixConstants {
 	 */
 	public final static boolean isClassFileName(char[] name) {
 		int nameLength = name == null ? 0 : name.length;
-		int suffixLength = SUFFIX_CLASS.length;
+		int suffixLength = SUFFIX_JAVA.length;
 		if (nameLength < suffixLength) return false;
 
 		for (int i = 0, offset = nameLength - suffixLength; i < suffixLength; i++) {
 			char c = name[offset + i];
-			if (c != SUFFIX_class[i] && c != SUFFIX_CLASS[i]) return false;
+			if (c != SUFFIX_java[i] && c != SUFFIX_JAVA[i]) return false;
 		}
 		return true;
 	}
@@ -348,13 +348,13 @@ public class Util implements SuffixConstants {
 	 */
 	public final static boolean isClassFileName(String name) {
 		int nameLength = name == null ? 0 : name.length();
-		int suffixLength = SUFFIX_CLASS.length;
+		int suffixLength = SUFFIX_JAVA.length;
 		if (nameLength < suffixLength) return false;
 
 		for (int i = 0; i < suffixLength; i++) {
 			char c = name.charAt(nameLength - i - 1);
 			int suffixIndex = suffixLength - i - 1;
-			if (c != SUFFIX_class[suffixIndex] && c != SUFFIX_CLASS[suffixIndex]) return false;
+			if (c != SUFFIX_java[suffixIndex] && c != SUFFIX_JAVA[suffixIndex]) return false;
 		}
 		return true;
 	}

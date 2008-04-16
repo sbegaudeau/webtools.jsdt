@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -34,9 +32,7 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
-import org.eclipse.wst.jsdt.internal.core.JarPackageFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
-import org.eclipse.wst.jsdt.internal.core.JavaModel;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.hierarchy.TypeHierarchy;
@@ -86,25 +82,27 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 
 		// resource path
 		IPackageFragmentRoot root = (IPackageFragmentRoot)type.getPackageFragment().getParent();
-		if (root.isArchive()) {
-			IPath jarPath = root.getPath();
-			Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), jarPath, true);
-			String zipFileName;
-			if (target instanceof IFile) {
-				// internal jar
-				zipFileName = jarPath.toString();
-			} else if (target instanceof File) {
-				// external jar
-				zipFileName = ((File)target).getPath();
-			} else {
-				return; // unknown target
-			}
-			this.focusPath =
-				zipFileName
-					+ JAR_FILE_ENTRY_SEPARATOR
-					+ type.getFullyQualifiedName().replace('.', '/')
-					+ SUFFIX_STRING_class;
-		} else {
+//		if (root.isArchive()) {
+//			IPath jarPath = root.getPath();
+//			Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), jarPath, true);
+//			String zipFileName;
+//			if (target instanceof IFile) {
+//				// internal jar
+//				zipFileName = jarPath.toString();
+//			} else if (target instanceof File) {
+//				// external jar
+//				zipFileName = ((File)target).getPath();
+//			} else {
+//				return; // unknown target
+//			}
+//			this.focusPath =
+//				zipFileName
+//					+ JAR_FILE_ENTRY_SEPARATOR
+//					+ type.getFullyQualifiedName().replace('.', '/')
+//					+ SUFFIX_STRING_class;
+//		}
+//		else 
+		{
 			this.focusPath = type.getPath().toString();
 		}
 
@@ -127,30 +125,31 @@ public class HierarchyScope extends AbstractSearchScope implements SuffixConstan
 			}
 			IPackageFragmentRoot root =
 				(IPackageFragmentRoot) type.getPackageFragment().getParent();
-			if (root instanceof JarPackageFragmentRoot) {
-				// type in a jar
-				JarPackageFragmentRoot jar = (JarPackageFragmentRoot) root;
-				IPath jarPath = jar.getPath();
-				Object target = JavaModel.getTarget(workspaceRoot, jarPath, true);
-				String zipFileName;
-				if (target instanceof IFile) {
-					// internal jar
-					zipFileName = jarPath.toString();
-				} else if (target instanceof File) {
-					// external jar
-					zipFileName = ((File)target).getPath();
-				} else {
-					continue; // unknown target
-				}
-				String resourcePath =
-					zipFileName
-						+ JAR_FILE_ENTRY_SEPARATOR
-						+ type.getFullyQualifiedName().replace('.', '/')
-						+ SUFFIX_STRING_class;
-
-				this.resourcePaths.add(resourcePath);
-				paths.put(jarPath, type);
-			} else {
+//			if (root instanceof JarPackageFragmentRoot) {
+//				// type in a jar
+//				JarPackageFragmentRoot jar = (JarPackageFragmentRoot) root;
+//				IPath jarPath = jar.getPath();
+//				Object target = JavaModel.getTarget(workspaceRoot, jarPath, true);
+//				String zipFileName;
+//				if (target instanceof IFile) {
+//					// internal jar
+//					zipFileName = jarPath.toString();
+//				} else if (target instanceof File) {
+//					// external jar
+//					zipFileName = ((File)target).getPath();
+//				} else {
+//					continue; // unknown target
+//				}
+//				String resourcePath =
+//					zipFileName
+//						+ JAR_FILE_ENTRY_SEPARATOR
+//						+ type.getFullyQualifiedName().replace('.', '/')
+//						+ SUFFIX_STRING_class;
+//
+//				this.resourcePaths.add(resourcePath);
+//				paths.put(jarPath, type);
+//			} else 
+			{
 				// type is a project
 				paths.put(type.getJavaProject().getProject().getFullPath(), type);
 			}

@@ -23,6 +23,7 @@ import org.eclipse.wst.jsdt.core.ITypeRoot;
 import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.core.Signature;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 /**
  * A command parameter value converter to convert between Java elements and
@@ -84,7 +85,7 @@ public class JavaElementReferenceConverter extends AbstractParameterValueConvert
 			typeName= javaElementRef.substring(0, typeEndPosition);
 		}
 
-		if (typeName.endsWith(".js"))
+		if (Util.isJavaLikeFileName(typeName))
 		{
 			ITypeRoot typeRoot=null;
 			try {

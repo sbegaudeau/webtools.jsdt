@@ -1139,8 +1139,7 @@ public class JavaProject
 					// default to the first one
 					return pkgFragments[0];
 				}
-			} else if (Util.isJavaLikeFileName(path.lastSegment())
-					|| extension.equalsIgnoreCase(EXTENSION_class)) {
+			} else if (Util.isJavaLikeFileName(path.lastSegment())) {
 				IPath packagePath = path.removeLastSegments(1);
 				String packageName = packagePath.toString().replace(IPath.SEPARATOR, '.');
 				String typeName = path.lastSegment();

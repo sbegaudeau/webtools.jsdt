@@ -777,9 +777,9 @@ public class Util {
 					}
 				}
 				int length = fileExtensions.size();
-				// note that file extensions contains "java" as it is defined in JDT Core's plugin.xml
+				// note that file extensions contains "js" as it is defined in JSDT Core's plugin.xml
 				char[][] extensions = new char[length][];
-				extensions[0] = SuffixConstants.EXTENSION_java.toCharArray(); // ensure that "java" is first
+				extensions[0] = SuffixConstants.EXTENSION_java.toCharArray(); // ensure that "js" is first
 				int index = 1;
 				Iterator iterator = fileExtensions.iterator();
 				while (iterator.hasNext()) {

@@ -13,17 +13,13 @@ package org.eclipse.wst.jsdt.internal.core.search.matching;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IMember;
 import org.eclipse.wst.jsdt.core.IMethod;
-import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.Signature;
 import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchParticipant;
 import org.eclipse.wst.jsdt.internal.compiler.env.AccessRuleSet;
-import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.index.Index;
 import org.eclipse.wst.jsdt.internal.core.search.IndexQueryRequestor;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchScope;
@@ -77,14 +73,15 @@ public class TypeParameterPattern extends JavaSearchPattern {
 	 * Same than LocalVariablePattern.
 	 */
 	public void findIndexMatches(Index index, IndexQueryRequestor requestor, SearchParticipant participant, IJavaSearchScope scope, IProgressMonitor progressMonitor) {
-	    IPackageFragmentRoot root = (IPackageFragmentRoot) this.typeParameter.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+//	    IPackageFragmentRoot root = (IPackageFragmentRoot) this.typeParameter.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
 		String documentPath;
 		String relativePath;
-	    if (root.isArchive()) {
- 	    	IType type = (IType) this.typeParameter.getAncestor(IJavaElement.TYPE);
-    	    relativePath = (type.getFullyQualifiedName('/')).replace('.', '/') + SuffixConstants.SUFFIX_STRING_class;
-	        documentPath = root.getPath() + IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR + relativePath;
-	    } else {
+//	    if (root.isArchive()) {
+// 	    	IType type = (IType) this.typeParameter.getAncestor(IJavaElement.TYPE);
+//    	    relativePath = (type.getFullyQualifiedName('/')).replace('.', '/') + SuffixConstants.SUFFIX_STRING_class;
+//	        documentPath = root.getPath() + IJavaSearchScope.JAR_FILE_ENTRY_SEPARATOR + relativePath;
+//	    } else
+	    {
 			IPath path = this.typeParameter.getPath();
 	        documentPath = path.toString();
 			relativePath = Util.relativePath(path, 1/*remove project segment*/);

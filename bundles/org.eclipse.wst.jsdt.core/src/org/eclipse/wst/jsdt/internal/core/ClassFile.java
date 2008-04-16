@@ -476,11 +476,11 @@ public IJavaElement getElementAtConsideringSibling(int position) throws JavaMode
 }
 public String getElementName() {
 	/* check if the name already has the .js extension */
-	if(this.name!=null && this.name.toUpperCase().endsWith(SuffixConstants.SUFFIX_STRING_class.toUpperCase())){
+	if(this.name!=null && this.name.toUpperCase().endsWith(SuffixConstants.SUFFIX_STRING_java.toUpperCase())){
 		return this.name;
 	}
 	
-	return this.name + SuffixConstants.SUFFIX_STRING_class;
+	return this.name + SuffixConstants.SUFFIX_STRING_java;
 }
 /**
  * @see IJavaElement
@@ -577,7 +577,7 @@ public String getTopLevelTypeName() {
     if (firstDollar != -1) {
         topLevelTypeName = topLevelTypeName.substring(0, firstDollar);
     } else {
-        topLevelTypeName = topLevelTypeName.substring(0, topLevelTypeName.length()-SUFFIX_CLASS.length);
+        topLevelTypeName = topLevelTypeName.substring(0, topLevelTypeName.length()-SUFFIX_JAVA.length);
     }
     return topLevelTypeName;
 }

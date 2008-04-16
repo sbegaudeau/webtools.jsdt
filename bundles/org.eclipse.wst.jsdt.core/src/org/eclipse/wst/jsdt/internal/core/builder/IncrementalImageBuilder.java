@@ -13,7 +13,6 @@ package org.eclipse.wst.jsdt.internal.core.builder;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -29,7 +28,6 @@ import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
-import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.util.Messages;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
@@ -310,7 +308,7 @@ protected void compile(SourceFile[] units, SourceFile[] additionalUnits, boolean
 
 protected void deleteGeneratedFiles(IFile[] deletedGeneratedFiles) {
 	// delete generated files and recompile any affected source files
-	try {
+//	try {
 		for (int j = deletedGeneratedFiles.length; --j >= 0;) {
 			IFile deletedFile = deletedGeneratedFiles[j];
 			if (deletedFile.exists()) continue; // only delete .class files for source files that were actually deleted
@@ -322,21 +320,21 @@ protected void deleteGeneratedFiles(IFile[] deletedGeneratedFiles) {
 			addDependentsOf(typePath, true); // add dependents of the source file since its now deleted
 			previousSourceFiles = null; // existing source files did not see it as deleted since they were compiled before it was
 			char[][] definedTypeNames = newState.getDefinedTypeNamesFor(typeLocator);
-			if (definedTypeNames == null) { // defined a single type matching typePath
-				removeClassFile(typePath, sourceFile.sourceLocation.binaryFolder);
-			} else {
-				if (definedTypeNames.length > 0) { // skip it if it failed to successfully define a type
-					IPath packagePath = typePath.removeLastSegments(1);
-					for (int d = 0, l = definedTypeNames.length; d < l; d++)
-						removeClassFile(packagePath.append(new String(definedTypeNames[d])), sourceFile.sourceLocation.binaryFolder);
-				}
-			}
+//			if (definedTypeNames == null) { // defined a single type matching typePath
+//				removeClassFile(typePath, sourceFile.sourceLocation.binaryFolder);
+//			} else {
+//				if (definedTypeNames.length > 0) { // skip it if it failed to successfully define a type
+//					IPath packagePath = typePath.removeLastSegments(1);
+//					for (int d = 0, l = definedTypeNames.length; d < l; d++)
+//						removeClassFile(packagePath.append(new String(definedTypeNames[d])), sourceFile.sourceLocation.binaryFolder);
+//				}
+//			}
 			this.newState.removeLocator(typeLocator);
 		}
-	} catch (CoreException e) {
-		// must continue with compile loop so just log the CoreException
-		e.printStackTrace();
-	}
+//	} catch (CoreException e) {
+//		// must continue with compile loop so just log the CoreException
+//		e.printStackTrace();
+//	}
 }
 
 protected boolean findAffectedSourceFiles(IResourceDelta delta, ClasspathLocation[] classFoldersAndJars, IProject prereqProject) {
@@ -569,7 +567,7 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 					case IResourceDelta.REMOVED :
 						char[][] definedTypeNames = newState.getDefinedTypeNamesFor(typeLocator);
 						if (definedTypeNames == null) { // defined a single type matching typePath
-							removeClassFile(typePath, md.binaryFolder);
+//							removeClassFile(typePath, md.binaryFolder);
 							if ((sourceDelta.getFlags() & IResourceDelta.MOVED_TO) != 0) {
 								// remove problems and tasks for a compilation unit that is being moved (to another package or renamed)
 								// if the target file is a compilation unit, the new cu will be recompiled
@@ -582,11 +580,11 @@ protected boolean findSourceFiles(IResourceDelta sourceDelta, ClasspathMultiDire
 							if (JavaBuilder.DEBUG)
 								System.out.println("Found removed source file " + typePath.toString()); //$NON-NLS-1$
 							addDependentsOf(typePath, true); // add dependents of the source file since it may be involved in a name collision
-							if (definedTypeNames.length > 0) { // skip it if it failed to successfully define a type
-								IPath packagePath = typePath.removeLastSegments(1);
-								for (int i = 0, l = definedTypeNames.length; i < l; i++)
-									removeClassFile(packagePath.append(new String(definedTypeNames[i])), md.binaryFolder);
-							}
+//							if (definedTypeNames.length > 0) { // skip it if it failed to successfully define a type
+//								IPath packagePath = typePath.removeLastSegments(1);
+//								for (int i = 0, l = definedTypeNames.length; i < l; i++)
+//									removeClassFile(packagePath.append(new String(definedTypeNames[i])), md.binaryFolder);
+//							}
 						}
 						newState.removeLocator(typeLocator);
 						return true;
@@ -706,39 +704,39 @@ protected void processAnnotationResults(ValidationParticipantResult[] results) {
 	}
 }
 
-protected void removeClassFile(IPath typePath, IContainer outputFolder) throws CoreException {
-	if (typePath.lastSegment().indexOf('$') == -1) { // is not a nested type
-		newState.removeQualifiedTypeName(typePath.toString());
-		// add dependents even when the type thinks it does not exist to be on the safe side
-		if (JavaBuilder.DEBUG)
-			System.out.println("Found removed type " + typePath); //$NON-NLS-1$
-		addDependentsOf(typePath, true); // when member types are removed, their enclosing type is structurally changed
-	}
-	IFile classFile = outputFolder.getFile(typePath.addFileExtension(SuffixConstants.EXTENSION_class));
-	if (classFile.exists()) {
-		if (JavaBuilder.DEBUG)
-			System.out.println("Deleting class file of removed type " + typePath); //$NON-NLS-1$
-		classFile.delete(IResource.FORCE, null);
-	}
-}
+//protected void removeClassFile(IPath typePath, IContainer outputFolder) throws CoreException {
+//	if (typePath.lastSegment().indexOf('$') == -1) { // is not a nested type
+//		newState.removeQualifiedTypeName(typePath.toString());
+//		// add dependents even when the type thinks it does not exist to be on the safe side
+//		if (JavaBuilder.DEBUG)
+//			System.out.println("Found removed type " + typePath); //$NON-NLS-1$
+//		addDependentsOf(typePath, true); // when member types are removed, their enclosing type is structurally changed
+//	}
+//	IFile classFile = outputFolder.getFile(typePath.addFileExtension(SuffixConstants.EXTENSION_class));
+//	if (classFile.exists()) {
+//		if (JavaBuilder.DEBUG)
+//			System.out.println("Deleting class file of removed type " + typePath); //$NON-NLS-1$
+//		classFile.delete(IResource.FORCE, null);
+//	}
+//}
 
-protected void removeSecondaryTypes() throws CoreException {
-	if (secondaryTypesToRemove != null) { // delayed deleting secondary types until the end of the compile loop
-		Object[] keyTable = secondaryTypesToRemove.keyTable;
-		Object[] valueTable = secondaryTypesToRemove.valueTable;
-		for (int i = 0, l = keyTable.length; i < l; i++) {
-			IContainer outputFolder = (IContainer) keyTable[i];
-			if (outputFolder != null) {
-				ArrayList paths = (ArrayList) valueTable[i];
-				for (int j = 0, m = paths.size(); j < m; j++)
-					removeClassFile((IPath) paths.get(j), outputFolder);
-			}
-		}
-		this.secondaryTypesToRemove = null;
-		if (previousSourceFiles != null)
-			this.previousSourceFiles = null; // cannot optimize recompile case when a secondary type is deleted, see 181269
-	}
-}
+//protected void removeSecondaryTypes() throws CoreException {
+//	if (secondaryTypesToRemove != null) { // delayed deleting secondary types until the end of the compile loop
+//		Object[] keyTable = secondaryTypesToRemove.keyTable;
+//		Object[] valueTable = secondaryTypesToRemove.valueTable;
+//		for (int i = 0, l = keyTable.length; i < l; i++) {
+//			IContainer outputFolder = (IContainer) keyTable[i];
+//			if (outputFolder != null) {
+//				ArrayList paths = (ArrayList) valueTable[i];
+//				for (int j = 0, m = paths.size(); j < m; j++)
+//					removeClassFile((IPath) paths.get(j), outputFolder);
+//			}
+//		}
+//		this.secondaryTypesToRemove = null;
+//		if (previousSourceFiles != null)
+//			this.previousSourceFiles = null; // cannot optimize recompile case when a secondary type is deleted, see 181269
+//	}
+//}
 
 protected void resetCollections() {
 	if (this.sourceFiles == null) {

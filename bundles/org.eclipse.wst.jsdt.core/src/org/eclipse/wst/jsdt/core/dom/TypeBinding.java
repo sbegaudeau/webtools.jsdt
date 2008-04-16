@@ -542,7 +542,7 @@ class TypeBinding implements ITypeBinding {
 				}
 				pkgEnd = CharOperation.lastIndexOf('/', constantPoolName);
 				char[] classFileName = CharOperation.subarray(constantPoolName, pkgEnd+1, constantPoolName.length);
-				ClassFile classFile = (ClassFile) pkg.getClassFile(new String(classFileName) + SuffixConstants.SUFFIX_STRING_class);
+				ClassFile classFile = (ClassFile) pkg.getClassFile(new String(classFileName) + SuffixConstants.SUFFIX_STRING_java);
 				return (JavaElement) classFile.getType();
 			}
 			ICompilationUnit cu = getCompilationUnit(fileName);
