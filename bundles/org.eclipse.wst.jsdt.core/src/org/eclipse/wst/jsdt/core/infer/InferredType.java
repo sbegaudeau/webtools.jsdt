@@ -42,6 +42,8 @@ public class InferredType extends ASTNode {
 	public boolean isAnonymous=false;
 	public boolean isObjectLiteral=false;
 
+	private int nameStart = -1;
+	
 	public String inferenceProviderID;
 	public String inferenceStyle;
 	
@@ -308,5 +310,15 @@ public class InferredType extends ASTNode {
 	public boolean isNamed()
 	{
 		return !isAnonymous || !CharOperation.prefixEquals(InferEngine.ANONYMOUS_PREFIX, this.name);
+	}
+	
+	public void setNameStart(int start)
+	{
+		this.nameStart=start;
+	}
+	
+	public int getNameStart()
+	{
+		return this.nameStart!= -1 ? this.nameStart : this.sourceStart;
 	}
 }
