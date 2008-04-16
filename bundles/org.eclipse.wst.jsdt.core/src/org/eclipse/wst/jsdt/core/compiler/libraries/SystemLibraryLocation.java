@@ -8,12 +8,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class SystemLibraryLocation implements LibraryLocation {
 
@@ -43,26 +46,26 @@ public class SystemLibraryLocation implements LibraryLocation {
 	protected String getPluginId() {
 		return JavaCore.PLUGIN_ID;
 	}
-//	public char[][] getAllFilesInPluginDirectory(String directory){
-//		//InputStream is = null;
-//		//URL[] entries = FileLocator.findEntries(Platform.getBundle(getPluginId()), new Path("./" + directory ));
-//		Enumeration entries = (Platform.getBundle(getPluginId()).getEntryPaths(directory));
-//		ArrayList allEntries = new ArrayList();
-//		while(entries.hasMoreElements()) {
-//			Path value = new Path((String)entries.nextElement());
-//			String extension = value.getFileExtension();
-//			if(extension!=null && extension.equalsIgnoreCase("js")) { //$NON-NLS-1$
-//				allEntries.add(value.lastSegment().toCharArray());
-//			}
-//		}
-//		char[][] fileNames = new char[allEntries.size()][];
-//
-//		for(int i = 0;i<allEntries.size();i++) {
-//			fileNames[i] = (char[])allEntries.get(i);
-//	}
-//
-//	return fileNames;
-//	}
+	public char[][] getAllFilesInPluginDirectory(String directory){
+		//InputStream is = null;
+		//URL[] entries = FileLocator.findEntries(Platform.getBundle(getPluginId()), new Path("./" + directory ));
+		Enumeration entries = (Platform.getBundle(getPluginId()).getEntryPaths(directory));
+		ArrayList allEntries = new ArrayList();
+		while(entries.hasMoreElements()) {
+			Path value = new Path((String)entries.nextElement());
+			char [] filename=value.lastSegment().toCharArray();
+			if(Util.isJavaLikeFileName(filename)) { //$NON-NLS-1$
+				allEntries.add(filename);
+			}
+		}
+		char[][] fileNames = new char[allEntries.size()][];
+
+		for(int i = 0;i<allEntries.size();i++) {
+			fileNames[i] = (char[])allEntries.get(i);
+	}
+
+	return fileNames;
+	}
 	public SystemLibraryLocation(){
 		try {
 			IPath libraryRuntimePath = Platform.getStateLocation(Platform.getBundle(JavaCore.PLUGIN_ID)).append( new String(LIBRARY_RUNTIME_DIRECTORY));
