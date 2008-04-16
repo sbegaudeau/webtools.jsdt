@@ -1787,6 +1787,8 @@ public abstract class JavaEditor extends AbstractDecoratedTextEditor implements 
 							IJavaElement je= null;
 							try {
 								je= SelectionConverter.getElementAtOffset(JavaEditor.this);
+								if (je==null)
+									return null;
 								return new StructuredSelection(je);
 							} catch (JavaModelException ex) {
 								return null;
