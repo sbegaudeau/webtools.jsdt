@@ -2122,7 +2122,7 @@
       <actionSet
             label="%JavaActionSet.label"
             description="%JavaActionSet.description"
-            visible="true"
+            visible="false"
             id="org.eclipse.wst.jsdt.ui.JavaActionSet2">
          <action
                id="openType"
