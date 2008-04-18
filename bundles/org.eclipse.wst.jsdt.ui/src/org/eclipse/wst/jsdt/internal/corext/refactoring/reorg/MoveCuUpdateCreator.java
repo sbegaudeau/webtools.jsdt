@@ -292,7 +292,7 @@ public class MoveCuUpdateCreator {
 	}
 
 	private static SearchResultGroup[] getReferences(ICompilationUnit unit, IProgressMonitor pm, RefactoringStatus status) throws CoreException {
-		final SearchPattern pattern= RefactoringSearchEngine.createOrPattern(unit.getTypes(), IJavaSearchConstants.REFERENCES);
+		final SearchPattern pattern= RefactoringSearchEngine.createOrPattern(unit.getChildren(), IJavaSearchConstants.REFERENCES);
 		if (pattern != null)
 			return RefactoringSearchEngine.search(pattern, RefactoringScopeFactory.create(unit), new Collector(((IPackageFragment) unit.getParent())), new SubProgressMonitor(pm, 1), status);
 		return new SearchResultGroup[] {};

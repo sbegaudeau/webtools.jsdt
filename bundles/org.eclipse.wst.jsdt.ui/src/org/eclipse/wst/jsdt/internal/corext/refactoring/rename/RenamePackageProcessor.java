@@ -373,8 +373,8 @@ public class RenamePackageProcessor extends JavaRenameProcessor implements
 			pm.setTaskName(RefactoringCoreMessages.RenamePackageRefactoring_checking); 
 			RefactoringStatus result= new RefactoringStatus();
 			result.merge(checkNewElementName(getNewElementName()));
-			pm.worked(1);
-			result.merge(checkForMainAndNativeMethods());
+//			pm.worked(1);
+//			result.merge(checkForMainAndNativeMethods());
 			pm.worked(2);
 			
 			if (fPackage.isReadOnly()){
@@ -424,23 +424,23 @@ public class RenamePackageProcessor extends JavaRenameProcessor implements
 		return fPackage;
 	}
 	
-	private RefactoringStatus checkForMainAndNativeMethods() throws CoreException{
-		RefactoringStatus result= new RefactoringStatus();
-		if (fRenameSubpackages) {
-			IPackageFragment[] allSubpackages= JavaElementUtil.getPackageAndSubpackages(fPackage);
-			for (int i= 0; i < allSubpackages.length; i++) {
-				ICompilationUnit[] cus= allSubpackages[i].getCompilationUnits();
-				for (int c= 0; c < cus.length; c++)
-					result.merge(Checks.checkForMainAndNativeMethods(cus[c]));
-			}
-		} else {
-			ICompilationUnit[] cus= fPackage.getCompilationUnits();
-			for (int i= 0; i < cus.length; i++)
-				result.merge(Checks.checkForMainAndNativeMethods(cus[i]));
-		}
-		return result;
-	}
-	
+//	private RefactoringStatus checkForMainAndNativeMethods() throws CoreException{
+//		RefactoringStatus result= new RefactoringStatus();
+//		if (fRenameSubpackages) {
+//			IPackageFragment[] allSubpackages= JavaElementUtil.getPackageAndSubpackages(fPackage);
+//			for (int i= 0; i < allSubpackages.length; i++) {
+//				ICompilationUnit[] cus= allSubpackages[i].getCompilationUnits();
+//				for (int c= 0; c < cus.length; c++)
+//					result.merge(Checks.checkForMainAndNativeMethods(cus[c]));
+//			}
+//		} else {
+//			ICompilationUnit[] cus= fPackage.getCompilationUnits();
+//			for (int i= 0; i < cus.length; i++)
+//				result.merge(Checks.checkForMainAndNativeMethods(cus[i]));
+//		}
+//		return result;
+//	}
+//	
 	/*
 	 * returns true if the new name is ok if the specified root.
 	 * if a package fragment with this name exists and has java resources,

@@ -50,15 +50,12 @@ import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.SwitchCase;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclaration;
-import org.eclipse.wst.jsdt.internal.corext.Corext;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.base.JavaStatusContext;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.base.RefactoringStatusCodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.changes.RenameResourceChange;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.util.JavaElementUtil;
 import org.eclipse.wst.jsdt.internal.corext.util.JavaModelUtil;
-import org.eclipse.wst.jsdt.internal.corext.util.JdtFlags;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.corext.util.Resources;
 
@@ -244,41 +241,41 @@ public class Checks {
 		return name.equals(element.getElementName());
 	}
 
-	//-------------- main and native method checks ------------------
-	public static RefactoringStatus checkForMainAndNativeMethods(ICompilationUnit cu) throws JavaModelException {
-		return checkForMainAndNativeMethods(cu.getTypes());
-	}
-	
-	public static RefactoringStatus checkForMainAndNativeMethods(IType[] types) throws JavaModelException {
-		RefactoringStatus result= new RefactoringStatus();
-		for (int i= 0; i < types.length; i++)
-			result.merge(checkForMainAndNativeMethods(types[i]));
-		return result;
-	}
-	
-	public static RefactoringStatus checkForMainAndNativeMethods(IType type) throws JavaModelException {
-		RefactoringStatus result= new RefactoringStatus();
-		result.merge(checkForMainAndNativeMethods(type.getMethods()));
-		result.merge(checkForMainAndNativeMethods(type.getTypes()));
-		return result;
-	}
-	
-	private static RefactoringStatus checkForMainAndNativeMethods(IMethod[] methods) throws JavaModelException {
-		RefactoringStatus result= new RefactoringStatus();
-		for (int i= 0; i < methods.length; i++) {
-			if (JdtFlags.isNative(methods[i])){
-				String msg= Messages.format(RefactoringCoreMessages.Checks_method_native,  
-								new String[]{JavaModelUtil.getFullyQualifiedName(methods[i].getDeclaringType()), methods[i].getElementName(), "UnsatisfiedLinkError"});//$NON-NLS-1$
-				result.addEntry(RefactoringStatus.ERROR, msg, JavaStatusContext.create(methods[i]), Corext.getPluginId(), RefactoringStatusCodes.NATIVE_METHOD); 
-			}
-			if (methods[i].isMainMethod()) {
-				String msg= Messages.format(RefactoringCoreMessages.Checks_has_main,
-						JavaModelUtil.getFullyQualifiedName(methods[i].getDeclaringType()));
-				result.addEntry(RefactoringStatus.WARNING, msg, JavaStatusContext.create(methods[i]), Corext.getPluginId(), RefactoringStatusCodes.MAIN_METHOD); 
-			}
-		}
-		return result;
-	}
+//	//-------------- main and native method checks ------------------
+//	public static RefactoringStatus checkForMainAndNativeMethods(ICompilationUnit cu) throws JavaModelException {
+//		return checkForMainAndNativeMethods(cu.getTypes());
+//	}
+//	
+//	public static RefactoringStatus checkForMainAndNativeMethods(IType[] types) throws JavaModelException {
+//		RefactoringStatus result= new RefactoringStatus();
+//		for (int i= 0; i < types.length; i++)
+//			result.merge(checkForMainAndNativeMethods(types[i]));
+//		return result;
+//	}
+//	
+//	public static RefactoringStatus checkForMainAndNativeMethods(IType type) throws JavaModelException {
+//		RefactoringStatus result= new RefactoringStatus();
+//		result.merge(checkForMainAndNativeMethods(type.getMethods()));
+//		result.merge(checkForMainAndNativeMethods(type.getTypes()));
+//		return result;
+//	}
+//	
+//	private static RefactoringStatus checkForMainAndNativeMethods(IMethod[] methods) throws JavaModelException {
+//		RefactoringStatus result= new RefactoringStatus();
+//		for (int i= 0; i < methods.length; i++) {
+//			if (JdtFlags.isNative(methods[i])){
+//				String msg= Messages.format(RefactoringCoreMessages.Checks_method_native,  
+//								new String[]{JavaModelUtil.getFullyQualifiedName(methods[i].getDeclaringType()), methods[i].getElementName(), "UnsatisfiedLinkError"});//$NON-NLS-1$
+//				result.addEntry(RefactoringStatus.ERROR, msg, JavaStatusContext.create(methods[i]), Corext.getPluginId(), RefactoringStatusCodes.NATIVE_METHOD); 
+//			}
+//			if (methods[i].isMainMethod()) {
+//				String msg= Messages.format(RefactoringCoreMessages.Checks_has_main,
+//						JavaModelUtil.getFullyQualifiedName(methods[i].getDeclaringType()));
+//				result.addEntry(RefactoringStatus.WARNING, msg, JavaStatusContext.create(methods[i]), Corext.getPluginId(), RefactoringStatusCodes.MAIN_METHOD); 
+//			}
+//		}
+//		return result;
+//	}
 	
 	//---- New method name checking -------------------------------------------------------------
 	

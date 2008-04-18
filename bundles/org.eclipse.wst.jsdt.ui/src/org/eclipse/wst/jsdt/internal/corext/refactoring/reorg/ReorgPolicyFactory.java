@@ -153,14 +153,15 @@ public final class ReorgPolicyFactory {
 				IJavaElement element= fJavaElements[i];
 				if (element == null)
 					continue;
-				if (element instanceof IType) {
-					IType type= (IType) element;
-					ICompilationUnit cu= type.getCompilationUnit();
-					if (cu != null && type.getDeclaringType() == null && cu.exists() && cu.getTypes().length == 1 && !result.contains(cu))
-						result.add(cu);
-					else if (!result.contains(type))
-						result.add(type);
-				} else if (!result.contains(element)) {
+//				if (element instanceof IType) {
+//					IType type= (IType) element;
+//					ICompilationUnit cu= type.getCompilationUnit();
+//					if (cu != null && type.getDeclaringType() == null && cu.exists() && cu.getTypes().length == 1 && !result.contains(cu))
+//						result.add(cu);
+//					else if (!result.contains(type))
+//						result.add(type);
+//				} else 
+					if (!result.contains(element)) {
 					result.add(element);
 				}
 			}
@@ -1139,18 +1140,18 @@ public final class ReorgPolicyFactory {
 				ICompilationUnit[] cus= getCus();
 				pm.beginTask("", cus.length); //$NON-NLS-1$
 				pm.subTask(RefactoringCoreMessages.MoveRefactoring_scanning_qualified_names);
-				for (int i= 0; i < cus.length; i++) {
-					ICompilationUnit cu= cus[i];
-					IType[] types= cu.getTypes();
-					IProgressMonitor typesMonitor= new SubProgressMonitor(pm, 1);
-					typesMonitor.beginTask("", types.length); //$NON-NLS-1$
-					for (int j= 0; j < types.length; j++) {
-						handleType(types[j], destination, new SubProgressMonitor(typesMonitor, 1));
-						if (typesMonitor.isCanceled())
-							throw new OperationCanceledException();
-					}
-					typesMonitor.done();
-				}
+//				for (int i= 0; i < cus.length; i++) {
+//					ICompilationUnit cu= cus[i];
+//					IType[] types= cu.getTypes();
+//					IProgressMonitor typesMonitor= new SubProgressMonitor(pm, 1);
+//					typesMonitor.beginTask("", types.length); //$NON-NLS-1$
+//					for (int j= 0; j < types.length; j++) {
+//						handleType(types[j], destination, new SubProgressMonitor(typesMonitor, 1));
+//						if (typesMonitor.isCanceled())
+//							throw new OperationCanceledException();
+//					}
+//					typesMonitor.done();
+//				}
 			}
 			pm.done();
 		}
@@ -1800,9 +1801,9 @@ public final class ReorgPolicyFactory {
 					CompositeChange result= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_move_members);
 					result.markAsSynthetic();
 					result.add(targetCuChange);
-					if (Arrays.asList(getJavaElements()).containsAll(Arrays.asList(sourceCu.getTypes())))
-						result.add(DeleteChangeCreator.createDeleteChange(null, new IResource[0], new ICompilationUnit[] {sourceCu}, RefactoringCoreMessages.ReorgPolicy_move, null));
-					else
+//					if (Arrays.asList(getJavaElements()).containsAll(Arrays.asList(sourceCu.getTypes())))
+//						result.add(DeleteChangeCreator.createDeleteChange(null, new IResource[0], new ICompilationUnit[] {sourceCu}, RefactoringCoreMessages.ReorgPolicy_move, null));
+//					else
 						result.add(createCompilationUnitChange(sourceCu, sourceRewriter));
 					return result;
 				}
@@ -2916,8 +2917,8 @@ public final class ReorgPolicyFactory {
 				return; // could insert into/after destination
 			}
 			// fall-back / default:
-			final AbstractTypeDeclaration declaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(getDestinationAsType(), targetCuNode);
-			targetRewriter.getASTRewrite().getListRewrite(declaration, declaration.getBodyDeclarationsProperty()).insertLast(newMember, null);
+//			final AbstractTypeDeclaration declaration= ASTNodeSearchUtil.getAbstractTypeDeclarationNode(getDestinationAsType(), targetCuNode.);
+			targetRewriter.getASTRewrite().getListRewrite(targetCuNode, CompilationUnit.STATEMENTS_PROPERTY).insertLast(newMember, null);
 		}
 
 		private void copyMethodToDestination(IMethod method, CompilationUnitRewrite targetRewriter, CompilationUnit sourceCuNode, CompilationUnit targetCuNode) throws JavaModelException {

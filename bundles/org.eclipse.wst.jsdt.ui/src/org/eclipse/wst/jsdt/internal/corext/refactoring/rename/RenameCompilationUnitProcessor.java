@@ -327,18 +327,18 @@ public final class RenameCompilationUnitProcessor extends JavaRenameProcessor im
 	}
 	
 	private void computeRenameTypeRefactoring() throws CoreException{
-		if (getSimpleCUName().indexOf(".") != -1) { //$NON-NLS-1$
+//		if (getSimpleCUName().indexOf(".") != -1) { //$NON-NLS-1$
 			fRenameTypeProcessor= null;
 			fWillRenameType= false;
 			return;
-		}
-		IType type= getTypeWithTheSameName();
-		if (type != null) {
-			fRenameTypeProcessor= new RenameTypeProcessor(type);
-		} else {
-			fRenameTypeProcessor= null;
-		}
-		fWillRenameType= fRenameTypeProcessor != null && fCu.isStructureKnown();
+//		}
+//		IType type= getTypeWithTheSameName();
+//		if (type != null) {
+//			fRenameTypeProcessor= new RenameTypeProcessor(type);
+//		} else {
+//			fRenameTypeProcessor= null;
+//		}
+//		fWillRenameType= fRenameTypeProcessor != null && fCu.isStructureKnown();
 	}
 
 	private IType getTypeWithTheSameName() {

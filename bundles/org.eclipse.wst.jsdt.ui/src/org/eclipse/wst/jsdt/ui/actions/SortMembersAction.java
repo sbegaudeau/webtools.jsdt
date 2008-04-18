@@ -117,7 +117,7 @@ public class SortMembersAction extends SelectionDispatchAction {
 			if (cu == null) {
 				return;
 			}
-			IType[] types= cu.getTypes();
+			IJavaElement[] types= cu.getChildren();
 			if (!hasMembersToSort(types)) {
 				return;
 			}
