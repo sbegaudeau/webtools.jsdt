@@ -344,7 +344,7 @@ public final class JavaDeleteProcessor extends DeleteProcessor implements IScrip
 		removeUnconfirmedFoldersThatContainSourceFolders(); /* a selected folder may be a parent of a source folder
 															 * we must inform the user about it and ask if ok to delete the folder*/
 		removeUnconfirmedReferencedArchives();
-		addEmptyCusToDelete();
+//		addEmptyCusToDelete();
 		removeJavaElementsChildrenOfJavaElements();/*because adding cus may create elements (types in cus)
 												    *whose parents are in selection*/
 		confirmDeletingReadOnly();   /*after empty cus - you want to ask for all cus that are to be deleted*/

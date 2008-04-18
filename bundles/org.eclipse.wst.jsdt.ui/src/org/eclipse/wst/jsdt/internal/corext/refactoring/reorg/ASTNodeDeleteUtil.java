@@ -27,6 +27,7 @@ import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.internal.corext.dom.GenericVisitor;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.ASTNodeSearchUtil;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.structure.CompilationUnitRewrite;
@@ -107,6 +108,12 @@ public class ASTNodeDeleteUtil {
 					if (!removed.contains(fd) && removedNodes.containsAll(fd.fragments()))
 						rewrite.getASTRewrite().remove(fd, group);
 					rewrite.getImportRemover().registerRemovedNode(fd);
+				} else if (node.getParent() instanceof VariableDeclarationStatement) {
+					VariableDeclarationStatement stmt= (VariableDeclarationStatement) node.getParent();
+					if (!removed.contains(stmt) && removedNodes.containsAll(stmt.fragments()))
+						rewrite.getASTRewrite().remove(stmt, group);
+					rewrite.getImportRemover().registerRemovedNode(stmt);
+					
 				}
 			}
 		}

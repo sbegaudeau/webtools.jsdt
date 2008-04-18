@@ -2668,12 +2668,13 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 			return doVisitUnchangedChildren(node);
 		}
 		int pos= node.getStartPosition();
-		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
-			rewriteModifiers(node, SingleVariableDeclaration.MODIFIERS_PROPERTY, pos);
-		} else {
-			rewriteModifiers2(node, SingleVariableDeclaration.MODIFIERS2_PROPERTY, pos);
-		}
-		pos= rewriteRequiredNode(node, SingleVariableDeclaration.TYPE_PROPERTY);
+//		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
+//			rewriteModifiers(node, SingleVariableDeclaration.MODIFIERS_PROPERTY, pos);
+//		} else {
+//			rewriteModifiers2(node, SingleVariableDeclaration.MODIFIERS2_PROPERTY, pos);
+//		}
+		if (!node.getType().isInferred())
+			pos= rewriteRequiredNode(node, SingleVariableDeclaration.TYPE_PROPERTY);
 		if (node.getAST().apiLevel() >= AST.JLS3) {
 			if (isChanged(node, SingleVariableDeclaration.VARARGS_PROPERTY)) {
 				if (getNewValue(node, SingleVariableDeclaration.VARARGS_PROPERTY).equals(Boolean.TRUE)) {
@@ -2948,12 +2949,13 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 
 		// same code as FieldDeclaration
 		int pos= node.getStartPosition();
-		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
-			rewriteModifiers(node, VariableDeclarationExpression.MODIFIERS_PROPERTY, pos);
-		} else {
-			rewriteModifiers2(node, VariableDeclarationExpression.MODIFIERS2_PROPERTY, pos);
-		}
-		pos= rewriteRequiredNode(node, VariableDeclarationExpression.TYPE_PROPERTY);
+//		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
+//			rewriteModifiers(node, VariableDeclarationExpression.MODIFIERS_PROPERTY, pos);
+//		} else {
+//			rewriteModifiers2(node, VariableDeclarationExpression.MODIFIERS2_PROPERTY, pos);
+//		}
+		if (!node.getType().isInferred())
+			pos= rewriteRequiredNode(node, VariableDeclarationExpression.TYPE_PROPERTY);
 		rewriteNodeList(node, VariableDeclarationExpression.FRAGMENTS_PROPERTY, pos, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
 		return false;
 	}
@@ -2996,12 +2998,13 @@ public final class ASTRewriteAnalyzer extends ASTVisitor {
 
 		// same code as FieldDeclaration
 		int pos= node.getStartPosition();
-		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
-			rewriteModifiers(node, VariableDeclarationStatement.MODIFIERS_PROPERTY, pos);
-		} else {
-			rewriteModifiers2(node, VariableDeclarationStatement.MODIFIERS2_PROPERTY, pos);
-		}
-		pos= rewriteRequiredNode(node, VariableDeclarationStatement.TYPE_PROPERTY);
+//		if (node.getAST().apiLevel() == JLS2_INTERNAL) {
+//			rewriteModifiers(node, VariableDeclarationStatement.MODIFIERS_PROPERTY, pos);
+//		} else {
+//			rewriteModifiers2(node, VariableDeclarationStatement.MODIFIERS2_PROPERTY, pos);
+//		}
+		if (!node.getType().isInferred())
+			pos= rewriteRequiredNode(node, VariableDeclarationStatement.TYPE_PROPERTY);
 
 		rewriteNodeList(node, VariableDeclarationStatement.FRAGMENTS_PROPERTY, pos, "", ", "); //$NON-NLS-1$ //$NON-NLS-2$
 		return false;

@@ -123,9 +123,9 @@ public class ASTNodeSearchUtil {
 	}
 
 	public static BodyDeclaration getMethodOrAnnotationTypeMemberDeclarationNode(IMethod iMethod, CompilationUnit cuNode) throws JavaModelException {
-		if (JdtFlags.isAnnotation(iMethod.getDeclaringType()))
-			return getAnnotationTypeMemberDeclarationNode(iMethod, cuNode);
-		else
+//		if (JdtFlags.isAnnotation(iMethod.getDeclaringType()))
+//			return getAnnotationTypeMemberDeclarationNode(iMethod, cuNode);
+//		else
 			return getMethodDeclarationNode(iMethod, cuNode);
 	}
 
