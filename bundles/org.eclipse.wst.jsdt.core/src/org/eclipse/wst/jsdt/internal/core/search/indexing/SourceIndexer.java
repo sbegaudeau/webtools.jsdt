@@ -18,8 +18,8 @@ import org.eclipse.wst.jsdt.core.JavaCore;
 import org.eclipse.wst.jsdt.core.search.SearchDocument;
 import org.eclipse.wst.jsdt.internal.compiler.SourceElementParser;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
+import org.eclipse.wst.jsdt.internal.core.BasicCompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
-import org.eclipse.wst.jsdt.internal.core.jdom.CompilationUnit;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchDocument;
 import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 
@@ -71,7 +71,7 @@ public class SourceIndexer extends AbstractIndexer implements SuffixConstants {
 			packageName=new char[1][];
 			packageName[0]=pkgName.toCharArray();
 		}
-		CompilationUnit compilationUnit = new CompilationUnit(source, name,packageName);
+		BasicCompilationUnit compilationUnit = new BasicCompilationUnit(source, packageName, new String(name));
 		try {
 			parser.parseCompilationUnit(compilationUnit, true/*full parse*/);
 		} catch (Exception e) {
