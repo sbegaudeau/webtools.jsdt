@@ -28,6 +28,7 @@ import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.wst.jsdt.core.dom.rewrite.TargetSourceRangeComputer;
@@ -60,7 +61,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		MethodDeclaration decl= ast.newMethodDeclaration();
 		decl.setName(ast.newSimpleName(name));
 		decl.setBody(null);
-		decl.setReturnType(ast.newPrimitiveType(PrimitiveType.VOID));
+//		decl.setReturnType(ast.newPrimitiveType(PrimitiveType.VOID));
 		return decl;
 	}
 	
@@ -68,7 +69,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		VariableDeclarationFragment frag= ast.newVariableDeclarationFragment();
 		frag.setName(ast.newSimpleName(name));
 		FieldDeclaration decl= ast.newFieldDeclaration(frag);
-		decl.setType(ast.newPrimitiveType(PrimitiveType.INT));
+//		decl.setType(ast.newPrimitiveType(PrimitiveType.INT));
 		return decl;
 	}	
 	
@@ -79,57 +80,52 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
 		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
 		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 				
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
@@ -144,30 +140,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 		
 		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
 		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
@@ -175,33 +168,30 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertBefore(decl2, lastDecl, null);
 				
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -213,36 +203,33 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
 		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
 		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
 		MethodDeclaration decl3= newMethodDeclaration(ast, "new3");
 		MethodDeclaration decl4= newMethodDeclaration(ast, "new4");
 				
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertAfter(decl2, decl1, null);
 		listRewrite.insertLast(decl3, null);
@@ -251,30 +238,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
-		buf.append("    void new3();\n");
+		buf.append("    function new3();\n");
 		buf.append("\n");
-		buf.append("    void new4();\n");
+		buf.append("    function new4();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -285,60 +269,54 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 		
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");
+		buf.append("    var new2;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
 
 	}
@@ -348,36 +326,33 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");		
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 		FieldDeclaration decl3= newFieldDeclaration(ast, "new3");
 		FieldDeclaration decl4= newFieldDeclaration(ast, "new4");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertAfter(decl2, decl1, null);
 		listRewrite.insertLast(decl3, null);
@@ -387,30 +362,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");
+		buf.append("    var new2;\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
-		buf.append("    int new3;\n");
+		buf.append("    var new3;\n");
 		buf.append("\n");
-		buf.append("    int new4;\n");
+		buf.append("    var new4;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -421,30 +393,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 		
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
@@ -452,33 +421,30 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertAfter(decl1, firstDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 				
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");	
+		buf.append("    var new2;\n");	
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
 
 	}
@@ -488,29 +454,26 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
@@ -518,14 +481,11 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -536,47 +496,41 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(1), null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -587,29 +541,26 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(1), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
@@ -617,14 +568,11 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -635,29 +583,26 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(1), null);
@@ -666,11 +611,8 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -682,30 +624,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
@@ -713,27 +652,24 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
 		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
 
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -744,30 +680,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
@@ -779,7 +712,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, firstDecl, null);
 		listRewrite.insertAfter(decl2, firstDecl, null);
 		listRewrite.insertLast(decl3, null);
@@ -789,24 +722,21 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    void new3();\n");
+		buf.append("    function new3();\n");
 		buf.append("\n");
-		buf.append("    void new4();\n");
+		buf.append("    function new4();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -817,30 +747,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(1), null);
 		
@@ -849,29 +776,26 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -883,19 +807,17 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
@@ -905,8 +827,8 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
@@ -914,7 +836,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 				
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 		
@@ -922,20 +844,17 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");
+		buf.append("    var new2;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -946,19 +865,17 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");		
@@ -968,8 +885,8 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
@@ -981,7 +898,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, firstDecl, null);
 		listRewrite.insertAfter(decl2, firstDecl, null);
 		listRewrite.insertLast(decl3, null);
@@ -990,24 +907,21 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");
+		buf.append("    var new2;\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    int new3;\n");
+		buf.append("    var new3;\n");
 		buf.append("\n");
-		buf.append("    int new4;\n");
+		buf.append("    var new4;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1018,37 +932,34 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");		
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
-		
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
+
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.remove(middleDecl, null);
 		
 		listRewrite.insertBefore(decl1, middleDecl, null);
@@ -1057,22 +968,19 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");
+		buf.append("    var new2;\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");		
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1083,30 +991,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 		
 		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
 		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
@@ -1114,7 +1019,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		
 		listRewrite.remove(firstDecl, null);
 		listRewrite.remove(lastDecl, null);
@@ -1125,20 +1030,17 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1149,30 +1051,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");		
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 		
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
@@ -1180,7 +1079,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.remove(firstDecl, null);
 		listRewrite.remove(lastDecl, null);
 		
@@ -1190,8 +1089,6 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
 		buf.append("    int new1;\n");
@@ -1203,7 +1100,6 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    int new2;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1214,30 +1110,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 		
 		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
 		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
@@ -1247,7 +1140,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		
 		rewrite.remove(firstDecl, null);
 		rewrite.remove(lastDecl, null);
@@ -1261,21 +1154,19 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    void new3();\n");
+		buf.append("    function new3();\n");
 		buf.append("\n");
-		buf.append("    void new4();\n");
+		buf.append("    function new4();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
@@ -1289,19 +1180,17 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
@@ -1311,8 +1200,8 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 		
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
@@ -1322,7 +1211,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		
 		rewrite.remove(firstDecl, null);
 		rewrite.remove(lastDecl, null);
@@ -1335,24 +1224,21 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");
+		buf.append("    var new2;\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    int new3;\n");
+		buf.append("    var new3;\n");
 		buf.append("\n");
-		buf.append("    int new4;\n");
+		buf.append("    var new4;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1364,30 +1250,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(1), null);
@@ -1396,23 +1279,20 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
 		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1423,8 +1303,6 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
 		buf.append("    public int x1;\n");
@@ -1438,15 +1316,14 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    public int x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(1), null);
@@ -1455,15 +1332,13 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
 		buf.append("    int new1;\n");
@@ -1471,7 +1346,6 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    int new2;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1483,30 +1357,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public void foo1();\n");
+		buf.append("    function foo1();\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public void foo2();\n");
+		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public void foo3();\n");
+		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(1), null);
@@ -1517,23 +1388,20 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    void new1();\n");
+		buf.append("    function new1();\n");
 		buf.append("\n");
-		buf.append("    void new2();\n");
+		buf.append("    function new2();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1544,30 +1412,27 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		List decls= type.bodyDeclarations();
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+		List decls= astRoot.statements();
 
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(1), null);
@@ -1578,23 +1443,20 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    int new1;\n");
+		buf.append("    var new1;\n");
 		buf.append("\n");
-		buf.append("    int new2;\n");
+		buf.append("    var new2;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -1606,34 +1468,32 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
 		buf.append("    //c1\n");
 		buf.append("\n");
-		buf.append("    public int x1;\n");
+		buf.append("    var x1;\n");
 		buf.append("\n");
 		buf.append("    //c2\n");
 		buf.append("\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("    //c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("    //c4\n");
-		buf.append("}\n");	
 		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
 		CompilationUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
-		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
-		FieldDeclaration[] decls= type.getFields();
-		
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
+//		FieldDeclaration[] decls= type.getFields();
+		List decls = astRoot.statements();
 		final Map extendedRanges= new HashMap();
-		
-		FieldDeclaration f1= decls[0];
+	
+		VariableDeclarationStatement f1=(VariableDeclarationStatement)decls.get(0);
+//		FieldDeclaration f1= decls[0];
 		int off1= buf.indexOf("//c1");
 		int end1= f1.getStartPosition() + f1.getLength();
 		extendedRanges.put(f1, new SourceRange(off1, end1 - off1));
@@ -1652,16 +1512,13 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class C {\n");
-		buf.append("    public int x2;\n");
+		buf.append("    var x2;\n");
 		buf.append("\n");
 		buf.append("    //c3\n");
 		buf.append("\n");
-		buf.append("    public int x3;\n");
+		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("    //c4\n");
-		buf.append("}\n");	
 		assertEqualString(preview, buf.toString());
 
 	}

@@ -53,12 +53,9 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo(Object o) {\n");
+		buf.append("    function foo(o) {\n");
 		buf.append("        return;\n");
 		buf.append("    }\n");
-		buf.append("}\n");
 		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 
 		CompilationUnit astRoot= createAST(cu);
@@ -66,8 +63,8 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		
 		AST ast= astRoot.getAST();
 		
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
+		MethodDeclaration methodDecl= findMethodDeclaration(astRoot, "foo");
 		
 		ReturnStatement returnStatement= (ReturnStatement) methodDecl.getBody().statements().get(0);
 		
@@ -85,13 +82,10 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite); 
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo(Object o) {\n");
+		buf.append("    function foo(o) {\n");
 		buf.append("        foo1();\n");
 		buf.append("        foo2();\n");
 		buf.append("    }\n");
-		buf.append("}\n");
 		String expected= buf.toString();		
 
 		assertEqualString(preview, expected);
@@ -101,14 +95,11 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		IPackageFragment pack1= this.sourceFolder.createPackageFragment("test1", false, null);
 		
 		StringBuffer buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo(Object o) {\n");
+		buf.append("    function foo( o) {\n");
 		buf.append("        {\n");
 		buf.append("            return;\n");
 		buf.append("        }\n");
 		buf.append("    }\n");
-		buf.append("}\n");
 		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 
 		CompilationUnit astRoot= createAST(cu);
@@ -116,8 +107,8 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		
 		AST ast= astRoot.getAST();
 		
-		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+//		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
+		MethodDeclaration methodDecl= findMethodDeclaration(astRoot, "foo");
 		
 		Statement statement= (Statement) methodDecl.getBody().statements().get(0);
 		
@@ -137,14 +128,11 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		String preview= evaluateRewrite(cu, rewrite);
 		
 		buf= new StringBuffer();
-		buf.append("package test1;\n");
-		buf.append("public class E {\n");
-		buf.append("    public void foo(Object o) {\n");
+		buf.append("    function foo( o) {\n");
 		buf.append("        foo1();\n");
 		buf.append("        foo2();\n");
 		buf.append("        return;\n");
 		buf.append("    }\n");
-		buf.append("}\n");
 		String expected= buf.toString();		
 
 		assertEqualString(preview, expected);
