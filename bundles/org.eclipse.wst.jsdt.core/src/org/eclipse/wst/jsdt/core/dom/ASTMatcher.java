@@ -1013,8 +1013,10 @@ public class ASTMatcher {
 			return false;
 		}
 		InferredType o = (InferredType) other;
-		return
-				safeSubtreeMatch(node.type,o.type);
+		if (node.type==null || o.type==null)
+			return true;
+		
+		return 	node.type.equals(o.type);
 	}
 
 
