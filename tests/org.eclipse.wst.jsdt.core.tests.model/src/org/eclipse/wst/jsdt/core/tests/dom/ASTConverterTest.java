@@ -11,15 +11,76 @@
 
 package org.eclipse.wst.jsdt.core.tests.dom;
 
-import java.util.*;
+import java.util.List;
 
 import junit.framework.Test;
 
 import org.eclipse.core.runtime.Preferences;
-import org.eclipse.wst.jsdt.core.dom.*;
-import org.eclipse.wst.jsdt.core.jdom.*;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IField;
+import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.dom.AST;
+import org.eclipse.wst.jsdt.core.dom.ASTMatcher;
+import org.eclipse.wst.jsdt.core.dom.ASTNode;
+import org.eclipse.wst.jsdt.core.dom.ArrayAccess;
+import org.eclipse.wst.jsdt.core.dom.ArrayCreation;
+import org.eclipse.wst.jsdt.core.dom.ArrayInitializer;
+import org.eclipse.wst.jsdt.core.dom.ArrayType;
+import org.eclipse.wst.jsdt.core.dom.Assignment;
+import org.eclipse.wst.jsdt.core.dom.Block;
+import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
+import org.eclipse.wst.jsdt.core.dom.BreakStatement;
+import org.eclipse.wst.jsdt.core.dom.CastExpression;
+import org.eclipse.wst.jsdt.core.dom.CatchClause;
+import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
+import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
+import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
+import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
+import org.eclipse.wst.jsdt.core.dom.DoStatement;
+import org.eclipse.wst.jsdt.core.dom.EmptyStatement;
+import org.eclipse.wst.jsdt.core.dom.Expression;
+import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
+import org.eclipse.wst.jsdt.core.dom.FieldAccess;
+import org.eclipse.wst.jsdt.core.dom.ForStatement;
+import org.eclipse.wst.jsdt.core.dom.IBinding;
+import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
+import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
+import org.eclipse.wst.jsdt.core.dom.IfStatement;
+import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
+import org.eclipse.wst.jsdt.core.dom.InfixExpression;
+import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
+import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.Modifier;
+import org.eclipse.wst.jsdt.core.dom.Name;
+import org.eclipse.wst.jsdt.core.dom.NullLiteral;
+import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
+import org.eclipse.wst.jsdt.core.dom.ParenthesizedExpression;
+import org.eclipse.wst.jsdt.core.dom.PostfixExpression;
+import org.eclipse.wst.jsdt.core.dom.PrefixExpression;
+import org.eclipse.wst.jsdt.core.dom.QualifiedName;
+import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
+import org.eclipse.wst.jsdt.core.dom.SimpleName;
+import org.eclipse.wst.jsdt.core.dom.SimpleType;
+import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.dom.StringLiteral;
+import org.eclipse.wst.jsdt.core.dom.SuperMethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.SwitchCase;
+import org.eclipse.wst.jsdt.core.dom.SwitchStatement;
+import org.eclipse.wst.jsdt.core.dom.ThrowStatement;
+import org.eclipse.wst.jsdt.core.dom.TryStatement;
+import org.eclipse.wst.jsdt.core.dom.Type;
+import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationExpression;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
+import org.eclipse.wst.jsdt.core.dom.VariableDeclarationStatement;
+import org.eclipse.wst.jsdt.core.dom.WhileStatement;
 import org.eclipse.wst.jsdt.core.util.IModifierConstants;
-import org.eclipse.wst.jsdt.core.*;
 
 public class ASTConverterTest extends ConverterTestSetup {
 	
@@ -8500,50 +8561,6 @@ public class ASTConverterTest extends ConverterTestSetup {
 				"			throw new UnsupportedEncodingException();\n" + //$NON-NLS-1$
 				"		}"; //$NON-NLS-1$
 		checkSourceRange(elseStatement, expectedSource, source);
-	}	
-
-	/**
-	 * http://dev.eclipse.org/bugs/show_bug.cgi?id=15657
-	 * @deprecated marked deprecated to suppress JDOM-related deprecation warnings
-	 */
-	public void test0342() throws JavaModelException {
-		ICompilationUnit sourceUnit = getCompilationUnit("Converter" , "src", "test0342", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		IDOMCompilationUnit dcompUnit = new DOMFactory().createCompilationUnit(sourceUnit.getSource(), sourceUnit.getElementName());
-		assertNotNull("dcompUnit is null", dcompUnit); //$NON-NLS-1$
-
-		// searching class 
-		IDOMType classNode = null;
-		Enumeration children = dcompUnit.getChildren();
-		assertNotNull("dcompUnit has no children", children); //$NON-NLS-1$
-		
-		while (children.hasMoreElements()) {
-			IDOMNode child = (IDOMNode) children.nextElement();
-			if (child.getNodeType() == IDOMNode.TYPE) {
-				classNode = (IDOMType) child;
-				break;
-			}
-		}
-		assertNotNull("classNode is null", classNode); //$NON-NLS-1$
-
-		// searching for methods
-		children = classNode.getChildren();
-
-		assertNotNull("classNode has no children", children); //$NON-NLS-1$
-
-		while (children.hasMoreElements()) {
-			IDOMNode child = (IDOMNode) children.nextElement();
-			if (child.getNodeType() == IDOMNode.METHOD) {
-				IDOMMethod childMethod = (IDOMMethod) child;
-
-				// returnType is always null;
-				String returnType = childMethod.getReturnType();
-				if (childMethod.isConstructor()) {
-					assertNull(returnType);
-				} else {
-					assertNotNull("no return type", returnType); //$NON-NLS-1$
-				}
-			}
-		}
 	}	
 
 	/**

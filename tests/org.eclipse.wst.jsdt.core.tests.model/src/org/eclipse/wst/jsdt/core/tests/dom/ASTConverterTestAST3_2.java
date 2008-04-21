@@ -21,7 +21,6 @@ import junit.framework.Test;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.wst.jsdt.core.Flags;
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.ICompilationUnit;
 import org.eclipse.wst.jsdt.core.IInitializer;
@@ -5360,19 +5359,19 @@ public class ASTConverterTestAST3_2 extends ConverterTestSetup {
 		assertFalse("are Equals", methodBinding.isEqualTo(methodBinding2));
 	}
 	
-	/**
-	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78740
-	 * @deprecated marked deprecated to suppress JDOM-related deprecation warnings
-	 */
-	public void test0576() throws JavaModelException {
-		org.eclipse.wst.jsdt.core.jdom.DOMFactory factory = new org.eclipse.wst.jsdt.core.jdom.DOMFactory();
-		org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit domCompilationUnit = factory.createCompilationUnit(
-				"package x; /** @model */ interface X  {}", "NAME");
-		org.eclipse.wst.jsdt.core.jdom.IDOMType domType = (org.eclipse.wst.jsdt.core.jdom.IDOMType) domCompilationUnit.getFirstChild().getNextNode();
-		assertTrue("Not an interface", Flags.isInterface(domType.getFlags()));
-		domType.getComment();
-		assertTrue("Not an interface", Flags.isInterface(domType.getFlags()));
-	}
+//	/**
+//	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78740
+//	 * @deprecated marked deprecated to suppress JDOM-related deprecation warnings
+//	 */
+//	public void test0576() throws JavaModelException {
+//		org.eclipse.wst.jsdt.core.jdom.DOMFactory factory = new org.eclipse.wst.jsdt.core.jdom.DOMFactory();
+//		org.eclipse.wst.jsdt.core.jdom.IDOMCompilationUnit domCompilationUnit = factory.createCompilationUnit(
+//				"package x; /** @model */ interface X  {}", "NAME");
+//		org.eclipse.wst.jsdt.core.jdom.IDOMType domType = (org.eclipse.wst.jsdt.core.jdom.IDOMType) domCompilationUnit.getFirstChild().getNextNode();
+//		assertTrue("Not an interface", Flags.isInterface(domType.getFlags()));
+//		domType.getComment();
+//		assertTrue("Not an interface", Flags.isInterface(domType.getFlags()));
+//	}
 
 	/**
 	 * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77645
