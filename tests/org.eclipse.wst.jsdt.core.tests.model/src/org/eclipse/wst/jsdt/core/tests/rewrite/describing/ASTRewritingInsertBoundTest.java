@@ -113,7 +113,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n}\n");
 		buf.append("\n");
 		buf.append("    function foo1();\n");
 		buf.append("\n");
@@ -125,10 +125,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("    function foo3();\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		buf.append("}\n");	
 		
 		assertEqualString(preview, buf.toString());
 
@@ -181,13 +180,13 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
 		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("    function foo3();\n");
 		buf.append("\n");
@@ -240,9 +239,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n}\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n}\n");
 		buf.append("\n");
 		buf.append("    function foo1();\n");
 		buf.append("\n");
@@ -254,9 +253,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("    function foo3();\n");
 		buf.append("\n");
-		buf.append("    function new3();\n");
+		buf.append("    function new3() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new4();\n");
+		buf.append("    function new4() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		
@@ -661,13 +660,13 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
 		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		
@@ -724,17 +723,17 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    function new3();\n");
+		buf.append("    function new3() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new4();\n");
+		buf.append("    function new4() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		
@@ -789,9 +788,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c2\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("    function foo3();\n");
 		buf.append("\n");
@@ -1032,13 +1031,13 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
 		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		
@@ -1156,17 +1155,17 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("    function foo2();\n");
 		buf.append("\n");
 		buf.append("//c3\n");
 		buf.append("\n");
-		buf.append("    function new3();\n");
+		buf.append("    function new3() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new4();\n");
+		buf.append("    function new4() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
@@ -1288,9 +1287,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		
@@ -1397,9 +1396,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf= new StringBuffer();
 		buf.append("//c1\n");
 		buf.append("\n");
-		buf.append("    function new1();\n");
+		buf.append("    function new1() {\n    }\n");
 		buf.append("\n");
-		buf.append("    function new2();\n");
+		buf.append("    function new2() {\n    }\n");
 		buf.append("\n");
 		buf.append("//c4\n");
 		
