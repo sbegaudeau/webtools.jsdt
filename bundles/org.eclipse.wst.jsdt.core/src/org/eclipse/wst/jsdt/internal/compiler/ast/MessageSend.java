@@ -278,7 +278,8 @@ public TypeBinding resolveType(BlockScope scope) {
 //		receiverCast = true;
 //	}
 	this.actualReceiverType = (receiver!=null) ?receiver.resolveType(scope):null;
-	boolean receiverIsType = receiver instanceof NameReference && (((NameReference) receiver).bits & Binding.TYPE) != 0;
+	boolean receiverIsType = (receiver instanceof NameReference || receiver instanceof FieldReference)
+		&& ( receiver.bits & Binding.TYPE) != 0;
 //	if (receiverCast && this.actualReceiverType != null) {
 //		 // due to change of declaring class with receiver type, only identity cast should be notified
 //		if (((CastExpression)this.receiver).expression.resolvedType == this.actualReceiverType) {

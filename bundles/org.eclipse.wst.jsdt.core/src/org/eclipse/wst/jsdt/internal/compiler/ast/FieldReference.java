@@ -45,6 +45,7 @@ public class FieldReference extends Reference implements InvocationSite, IFieldR
 	public Expression receiver;
 	public char[] token;
 	public FieldBinding binding;															// exact binding resulting from lookup
+	public TypeBinding typeBinding;															// exact binding resulting from lookup
 //	protected FieldBinding codegenBinding;									// actual binding used for code generation (if no synthetic accessor)
 //	public MethodBinding[] syntheticAccessors; // [0]=read accessor [1]=write accessor
 
@@ -64,16 +65,16 @@ public FieldReference(char[] source, long pos) {
 
 public FlowInfo analyseAssignment(BlockScope currentScope, 	FlowContext flowContext, 	FlowInfo flowInfo, Assignment assignment, boolean isCompound) {
 	// compound assignment extra work
-	if (isCompound) { // check the variable part is initialized if blank final
-		if (binding.isBlankFinal()
-			&& receiver.isThis()
-			&& currentScope.allowBlankFinalFieldAssignment(binding)
-			&& (!flowInfo.isDefinitelyAssigned(binding))) {
-			currentScope.problemReporter().uninitializedBlankFinalField(binding, this);
-			// we could improve error msg here telling "cannot use compound assignment on final blank field"
-		}
-		manageSyntheticAccessIfNecessary(currentScope, flowInfo, true /*read-access*/);
-	}
+//	if (isCompound) { // check the variable part is initialized if blank final
+//		if (binding.isBlankFinal()
+//			&& receiver.isThis()
+//			&& currentScope.allowBlankFinalFieldAssignment(binding)
+//			&& (!flowInfo.isDefinitelyAssigned(binding))) {
+//			currentScope.problemReporter().uninitializedBlankFinalField(binding, this);
+//			// we could improve error msg here telling "cannot use compound assignment on final blank field"
+//		}
+//		manageSyntheticAccessIfNecessary(currentScope, flowInfo, true /*read-access*/);
+//	}
 	if (receiver instanceof SingleNameReference && ((SingleNameReference)receiver).binding instanceof LocalVariableBinding)
 	{
 		flowInfo.markAsDefinitelyNonNull((LocalVariableBinding)((SingleNameReference)receiver).binding);
@@ -355,9 +356,22 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 
 	this.receiverType = receiver.resolveType(scope);
 	if (this.receiverType == null) {
-		this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
-		constant = Constant.NotAConstant;
-		this.resolvedType=TypeBinding.ANY;
+		char [] possibleTypeName = Util.getTypeName( this );
+		Binding possibleTypeBinding =null;
+		if (possibleTypeName!=null)
+		   possibleTypeBinding = scope.getBinding( possibleTypeName, Binding.TYPE  & RestrictiveFlagMASK, this, true /*resolve*/);
+		if (possibleTypeBinding!=null && possibleTypeBinding.isValidBinding())
+		{
+			this.typeBinding=(TypeBinding)possibleTypeBinding;
+			this.bits|=Binding.TYPE;
+			return this.typeBinding;
+		}
+		else
+		{
+			this.binding=new ProblemFieldBinding(null,this.token,ProblemReasons.NotFound);
+			constant = Constant.NotAConstant;
+			this.resolvedType=TypeBinding.ANY;
+		}
 		return null;
 	}
 //	if (receiverCast) {
@@ -380,7 +394,8 @@ public TypeBinding resolveType(BlockScope scope, boolean define, TypeBinding use
 	}
 	
 	Binding memberBinding = scope.getFieldOrMethod(this.receiverType, token, this);
-	boolean receiverIsType=   receiver instanceof NameReference && ( ((NameReference) receiver).bits & Binding.TYPE) != 0;
+	boolean receiverIsType = (receiver instanceof NameReference || receiver instanceof FieldReference)
+		&& ( receiver.bits & Binding.TYPE) != 0;
 	if (!memberBinding.isValidBinding() && (this.receiverType!=null && this.receiverType.isFunctionType()))
 	{
 		   Binding alternateBinding = receiver.alternateBinding();

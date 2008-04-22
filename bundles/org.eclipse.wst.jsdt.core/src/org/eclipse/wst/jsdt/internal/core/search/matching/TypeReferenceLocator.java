@@ -25,6 +25,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Annotation;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ArrayTypeReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.Expression;
+import org.eclipse.wst.jsdt.internal.compiler.ast.FieldReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ImportReference;
 import org.eclipse.wst.jsdt.internal.compiler.ast.LocalDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.NameReference;
@@ -94,7 +95,17 @@ public int match(ASTNode node, MatchingNodeSet nodeSet) { // interested in Impor
 //public int match(MethodDeclaration node, MatchingNodeSet nodeSet) - SKIP IT
 //public int match(MessageSend node, MatchingNodeSet nodeSet) - SKIP IT
 public int match(Reference node, MatchingNodeSet nodeSet) { // interested in NameReference & its subtypes
-	if (!(node instanceof NameReference)) return IMPOSSIBLE_MATCH;
+	if (!(node instanceof NameReference))
+	{
+		if (node instanceof FieldReference) {
+			FieldReference fieldReference = (FieldReference) node;
+			if (!(fieldReference.receiver instanceof SingleNameReference || fieldReference.receiver instanceof FieldReference))
+				return IMPOSSIBLE_MATCH;
+			if (matchesName(this.pattern.simpleName, fieldReference.token))
+				return nodeSet.addMatch(node, POSSIBLE_MATCH); // resolution is needed to find out if it is a type ref
+		}
+		return IMPOSSIBLE_MATCH;
+	}
 
 	if (this.pattern.simpleName == null)
 		return nodeSet.addMatch(node, ((InternalSearchPattern)this.pattern).mustResolve ? POSSIBLE_MATCH : ACCURATE_MATCH);
@@ -659,10 +670,12 @@ protected void reportDeclaration(ReferenceBinding typeBinding, int maxType, Matc
 	}
 }
 public int resolveLevel(ASTNode node) {
-	if (node instanceof TypeReference)
-		return resolveLevel((TypeReference) node);
 	if (node instanceof NameReference)
 		return resolveLevel((NameReference) node);
+	if (node instanceof FieldReference)
+		return resolveLevel((FieldReference)node);
+	if (node instanceof TypeReference)
+		return resolveLevel((TypeReference) node);
 //	if (node instanceof ImportReference) - Not called when resolve is true, see MatchingNodeSet.reportMatching(unit)
 	return IMPOSSIBLE_MATCH;
 }
@@ -732,6 +745,17 @@ protected int resolveLevel(NameReference nameRef) {
 	}
 	return resolveLevel(typeBinding);
 }
+
+protected int resolveLevel(FieldReference fieldReference) {
+	Binding binding = fieldReference.typeBinding;
+
+		if (binding instanceof ProblemReferenceBinding)
+			binding = ((ProblemReferenceBinding) binding).closestMatch();
+		if (binding instanceof ReferenceBinding)
+			return resolveLevelForType((ReferenceBinding) binding);
+		return binding == null || binding instanceof ProblemBinding ? INACCURATE_MATCH : IMPOSSIBLE_MATCH;
+}
+
 protected int resolveLevel(TypeReference typeRef) {
 	TypeBinding typeBinding = typeRef.resolvedType;
 	if (typeBinding instanceof ArrayBinding)
