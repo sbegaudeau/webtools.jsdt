@@ -145,6 +145,7 @@ import org.eclipse.wst.jsdt.internal.core.search.IndexSelector;
 import org.eclipse.wst.jsdt.internal.core.search.JavaSearchDocument;
 import org.eclipse.wst.jsdt.internal.core.util.HandleFactory;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public class MatchLocator implements ITypeRequestor {
 
@@ -466,6 +467,12 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 			System.out.println(unitResult);
 		}
 	}
+}
+
+
+public void accept(LibraryAPIs libraryMetaData)
+{
+	
 }
 /**
  * Add additional source types

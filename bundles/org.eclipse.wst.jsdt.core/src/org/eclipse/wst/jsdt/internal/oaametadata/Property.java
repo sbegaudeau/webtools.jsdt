@@ -4,7 +4,8 @@ public class Property extends DocumentedElement{
 
 	String name;
 	String type;
-	String usage; 
+	String usage;
+	public boolean isField; 
 	
 
 }

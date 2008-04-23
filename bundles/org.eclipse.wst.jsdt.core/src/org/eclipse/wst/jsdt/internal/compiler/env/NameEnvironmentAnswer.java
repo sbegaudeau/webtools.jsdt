@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.compiler.env;
 
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
+
 public class NameEnvironmentAnswer {
 
 	// only one of the three can be set
@@ -18,10 +20,16 @@ public class NameEnvironmentAnswer {
 	ICompilationUnit[] compilationUnits;
 	ISourceType[] sourceTypes;
 	AccessRestriction accessRestriction;
+	LibraryAPIs libraryMetaData;
 
 	public NameEnvironmentAnswer(IBinaryType binaryType, AccessRestriction accessRestriction) {
 		this.binaryType = binaryType;
 		this.accessRestriction = accessRestriction;
+	}
+
+
+	public NameEnvironmentAnswer(LibraryAPIs metaData) {
+		this.libraryMetaData = metaData;
 	}
 
 	public NameEnvironmentAnswer(ICompilationUnit compilationUnit, AccessRestriction accessRestriction) {
@@ -101,6 +109,12 @@ public class NameEnvironmentAnswer {
 		return this.sourceTypes != null;
 	}
 
+
+	public boolean isMetaData() {
+		return this.libraryMetaData != null;
+	}
+
+
 	public boolean ignoreIfBetter() {
 		return this.accessRestriction != null && this.accessRestriction.ignoreIfBetter();
 	}
@@ -115,5 +129,10 @@ public class NameEnvironmentAnswer {
 		if (this.accessRestriction == null) return true;
 		return otherAnswer.accessRestriction != null
 			&& this.accessRestriction.getProblemId() < otherAnswer.accessRestriction.getProblemId();
+	}
+	
+	public LibraryAPIs getLibraryMetadata()
+	{
+		return this.libraryMetaData;
 	}
 }

@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfPackage;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public class LookupEnvironment implements ProblemReasons, TypeConstants {
 
@@ -119,7 +120,19 @@ public ReferenceBinding askForType(char[][] compoundName) {
 	} else if (answer.isSourceType())
 		// the type was found as a source model
 		typeRequestor.accept(answer.getSourceTypes(), computePackageFrom(compoundName), answer.getAccessRestriction());
+	else if (answer.isMetaData())
+		{
+			LibraryAPIs metadata= answer.getLibraryMetadata();
+			if (!acceptedCompilationUnits.contains(metadata.fileName))
+			{
+				// the type was found as a .js file, try to build it then search the cache
+				acceptedCompilationUnits.add(metadata.fileName);
+				typeRequestor.accept(metadata);
+			}
+			
+		}
 
+	
 	return getCachedType(compoundName);
 }
 /* Ask the oracle for a type named name in the packageBinding.
@@ -200,6 +213,17 @@ Binding askForBinding(PackageBinding packageBinding, char[] name, int mask) {
 	} else if (answer.isSourceType())
 		// the type was found as a source model
 		typeRequestor.accept(answer.getSourceTypes(), packageBinding, answer.getAccessRestriction());
+	else if (answer.isMetaData())
+	{
+		LibraryAPIs metadata= answer.getLibraryMetadata();
+		if (!acceptedCompilationUnits.contains(metadata.fileName))
+		{
+			// the type was found as a .js file, try to build it then search the cache
+			acceptedCompilationUnits.add(metadata.fileName);
+			typeRequestor.accept(metadata);
+		}
+		
+	}
 
 	return packageBinding.getBinding0(name,mask);
 }

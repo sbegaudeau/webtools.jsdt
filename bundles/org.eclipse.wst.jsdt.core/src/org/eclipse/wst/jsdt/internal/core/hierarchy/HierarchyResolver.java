@@ -74,6 +74,7 @@ import org.eclipse.wst.jsdt.internal.core.Openable;
 import org.eclipse.wst.jsdt.internal.core.SourceTypeElementInfo;
 import org.eclipse.wst.jsdt.internal.core.util.ASTNodeFinder;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public class HierarchyResolver implements ITypeRequestor {
 
@@ -153,6 +154,12 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 		}
 	}
 
+}
+
+
+public void accept(LibraryAPIs libraryMetaData)
+{
+	
 }
 
 /**

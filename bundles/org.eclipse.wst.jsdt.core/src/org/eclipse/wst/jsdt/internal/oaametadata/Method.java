@@ -1,11 +1,11 @@
 package org.eclipse.wst.jsdt.internal.oaametadata;
 
 public class Method extends DocumentedElement {
-	String scope;
-	String visibility;
-	String name;
+	public String scope;
+	public String visibility;
+	public String name;
 	
-	Exception [] exceptions;
-	Parameter [] parameters;
-	ReturnsData returns;
+	public Exception [] exceptions;
+	public Parameter [] parameters;
+	public ReturnsData returns;
 }

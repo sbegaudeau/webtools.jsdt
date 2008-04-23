@@ -37,6 +37,7 @@ import org.eclipse.wst.jsdt.internal.compiler.problem.DefaultProblem;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.compiler.util.Messages;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public class Compiler implements ITypeRequestor, ProblemSeverities {
 	public Parser parser;
@@ -339,6 +340,12 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 			}
 		}
 	}
+	
+	public void accept(LibraryAPIs libraryMetaData)
+	{
+		
+	}
+
 
 	public CompilationUnitDeclaration doParse(ICompilationUnit sourceUnit, AccessRestriction accessRestriction) {
 		CompilationResult unitResult =

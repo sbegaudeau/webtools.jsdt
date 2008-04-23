@@ -41,6 +41,7 @@ import org.eclipse.wst.jsdt.internal.compiler.parser.SourceTypeConverter;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemSeverities;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public abstract class Engine implements ITypeRequestor {
 
@@ -108,6 +109,10 @@ public abstract class Engine implements ITypeRequestor {
 			lookupEnvironment.buildTypeBindings(unit, accessRestriction);
 			lookupEnvironment.completeTypeBindings(unit, true);
 		}
+	}
+
+	public void accept(LibraryAPIs libraryMetaData) {
+		
 	}
 
 	public abstract AssistParser getParser();

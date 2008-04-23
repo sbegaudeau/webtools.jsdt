@@ -24,6 +24,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.compiler.util.Util;
+import org.eclipse.wst.jsdt.internal.oaametadata.IOAAMetaDataConstants;
 
 public class FileSystem implements INameEnvironment, SuffixConstants {
 
@@ -174,6 +175,13 @@ static Classpath getClasspath(String classpathName, String encoding,
 						destinationPath : // keep == comparison valid
 						convertPathSeparators(destinationPath));
 		}
+			else if (lowercaseClasspathName.endsWith(IOAAMetaDataConstants.METADATA_FILE.toLowerCase()))
+			{
+				result=new ClasspathMetadataFile(file, encoding,accessRuleSet,destinationPath == null || destinationPath == Main.NONE ?
+						destinationPath : // keep == comparison valid
+						convertPathSeparators(destinationPath));
+				
+			}
 	}
 	return result;
 }

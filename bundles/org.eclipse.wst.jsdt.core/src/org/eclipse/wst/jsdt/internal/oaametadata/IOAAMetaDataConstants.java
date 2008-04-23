@@ -2,6 +2,8 @@ package org.eclipse.wst.jsdt.internal.oaametadata;
 
 public interface IOAAMetaDataConstants {
 
+	public final static String METADATA_FILE="OpenAjaxAPI.xml";
+	
 	public final static String NAMESPACE_API="http://ns.openajax.org/api";
 	
 	public final static String TAG_ALAIS="alias";

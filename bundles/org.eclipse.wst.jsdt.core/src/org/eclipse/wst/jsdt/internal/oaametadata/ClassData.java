@@ -2,17 +2,17 @@ package org.eclipse.wst.jsdt.internal.oaametadata;
 
 public class ClassData extends DocumentedElement{
 
-	Ancestor [] ancestors;
-	String name;
-	String type;
-	String superclass;
-	String visibility; 
+	public Ancestor [] ancestors;
+	public String name;
+	public String type;
+	public String superclass;
+	public String visibility; 
 
-	Method [] constructors;
-	Event [] events;
-	Method [] methods;
-	Property [] fields;
+	public Method [] constructors;
+	public Event [] events;
+	public Method [] methods;
+	public Property [] fields;
 	
-	Mix [] mixes;
+	public Mix [] mixes;
 	
 }

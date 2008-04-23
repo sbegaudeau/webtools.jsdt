@@ -16,6 +16,7 @@ import org.eclipse.wst.jsdt.internal.compiler.env.IBinaryType;
 import org.eclipse.wst.jsdt.internal.compiler.env.ICompilationUnit;
 import org.eclipse.wst.jsdt.internal.compiler.env.ISourceType;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
+import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public interface ITypeRequestor {
 
@@ -37,6 +38,9 @@ public interface ITypeRequestor {
 	 */
 	void accept(ISourceType[] sourceType, PackageBinding packageBinding, AccessRestriction accessRestriction);
 
+	void accept(LibraryAPIs libraryMetaData);
+
+	
 	CompilationUnitDeclaration doParse(ICompilationUnit unit, AccessRestriction accessRestriction);
 
 }
