@@ -43,6 +43,10 @@ import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.Statement;
+import org.eclipse.wst.jsdt.core.infer.IInferenceFile;
+import org.eclipse.wst.jsdt.core.infer.InferrenceManager;
+import org.eclipse.wst.jsdt.core.infer.InferrenceProvider;
+import org.eclipse.wst.jsdt.core.infer.RefactoringSupport;
 import org.eclipse.wst.jsdt.internal.corext.SourceRange;
 import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.rename.MethodChecks;
@@ -1045,7 +1049,16 @@ public final class RefactoringAvailabilityTester {
 			return false;
 		if (isRenameProhibited(type))
 			return false;
-		return true;
+		InferrenceProvider[] inferenceProviders = InferrenceManager.getInstance().getInferenceProviders( (IInferenceFile)type.getCompilationUnit());
+		if (inferenceProviders.length>0 && inferenceProviders[0].getRefactoringSupport()!=null)
+		{
+			RefactoringSupport refactoringSupport = inferenceProviders[0].getRefactoringSupport();
+			if (refactoringSupport!=null)
+				return refactoringSupport.supportsClassRename();
+		}
+		
+		
+		return false;
 	}
 
 	public static boolean isRenameAvailable(final ITypeParameter parameter) throws JavaModelException {

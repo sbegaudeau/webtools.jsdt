@@ -25,6 +25,7 @@ import org.eclipse.wst.jsdt.core.ILocalVariable;
 import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
+import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeParameter;
 import org.eclipse.wst.jsdt.core.JavaModelException;
 import org.eclipse.wst.jsdt.internal.corext.refactoring.RefactoringAvailabilityTester;
@@ -198,9 +199,7 @@ public class RenameJavaElementAction extends SelectionDispatchAction {
 			case IJavaElement.COMPILATION_UNIT:
 				return RefactoringAvailabilityTester.isRenameAvailable((ICompilationUnit) element);
 			case IJavaElement.TYPE:
-				/* disable renaming TYPES becuase it explodes */
-				return false;
-				//return RefactoringAvailabilityTester.isRenameAvailable((IType) element);
+				return RefactoringAvailabilityTester.isRenameAvailable((IType) element);
 			case IJavaElement.METHOD:
 				final IMethod method= (IMethod) element;
 				if (method.isConstructor())

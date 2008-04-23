@@ -31,4 +31,9 @@ public class RefactoringSupport {
 	{
 		return null;
 	}
+	
+	public boolean supportsClassRename()
+	{
+		return false;
+	}
 }
