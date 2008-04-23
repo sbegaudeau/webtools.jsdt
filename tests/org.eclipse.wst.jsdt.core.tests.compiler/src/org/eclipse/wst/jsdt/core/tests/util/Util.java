@@ -742,6 +742,35 @@ public static void copyFile(InputStream src, File dst) throws IOException {
 	}
 }
 
+public static String copyToOutput(String fileName, String contents) {
+	
+	Path targetRoot =  new Path(OUTPUT_DIRECTORY);
+	Path filePath=new Path(fileName);
+	
+	IPath libDir = targetRoot.append(filePath.removeLastSegments(1));
+	String fullFileName=libDir.toOSString();
+	 File libFile=new File(fullFileName);
+	libFile.mkdirs();
+	
+	 IPath fullDir = libDir.append(filePath.lastSegment());
+
+
+	InputStream inputStream=new StringBufferInputStream(contents);
+	
+	try {
+		copyFile(inputStream, new File(fullDir.toOSString()));
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	
+	
+	
+	return 
+			fullDir.toOSString();
+	                  
+}
+
+
 
 public static String getJavaClassLibsAsString() {
 	String[] classLibs = getJavaClassLibs();
