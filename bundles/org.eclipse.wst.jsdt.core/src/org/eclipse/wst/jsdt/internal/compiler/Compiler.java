@@ -343,6 +343,7 @@ public class Compiler implements ITypeRequestor, ProblemSeverities {
 	
 	public void accept(LibraryAPIs libraryMetaData)
 	{
+		lookupEnvironment.buildTypeBindings(libraryMetaData);
 		
 	}
 

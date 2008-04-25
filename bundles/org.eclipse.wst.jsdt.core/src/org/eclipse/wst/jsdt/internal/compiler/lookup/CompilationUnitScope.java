@@ -137,6 +137,24 @@ public CompilationUnitScope(CompilationUnitDeclaration unit, LookupEnvironment e
 
 }
 
+protected CompilationUnitScope(LookupEnvironment environment)
+{
+	super(COMPILATION_UNIT_SCOPE, null);
+	this.environment = environment;
+	
+	this.referencedTypes = new ObjectVector();
+	if (compilerOptions().produceReferenceInfo) {
+		this.qualifiedReferences = new CompoundNameVector();
+		this.simpleNameReferences = new SimpleNameVector();
+		this.referencedSuperTypes = new ObjectVector();
+	} else {
+		this.qualifiedReferences = null; // used to test if dependencies should be recorded
+		this.simpleNameReferences = null;
+//		this.referencedTypes = null;
+		this.referencedSuperTypes = null;
+	}
+}
+
 public MethodScope methodScope() {
 	if(superBinding!=null && methodScope==null) {
 		methodScope = new MethodScope(classScope,referenceContext(),false);

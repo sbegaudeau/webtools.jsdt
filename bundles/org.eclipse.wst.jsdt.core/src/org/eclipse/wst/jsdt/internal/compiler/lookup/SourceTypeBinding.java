@@ -86,6 +86,10 @@ public SourceTypeBinding(char[][] compoundName, PackageBinding fPackage,  Scope 
 
 }
 
+protected SourceTypeBinding()
+{
+	
+}
 
 void buildFieldsAndMethods() {
 	buildFields();
@@ -1707,13 +1711,13 @@ public void setMethods(MethodBinding[] methods) {
 //		throw new UnimplementedException("should not get here"); //$NON-NLS-1$
 	this.methods = methods;
 }
-public final int sourceEnd() {
+public  int sourceEnd() {
 	if (this.classScope.referenceContext!=null)
 		return this.classScope.referenceContext.sourceEnd;
 	else
 		return this.classScope.inferredType.sourceEnd;
 }
-public final int sourceStart() {
+public  int sourceStart() {
 	if (this.classScope.referenceContext!=null)
 		return this.classScope.referenceContext.sourceStart;
 	else

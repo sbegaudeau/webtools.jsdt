@@ -29,6 +29,7 @@ import org.eclipse.wst.jsdt.internal.compiler.impl.ITypeRequestor;
 import org.eclipse.wst.jsdt.internal.compiler.problem.ProblemReporter;
 import org.eclipse.wst.jsdt.internal.compiler.util.HashtableOfPackage;
 import org.eclipse.wst.jsdt.internal.compiler.util.SimpleLookupTable;
+import org.eclipse.wst.jsdt.internal.oaametadata.ClassData;
 import org.eclipse.wst.jsdt.internal.oaametadata.LibraryAPIs;
 
 public class LookupEnvironment implements ProblemReasons, TypeConstants {
@@ -1398,4 +1399,39 @@ void updateCaches(UnresolvedReferenceBinding unresolvedType, ReferenceBinding re
 		}
 	}
 }
+
+public void buildTypeBindings(LibraryAPIs libraryMetaData) {
+
+	ClassData[] classes = libraryMetaData.classes;
+	PackageBinding packageBinding = this.defaultPackage;
+	int typeLength=(classes!=null ? classes.length:0);
+	int count = 0;
+
+	LibraryAPIsScope scope=new LibraryAPIsScope(libraryMetaData,this);
+	SourceTypeBinding[] topLevelTypes = new SourceTypeBinding[typeLength];
+
+		for (int i = 0; i < typeLength; i++) {
+			ClassData clazz=classes[i];
+			char[][] className = CharOperation.arrayConcat(packageBinding.compoundName,clazz.type.toCharArray());
+
+			SourceTypeBinding binding = new MetatdataTypeBinding(className, packageBinding, clazz,  scope) ;
+			this.defaultPackage.addType(binding);
+			binding.fPackage.addType(binding);
+			topLevelTypes[count++] = binding;
+
+		}
+		if (count != topLevelTypes.length)
+			System.arraycopy(topLevelTypes, 0, topLevelTypes = new SourceTypeBinding[count], 0, count);
+		
+		char [] fullFileName=libraryMetaData.fileName.toCharArray();
+
+		LibraryAPIsBinding libraryAPIsBinding=new LibraryAPIsBinding(null,defaultPackage,fullFileName);
+
+		if (packageBinding!=this.defaultPackage)
+			packageBinding.addBinding(libraryAPIsBinding, libraryAPIsBinding.shortReadableName(), Binding.COMPILATION_UNIT);
+
+
+}
+
+
 }

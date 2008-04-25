@@ -8,4 +8,7 @@ public class Method extends DocumentedElement {
 	public Exception [] exceptions;
 	public Parameter [] parameters;
 	public ReturnsData returns;
+	public boolean isStatic() {
+		return IOAAMetaDataConstants.USAGE_STATIC.equals(scope);
+	}
 }

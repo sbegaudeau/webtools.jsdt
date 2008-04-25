@@ -15,6 +15,7 @@ import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
 import org.eclipse.wst.jsdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
+import org.eclipse.wst.jsdt.internal.oaametadata.Method;
 
 public class MethodBinding extends Binding {
 
@@ -29,6 +30,7 @@ public class MethodBinding extends Binding {
 	public long tagBits;
 	public FunctionTypeBinding functionTypeBinding;
 	public ReferenceBinding allocationType;
+	public Method oaaMethod;
 	
 
 protected MethodBinding() {

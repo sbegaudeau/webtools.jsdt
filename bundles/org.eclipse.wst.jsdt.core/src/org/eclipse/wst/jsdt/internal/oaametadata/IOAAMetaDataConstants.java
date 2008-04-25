@@ -87,6 +87,8 @@ public interface IOAAMetaDataConstants {
 	public final static String TAG_USERAGENTS ="useragents";
 	
 	
+	public final static String USAGE_STATIC ="static";
+	public final static String USAGE_INSTANCE ="instance";
 	
 	
 	  
