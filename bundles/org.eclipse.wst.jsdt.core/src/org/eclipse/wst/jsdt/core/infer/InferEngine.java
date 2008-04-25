@@ -591,6 +591,7 @@ public class InferEngine extends ASTVisitor {
 				this.currentContext.currentType=type;
 				type.isDefinition=true;
 				InferredMethod method = type.addMethod(type.name, methodDeclaration,true);
+				type.updatePositions(assignment.lhs.sourceStart, assignment.expression.sourceEnd);
 				method.nameStart=assignment.lhs.sourceStart;
 			}
 
