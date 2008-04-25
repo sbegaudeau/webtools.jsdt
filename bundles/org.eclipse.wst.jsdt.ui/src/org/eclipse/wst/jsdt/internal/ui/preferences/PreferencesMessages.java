@@ -316,9 +316,9 @@ public final class PreferencesMessages extends NLS {
 	//public static String AppearancePreferencePage_methodreturntype_label;
 	public static String AppearancePreferencePage_inferredmethodreturntype_label;
 	public static String AppearancePreferencePage_showCategory_label;
-	public static String AppearancePreferencePage_methodtypeparams_label;
-	public static String AppearancePreferencePage_pkgNamePatternEnable_label;
-	public static String AppearancePreferencePage_pkgNamePattern_label;
+//	public static String AppearancePreferencePage_methodtypeparams_label;
+//	public static String AppearancePreferencePage_pkgNamePatternEnable_label;
+//	public static String AppearancePreferencePage_pkgNamePattern_label;
 	public static String AppearancePreferencePage_showMembersInPackagesView;
 	public static String AppearancePreferencePage_stackViewsVerticallyInTheJavaBrowsingPerspective;
 //	public static String AppearancePreferencePage_note;
