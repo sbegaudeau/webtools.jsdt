@@ -71,7 +71,8 @@ class AddLibraryFolderToIndex extends IndexRequest {
 					new IResourceProxyVisitor() {
 						public boolean visit(IResourceProxy proxy) /* throws CoreException */{
 							if (proxy.getType() == IResource.FILE) {
-								if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(proxy.getName()))
+								if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(proxy.getName())
+										||org.eclipse.wst.jsdt.internal.core.util.Util.isMetadataFileName(proxy.getName()))
 									indexFile((IFile) proxy.requestResource());
 									//indexManager.addSource((IFile) proxy.requestResource(), container, parser);
 								return false;
@@ -87,7 +88,8 @@ class AddLibraryFolderToIndex extends IndexRequest {
 						public boolean visit(IResourceProxy proxy) /* throws CoreException */{
 							switch(proxy.getType()) {
 								case IResource.FILE :
-									if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(proxy.getName())) {
+									if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(proxy.getName())
+											||org.eclipse.wst.jsdt.internal.core.util.Util.isMetadataFileName(proxy.getName())){
 										IResource resource = proxy.requestResource();
 										if (!Util.isExcluded(resource, inclusionPatterns, exclusionPatterns))
 											indexFile((IFile) proxy.requestResource());

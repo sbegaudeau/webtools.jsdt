@@ -26,8 +26,10 @@ import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 
 class AddLibraryFileToIndex extends IndexRequest {
 
+	IPath absolutePath;
 	public AddLibraryFileToIndex(IFile resource, IndexManager manager) {
 		super(resource.getFullPath(), manager);
+		this.absolutePath=resource.getLocation();
 	}
 	public AddLibraryFileToIndex(IPath jarPath, IndexManager manager) {
 		// external JAR scenario - no resource
@@ -155,7 +157,7 @@ class AddLibraryFileToIndex extends IndexRequest {
 //						this.manager.indexDocument(entryDocument, participant, index, this.containerPath);
 //					}
 //				}
-				File file = new File(libraryFilePath.toOSString());
+				File file = new File(this.absolutePath.toOSString());
 				final char[] classFileChars = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(file,null);
 				String packageName=libraryFilePath.lastSegment();
 				JavaSearchDocument entryDocument = new JavaSearchDocument(  libraryFilePath, classFileChars, participant,packageName);

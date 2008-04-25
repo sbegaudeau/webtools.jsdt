@@ -68,6 +68,7 @@ import org.eclipse.wst.jsdt.internal.compiler.util.SuffixConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.PackageFragmentRoot;
+import org.eclipse.wst.jsdt.internal.oaametadata.IOAAMetaDataConstants;
 
 /**
  * Provides convenient utility methods to other types in this package.
@@ -2236,6 +2237,12 @@ public class Util {
 	public final static boolean isJavaLikeFileName(String name) {
 		if (name == null) return false;
 		return indexOfJavaLikeExtension(name) != -1;
+	}
+
+	
+	public final static boolean isMetadataFileName(String name) {
+		if (name == null) return false;
+		return name.endsWith(IOAAMetaDataConstants.METADATA_FILE);
 	}
 
 	/**

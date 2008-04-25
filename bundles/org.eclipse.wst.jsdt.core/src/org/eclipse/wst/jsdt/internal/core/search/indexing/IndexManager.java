@@ -374,7 +374,8 @@ public void indexLibrary(IClasspathEntry entry, IProject requestingProject) {
 	if (JavaCore.getPlugin() == null) return;
 	IndexRequest request = null;
 	Object target = JavaModel.getTarget(ResourcesPlugin.getWorkspace().getRoot(), entry.getPath(), true);
-	if(target instanceof IFolder || (target instanceof File && ((File)target).isDirectory())){
+	if(target instanceof IFolder || (target instanceof File && ((File)target).isDirectory())
+			|| target instanceof IProject){
 		char[][] inclusionPatterns = ((ClasspathEntry)entry).fullInclusionPatternChars();
 		char[][] exclusionPatterns = ((ClasspathEntry)entry).fullExclusionPatternChars();
 
