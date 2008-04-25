@@ -27,14 +27,14 @@ public class OaaMetadataTests extends AbstractRegressionTest {
 	+"              </returns>"
 	+"          </constructor>"
 	+"       </constructors>"
-	+"      <properties>" 
-	+"          <property name=\"propertyInstance\" readonly=\"false\" scope=\"instance\" type=\"String\">"
+	+"      <fields>" 
+	+"          <field name=\"propertyInstance\" readonly=\"false\" scope=\"instance\" type=\"String\">"
 	+"              <description>Property description</description>"
-	+"          </property>"
-	+"          <property name=\"propertyStatic\" readonly=\"false\" scope=\"static\" type=\"String\">"
+	+"          </field>"
+	+"          <field name=\"propertyStatic\" readonly=\"false\" scope=\"static\" type=\"String\">"
 	+"              <description>Property description</description>"
-	+"          </property>"
-	+"      </properties>"
+	+"          </field>"
+	+"      </fields>"
 	+"      <methods>"
 	+"          <method name=\"functionInstance\" scope=\"instance\">"
 	+"              <description>Method description</description>"
@@ -65,10 +65,14 @@ public class OaaMetadataTests extends AbstractRegressionTest {
 	
 	protected void runNegativeTest(String[] testFiles,String[]classLib, String expectedProblemLog) {
 		HashMap options = new HashMap();
+		String[] defaultClassPaths = getDefaultClassPaths();
+		String [] classLibs=new String[classLib.length+defaultClassPaths.length];
+		System.arraycopy(classLib, 0, classLibs, 0, classLib.length);
+		System.arraycopy(defaultClassPaths, 0, classLibs, classLib.length, defaultClassPaths.length);
 		runNegativeTest(
 				testFiles, 
 			expectedProblemLog, 
-			classLib  , 
+			classLibs  , 
 			false /* flush output directory */, 
 			options /* no custom options */,
 			false /* do not generate output */,
@@ -94,7 +98,9 @@ public class OaaMetadataTests extends AbstractRegressionTest {
 		this.runNegativeTest(
 				new String[] {
 						"X.js",
-						"var i=new libraryname.ClassName();" +
+						"var i=new libraryname.ClassName(1);\n" +
+						"var d=i.propertyInstance;\n" +
+						"var e=i.functionInstance(1);\n" +
 						"\n"
 				},
 				new String[]{libDir},
