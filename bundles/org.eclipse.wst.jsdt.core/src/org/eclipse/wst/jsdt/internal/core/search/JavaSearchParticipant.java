@@ -77,6 +77,9 @@ public class JavaSearchParticipant extends SearchParticipant {
 		if (org.eclipse.wst.jsdt.internal.core.util.Util.isJavaLikeFileName(documentPath)) {
 			new SourceIndexer(document).indexDocument();
 		} 
+		else if (org.eclipse.wst.jsdt.internal.core.util.Util.isMetadataFileName(documentPath)) {
+			new SourceIndexer(document).indexMetadata();
+		} 
 //		else if (org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(documentPath)) {
 //			new BinaryIndexer(document).indexDocument();
 //		}

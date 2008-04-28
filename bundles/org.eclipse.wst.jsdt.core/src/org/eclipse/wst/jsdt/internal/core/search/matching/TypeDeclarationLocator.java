@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.internal.core.search.matching;
 
+import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.infer.InferredType;
 import org.eclipse.wst.jsdt.internal.compiler.ast.ASTNode;
@@ -129,4 +130,19 @@ protected int resolveLevelForType(char[] simpleNamePattern, char[] qualification
 public String toString() {
 	return "Locator for " + this.pattern.toString(); //$NON-NLS-1$
 }
+
+
+public int matchMetadataElement(IJavaElement element) {
+	String elementName = element.getElementName();
+	char[] typeName = elementName.toCharArray();
+	char [] pkg=(this.pattern instanceof QualifiedTypeDeclarationPattern)? ((QualifiedTypeDeclarationPattern)this.pattern).qualification : this.pattern.pkg;
+	if (this.pattern.simpleName == null || matchesName(this.pattern.simpleName, typeName))
+		return ACCURATE_MATCH;
+	if (pkg!=null && pkg.length>0 &&
+			matchesName(CharOperation.concat(pkg, this.pattern.simpleName, '.'), typeName))
+		return ACCURATE_MATCH;
+	return IMPOSSIBLE_MATCH;
+}
+
+
 }

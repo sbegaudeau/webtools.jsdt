@@ -18,11 +18,12 @@ public class MetadataSourceElementNotifier {
 	
 	public void notifyRequestor()
 	{
-		
+		this.requestor.enterCompilationUnit();
 		if (this.apis.classes!=null)
 			for (int i = 0; i < apis.classes.length; i++) {
 				notifySourceElementRequestor(this.apis.classes[i]);
 			}
+		this.requestor.exitCompilationUnit(0);
 	}
 	
 	public void notifySourceElementRequestor( ClassData clazz ) {
@@ -125,7 +126,7 @@ public class MetadataSourceElementNotifier {
 		methodInfo.modifiers = 0;
 		if (method.isStatic())
 			methodInfo.modifiers |= ClassFileConstants.AccStatic;
-		methodInfo.name =method.name.toCharArray();
+		methodInfo.name =(isConstructor)? new char[0] : method.name.toCharArray();
 		methodInfo.nameSourceStart = 0;//method.nameStart;
 		methodInfo.nameSourceEnd = 0;//method.nameStart+method.name.length-1;
 		methodInfo.parameterTypes = argumentTypes;

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClassFile;
+import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IJavaElement;
 import org.eclipse.wst.jsdt.core.IJavaProject;
 import org.eclipse.wst.jsdt.core.IMember;
@@ -130,6 +131,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 import org.eclipse.wst.jsdt.internal.core.JavaProject;
 import org.eclipse.wst.jsdt.internal.core.LibraryFragmentRoot;
 import org.eclipse.wst.jsdt.internal.core.LocalVariable;
+import org.eclipse.wst.jsdt.internal.core.MetadataFile;
 import org.eclipse.wst.jsdt.internal.core.NameLookup;
 import org.eclipse.wst.jsdt.internal.core.Openable;
 import org.eclipse.wst.jsdt.internal.core.SearchableEnvironment;
@@ -472,7 +474,8 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 
 public void accept(LibraryAPIs libraryMetaData)
 {
-	
+	lookupEnvironment.buildTypeBindings(libraryMetaData);
+
 }
 /**
  * Add additional source types
@@ -1073,6 +1076,13 @@ protected void locateMatches(JavaProject javaProject, PossibleMatch[] possibleMa
 		for (int i = start, maxUnits = start + length; i < maxUnits; i++) {
 			PossibleMatch possibleMatch = possibleMatches[i];
 			try {
+				if (possibleMatch.openable instanceof MetadataFile)
+				{
+					this.currentPossibleMatch=possibleMatch;
+					processMetadata((MetadataFile)possibleMatch.openable);
+				}
+				else
+				{
 				if (!parseAndBuildBindings(possibleMatch, mustResolvePattern)) continue;
 				// Currently we only need to resolve over pattern flag if there's potential parameterized types
 				if (this.patternLocator.mayBeGeneric) {
@@ -1099,6 +1109,7 @@ protected void locateMatches(JavaProject javaProject, PossibleMatch[] possibleMa
 						// forget last possible match as it was processed
 						this.numberOfMatches--;
 					}
+				}
 				}
 			} finally {
 				if (!possibleMatch.nodeSet.mustResolve)
@@ -1158,6 +1169,47 @@ protected void locateMatches(JavaProject javaProject, PossibleMatch[] possibleMa
 		}
 	}
 }
+private void processMetadata(MetadataFile metadataFile) throws CoreException{
+	
+		IType [] types = metadataFile.getTypes();
+		int matchLevel=PatternLocator.IMPOSSIBLE_MATCH;
+		for (int typeIndex = 0; typeIndex < types.length; typeIndex++) {
+			IType type=types[typeIndex];
+			matchLevel=this.patternLocator.matchMetadataElement(type);
+			if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
+				reportMatching(type, matchLevel, null, 1);
+			IMethod[] methods = type.getMethods();
+			for (int methodIndex = 0; methodIndex < methods.length; methodIndex++) {
+				IMethod method=methods[methodIndex];
+				matchLevel=this.patternLocator.matchMetadataElement(method);
+				if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
+					reportMatching(method, matchLevel, null, 1);
+			}
+			IField[] fields = type.getFields();
+			for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
+				IField field=fields[fieldIndex];
+				matchLevel=this.patternLocator.matchMetadataElement(field);
+				if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
+					reportMatching(field, matchLevel, null, 1);
+			}
+		}
+		IMethod[] methods = metadataFile.getMethods();
+		for (int methodIndex = 0; methodIndex < methods.length; methodIndex++) {
+			IMethod method=methods[methodIndex];
+			matchLevel=this.patternLocator.matchMetadataElement(method);
+			if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
+				reportMatching(method, matchLevel, null, 1);
+		}
+		IField[] fields = metadataFile.getFields();
+		for (int fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
+			IField field=fields[fieldIndex];
+			matchLevel=this.patternLocator.matchMetadataElement(field);
+			if (matchLevel>=PatternLocator.POSSIBLE_MATCH)
+				reportMatching(field, matchLevel, null, 1);
+		}
+
+}
+
 /**
  * Locate the matches amongst the possible matches.
  */
@@ -2556,6 +2608,23 @@ protected void reportMatching(InferredType type, IJavaElement parent, int accura
 
 }
 
+
+protected void reportMatching( IJavaElement enclosingElement, int accuracy, MatchingNodeSet nodeSet, int occurrenceCount) throws CoreException {
+	// create type handle
+	if (enclosingElement == null) return;
+	boolean enclosesElement = encloses(enclosingElement);
+
+	// report the type declaration
+	if (accuracy > -1 && enclosesElement) {
+		int offset = 0;//element.g;
+		int elementLength=0;
+		SearchMatch match = this.patternLocator.newDeclarationMatch(null, enclosingElement, null, accuracy, elementLength, this);
+		report(match);
+	}
+
+//	boolean matchedClassContainer = (this.matchContainer & PatternLocator.CLASS_CONTAINER) != 0;
+
+}
 
 
 protected void reportMatching(LocalDeclaration field, LocalDeclaration[] otherFields, TypeDeclaration type, IJavaElement parent, int accuracy, boolean typeInHierarchy, MatchingNodeSet nodeSet) throws CoreException {

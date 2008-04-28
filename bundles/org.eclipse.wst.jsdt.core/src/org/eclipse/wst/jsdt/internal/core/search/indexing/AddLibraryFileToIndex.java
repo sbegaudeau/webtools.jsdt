@@ -157,7 +157,8 @@ class AddLibraryFileToIndex extends IndexRequest {
 //						this.manager.indexDocument(entryDocument, participant, index, this.containerPath);
 //					}
 //				}
-				File file = new File(this.absolutePath.toOSString());
+				IPath filePath=(this.absolutePath!=null)?this.absolutePath : this.containerPath;
+				File file = new File(filePath.toOSString());
 				final char[] classFileChars = org.eclipse.wst.jsdt.internal.compiler.util.Util.getFileCharContent(file,null);
 				String packageName=libraryFilePath.lastSegment();
 				JavaSearchDocument entryDocument = new JavaSearchDocument(  libraryFilePath, classFileChars, participant,packageName);

@@ -139,6 +139,7 @@ import org.eclipse.wst.jsdt.internal.compiler.lookup.ImportBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.InvocationSite;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LocalVariableBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.LookupEnvironment;
+import org.eclipse.wst.jsdt.internal.compiler.lookup.MetatdataTypeBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.wst.jsdt.internal.compiler.lookup.PackageBinding;
@@ -178,6 +179,8 @@ import org.eclipse.wst.jsdt.internal.core.SourceMethod;
 import org.eclipse.wst.jsdt.internal.core.SourceMethodElementInfo;
 import org.eclipse.wst.jsdt.internal.core.SourceType;
 import org.eclipse.wst.jsdt.internal.core.SourceTypeElementInfo;
+import org.eclipse.wst.jsdt.internal.oaametadata.ClassData;
+import org.eclipse.wst.jsdt.internal.oaametadata.Method;
 
 /**
  * This class is the entry point for source completions.
@@ -6797,6 +6800,19 @@ public final class CompletionEngine
 						}
 					}
 				}
+			}
+			else if (sourceType  instanceof MetatdataTypeBinding){
+				MetatdataTypeBinding metatdataTypeBinding=(MetatdataTypeBinding)sourceType;
+				ClassData classData = metatdataTypeBinding.getClassData();
+				Method meth = classData.getMethod(new String (method.selector));
+					if (meth != null){
+						int argLength=meth.parameters!=null ? meth.parameters.length : 0;
+						parameterNames = new char[argLength][];
+
+						for(int i = 0 ; i < argLength ; i++){
+							parameterNames[i] = meth.parameters[i].name.toCharArray();
+						}
+					}
 			}
 			else
 			if (sourceType.scope != null){

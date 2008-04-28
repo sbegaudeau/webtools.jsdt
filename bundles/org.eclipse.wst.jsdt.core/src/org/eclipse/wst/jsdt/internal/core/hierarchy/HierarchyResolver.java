@@ -159,7 +159,8 @@ public void accept(ICompilationUnit sourceUnit, AccessRestriction accessRestrict
 
 public void accept(LibraryAPIs libraryMetaData)
 {
-	
+	lookupEnvironment.buildTypeBindings(libraryMetaData);
+
 }
 
 /**

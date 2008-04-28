@@ -37,9 +37,10 @@ class AddLibraryFolderToIndex extends IndexRequest {
 	}
 
 	private void indexFile(IFile resource) {
-		AddLibraryFileToIndex request = new AddLibraryFileToIndex(resource,this.manager);
-		if (!this.manager.isJobWaiting(request))
-			this.manager.request(request);
+//		AddLibraryFileToIndex request = new AddLibraryFileToIndex(resource,this.manager);
+//		if (!this.manager.isJobWaiting(request))
+//			this.manager.request(request);
+		this.manager.addSource(resource, folderPath, null);
 	}
 //	private void indexFile(IPath resource) {
 //		AddLibraryFileToIndex request = new AddLibraryFileToIndex(resource,this.manager);

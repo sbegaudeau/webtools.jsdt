@@ -184,7 +184,8 @@ public boolean exists() {
  * @exception IllegalArgumentException if the name does not end with ".class"
  */
 public IClassFile getClassFile(String classFileName) {
-	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)) {
+	if (!org.eclipse.wst.jsdt.internal.compiler.util.Util.isClassFileName(classFileName)
+			&& !Util.isMetadataFileName(classFileName)) {
 		throw new IllegalArgumentException(Messages.element_invalidClassFileName);
 	}
 	// don't hold on the .class file extension to save memory
@@ -196,7 +197,7 @@ public IClassFile getClassFile(String classFileName) {
 	if (this.getResource()!=null)
 	  filename= this.getResource().getLocation().toOSString()+File.separator+classFileName;
 	
-	return new ClassFile(this,filename);
+	return (!Util.isMetadataFileName(classFileName)) ? (IClassFile)new ClassFile(this,filename) : (IClassFile)new MetadataFile(this,filename);
 }
 /**
  * Returns a the collection of class files in this - a folder package fragment which has a root

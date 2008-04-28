@@ -112,7 +112,7 @@ public abstract class Engine implements ITypeRequestor {
 	}
 
 	public void accept(LibraryAPIs libraryMetaData) {
-		
+		lookupEnvironment.buildTypeBindings(libraryMetaData);
 	}
 
 	public abstract AssistParser getParser();

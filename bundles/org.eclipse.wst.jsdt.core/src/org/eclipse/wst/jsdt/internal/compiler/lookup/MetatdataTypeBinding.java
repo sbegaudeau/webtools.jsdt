@@ -1053,6 +1053,15 @@ public boolean contains(ReferenceBinding binding)
 	return false;
 }
 
+public ClassData getClassData()
+{
+	return this.classData;
+}
 
+
+public LibraryAPIsScope getLibraryAPIsScope()
+{
+	return this.libraryScope;
+}
 
 }

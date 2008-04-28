@@ -224,6 +224,9 @@ public class SearchableEnvironment implements INameEnvironment,
 					ClassFile classFile = (ClassFile) openable;
 					compilationUnit=classFile;
 				}
+				else if (openable instanceof MetadataFile) {
+					return new NameEnvironmentAnswer(((MetadataFile)openable).getAPIs());
+				}
 				else if (openable instanceof ICompilationUnit) {
 					compilationUnit=(ICompilationUnit)openable;
 				}

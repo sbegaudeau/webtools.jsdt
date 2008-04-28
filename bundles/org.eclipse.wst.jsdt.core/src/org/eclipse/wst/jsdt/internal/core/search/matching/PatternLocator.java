@@ -461,7 +461,7 @@ protected void matchReportReference(ASTNode reference, IJavaElement element, Bin
 	matchReportReference(reference, element, elementBinding, accuracy, locator);
 }
 public SearchMatch newDeclarationMatch(ASTNode reference, IJavaElement element, Binding elementBinding, int accuracy, int length, MatchLocator locator) {
-	int offset=reference.sourceStart;
+	int offset=(reference!=null  )?reference.sourceStart : 0;
 	if (reference instanceof AbstractMethodDeclaration) {
 		AbstractMethodDeclaration method = (AbstractMethodDeclaration) reference;
 		if (method.selector==null && method.inferredMethod!=null)
@@ -1011,4 +1011,11 @@ protected int resolveLevelForType (char[] simpleNamePattern,
 public String toString(){
 	return "SearchPattern"; //$NON-NLS-1$
 }
+
+public int matchMetadataElement(IJavaElement element)
+{
+	return IMPOSSIBLE_MATCH;
+}
+
+
 }

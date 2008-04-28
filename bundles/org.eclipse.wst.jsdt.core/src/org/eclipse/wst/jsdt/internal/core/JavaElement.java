@@ -79,6 +79,7 @@ public abstract class JavaElement extends PlatformObject implements IJavaElement
 	public static final char JEM_INITIALIZER = '|';
 	public static final char JEM_COMPILATIONUNIT = '{';
 	public static final char JEM_CLASSFILE = '(';
+	public static final char JEM_METADATA = '&';
 	public static final char JEM_TYPE = '[';
 	public static final char JEM_PACKAGEDECLARATION = '%';
 	public static final char JEM_IMPORTDECLARATION = '#';

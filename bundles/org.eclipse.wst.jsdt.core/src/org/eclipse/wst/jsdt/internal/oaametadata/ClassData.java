@@ -40,5 +40,15 @@ public class ClassData extends DocumentedElement{
 		return (Property [] )list.toArray(new Property[list.size()]);
 	}
 	
-	
+
+	public Method getMethod(String name)
+	{
+		if (this.methods!=null)
+			for (int i = 0; i < this.methods.length; i++) {
+				if (this.methods[i].name.equals(name))
+					return this.methods[i];
+				
+			}
+		return null;
+	}
 }

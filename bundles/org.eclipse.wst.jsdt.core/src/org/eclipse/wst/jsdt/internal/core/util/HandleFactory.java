@@ -157,7 +157,8 @@ public class HandleFactory {
 			}
 			String simpleName= simpleNames[length];
 			
-			if (pkgFragment.isSource()) {
+			if (pkgFragment.isSource() && 
+					!Util.isMetadataFileName(simpleName)) {
 				ICompilationUnit unit= pkgFragment.getCompilationUnit(simpleName);
 				return (Openable) unit;
 			} else {
