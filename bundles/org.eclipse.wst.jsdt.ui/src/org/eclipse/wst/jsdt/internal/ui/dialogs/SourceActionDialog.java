@@ -61,32 +61,32 @@ import org.eclipse.wst.jsdt.ui.JavaElementLabels;
  */
 public class SourceActionDialog extends CheckedTreeSelectionDialog {
 	
-	private List fInsertPositions;
-	private List fLabels;
-	private int fCurrentPositionIndex;
+	protected List fInsertPositions;
+	protected List fLabels;
+	protected int fCurrentPositionIndex;
 	
-	private IDialogSettings fSettings;
-	private CompilationUnitEditor fEditor;
-	private ITreeContentProvider fContentProvider;
-	private boolean fGenerateComment;
-	private IType fType;
-	private int fWidth, fHeight;
-	private String fCommentString;
-	private boolean fEnableInsertPosition= true;
+	protected IDialogSettings fSettings;
+	protected CompilationUnitEditor fEditor;
+	protected ITreeContentProvider fContentProvider;
+	protected boolean fGenerateComment;
+	protected IType fType;
+	protected int fWidth, fHeight;
+	protected String fCommentString;
+	protected boolean fEnableInsertPosition= true;
 		
-	private int fVisibilityModifier;
-	private boolean fFinal;
-	private boolean fSynchronized;
+	protected int fVisibilityModifier;
+	protected boolean fFinal;
+	protected boolean fSynchronized;
 	
-	private final String SETTINGS_SECTION_METHODS= "SourceActionDialog.methods"; //$NON-NLS-1$
-	private final String SETTINGS_SECTION_CONSTRUCTORS= "SourceActionDialog.constructors"; //$NON-NLS-1$
+	protected final String SETTINGS_SECTION_METHODS= "SourceActionDialog.methods"; //$NON-NLS-1$
+	protected final String SETTINGS_SECTION_CONSTRUCTORS= "SourceActionDialog.constructors"; //$NON-NLS-1$
 	
-	private final String SETTINGS_INSERTPOSITION= "InsertPosition"; //$NON-NLS-1$
-	private final String SETTINGS_VISIBILITY_MODIFIER= "VisibilityModifier"; //$NON-NLS-1$
-	private final String SETTINGS_FINAL_MODIFIER= "FinalModifier"; //$NON-NLS-1$
-	private final String SETTINGS_SYNCHRONIZED_MODIFIER= "SynchronizedModifier"; //$NON-NLS-1$
-	private final String SETTINGS_COMMENTS= "Comments"; //$NON-NLS-1$
-	private Composite fInsertPositionComposite;
+	protected final String SETTINGS_INSERTPOSITION= "InsertPosition"; //$NON-NLS-1$
+	protected final String SETTINGS_VISIBILITY_MODIFIER= "VisibilityModifier"; //$NON-NLS-1$
+	protected final String SETTINGS_FINAL_MODIFIER= "FinalModifier"; //$NON-NLS-1$
+	protected final String SETTINGS_SYNCHRONIZED_MODIFIER= "SynchronizedModifier"; //$NON-NLS-1$
+	protected final String SETTINGS_COMMENTS= "Comments"; //$NON-NLS-1$
+	protected Composite fInsertPositionComposite;
 	
 	public SourceActionDialog(Shell parent, ILabelProvider labelProvider, ITreeContentProvider contentProvider, CompilationUnitEditor editor, IType type, boolean isConstructor) throws JavaModelException {
 		super(parent, labelProvider, contentProvider);
@@ -114,11 +114,23 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 		fSynchronized= asBoolean(fSettings.get(SETTINGS_SYNCHRONIZED_MODIFIER), false);
 		fCurrentPositionIndex= asInt(fSettings.get(SETTINGS_INSERTPOSITION), insertionDefault);
 		fGenerateComment= asBoolean(fSettings.get(SETTINGS_COMMENTS), generateCommentsDefault);
+		setupInsertPostions();
+	}
+
+	public void setupInsertPostions(){
 		fInsertPositions= new ArrayList();
 		fLabels= new ArrayList(); 
 		
-		IJavaElement[] members= fType.getChildren();
-		IMethod[] methods= fType.getMethods();
+		IJavaElement[] members = new IJavaElement[0];
+		IMethod[] methods = new IMethod[0];
+		try {
+			members = fType.getChildren();
+			methods= fType.getMethods();
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		fInsertPositions.add(methods.length > 0 ? methods[0]: null); // first
 		fInsertPositions.add(null); // last
@@ -126,24 +138,34 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 		fLabels.add(ActionMessages.SourceActionDialog_first_method); 
 		fLabels.add(ActionMessages.SourceActionDialog_last_method); 
 
-		if (hasCursorPositionElement(fEditor, members, fInsertPositions)) {
-			fLabels.add(ActionMessages.SourceActionDialog_cursor); 
-			fCurrentPositionIndex= 2;
-		} else {
-			// code is needed to deal with bogus values already present in the dialog store.
-			fCurrentPositionIndex= Math.max(fCurrentPositionIndex, 0);
-			fCurrentPositionIndex= Math.min(fCurrentPositionIndex, 1);
+		try {
+			if (hasCursorPositionElement(fEditor, members, fInsertPositions)) {
+				fLabels.add(ActionMessages.SourceActionDialog_cursor); 
+				fCurrentPositionIndex= 2;
+			} else {
+				// code is needed to deal with bogus values already present in the dialog store.
+				fCurrentPositionIndex= Math.max(fCurrentPositionIndex, 0);
+				fCurrentPositionIndex= Math.min(fCurrentPositionIndex, 1);
+			}
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		for (int i = 0; i < methods.length; i++) {
 			IMethod curr= methods[i];
 			String methodLabel= JavaElementLabels.getElementLabel(curr, JavaElementLabels.M_PARAMETER_TYPES);
 			fLabels.add(Messages.format(ActionMessages.SourceActionDialog_after, methodLabel)); 
-			fInsertPositions.add(findSibling(curr, members));
+			try {
+				fInsertPositions.add(findSibling(curr, members));
+			} catch (JavaModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		fInsertPositions.add(null);
 	}
-
+	
 	protected IType getType() {
 		return fType;
 	}
@@ -175,7 +197,7 @@ public class SourceActionDialog extends CheckedTreeSelectionDialog {
 		return null;
 	}
 
-	private boolean hasCursorPositionElement(CompilationUnitEditor editor, IJavaElement[] members, List insertPositions) throws JavaModelException {
+	protected boolean hasCursorPositionElement(CompilationUnitEditor editor, IJavaElement[] members, List insertPositions) throws JavaModelException {
 		if (editor == null) {
 			return false;
 		}

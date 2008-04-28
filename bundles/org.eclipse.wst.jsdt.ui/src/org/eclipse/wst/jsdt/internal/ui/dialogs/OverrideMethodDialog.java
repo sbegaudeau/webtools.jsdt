@@ -12,7 +12,6 @@ package org.eclipse.wst.jsdt.internal.ui.dialogs;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
@@ -34,19 +33,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IMethod;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
-import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
-import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
-import org.eclipse.wst.jsdt.core.dom.Modifier;
-import org.eclipse.wst.jsdt.internal.corext.codemanipulation.StubUtility2;
-import org.eclipse.wst.jsdt.internal.corext.dom.ASTNodes;
 import org.eclipse.wst.jsdt.internal.corext.dom.Bindings;
-import org.eclipse.wst.jsdt.internal.corext.refactoring.util.RefactoringASTParser;
 import org.eclipse.wst.jsdt.internal.corext.template.java.CodeTemplateContextType;
 import org.eclipse.wst.jsdt.internal.corext.util.Messages;
 import org.eclipse.wst.jsdt.internal.ui.IJavaHelpContextIds;
@@ -59,10 +52,14 @@ import org.eclipse.wst.jsdt.internal.ui.viewsupport.BindingLabelProvider;
 
 public class OverrideMethodDialog extends SourceActionDialog {
 
+	private static final boolean SHOW_ONLY_SUPER = true;
+	
+	
 	private class OverrideFlatTreeAction extends Action {
 
 		private boolean fToggle;
-
+		
+		
 		public OverrideFlatTreeAction() {
 			setToolTipText(JavaUIMessages.OverrideMethodDialog_groupMethodsByTypes); 
 
@@ -91,13 +88,13 @@ public class OverrideMethodDialog extends SourceActionDialog {
 
 		private final Object[] fEmpty= new Object[0];
 
-		private IMethodBinding[] fMethods;
+		private IMethod[] fMethods;
 
 		private IDialogSettings fSettings;
 
 		private boolean fShowTypes;
 
-		private Object[] fTypes;
+	//	private Object[] fTypes;
 
 		private ContainerCheckedTreeViewer fViewer;
 
@@ -128,10 +125,10 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		 * @see ITreeContentProvider#getChildren(Object)
 		 */
 		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof ITypeBinding) {
+			if (parentElement instanceof ICompilationUnit) {
 				ArrayList result= new ArrayList(fMethods.length);
 				for (int index= 0; index < fMethods.length; index++) {
-					if (fMethods[index].getDeclaringClass().isEqualTo((IBinding) parentElement))
+					if (fMethods[index].getCompilationUnit() == parentElement)
 						result.add(fMethods[index]);
 				}
 				return result.toArray();
@@ -143,15 +140,15 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		 * @see IStructuredContentProvider#getElements(Object)
 		 */
 		public Object[] getElements(Object inputElement) {
-			return fShowTypes ? fTypes : fMethods;
+			return  fMethods;
 		}
 
 		/*
 		 * @see ITreeContentProvider#getParent(Object)
 		 */
 		public Object getParent(Object element) {
-			if (element instanceof IMethodBinding) {
-				return ((IMethodBinding) element).getDeclaringClass();
+			if (element instanceof IMethod) {
+				return ((IMethod) element).getCompilationUnit();
 			}
 			return null;
 		}
@@ -167,9 +164,9 @@ public class OverrideMethodDialog extends SourceActionDialog {
 			return getChildren(element).length > 0;
 		}
 
-		public void init(IMethodBinding[] methods, ITypeBinding[] types) {
+		public void init(IMethod[] methods) {
 			fMethods= methods;
-			fTypes= types;
+			//fTypes= types;
 		}
 
 		/*
@@ -241,7 +238,7 @@ public class OverrideMethodDialog extends SourceActionDialog {
 		public IStatus validate(Object[] selection) {
 			int count= 0;
 			for (int index= 0; index < selection.length; index++) {
-				if (selection[index] instanceof IMethodBinding)
+				if (selection[index] instanceof IMethod)
 					count++;
 			}
 			if (count == 0)
@@ -277,67 +274,60 @@ public class OverrideMethodDialog extends SourceActionDialog {
 
 	public OverrideMethodDialog(Shell shell, CompilationUnitEditor editor, IType type, boolean isSubType) throws JavaModelException {
 		super(shell, new BindingLabelProvider(), new OverrideMethodContentProvider(), editor, type, false);
-		RefactoringASTParser parser= new RefactoringASTParser(AST.JLS3);
-		fUnit= parser.parse(type.getCompilationUnit(), true);
-		final ITypeBinding binding= ASTNodes.getTypeBinding(fUnit, type);
-		List toImplement= new ArrayList();
-		IMethodBinding[] overridable= null;
-		if (binding != null) {
-			final IPackageBinding pack= binding.getPackage();
-			final IMethodBinding[] methods= StubUtility2.getOverridableMethods(fUnit.getAST(), binding, false);
-			List list= new ArrayList(methods.length);
-			for (int index= 0; index < methods.length; index++) {
-				final IMethodBinding cur= methods[index];
-				if (Bindings.isVisibleInHierarchy(cur, pack))
-					list.add(cur);
-			}
-			overridable= (IMethodBinding[]) list.toArray(new IMethodBinding[list.size()]);
-		} else
-			overridable= new IMethodBinding[] {};
-		for (int i= 0; i < overridable.length; i++) {
-			if (Modifier.isAbstract(overridable[i].getModifiers())) {
-				toImplement.add(overridable[i]);
-			}
+
+//		IMethod[] methods = type.getMethods();
+		String parentName = type.getSuperclassName();
+		IType superType =  type.getJavaProject().findType(parentName);
+		IMethod pMethods[] = superType.getMethods();
+		IMethod tMethods[] = type.getMethods();
+		
+		IMethod parentMethods[] = new IMethod[0];
+		
+		if(OverrideMethodDialog.SHOW_ONLY_SUPER){
+			
+			ArrayList show = new ArrayList();
+			start:		for(int i = 0;pMethods!=null && i<pMethods.length;i++){
+							for(int k=0;k<tMethods.length;k++){
+								if(tMethods[k].getElementName().equals(pMethods[i].getElementName())){
+									continue start;
+								}
+							}
+							show.add(pMethods[i]);
+				
+							
+						}
+			parentMethods = (IMethod[]) show.toArray(new IMethod[show.size()]);
+			
+		}
+		
+		
+		
+		//IMethodBinding[] toImplementArray= (IMethodBinding[]) toImplement.toArray(new IMethodBinding[toImplement.size()]);
+		setInitialSelections(parentMethods);
+
+		HashSet expanded= new HashSet(parentMethods.length);
+		for (int i= 0; i < parentMethods.length; i++) {
+			expanded.add(parentMethods[i]);
 		}
 
-		if (binding != null) {
-			ITypeBinding cloneable= getSuperType(binding, "java.lang.Cloneable"); //$NON-NLS-1$
-			if (cloneable != null) {
-				IMethodBinding[] methods= fUnit.getAST().resolveWellKnownType("java.lang.Object").getDeclaredMethods(); //$NON-NLS-1$
-				for (int index= 0; index < methods.length; index++) {
-					IMethodBinding method= methods[index];
-					if (method.getName().equals("clone") && method.getParameterTypes().length == 0) //$NON-NLS-1$
-						toImplement.add(method);
-				}
-			}
+		HashSet types= new HashSet(parentMethods.length);
+		for (int i= 0; i < parentMethods.length; i++) {
+			types.add(parentMethods[i]);
 		}
 
-		IMethodBinding[] toImplementArray= (IMethodBinding[]) toImplement.toArray(new IMethodBinding[toImplement.size()]);
-		setInitialSelections(toImplementArray);
-
-		HashSet expanded= new HashSet(toImplementArray.length);
-		for (int i= 0; i < toImplementArray.length; i++) {
-			expanded.add(toImplementArray[i].getDeclaringClass());
-		}
-
-		HashSet types= new HashSet(overridable.length);
-		for (int i= 0; i < overridable.length; i++) {
-			types.add(overridable[i].getDeclaringClass());
-		}
-
-		ITypeBinding[] typesArrays= (ITypeBinding[]) types.toArray(new ITypeBinding[types.size()]);
-		OverrideMethodComparator comparator= new OverrideMethodComparator(binding);
+		IMethod[] typesArrays= (IMethod[]) types.toArray(new IMethod[types.size()]);
+		OverrideMethodComparator comparator= null;//new OverrideMethodComparator(binding);
 		if (expanded.isEmpty() && typesArrays.length > 0) {
 			comparator.sort(null, typesArrays);
 			expanded.add(typesArrays[0]);
 		}
 		setExpandedElements(expanded.toArray());
 
-		((OverrideMethodContentProvider) getContentProvider()).init(overridable, typesArrays);
+		((OverrideMethodContentProvider) getContentProvider()).init(parentMethods);
 
 		setTitle(JavaUIMessages.OverrideMethodDialog_dialog_title);
 		setMessage(null);
-		setValidator(new OverrideMethodValidator(overridable.length));
+		setValidator(new OverrideMethodValidator(parentMethods.length));
 		setComparator(comparator);
 		setContainerMode(true);
 		setSize(60, 18);
