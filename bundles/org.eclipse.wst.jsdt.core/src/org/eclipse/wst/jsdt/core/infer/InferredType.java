@@ -72,7 +72,8 @@ public class InferredType extends ASTNode {
 	public final static char[] ARRAY_NAME=new char[]{'A','r','r','a','y'};
 	public final static char[] GLOBAL_NAME=new char[]{'G','l','o','b','a','l'};
 
-
+	public Object userData;
+	
 	public InferredType(char [] className)
 	{
 		this.name=className;
