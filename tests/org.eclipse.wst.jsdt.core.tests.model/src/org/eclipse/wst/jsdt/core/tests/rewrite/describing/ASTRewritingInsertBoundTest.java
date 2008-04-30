@@ -17,14 +17,14 @@ import java.util.Map;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
@@ -57,8 +57,8 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 	}
 	
 	/** @deprecated using deprecated code */
-	private MethodDeclaration newMethodDeclaration(AST ast, String name) {
-		MethodDeclaration decl= ast.newMethodDeclaration();
+	private FunctionDeclaration newMethodDeclaration(AST ast, String name) {
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 		decl.setName(ast.newSimpleName(name));
 		decl.setBody(null);
 //		decl.setReturnType(ast.newPrimitiveType(PrimitiveType.VOID));
@@ -93,18 +93,18 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 				
@@ -152,22 +152,22 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		List decls= astRoot.statements();
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
 		
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertBefore(decl2, lastDecl, null);
 				
@@ -215,20 +215,20 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
-		MethodDeclaration decl3= newMethodDeclaration(ast, "new3");
-		MethodDeclaration decl4= newMethodDeclaration(ast, "new4");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl3= newMethodDeclaration(ast, "new3");
+		FunctionDeclaration decl4= newMethodDeclaration(ast, "new4");
 				
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertAfter(decl2, decl1, null);
 		listRewrite.insertLast(decl3, null);
@@ -281,9 +281,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -292,7 +292,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 		
@@ -338,9 +338,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -351,7 +351,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		FieldDeclaration decl3= newFieldDeclaration(ast, "new3");
 		FieldDeclaration decl4= newFieldDeclaration(ast, "new4");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertAfter(decl2, decl1, null);
 		listRewrite.insertLast(decl3, null);
@@ -405,9 +405,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -420,7 +420,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertAfter(decl1, firstDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 				
@@ -466,9 +466,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
@@ -508,9 +508,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
@@ -553,9 +553,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
@@ -595,9 +595,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
@@ -636,9 +636,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -648,10 +648,10 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
 
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 			
@@ -692,9 +692,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -704,14 +704,14 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		rewrite.remove((ASTNode) decls.get(0), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
-		MethodDeclaration decl3= newMethodDeclaration(ast, "new3");
-		MethodDeclaration decl4= newMethodDeclaration(ast, "new4");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl3= newMethodDeclaration(ast, "new3");
+		FunctionDeclaration decl4= newMethodDeclaration(ast, "new4");
 		
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, firstDecl, null);
 		listRewrite.insertAfter(decl2, firstDecl, null);
 		listRewrite.insertLast(decl3, null);
@@ -759,9 +759,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -770,12 +770,12 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 
 		rewrite.remove((ASTNode) decls.get(1), null);
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
 		
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 			
@@ -820,9 +820,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -835,7 +835,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 				
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 		
@@ -878,9 +878,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -897,7 +897,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, firstDecl, null);
 		listRewrite.insertAfter(decl2, firstDecl, null);
 		listRewrite.insertLast(decl3, null);
@@ -944,9 +944,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -958,7 +958,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.remove(middleDecl, null);
 		
 		listRewrite.insertBefore(decl1, middleDecl, null);
@@ -1003,22 +1003,22 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		List decls= astRoot.statements();
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
 
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		
 		listRewrite.remove(firstDecl, null);
 		listRewrite.remove(lastDecl, null);
@@ -1063,9 +1063,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1078,7 +1078,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.remove(firstDecl, null);
 		listRewrite.remove(lastDecl, null);
 		
@@ -1122,24 +1122,24 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		List decls= astRoot.statements();
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
-		MethodDeclaration decl3= newMethodDeclaration(ast, "new3");
-		MethodDeclaration decl4= newMethodDeclaration(ast, "new4");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl3= newMethodDeclaration(ast, "new3");
+		FunctionDeclaration decl4= newMethodDeclaration(ast, "new4");
 		
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		
 		rewrite.remove(firstDecl, null);
 		rewrite.remove(lastDecl, null);
@@ -1193,9 +1193,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("//c4\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1210,7 +1210,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		ASTNode firstDecl= (ASTNode) decls.get(0);
 		ASTNode lastDecl= (ASTNode) decls.get(2);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		
 		rewrite.remove(firstDecl, null);
 		rewrite.remove(lastDecl, null);
@@ -1262,9 +1262,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1275,10 +1275,10 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		rewrite.remove((ASTNode) decls.get(1), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 			
@@ -1315,9 +1315,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    public int x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1331,7 +1331,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		FieldDeclaration decl1= newFieldDeclaration(ast, "new1");
 		FieldDeclaration decl2= newFieldDeclaration(ast, "new2");
 
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertFirst(decl1, null);
 		listRewrite.insertLast(decl2, null);
 			
@@ -1369,9 +1369,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    function foo3();\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1382,12 +1382,12 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		rewrite.remove((ASTNode) decls.get(1), null);
 		rewrite.remove((ASTNode) decls.get(2), null);
 		
-		MethodDeclaration decl1= newMethodDeclaration(ast, "new1");
-		MethodDeclaration decl2= newMethodDeclaration(ast, "new2");
+		FunctionDeclaration decl1= newMethodDeclaration(ast, "new1");
+		FunctionDeclaration decl2= newMethodDeclaration(ast, "new2");
 
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 			
@@ -1424,9 +1424,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("//c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -1442,7 +1442,7 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 
 		ASTNode middleDecl= (ASTNode) decls.get(1);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.STATEMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.STATEMENTS_PROPERTY);
 		listRewrite.insertBefore(decl1, middleDecl, null);
 		listRewrite.insertAfter(decl2, middleDecl, null);
 			
@@ -1480,9 +1480,9 @@ public class ASTRewritingInsertBoundTest extends ASTRewritingTest {
 		buf.append("    var x3;\n");
 		buf.append("\n");
 		buf.append("    //c4\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		

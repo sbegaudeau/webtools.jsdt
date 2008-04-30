@@ -17,8 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.*;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.core.JavaElement;
@@ -29,7 +29,7 @@ public class RootManipulationsTests extends ModifyingResourceTests {
 public RootManipulationsTests(String name) {
 	super(name);
 }
-protected void assertJavaProject(String expected, IJavaProject project) throws CoreException {
+protected void assertJavaProject(String expected, IJavaScriptProject project) throws CoreException {
 	StringBuffer buffer = new StringBuffer();
 	populate(buffer, project, 0);
 	
@@ -39,38 +39,38 @@ protected void assertJavaProject(String expected, IJavaProject project) throws C
 	}
 	assertEquals(expected, actual);
 }
-protected void copy(IPackageFragmentRoot root, IPath destination) throws JavaModelException {
+protected void copy(IPackageFragmentRoot root, IPath destination) throws JavaScriptModelException {
 	copy(root, destination, null);
 }
-protected void copy(IPackageFragmentRoot root, IPath destination, IClasspathEntry sibling) throws JavaModelException {
+protected void copy(IPackageFragmentRoot root, IPath destination, IIncludePathEntry sibling) throws JavaScriptModelException {
 	root.copy(
 		destination,
 		IResource.NONE,
-		IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH,
+		IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH,
 		sibling,
 		null);
 }
-protected void delete(IPackageFragmentRoot root) throws JavaModelException {
+protected void delete(IPackageFragmentRoot root) throws JavaScriptModelException {
 	root.delete(
 		IResource.NONE,
-		IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH
-			| IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_CLASSPATH,
+		IPackageFragmentRoot.ORIGINATING_PROJECT_INCLUDEPATH
+			| IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_INCLUDEPATH,
 		null);
 }
-protected void move(IPackageFragmentRoot root, IPath destination) throws JavaModelException {
+protected void move(IPackageFragmentRoot root, IPath destination) throws JavaScriptModelException {
 	move(root, destination, null);
 }
-protected void move(IPackageFragmentRoot root, IPath destination, IClasspathEntry sibling) throws JavaModelException {
+protected void move(IPackageFragmentRoot root, IPath destination, IIncludePathEntry sibling) throws JavaScriptModelException {
 	root.move(
 		destination, 
 		IResource.NONE, 
-		IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH
-			| IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH
-			| IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_CLASSPATH,
+		IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH
+			| IPackageFragmentRoot.ORIGINATING_PROJECT_INCLUDEPATH
+			| IPackageFragmentRoot.OTHER_REFERRING_PROJECTS_INCLUDEPATH,
 		sibling, 
 		null);
 }
-protected void populate(StringBuffer buffer, IJavaElement element, int indent) throws CoreException {
+protected void populate(StringBuffer buffer, IJavaScriptElement element, int indent) throws CoreException {
 	if (!(element instanceof IParent) || !(element instanceof IOpenable)) return;
 
 	if (buffer.length() != 0) {	
@@ -80,10 +80,10 @@ protected void populate(StringBuffer buffer, IJavaElement element, int indent) t
 	buffer.append(((JavaElement)element).toDebugString());
 	
 	IParent parent = (IParent)element;
-	IJavaElement[] children = null;
+	IJavaScriptElement[] children = null;
 	try {
 		children = parent.getChildren();
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 	}
 	if (children != null) {
 		for (int i = 0, length = children.length; i < length; i++) {
@@ -93,14 +93,14 @@ protected void populate(StringBuffer buffer, IJavaElement element, int indent) t
 	
 	Object[] nonJavaResources = null;
 	try {
-		if (element instanceof IJavaProject) {
-			nonJavaResources = ((IJavaProject)element).getNonJavaResources();
+		if (element instanceof IJavaScriptProject) {
+			nonJavaResources = ((IJavaScriptProject)element).getNonJavaScriptResources();
 		} else if (element instanceof IPackageFragmentRoot) {
-			nonJavaResources = ((IPackageFragmentRoot)element).getNonJavaResources();
+			nonJavaResources = ((IPackageFragmentRoot)element).getNonJavaScriptResources();
 		} else if (element instanceof IPackageFragment) {
-			nonJavaResources = ((IPackageFragment)element).getNonJavaResources();
+			nonJavaResources = ((IPackageFragment)element).getNonJavaScriptResources();
 		}
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 	}
 	if (nonJavaResources != null) {
 		for (int i = 0, length = nonJavaResources.length; i < length; i++) {
@@ -149,7 +149,7 @@ public void testCopySourceFolder1() throws CoreException {
 			"	src[+]: {}\n" + 
 			"	ResourceDelta(/P2/.classpath)[*]"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("/P2/src/p/X.js");
+		IJavaScriptUnit cu = this.getCompilationUnit("/P2/src/p/X.js");
 		assertTrue("Destination cu should exist", cu.exists());
 	} finally {
 		this.stopDeltas();
@@ -181,7 +181,7 @@ public void testCopySourceFolder2() throws CoreException {
 			"	src2[+]: {}\n" + 
 			"	ResourceDelta(/P2/.classpath)[*]"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("/P2/src2/p/X.js");
+		IJavaScriptUnit cu = this.getCompilationUnit("/P2/src2/p/X.js");
 		assertTrue("Destination cu should exist", cu.exists());
 	} finally {
 		this.stopDeltas();
@@ -195,8 +195,8 @@ public void testCopySourceFolder2() throws CoreException {
  */
 public void testCopySourceFolder3() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {}, "bin");
-		p1.setRawClasspath(createClasspath(new String[] {"/P1/src1", "src2/**", "/P1/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), null);
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {}, "bin");
+		p1.setRawIncludepath(createClasspath(new String[] {"/P1/src1", "src2/**", "/P1/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), null);
 		this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src1/p");
 		this.createFile(
@@ -221,7 +221,7 @@ public void testCopySourceFolder3() throws CoreException {
 			"	src1[+]: {}\n" + 
 			"	ResourceDelta(/P2/.classpath)[*]"
 		);
-		ICompilationUnit cu = this.getCompilationUnit("/P2/src1/p/X.js");
+		IJavaScriptUnit cu = this.getCompilationUnit("/P2/src1/p/X.js");
 		assertTrue("Destination cu should exist", cu.exists());
 		cu = this.getCompilationUnit("/P2/src1/src2/q/Y.js");
 		assertTrue("Nested cu should not exist", !cu.exists());
@@ -238,11 +238,11 @@ public void testCopySourceFolder3() throws CoreException {
 public void testCopySourceFolder4() throws CoreException {
 	try {
 		this.createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/src");
 
 		// insert first
-		IClasspathEntry sibling = JavaCore.newSourceEntry(new Path("/P2/src1"));
+		IIncludePathEntry sibling = JavaScriptCore.newSourceEntry(new Path("/P2/src1"));
 		this.startDeltas();
 		this.copy(root, new Path("/P2/src"), sibling);
 		assertDeltas(
@@ -261,7 +261,7 @@ public void testCopySourceFolder4() throws CoreException {
 			p2.getPackageFragmentRoots());
 
 		// insert in the middle
-		sibling = JavaCore.newSourceEntry(new Path("/P2/src2"));
+		sibling = JavaScriptCore.newSourceEntry(new Path("/P2/src2"));
 		this.startDeltas();
 		this.copy(root, new Path("/P2/src3"), sibling);
 		assertDeltas(
@@ -310,7 +310,7 @@ public void testCopySourceFolder4() throws CoreException {
 public void testCopySourceFolder5() throws CoreException {
 	try {
 		this.createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {"src"}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
 			"/P1/src/p/X.js", 
@@ -350,7 +350,7 @@ public void testCopySourceFolder5() throws CoreException {
  */
 public void testCopySourceFolder6() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFolder("/P/src/p");
 		this.createFile(
 			"/P/src/p/X.js", 
@@ -364,7 +364,7 @@ public void testCopySourceFolder6() throws CoreException {
 		root.copy(
 			new Path("/P/src1"), 
 			IResource.KEEP_HISTORY, 
-			IPackageFragmentRoot.REPLACE | IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH, 
+			IPackageFragmentRoot.REPLACE | IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH, 
 			null, 
 			null);
 		assertDeltas(
@@ -393,7 +393,7 @@ public void testCopySourceFolder6() throws CoreException {
 }
 /*
  * Ensure that coping a source root to another project with an existing source root in
- * non REPLACE mode throws the right JavaModelException.
+ * non REPLACE mode throws the right JavaScriptModelException.
  * (regression test bug 30511 IPackageFragmentRoot:move ignores FORCE flag)
  */
 public void testFailCopySourceFolder1() throws CoreException {
@@ -403,12 +403,12 @@ public void testFailCopySourceFolder1() throws CoreException {
 
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/src");
 		try {
-			root.copy(new Path("/P2/src"), IResource.NONE, IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH, null, null);
-		} catch (JavaModelException e) {
+			root.copy(new Path("/P2/src"), IResource.NONE, IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH, null, null);
+		} catch (JavaScriptModelException e) {
 			assertEquals("/P2/src already exists in target", e.getMessage());
 			return;
 		}
-		assertTrue("Should throw a JavaModelException", false);
+		assertTrue("Should throw a JavaScriptModelException", false);
 	} finally {
 		this.deleteProject("P1");
 		this.deleteProject("P2");
@@ -416,7 +416,7 @@ public void testFailCopySourceFolder1() throws CoreException {
 }
 /*
  * Ensure that coping a source root to another project with an existing source root in
- * non REPLACE mode throws the right JavaModelException.
+ * non REPLACE mode throws the right JavaScriptModelException.
  * (regression test bug 30511 IPackageFragmentRoot:move ignores FORCE flag)
  */
 public void testFailCopySourceFolder2() throws CoreException {
@@ -427,12 +427,12 @@ public void testFailCopySourceFolder2() throws CoreException {
 
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/src");
 		try {
-			root.copy(new Path("/P2/src"), IResource.NONE, IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH, null, null);
-		} catch (JavaModelException e) {
+			root.copy(new Path("/P2/src"), IResource.NONE, IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH, null, null);
+		} catch (JavaScriptModelException e) {
 			assertEquals("/P2/src already exists in target", e.getMessage());
 			return;
 		}
-		assertTrue("Should throw a JavaModelException", false);
+		assertTrue("Should throw a JavaScriptModelException", false);
 	} finally {
 		this.deleteProject("P1");
 		this.deleteProject("P2");
@@ -444,7 +444,7 @@ public void testFailCopySourceFolder2() throws CoreException {
  */
 public void testDeleteJarFile1() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {"/P/myLib.jar"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {"/P/myLib.jar"}, "bin");
 		this.createFile("/P/myLib.jar", "");
 
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P/myLib.jar");
@@ -475,7 +475,7 @@ public void testDeleteJarFile1() throws CoreException {
  */
 public void testDeleteJarFile3() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {getExternalJCLPathString()}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {getExternalJCLPathString()}, "bin");
 
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(getExternalJCLPathString());
 		this.startDeltas();
@@ -504,9 +504,9 @@ public void testDeleteJarFile3() throws CoreException {
  */
 public void testDeleteJarFile2() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
 		this.createFile("/P1/myLib.jar", "");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
 
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/myLib.jar");
 		this.startDeltas();
@@ -546,7 +546,7 @@ public void testDeleteJarFile2() throws CoreException {
  */
 public void testDeleteSourceFolder1() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFolder("/P/src/p");
 		this.createFile(
 			"/P/src/p/X.js", 
@@ -579,8 +579,8 @@ public void testDeleteSourceFolder1() throws CoreException {
  */
 public void testDeleteSourceFolder2() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {}, "bin");
-		project.setRawClasspath(createClasspath(new String[] {"/P/src1", "src2/**", "/P/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), null);
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {}, "bin");
+		project.setRawIncludepath(createClasspath(new String[] {"/P/src1", "src2/**", "/P/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), null);
 		IFolder folder = this.createFolder("/P/src1/p");
 		IFile file = this.createFile(
 			"/P/src1/p/X.js", 
@@ -632,8 +632,8 @@ public void testDeleteSourceFolder2() throws CoreException {
  */
 public void testMoveSourceFolder1() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
 			"/P1/src/p/X.js", 
@@ -679,8 +679,8 @@ public void testMoveSourceFolder1() throws CoreException {
  */
 public void testMoveSourceFolder2() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src/p");
 		this.createFile(
 			"/P1/src/p/X.js", 
@@ -728,9 +728,9 @@ public void testMoveSourceFolder2() throws CoreException {
  */
 public void testMoveSourceFolder3() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {}, "bin");
-		p1.setRawClasspath(createClasspath(new String[] {"/P1/src1", "src2/**", "/P1/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), null);
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {}, "bin");
+		p1.setRawIncludepath(createClasspath(new String[] {"/P1/src1", "src2/**", "/P1/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), null);
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {}, "bin");
 		this.createFolder("/P1/src1/p");
 		this.createFile(
 			"/P1/src1/p/X.js", 
@@ -792,12 +792,12 @@ public void testMoveSourceFolder3() throws CoreException {
  */
 public void testMoveSourceFolder4() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/src");
 
 		// insert first
-		IClasspathEntry sibling = JavaCore.newSourceEntry(new Path("/P2/src1"));
+		IIncludePathEntry sibling = JavaScriptCore.newSourceEntry(new Path("/P2/src1"));
 		this.startDeltas();
 		this.move(root, new Path("/P2/src"), sibling);
 		assertDeltas(
@@ -839,12 +839,12 @@ public void testMoveSourceFolder4() throws CoreException {
  */
 public void testMoveSourceFolder5() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/src");
 
 		// insert in the middle
-		IClasspathEntry sibling = JavaCore.newSourceEntry(new Path("/P2/src2"));
+		IIncludePathEntry sibling = JavaScriptCore.newSourceEntry(new Path("/P2/src2"));
 		this.startDeltas();
 		this.move(root, new Path("/P2/src"), sibling);
 		assertDeltas(
@@ -885,8 +885,8 @@ public void testMoveSourceFolder5() throws CoreException {
  */
 public void testMoveSourceFolder6() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {"src1", "src2"}, "bin");
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/src");
 			
 		// insert last
@@ -929,7 +929,7 @@ public void testMoveSourceFolder6() throws CoreException {
  */
 public void testRenameSourceFolder1() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src1"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src1"}, "bin");
 		this.createFolder("/P/src1/p");
 		this.createFile(
 			"/P/src1/p/X.js", 
@@ -962,7 +962,7 @@ public void testRenameSourceFolder1() throws CoreException {
 	}
 }
 /*
- * Ensure that renaming a nested source root doesn't throw a JavaModelException
+ * Ensure that renaming a nested source root doesn't throw a JavaScriptModelException
  * (regression test for bug 129991 [refactoring] Rename sourcefolder fails with JME)
  */
 public void testRenameSourceFolder3() throws CoreException {
@@ -994,7 +994,7 @@ public void testRenameSourceFolder3() throws CoreException {
 	}
 }
 /*
- * Ensure that renaming a nested source root doesn't throw a JavaModelException
+ * Ensure that renaming a nested source root doesn't throw a JavaScriptModelException
  * (regression test for bug 129991 [refactoring] Rename sourcefolder fails with JME)
  */
 public void testRenameSourceFolder4() throws CoreException {
@@ -1030,7 +1030,7 @@ public void testRenameSourceFolder4() throws CoreException {
  */
 public void testRenameSourceFolder2() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src1", "src2", "src3"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src1", "src2", "src3"}, "bin");
 		
 		// rename src1
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P/src1");
@@ -1111,7 +1111,7 @@ public void testRenameSourceFolder2() throws CoreException {
  */
 public void testRenameJarFile1() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {"/P/myLib.jar"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {"/P/myLib.jar"}, "bin");
 		this.createFile("/P/myLib.jar", "");
 
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P/myLib.jar");
@@ -1143,9 +1143,9 @@ public void testRenameJarFile1() throws CoreException {
  */
 public void testRenameJarFile2() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
 		this.createFile("/P1/myLib.jar", "");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {"src"}, new String[] {"/P1/myLib.jar"}, "bin");
 
 		IPackageFragmentRoot root = this.getPackageFragmentRoot("/P1/myLib.jar");
 		this.startDeltas();
@@ -1189,7 +1189,7 @@ public void testRenameJarFile2() throws CoreException {
  */
 public void testRenameJarFile3() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {"/P/myLib1.jar", "/P/myLib2.jar"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, new String[] {"/P/myLib1.jar", "/P/myLib2.jar"}, "bin");
 		this.createFile("/P/myLib1.jar", "");
 		this.createFile("/P/myLib2.jar", "");
 
@@ -1198,8 +1198,8 @@ public void testRenameJarFile3() throws CoreException {
 		root.move(
 			new Path("/P/myLib2.jar"),
 			IResource.NONE,
-			IPackageFragmentRoot.ORIGINATING_PROJECT_CLASSPATH 
-				| IPackageFragmentRoot.DESTINATION_PROJECT_CLASSPATH 
+			IPackageFragmentRoot.ORIGINATING_PROJECT_INCLUDEPATH 
+				| IPackageFragmentRoot.DESTINATION_PROJECT_INCLUDEPATH 
 				| IPackageFragmentRoot.REPLACE,
 			null,
 			null);

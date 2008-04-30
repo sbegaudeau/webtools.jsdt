@@ -79,9 +79,9 @@ class ASTNodesCollectorVisitor extends ASTVisitor {
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.CompilationUnit)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit)
 	 */
-	public void endVisit(CompilationUnit node) {
+	public void endVisit(JavaScriptUnit node) {
 		detachedListElement(node.imports());
 		node.setPackage(node.getAST().newPackageDeclaration());
 	}
@@ -137,25 +137,25 @@ class ASTNodesCollectorVisitor extends ASTVisitor {
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.MethodDeclaration)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.FunctionDeclaration)
 	 */
-	public void endVisit(MethodDeclaration node) {
+	public void endVisit(FunctionDeclaration node) {
 		node.setName(node.getAST().newSimpleName("XXX")); //$NON-NLS-1$
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.MethodInvocation)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(org.eclipse.wst.jsdt.core.dom.FunctionInvocation)
 	 */
-	public void endVisit(MethodInvocation node) {
+	public void endVisit(FunctionInvocation node) {
 		add(node);
 		node.setName(node.getAST().newSimpleName("XXX")); //$NON-NLS-1$
 	}
 
 	/**
-	 * @see ASTVisitor#endVisit(MethodRef)
+	 * @see ASTVisitor#endVisit(FunctionRef)
 	 * @since 3.0
 	 */
-	public void endVisit(MethodRef node) {
+	public void endVisit(FunctionRef node) {
 		add(node);
 	}
 

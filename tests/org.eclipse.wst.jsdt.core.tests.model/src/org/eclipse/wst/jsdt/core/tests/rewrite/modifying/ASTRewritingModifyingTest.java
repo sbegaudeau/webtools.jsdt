@@ -18,10 +18,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 
 import org.eclipse.wst.jsdt.core.dom.*;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
@@ -41,7 +41,7 @@ public abstract class ASTRewritingModifyingTest extends AbstractJavaModelTests {
 	/** @deprecated using deprecated code */
 	private static final int AST_INTERNAL_JLS2 = AST.JLS2;
 
-	protected IJavaProject fJProject1;
+	protected IJavaScriptProject fJProject1;
 	protected IPackageFragmentRoot fSourceFolder;
 	
 	private Hashtable oldOptions;
@@ -67,21 +67,21 @@ public abstract class ASTRewritingModifyingTest extends AbstractJavaModelTests {
 		fJProject1 = createJavaProject("P", new String[] {"src"}, "bin");
 		fSourceFolder = this.getPackageFragmentRoot("P", "src");
 		
-		Hashtable options = JavaCore.getOptions();
+		Hashtable options = JavaScriptCore.getOptions();
 		this.oldOptions = (Hashtable)options.clone();
-		options.put(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.SPACE);
+		options.put(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaScriptCore.SPACE);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "4");
-		JavaCore.setOptions(options);
+		JavaScriptCore.setOptions(options);
 		
 		waitUntilIndexesReady();
 	}
 	public void tearDownSuite() throws Exception {
 		deleteProject("P");
-		JavaCore.setOptions(this.oldOptions);
+		JavaScriptCore.setOptions(this.oldOptions);
 		super.tearDownSuite();
 	}
-	public CompilationUnit createCU(
-		ICompilationUnit unit,
+	public JavaScriptUnit createCU(
+		IJavaScriptUnit unit,
 		boolean resolveBindings) {
 
 		try {
@@ -89,31 +89,31 @@ public abstract class ASTRewritingModifyingTest extends AbstractJavaModelTests {
 			c.setSource(unit);
 			c.setResolveBindings(resolveBindings);
 			ASTNode result = c.createAST(null);
-			return (CompilationUnit) result;
+			return (JavaScriptUnit) result;
 		} catch (IllegalStateException e) {
 			// convert ASTParser's complaints into old form
 			throw new IllegalArgumentException();
 		}
 	}
 	
-	public CompilationUnit createCU(char[] source) {
+	public JavaScriptUnit createCU(char[] source) {
 		if (source == null) {
 			throw new IllegalArgumentException();
 		}
 		ASTParser c = ASTParser.newParser(AST_INTERNAL_JLS2);
 		c.setSource(source);
 		ASTNode result = c.createAST(null);
-		return (CompilationUnit) result;
+		return (JavaScriptUnit) result;
 	}
 	
-	public String evaluateRewrite(ICompilationUnit cu, CompilationUnit astRoot)  throws CoreException, MalformedTreeException, BadLocationException {
-		return evaluateRewrite(cu.getSource(), astRoot, cu.getJavaProject().getOptions(true));
+	public String evaluateRewrite(IJavaScriptUnit cu, JavaScriptUnit astRoot)  throws CoreException, MalformedTreeException, BadLocationException {
+		return evaluateRewrite(cu.getSource(), astRoot, cu.getJavaScriptProject().getOptions(true));
 	}
 	
-	public String evaluateRewrite(String source, CompilationUnit astRoot)  throws MalformedTreeException, BadLocationException {
+	public String evaluateRewrite(String source, JavaScriptUnit astRoot)  throws MalformedTreeException, BadLocationException {
 		return evaluateRewrite(source, astRoot, getJavaProject("Rewrite").getOptions(true));
 	}
-	public String evaluateRewrite(String source, CompilationUnit astRoot, Map options)  throws MalformedTreeException, BadLocationException {
+	public String evaluateRewrite(String source, JavaScriptUnit astRoot, Map options)  throws MalformedTreeException, BadLocationException {
 		IDocument doc = new Document(source);
 		
 		TextEdit changes = astRoot.rewrite(doc, options);

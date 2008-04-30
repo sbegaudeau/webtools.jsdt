@@ -13,11 +13,11 @@ package org.eclipse.wst.jsdt.core.tests.model;
 import junit.framework.Test;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class CreateMembersTests extends AbstractJavaModelTests {
 
@@ -47,8 +47,8 @@ public class CreateMembersTests extends AbstractJavaModelTests {
 		super.tearDownSuite();
 	}
 
-	public void test001() throws JavaModelException {
-		ICompilationUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "A.js");
+	public void test001() throws JavaScriptModelException {
+		IJavaScriptUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "A.js");
 		assertNotNull("No compilation unit", compilationUnit);
 //		IType[] types = compilationUnit.getTypes();
 //		assertNotNull("No types", types);
@@ -66,8 +66,8 @@ public class CreateMembersTests extends AbstractJavaModelTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=86906
-	public void test002() throws JavaModelException {
-		ICompilationUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "A2.js");
+	public void test002() throws JavaScriptModelException {
+		IJavaScriptUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "A2.js");
 		assertNotNull("No compilation unit", compilationUnit);
 //		IType[] types = compilationUnit.getTypes();
 //		assertNotNull("No types", types);
@@ -84,14 +84,14 @@ public class CreateMembersTests extends AbstractJavaModelTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=86906
-	public void test003() throws JavaModelException {
-		ICompilationUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "Annot.js");
+	public void test003() throws JavaScriptModelException {
+		IJavaScriptUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "Annot.js");
 		assertNotNull("No compilation unit", compilationUnit);
 		IType[] types = compilationUnit.getTypes();
 		assertNotNull("No types", types);
 		assertEquals("Wrong size", 1, types.length);
 		IType type = types[0];
-		IMethod sibling = type.getMethod("foo", new String[]{});
+		IFunction sibling = type.getFunction("foo", new String[]{});
 		type.createMethod("String bar();", sibling, true, null);
 		String expectedSource = 
 			"public @interface Annot {\n" + 
@@ -106,9 +106,9 @@ public class CreateMembersTests extends AbstractJavaModelTests {
 	 * Ensures that the handle for a created method that has varargs type arguments is correct.
 	 * (regression test for bug 93487 IType#findMethods fails on vararg methods)
 	 */
-	public void test004() throws JavaModelException {
+	public void test004() throws JavaScriptModelException {
 		IType type = getCompilationUnit("/CreateMembers/src/A.js").getType("A");
-		IMethod method = type.createMethod(
+		IFunction method = type.createMethod(
 			"void bar(String... args) {}",
 			null, // no siblings
 			false, // don't force
@@ -118,8 +118,8 @@ public class CreateMembersTests extends AbstractJavaModelTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=95580
-	public void test005() throws JavaModelException {
-		ICompilationUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "E2.js");
+	public void test005() throws JavaScriptModelException {
+		IJavaScriptUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "E2.js");
 		assertNotNull("No compilation unit", compilationUnit);
 		IType[] types = compilationUnit.getTypes();
 		assertNotNull("No types", types);
@@ -135,8 +135,8 @@ public class CreateMembersTests extends AbstractJavaModelTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=95580
-	public void test006() throws JavaModelException {
-		ICompilationUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "E3.js");
+	public void test006() throws JavaScriptModelException {
+		IJavaScriptUnit compilationUnit = getCompilationUnit("CreateMembers", "src", "", "E3.js");
 		assertNotNull("No compilation unit", compilationUnit);
 		IType[] types = compilationUnit.getTypes();
 		assertNotNull("No types", types);

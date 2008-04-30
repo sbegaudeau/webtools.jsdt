@@ -17,14 +17,14 @@ import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ImportRewrite;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
@@ -62,13 +62,13 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		IJavaProject proj= createJavaProject("P", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
-		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.SPACE);
+		IJavaScriptProject proj= createJavaProject("P", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
+		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaScriptCore.SPACE);
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "4");
-		proj.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-		proj.setOption(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
-		proj.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-		proj.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
+		proj.setOption(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+		proj.setOption(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
+		proj.setOption(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+		proj.setOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_NUMBER_OF_EMPTY_LINES_TO_PRESERVE, String.valueOf(99));
 		
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS, String.valueOf(1));
@@ -100,7 +100,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java", "com", "pack" };
 		
@@ -133,7 +133,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 	
 	public void testAddImportsNoEmptyLines() throws Exception {
 
-		sourceFolder.getJavaProject().setOption(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS, String.valueOf(0));
+		sourceFolder.getJavaScriptProject().setOption(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS, String.valueOf(0));
 
 		IPackageFragment pack1= sourceFolder.createPackageFragment("pack1", false, null);
 		StringBuffer buf= new StringBuffer();
@@ -143,7 +143,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java.util", "java.new", "p" };
 		
@@ -168,7 +168,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 	
 	public void testAddImportsMoreEmptyLines() throws Exception {
 		
-		sourceFolder.getJavaProject().setOption(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS, String.valueOf(2));
+		sourceFolder.getJavaScriptProject().setOption(DefaultCodeFormatterConstants.FORMATTER_BLANK_LINES_BETWEEN_IMPORT_GROUPS, String.valueOf(2));
 
 		IPackageFragment pack1= sourceFolder.createPackageFragment("pack1", false, null);
 		StringBuffer buf= new StringBuffer();
@@ -178,7 +178,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java.util", "java.new", "p" };
 		
@@ -216,7 +216,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java", "java.util", "com", "pack" };
 
@@ -249,7 +249,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java", "java.util", "com", "pack" };
 
@@ -284,7 +284,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java", "com", "pack" };
 		
@@ -318,7 +318,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
 		String[] order= new String[] { "java", "com", "pack" };
 		
@@ -348,7 +348,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { };
 
@@ -380,7 +380,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java.awt", "java" };
 
@@ -412,7 +412,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java" };
 
@@ -443,7 +443,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "java" };
 
@@ -473,7 +473,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 
@@ -507,7 +507,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 
@@ -543,7 +543,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("\n");		
 		buf.append("public class C {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 
@@ -579,7 +579,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 	}
 	
 	
-	private void createClassStub(String pack, String typeName, String typeKind) throws JavaModelException {
+	private void createClassStub(String pack, String typeName, String typeKind) throws JavaScriptModelException {
 		IPackageFragment pack1= sourceFolder.createPackageFragment(pack, false, null);
 		StringBuffer buf= new StringBuffer();
 		buf.append("package ").append(pack).append(";\n");
@@ -616,21 +616,21 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("    }\n");
 		buf.append("}\n");	
 		String content= buf.toString();
-		ICompilationUnit cu1= pack1.createCompilationUnit("A.js", content, false, null);
+		IJavaScriptUnit cu1= pack1.createCompilationUnit("A.js", content, false, null);
 		
 		buf= new StringBuffer();
 		buf.append("package test1;\n");
 		buf.append("public class B {\n");
 		buf.append("}\n");	
 		String content2= buf.toString();
-		ICompilationUnit cu2= pack1.createCompilationUnit("B.js", content2, false, null);
+		IJavaScriptUnit cu2= pack1.createCompilationUnit("B.js", content2, false, null);
 		
 		String[] order= new String[] { "java.util", "java.io", "java.net" };
 		int threshold= 99;
 		AST ast= AST.newAST(AST.JLS3);
 		ImportRewrite importsRewrite= newImportsRewrite(cu2, order, threshold, threshold, true);
 		{
-			IJavaElement[] elements= cu1.codeSelect(content.indexOf("IOException"), "IOException".length());
+			IJavaScriptElement[] elements= cu1.codeSelect(content.indexOf("IOException"), "IOException".length());
 			assertEquals(1, elements.length);
 			String key= ((IType) elements[0]).getKey();
 			String signature= new BindingKey(key).toSignature();
@@ -638,7 +638,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 			importsRewrite.addImportFromSignature(signature, ast);
 		}
 		{
-			IJavaElement[] elements= cu1.codeSelect(content.indexOf("URL"), "URL".length());
+			IJavaScriptElement[] elements= cu1.codeSelect(content.indexOf("URL"), "URL".length());
 			assertEquals(1, elements.length);
 			String key= ((IType) elements[0]).getKey();
 			String signature= new BindingKey(key).toSignature();
@@ -646,7 +646,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 			importsRewrite.addImportFromSignature(signature, ast);
 		}
 		{
-			IJavaElement[] elements= cu1.codeSelect(content.indexOf("List"), "List".length());
+			IJavaScriptElement[] elements= cu1.codeSelect(content.indexOf("List"), "List".length());
 			assertEquals(1, elements.length);
 			String key= ((IType) elements[0]).getKey();
 			String signature= new BindingKey(key).toSignature();
@@ -689,21 +689,21 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("    }\n");
 		buf.append("}\n");	
 		String content= buf.toString();
-		ICompilationUnit cu1= pack1.createCompilationUnit("A.js", content, false, null);
+		IJavaScriptUnit cu1= pack1.createCompilationUnit("A.js", content, false, null);
 		
 		buf= new StringBuffer();
 		buf.append("package test1;\n");
 		buf.append("public class B {\n");
 		buf.append("}\n");	
 		String content2= buf.toString();
-		ICompilationUnit cu2= pack1.createCompilationUnit("B.js", content2, false, null);
+		IJavaScriptUnit cu2= pack1.createCompilationUnit("B.js", content2, false, null);
 		
 		String[] order= new String[] { "java.util", "java.io", "java.net" };
 		int threshold= 99;
 		AST ast= AST.newAST(AST.JLS3);
 		ImportRewrite importsRewrite= newImportsRewrite(cu2, order, threshold, threshold, true);
 		{
-			IJavaElement[] elements= cu1.codeSelect(content.indexOf("Map"), "Map".length());
+			IJavaScriptElement[] elements= cu1.codeSelect(content.indexOf("Map"), "Map".length());
 			assertEquals(1, elements.length);
 			String key= ((IType) elements[0]).getKey();
 			String signature= new BindingKey(key).toSignature();
@@ -738,7 +738,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		buf.append("public class C {\n");
 		buf.append("    public final static int CONST= 9;\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 
 		String[] order= new String[] { "#", "java" };
 
@@ -812,7 +812,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		StringAsserts.assertEqualStringIgnoreDelim(actual, expected);
 	}
 	
-	private ImportRewrite newImportsRewrite(ICompilationUnit cu, String[] order, int normalThreshold, int staticThreshold, boolean restoreExistingImports) throws CoreException, BackingStoreException {
+	private ImportRewrite newImportsRewrite(IJavaScriptUnit cu, String[] order, int normalThreshold, int staticThreshold, boolean restoreExistingImports) throws CoreException, BackingStoreException {
 		ImportRewrite rewrite= ImportRewrite.create(cu, restoreExistingImports);
 		rewrite.setImportOrder(order);
 		rewrite.setOnDemandImportThreshold(normalThreshold);
@@ -824,7 +824,7 @@ public class ImportRewriteTest extends AbstractJavaModelTests {
 		TextEdit edit= rewrite.rewriteImports(null);
 		
 		// not the efficient way!
-		ICompilationUnit compilationUnit= rewrite.getCompilationUnit();
+		IJavaScriptUnit compilationUnit= rewrite.getCompilationUnit();
 		Document document= new Document(compilationUnit.getSource());
 		edit.apply(document);
 		compilationUnit.getBuffer().setContents(document.get());

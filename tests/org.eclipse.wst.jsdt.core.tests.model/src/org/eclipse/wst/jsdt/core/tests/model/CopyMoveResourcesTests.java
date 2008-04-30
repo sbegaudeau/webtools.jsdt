@@ -30,13 +30,13 @@ public CopyMoveResourcesTests(String name) {
  * and forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public IJavaElement copyPositive(IJavaElement element, IJavaElement container, IJavaElement sibling, String rename, boolean force) throws JavaModelException {
+public IJavaScriptElement copyPositive(IJavaScriptElement element, IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean force) throws JavaScriptModelException {
 	try {
 		startDeltas();
 		
 		// if forcing, ensure that a name collision exists
 		if (force) {
-			IJavaElement collision = generateHandle(element, rename, container);
+			IJavaScriptElement collision = generateHandle(element, rename, container);
 			assertTrue("Collision does not exist", collision.exists());
 		}
 	
@@ -47,16 +47,16 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
 		assertTrue("The original element must still exist", element.exists());
 	
 		// generate the new element	handle
-		IJavaElement copy = generateHandle(element, rename, container);
+		IJavaScriptElement copy = generateHandle(element, rename, container);
 		assertTrue("Copy should exist", copy.exists());
 		//ensure correct position
-		if (element.getElementType() > IJavaElement.COMPILATION_UNIT) {
+		if (element.getElementType() > IJavaScriptElement.JAVASCRIPT_UNIT) {
 			ensureCorrectPositioning((IParent) container, sibling, copy);
-		} else if (container.getElementType() != IJavaElement.PACKAGE_FRAGMENT_ROOT) {
+		} else if (container.getElementType() != IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
 			// ensure package name is correct
 			if (container.getElementName().equals("")) {
 				// default package - should be no package decl
-				IJavaElement[] children = ((ICompilationUnit) copy).getChildren();
+				IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
 				boolean found = false;
 				for (int i = 0; i < children.length; i++) {
 					if (children[i] instanceof IPackageDeclaration) {
@@ -65,7 +65,7 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
 				}
 				assertTrue("Should not find package decl", !found);
 			} else {
-				IJavaElement[] children = ((ICompilationUnit) copy).getChildren();
+				IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
 				boolean found = false;
 				for (int i = 0; i < children.length; i++) {
 					if (children[i] instanceof IPackageDeclaration) {
@@ -76,9 +76,9 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
 				assertTrue("Did not find package decl", found);
 			}
 		}
-		IJavaElementDelta destDelta = getDeltaFor(container, true);
-		assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaElementDelta.CHANGED);
-		IJavaElementDelta[] deltas = destDelta.getAddedChildren();
+		IJavaScriptElementDelta destDelta = getDeltaFor(container, true);
+		assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.CHANGED);
+		IJavaScriptElementDelta[] deltas = destDelta.getAddedChildren();
 		// FIXME: not strong enough
 		boolean found = false;
 		for (int i = 0; i < deltas.length; i++) {
@@ -97,7 +97,7 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
  * and forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, IJavaElement[] siblings, String[] names, boolean force, IProgressMonitor monitor) throws JavaModelException {
+public void movePositive(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, IJavaScriptElement[] siblings, String[] names, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
 	try {
 		startDeltas();
 		
@@ -105,8 +105,8 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 		int i;
 		if (force) {
 			for (i = 0; i < elements.length; i++) {
-				IJavaElement e = elements[i];
-				IJavaElement collision = null;
+				IJavaScriptElement e = elements[i];
+				IJavaScriptElement collision = null;
 				if (names == null) {
 					collision = generateHandle(e, null, destinations[i]);
 				} else {
@@ -120,8 +120,8 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 		getJavaModel().move(elements, destinations, siblings, names, force, monitor);
 	
 		for (i = 0; i < elements.length; i++) {
-			IJavaElement element = elements[i];
-			IJavaElement moved = null;
+			IJavaScriptElement element = elements[i];
+			IJavaScriptElement moved = null;
 			if (names == null) {
 				moved = generateHandle(element, null, destinations[i]);
 			} else {
@@ -129,25 +129,25 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 			}
 			// ensure the original element no longer exists, unless moving within the same container, or moving a primary working copy
 			if (!destinations[i].equals(element.getParent())) {
-				if (element.getElementType() != IJavaElement.COMPILATION_UNIT || !((ICompilationUnit) element).isWorkingCopy())
+				if (element.getElementType() != IJavaScriptElement.JAVASCRIPT_UNIT || !((IJavaScriptUnit) element).isWorkingCopy())
 					assertTrue("The original element must not exist", !element.exists());
 			}
 			assertTrue("Moved element should exist", moved.exists());
 	
-			IJavaElement container = destinations[i];
-			if (container.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
+			IJavaScriptElement container = destinations[i];
+			if (container.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
 				if (container.getElementName().equals("")) {
 					// default package
-					if (moved.getElementType() == IJavaElement.COMPILATION_UNIT) {
-						IJavaElement[] children = ((ICompilationUnit) moved).getChildren();
+					if (moved.getElementType() == IJavaScriptElement.JAVASCRIPT_UNIT) {
+						IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
 						for (int j = 0; j < children.length; j++) {
-							if (children[j].getElementType() == IJavaElement.PACKAGE_DECLARATION) {
+							if (children[j].getElementType() == IJavaScriptElement.PACKAGE_DECLARATION) {
 								assertTrue("Should not find package decl", false);
 							}
 						}
 					}
 				} else {
-					IJavaElement[] children = ((ICompilationUnit) moved).getChildren();
+					IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
 					boolean found = false;
 					for (int j = 0; j < children.length; j++) {
 						if (children[j] instanceof IPackageDeclaration) {
@@ -159,29 +159,29 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 					assertTrue("Did not find package decl", found);
 				}
 			}
-			IJavaElementDelta destDelta = null;
+			IJavaScriptElementDelta destDelta = null;
 			if (isMainType(element, destinations[i]) && names != null && names[i] != null) { //moved/renamed main type to same cu
 				destDelta = getDeltaFor(moved.getParent());
-				assertTrue("Renamed compilation unit as result of main type not added", destDelta != null && destDelta.getKind() == IJavaElementDelta.ADDED);
-				IJavaElementDelta[] deltas = destDelta.getAddedChildren();
+				assertTrue("Renamed compilation unit as result of main type not added", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.ADDED);
+				IJavaScriptElementDelta[] deltas = destDelta.getAddedChildren();
 				assertTrue("Added children not correct for element copy", deltas[0].getElement().equals(moved));
-				assertTrue("flag should be F_MOVED_FROM", (deltas[0].getFlags() & IJavaElementDelta.F_MOVED_FROM) > 0);
+				assertTrue("flag should be F_MOVED_FROM", (deltas[0].getFlags() & IJavaScriptElementDelta.F_MOVED_FROM) > 0);
 				assertTrue("moved from handle should be original", deltas[0].getMovedFromElement().equals(element));
 			} else {
 				destDelta = getDeltaFor(destinations[i], true);
-				assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaElementDelta.CHANGED);
-				IJavaElementDelta[] deltas = destDelta.getAddedChildren();
+				assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.CHANGED);
+				IJavaScriptElementDelta[] deltas = destDelta.getAddedChildren();
 				for (int j = 0; j < deltas.length - 1; j++) {
 					// side effect packages added
-					IJavaElement pkg = deltas[j].getElement();
-					assertTrue("Side effect child should be a package fragment", pkg.getElementType() == IJavaElement.PACKAGE_FRAGMENT);
+					IJavaScriptElement pkg = deltas[j].getElement();
+					assertTrue("Side effect child should be a package fragment", pkg.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT);
 					assertTrue("Side effect child should be an enclosing package", element.getElementName().startsWith(pkg.getElementName()));
 				}
-				IJavaElementDelta pkgDelta = deltas[deltas.length - 1];
+				IJavaScriptElementDelta pkgDelta = deltas[deltas.length - 1];
 				assertTrue("Added children not correct for element copy", pkgDelta.getElement().equals(moved));
-				assertTrue("flag should be F_MOVED_FROM", (pkgDelta.getFlags() & IJavaElementDelta.F_MOVED_FROM) > 0);
+				assertTrue("flag should be F_MOVED_FROM", (pkgDelta.getFlags() & IJavaScriptElementDelta.F_MOVED_FROM) > 0);
 				assertTrue("moved from handle shoud be original", pkgDelta.getMovedFromElement().equals(element));
-				IJavaElementDelta sourceDelta = getDeltaFor(element, true);
+				IJavaScriptElementDelta sourceDelta = getDeltaFor(element, true);
 				assertTrue("moved to handle should be original", sourceDelta.getMovedToElement().equals(moved));
 			}
 		}
@@ -222,14 +222,14 @@ public void testCopyCU() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
 	copyPositive(cuSource, pkgDest, null, null, false);
 	
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
+	IJavaScriptUnit cu= pkgDest.getJavaScriptUnit("X.js");
 	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p2").exists());
 }
 /**
@@ -244,15 +244,15 @@ public void testCopyCUAndType() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	copyNegative(
-		new IJavaElement[]{cuSource, cuSource.getType("X")}, 
-		new IJavaElement[]{cuSource.getParent(), cuSource}, 
+		new IJavaScriptElement[]{cuSource, cuSource.getType("X")}, 
+		new IJavaScriptElement[]{cuSource.getParent(), cuSource}, 
 		null, 
 		new String[]{"Y.js", "Y"}, 
 		false, 
-		IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+		IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 }
 /**
  * Ensures that a CU can be copied to a different package, replacing an existing CU.
@@ -265,7 +265,7 @@ public void testCopyCUForce() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
@@ -287,14 +287,14 @@ public void testCopyCUFromDefaultToNonDefault() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/X.js");
 
 	createFolder("/P/src/p");
 	IPackageFragment pkgDest = getPackage("/P/src/p");
 
 	copyPositive(cuSource, pkgDest, null, null, false);
 	
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
+	IJavaScriptUnit cu= pkgDest.getJavaScriptUnit("X.js");
 	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p").exists());
 }
 /**
@@ -309,7 +309,7 @@ public void testCopyCURename() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
@@ -335,7 +335,7 @@ public void testCopyCUReadOnly() throws CoreException {
 			"}"
 		);
 		Util.setReadOnly(file, true);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 	
 		this.createFolder("/P/src/p2");
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
@@ -367,7 +367,7 @@ public void testCopyCURenameForce() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
@@ -391,7 +391,7 @@ public void testCopyCUWithCollision() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
@@ -402,7 +402,7 @@ public void testCopyCUWithCollision() throws CoreException {
 	);
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
-	copyNegative(cuSource, pkgDest, null, null, false, IJavaModelStatusConstants.NAME_COLLISION);
+	copyNegative(cuSource, pkgDest, null, null, false, IJavaScriptModelStatusConstants.NAME_COLLISION);
 }
 /**
  * Ensures that a CU cannot be copied to an invalid destination
@@ -415,9 +415,9 @@ public void testCopyCUWithInvalidDestination() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
-	copyNegative(cuSource, cuSource, null, null, false, IJavaModelStatusConstants.INVALID_DESTINATION);
+	copyNegative(cuSource, cuSource, null, null, false, IJavaScriptModelStatusConstants.INVALID_DESTINATION);
 }
 /**
  * Ensures that a CU can be copied to a null container
@@ -430,7 +430,7 @@ public void testCopyCUWithNullContainer() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	try {
 		cuSource.copy(null, null, null, false, null);
@@ -451,7 +451,7 @@ public void testCopyCUWithServerProperties() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	QualifiedName qualifiedName = new QualifiedName("x.y.z", "a property");
 	cuSource.getUnderlyingResource().setPersistentProperty(
@@ -462,7 +462,7 @@ public void testCopyCUWithServerProperties() throws CoreException {
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
 	copyPositive(cuSource, pkgDest, null, null, false);
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
+	IJavaScriptUnit cu= pkgDest.getJavaScriptUnit("X.js");
 	String propertyValue = cu.getUnderlyingResource().getPersistentProperty(qualifiedName);
 	assertEquals(
 		"Server property should be copied with cu",
@@ -549,7 +549,7 @@ public void testCopyReadOnlyPackageFragment() throws CoreException {
  * Ensures that a WorkingCopy can be copied to a different package.
  */
 public void testCopyWorkingCopy() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
@@ -558,7 +558,7 @@ public void testCopyWorkingCopy() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
@@ -574,7 +574,7 @@ public void testCopyWorkingCopy() throws CoreException {
  * (regression test for bug 117282 Package declaration inserted on wrong CU while copying class if names collide and editor opened)
  */
 public void testCopyWorkingCopyDestination() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createFolder("/P/src/p1");
 		createFile(
@@ -584,7 +584,7 @@ public void testCopyWorkingCopyDestination() throws CoreException {
 			"  void foo() {}\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 	
 		createFolder("/P/src/p2");
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
@@ -607,7 +607,7 @@ public void testCopyWorkingCopyDestination() throws CoreException {
  * Ensures that a WorkingCopy can be copied to a different package, replacing an existing WorkingCopy.
  */
 public void testCopyWorkingCopyForce() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
@@ -616,7 +616,7 @@ public void testCopyWorkingCopyForce() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
@@ -638,7 +638,7 @@ public void testCopyWorkingCopyForce() throws CoreException {
  * and be renamed.
  */
 public void testCopyWorkingCopyRename() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
@@ -647,7 +647,7 @@ public void testCopyWorkingCopyRename() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
@@ -663,7 +663,7 @@ public void testCopyWorkingCopyRename() throws CoreException {
  * and be renamed, overwriting an existing WorkingCopy
  */
 public void testCopyWorkingCopyRenameForce() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
@@ -672,7 +672,7 @@ public void testCopyWorkingCopyRenameForce() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
@@ -693,7 +693,7 @@ public void testCopyWorkingCopyRenameForce() throws CoreException {
  * Ensures that a WorkingCopy cannot be copied to a different package,over an existing WorkingCopy when no force.
  */
 public void testCopyWorkingCopyWithCollision() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
@@ -702,7 +702,7 @@ public void testCopyWorkingCopyWithCollision() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
@@ -714,7 +714,7 @@ public void testCopyWorkingCopyWithCollision() throws CoreException {
 		);
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
 	
-		copyNegative(copy, pkgDest, null, null, false, IJavaModelStatusConstants.NAME_COLLISION);
+		copyNegative(copy, pkgDest, null, null, false, IJavaScriptModelStatusConstants.NAME_COLLISION);
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
 	}
@@ -723,7 +723,7 @@ public void testCopyWorkingCopyWithCollision() throws CoreException {
  * Ensures that a WorkingCopy cannot be copied to an invalid destination
  */
 public void testCopyWorkingCopyWithInvalidDestination() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
@@ -732,10 +732,10 @@ public void testCopyWorkingCopyWithInvalidDestination() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
-		copyNegative(copy, cuSource, null, null, false, IJavaModelStatusConstants.INVALID_DESTINATION);
+		copyNegative(copy, cuSource, null, null, false, IJavaScriptModelStatusConstants.INVALID_DESTINATION);
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
 	}
@@ -751,14 +751,14 @@ public void testMoveCU() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
 	movePositive(cuSource, pkgDest, null, null, false);
 	
-	ICompilationUnit cu= pkgDest.getCompilationUnit("X.js");
+	IJavaScriptUnit cu= pkgDest.getJavaScriptUnit("X.js");
 	assertTrue("Package declaration not updated for copied cu", cu.getPackageDeclaration("p2").exists());
 }
 /**
@@ -773,15 +773,15 @@ public void testMoveCUAndType() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	moveNegative(
-		new IJavaElement[]{cuSource, cuSource.getType("X")}, 
-		new IJavaElement[]{cuSource.getParent(), cuSource}, 
+		new IJavaScriptElement[]{cuSource, cuSource.getType("X")}, 
+		new IJavaScriptElement[]{cuSource.getParent(), cuSource}, 
 		null, 
 		new String[]{"Y.js", "Y"}, 
 		false, 
-		IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+		IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 }
 /**
  * Ensures that a CU can be moved to a different package, replacing an
@@ -795,7 +795,7 @@ public void testMoveCUForce() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
@@ -820,7 +820,7 @@ public void testMoveCURename() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
@@ -839,7 +839,7 @@ public void testMoveCURenameForce() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
@@ -864,7 +864,7 @@ public void testMoveCUWithCollision() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	this.createFolder("/P/src/p2");
 	this.createFile(
@@ -875,7 +875,7 @@ public void testMoveCUWithCollision() throws CoreException {
 	);
 	IPackageFragment pkgDest = getPackage("/P/src/p2");
 
-	moveNegative(cuSource, pkgDest, null, null, false, IJavaModelStatusConstants.NAME_COLLISION);
+	moveNegative(cuSource, pkgDest, null, null, false, IJavaScriptModelStatusConstants.NAME_COLLISION);
 }
 /**
  * Ensures that a CU cannot be moved to an invalid destination.
@@ -888,9 +888,9 @@ public void testMoveCUWithInvalidDestination() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
-	moveNegative(cuSource, cuSource, null, null, false, IJavaModelStatusConstants.INVALID_DESTINATION);
+	moveNegative(cuSource, cuSource, null, null, false, IJavaScriptModelStatusConstants.INVALID_DESTINATION);
 }
 /**
  * Ensures that a CU cannot be moved to a null container
@@ -903,7 +903,7 @@ public void testMoveCUWithNullContainer() throws CoreException {
 		"public class X {\n" +
 		"}"
 	);
-	ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+	IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 
 	try {
 		cuSource.move(null, null, null, false, null);
@@ -991,7 +991,7 @@ public void testMoveReadOnlyPackageFragment() throws CoreException {
  * Ensures that a WorkingCopy cannot be moved to a different package.
  */
 public void testMoveWorkingCopy() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(
@@ -1000,13 +1000,13 @@ public void testMoveWorkingCopy() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
+		IJavaScriptUnit cuSource = getCompilationUnit("/P/src/p1/X.js");
 		copy = cuSource.getWorkingCopy(null);
 	
 		this.createFolder("/P/src/p2");
 		IPackageFragment pkgDest = getPackage("/P/src/p2");
 	
-		moveNegative(copy, pkgDest, null, null, false, IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+		moveNegative(copy, pkgDest, null, null, false, IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
 	}
@@ -1018,7 +1018,7 @@ public void testMoveWorkingCopy() throws CoreException {
  * (regression test for bug 83599 CU dirty after move refactoring)
  */
 public void testMoveWorkingCopy2() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createFolder("/P/src/p1");
 		this.createFile(

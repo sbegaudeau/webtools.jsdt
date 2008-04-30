@@ -16,11 +16,11 @@ import org.eclipse.wst.jsdt.core.*;
 import junit.framework.Test;
 
 public class TypeResolveTests extends ModifyingResourceTests {
-	ICompilationUnit cu;
+	IJavaScriptUnit cu;
 public TypeResolveTests(String name) {
 	super(name);
 }
-private IType getType(IType[] types, String sourceTypeName) throws JavaModelException {
+private IType getType(IType[] types, String sourceTypeName) throws JavaScriptModelException {
 	for (int i = 0; i < types.length; i++) {
 		IType sourceType = types[i];
 		if (sourceType.getTypeQualifiedName().equals(sourceTypeName)) {
@@ -31,10 +31,10 @@ private IType getType(IType[] types, String sourceTypeName) throws JavaModelExce
 	}
 	return null;
 }
-private IType getType(String sourceTypeName) throws JavaModelException {
+private IType getType(String sourceTypeName) throws JavaScriptModelException {
 	return getType(this.cu.getTypes(), sourceTypeName);
 }
-private String[][] resolveType(String typeName, String sourceTypeName) throws JavaModelException {
+private String[][] resolveType(String typeName, String sourceTypeName) throws JavaScriptModelException {
 	IType sourceType = this.getType(sourceTypeName);
 	assertTrue("Type " + sourceTypeName + " was not found", sourceType != null);
 	return sourceType.resolveType(typeName);
@@ -83,7 +83,7 @@ public void tearDownSuite() throws Exception {
  * Resolve the type "B" within one of the secondary types.
  * (regression test for bug 23829 IType::resolveType incorrectly returns null)
  */
-public void testResolveInSecondaryType() throws JavaModelException {
+public void testResolveInSecondaryType() throws JavaScriptModelException {
 	IType type = this.getCompilationUnit("/TypeResolve/src/p3/B.js").getType("Test");
 	String[][] types = type.resolveType("B");
 	assertEquals(
@@ -94,7 +94,7 @@ public void testResolveInSecondaryType() throws JavaModelException {
 /**
  * Resolve the type "B" within one of its inner classes.
  */
-public void testResolveMemberTypeInInner() throws JavaModelException {
+public void testResolveMemberTypeInInner() throws JavaScriptModelException {
 	String[][] types = this.resolveType("B", "TypeResolve$A$B$D");
 	assertEquals(
 		"Unexpected result", 
@@ -127,7 +127,7 @@ public void testResolveParameterizedType() throws CoreException {
 /**
  * Resolve the type "C" within one of its sibling classes.
  */
-public void testResolveSiblingTypeInInner() throws JavaModelException {
+public void testResolveSiblingTypeInInner() throws JavaScriptModelException {
 	String[][] types = this.resolveType("C", "TypeResolve$A$B");
 	assertEquals(
 		"Unexpected result", 
@@ -138,7 +138,7 @@ public void testResolveSiblingTypeInInner() throws JavaModelException {
  * Resolve the type "X" with a type import for it
  * within an inner class
  */
-public void testResolveTypeInInner() throws JavaModelException {
+public void testResolveTypeInInner() throws JavaScriptModelException {
 	String[][] types = this.resolveType("X", "TypeResolve$A");
 	assertEquals(
 		"Unexpected result", 
@@ -149,8 +149,8 @@ public void testResolveTypeInInner() throws JavaModelException {
  * Resolve the type "Object" within a local class.
  * (regression test for bug 48350 IType#resolveType(String) fails on local types)
  */
-public void testResolveTypeInInner2() throws JavaModelException {
-	IType type = this.getCompilationUnit("/TypeResolve/src/p5/A.js").getType("A").getMethod("foo", new String[] {}).getType("Local", 1);
+public void testResolveTypeInInner2() throws JavaScriptModelException {
+	IType type = this.getCompilationUnit("/TypeResolve/src/p5/A.js").getType("A").getFunction("foo", new String[] {}).getType("Local", 1);
 	
 	String[][] types = type.resolveType("Object");
 	assertEquals(
@@ -161,7 +161,7 @@ public void testResolveTypeInInner2() throws JavaModelException {
 /**
  * Resolve the type "String".
  */
-public void testResolveTypeInJavaLang() throws JavaModelException {
+public void testResolveTypeInJavaLang() throws JavaScriptModelException {
 	String[][] types = this.resolveType("String", "TypeResolve");
 	assertEquals(
 		"Unexpected result", 
@@ -171,7 +171,7 @@ public void testResolveTypeInJavaLang() throws JavaModelException {
 /**
  * Resolve the type "Vector" with no imports.
  */
-public void testResolveTypeWithNoImports() throws JavaModelException {
+public void testResolveTypeWithNoImports() throws JavaScriptModelException {
 	String[][] types = this.resolveType("Vector", "TypeResolve");
 	assertEquals(
 		"Unexpected result", 
@@ -181,7 +181,7 @@ public void testResolveTypeWithNoImports() throws JavaModelException {
 /**
  * Resolve the type "Y" with an on-demand import.
  */
-public void testResolveTypeWithOnDemandImport() throws JavaModelException {
+public void testResolveTypeWithOnDemandImport() throws JavaScriptModelException {
 	String[][] types = this.resolveType("Y", "TypeResolve");
 	assertEquals(
 		"Unexpected result", 
@@ -191,7 +191,7 @@ public void testResolveTypeWithOnDemandImport() throws JavaModelException {
 /**
  * Resolve the type "X" with a type import for it.
  */
-public void testResolveTypeWithTypeImport() throws JavaModelException {
+public void testResolveTypeWithTypeImport() throws JavaScriptModelException {
 	String[][] types = this.resolveType("X", "TypeResolve");
 	assertEquals(
 		"Unexpected result", 
@@ -201,7 +201,7 @@ public void testResolveTypeWithTypeImport() throws JavaModelException {
 /**
  * Resolve the type "String".
  */
-public void testResolveString() throws JavaModelException {
+public void testResolveString() throws JavaScriptModelException {
 	String[][] types = this.resolveType("String", "TypeResolve");
 	assertEquals(
 		"Unexpected result", 
@@ -211,7 +211,7 @@ public void testResolveString() throws JavaModelException {
 /**
  * Resolve the type "A.Inner".
  */
-public void testResolveInnerType1() throws JavaModelException {
+public void testResolveInnerType1() throws JavaScriptModelException {
 	IType type = this.getCompilationUnit("/TypeResolve/src/p4/B.js").getType("B");
 	String[][] types = type.resolveType("A.Inner");
 	assertEquals(
@@ -222,7 +222,7 @@ public void testResolveInnerType1() throws JavaModelException {
 /**
  * Resolve the type "p4.A.Inner".
  */
-public void testResolveInnerType2() throws JavaModelException {
+public void testResolveInnerType2() throws JavaScriptModelException {
 	IType type = this.getCompilationUnit("/TypeResolve/src/p4/B.js").getType("B");
 	String[][] types = type.resolveType("p4.A.Inner");
 	assertEquals(

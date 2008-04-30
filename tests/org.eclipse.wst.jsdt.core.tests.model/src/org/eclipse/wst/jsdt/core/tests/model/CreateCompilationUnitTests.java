@@ -43,9 +43,9 @@ public void tearDown() throws Exception {
  * of running the operation.
  * Ensure that the import container has been created correctly.
  */
-public void testCUAndImportContainer() throws JavaModelException {
+public void testCUAndImportContainer() throws JavaScriptModelException {
 	IPackageFragment pkg = getPackage("/P/p");
-	ICompilationUnit cu= pkg.createCompilationUnit("HelloImports.js", 
+	IJavaScriptUnit cu= pkg.createCompilationUnit("HelloImports.js", 
 		("package p;\n" +
 		"\n" +
 		"import java.util.Enumeration;\n" +
@@ -77,7 +77,7 @@ public void testCUAndImportContainer() throws JavaModelException {
  */
 public void testDefaultCU() throws CoreException {
 	IPackageFragment pkg = getPackage("/P/p");
-	ICompilationUnit cu= pkg.getCompilationUnit("Default.js");
+	IJavaScriptUnit cu= pkg.getJavaScriptUnit("Default.js");
 	IType type= cu.createType("public class Default {}", null, false, null);
 	assertCreation(cu);
 	assertCreation(type);
@@ -105,14 +105,14 @@ public void testDefaultCU() throws CoreException {
 	// should fail if we try again
 	try {
 		pkg.createCompilationUnit("Default.js", "", false, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Exception status not correct for creating a cu that already exists", jme.getStatus().getCode() == IJavaModelStatusConstants.NAME_COLLISION);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Exception status not correct for creating a cu that already exists", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.NAME_COLLISION);
 	}
 	// should fail if we try again
 	try {
 		pkg.createCompilationUnit("Default.js", "public class Default {}", true, null);
 		return;
-	} catch (JavaModelException jme) {
+	} catch (JavaScriptModelException jme) {
 	}
 	assertTrue("Creation should not fail if the compilation unit already exists", false);
 }
@@ -125,20 +125,20 @@ public void testEmptyCU() {
 	// should fail if we try again
 	try {
 		pkg.createCompilationUnit("Empty.js", "", true, null);
-	} catch (JavaModelException jme) {
+	} catch (JavaScriptModelException jme) {
 	}
-	ICompilationUnit cu= pkg.getCompilationUnit("Empty.js");
+	IJavaScriptUnit cu= pkg.getJavaScriptUnit("Empty.js");
 	assertCreation(cu);
 }
 /*
  * Ensures that a compilation unit can be created even if a file already exists on the file system.
  * (regression test for bug 41611 CreateCompilationUnitOperation.executeOperation() should probably force creation more agressively)
  */
-public void testForce() throws JavaModelException, IOException {
+public void testForce() throws JavaScriptModelException, IOException {
 	IPackageFragment pkg = getPackage("/P/p");
 	File folder = pkg.getResource().getLocation().toFile();
 	new File(folder, "X.js").createNewFile();
-	ICompilationUnit cu = pkg.createCompilationUnit(
+	IJavaScriptUnit cu = pkg.createCompilationUnit(
 		"X.js", 
 		"package p;\n" +
 		"public class X {\n" +
@@ -162,16 +162,16 @@ public void testInvalidName() {
 	IPackageFragment pkg = getPackage("/P/p");
 	try {
 		pkg.createCompilationUnit("HelloWorld.j", null,  false, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Incorrect JavaModelException thrown for creating a cu with invalid name", jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_NAME);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Incorrect JavaScriptModelException thrown for creating a cu with invalid name", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_NAME);
 		try {
 			pkg.createCompilationUnit(null, null,  false,null);
-		} catch (JavaModelException jme2) {
-			assertTrue("Incorrect JavaModelException thrown for creating a cu with invalid name", jme2.getStatus().getCode() == IJavaModelStatusConstants.INVALID_NAME);
+		} catch (JavaScriptModelException jme2) {
+			assertTrue("Incorrect JavaScriptModelException thrown for creating a cu with invalid name", jme2.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_NAME);
 			return;
 		}
 	}
-	assertTrue("No JavaModelException thrown for creating a cu with an invalid name", false);
+	assertTrue("No JavaScriptModelException thrown for creating a cu with an invalid name", false);
 }
 /**
  * Ensures that a compilation unit cannot be created with <code>null</code> source
@@ -181,11 +181,11 @@ public void testNullContents() {
 	IPackageFragment pkg = getPackage("/P/p");
 	try {
 		pkg.createCompilationUnit("HelloWorld.js", null, false, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Incorrect JavaModelException thrown for creating a cu with null contents: " + jme, jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_CONTENTS);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Incorrect JavaScriptModelException thrown for creating a cu with null contents: " + jme, jme.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_CONTENTS);
 		return;
 	}
-	assertTrue("No JavaModelException thrown for creating a cu with null contents", false);
+	assertTrue("No JavaScriptModelException thrown for creating a cu with null contents", false);
 }
 /**
  * Ensures that a compilation unit can be created with specified source
@@ -193,9 +193,9 @@ public void testNullContents() {
  * Verifies that the proper change deltas are generated as a side effect
  * of running the operation.
  */
-public void testSimpleCreation() throws JavaModelException {
+public void testSimpleCreation() throws JavaScriptModelException {
 	IPackageFragment pkg = getPackage("/P/p");
-	ICompilationUnit cu= pkg.createCompilationUnit("HelloWorld.js", 
+	IJavaScriptUnit cu= pkg.createCompilationUnit("HelloWorld.js", 
 		("package p;\n" +
 		"\n" +
 		"public class HelloWorld {\n" +

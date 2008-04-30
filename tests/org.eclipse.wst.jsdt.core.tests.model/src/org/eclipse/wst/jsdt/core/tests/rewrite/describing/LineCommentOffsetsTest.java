@@ -15,7 +15,7 @@ import java.util.HashSet;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.dom.*;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -69,9 +69,9 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("{//comment Y\n");
 		buf.append("}//comment Y");	
 		String contents= buf.toString();
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", contents, false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", contents, false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		
 		LineCommentEndOffsets offsets= new LineCommentEndOffsets(astRoot.getCommentList());
 
@@ -139,8 +139,8 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("} // comment Y");
 		String content= buf.toString();
 		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", content, false, null);
-		CompilationUnit astRoot= createAST(cu);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", content, false, null);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		LineCommentEndOffsets offsets= new LineCommentEndOffsets(astRoot.getCommentList());
 		HashSet expectedOffsets= new HashSet();
@@ -190,8 +190,8 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("} // comment Y");
 		String content= buf.toString();
 		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", content, false, null);
-		CompilationUnit astRoot= createAST(cu);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", content, false, null);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		LineCommentEndOffsets offsets= new LineCommentEndOffsets(astRoot.getCommentList());
 		HashSet expectedOffsets= new HashSet();
@@ -226,9 +226,9 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E implements A //comment\n");
 		buf.append("{\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -259,9 +259,9 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E //comment\n");
 		buf.append("{\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -292,9 +292,9 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E //implements List\n");
 		buf.append("{\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -331,19 +331,19 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("    );\n");
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		ExpressionStatement statement= (ExpressionStatement) ((MethodDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
-		MethodInvocation inv= (MethodInvocation) statement.getExpression();
+		ExpressionStatement statement= (ExpressionStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
+		FunctionInvocation inv= (FunctionInvocation) statement.getExpression();
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(inv, MethodInvocation.ARGUMENTS_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(inv, FunctionInvocation.ARGUMENTS_PROPERTY);
 		listRewrite.insertLast(ast.newSimpleName("param3"), null);
 			
 		String preview= evaluateRewrite(cu, rewrite);
@@ -375,16 +375,16 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("    // comment\n");	
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		TryStatement statement= (TryStatement) ((MethodDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
+		TryStatement statement= (TryStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
 		
 		ListRewrite listRewrite= rewrite.getListRewrite(statement, TryStatement.CATCH_CLAUSES_PROPERTY);
 		CatchClause clause= ast.newCatchClause();
@@ -425,16 +425,16 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("      return;\n");
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		IfStatement statement= (IfStatement) ((MethodDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
+		IfStatement statement= (IfStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
 		
 		rewrite.set(statement, IfStatement.ELSE_STATEMENT_PROPERTY, ast.newBlock(), null);
 			
@@ -466,16 +466,16 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("    }\n");
 		buf.append("  }\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		IfStatement statement= (IfStatement) ((MethodDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
+		IfStatement statement= (IfStatement) ((FunctionDeclaration) type.bodyDeclarations().get(0)).getBody().statements().get(0);
 		Expression expression= ((InfixExpression) statement.getExpression()).getLeftOperand();
 		
 		ParenthesizedExpression parenthesizedExpression= ast.newParenthesizedExpression();
@@ -505,16 +505,16 @@ public class LineCommentOffsetsTest extends ASTRewritingTest {
 		buf.append("public class E \n");
 		buf.append("{\n");
 		buf.append("}//comment");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		
-		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, CompilationUnit.TYPES_PROPERTY);
+		ListRewrite listRewrite= rewrite.getListRewrite(astRoot, JavaScriptUnit.TYPES_PROPERTY);
 		TypeDeclaration newType= ast.newTypeDeclaration();
 		newType.setName(ast.newSimpleName("B"));
 		listRewrite.insertLast(newType, null);

@@ -31,17 +31,17 @@ import org.eclipse.wst.jsdt.internal.core.search.matching.PatternLocator;
 /**
  * Abstract class for Java Search tests.
  */
-public class AbstractJavaSearchTests extends AbstractJavaModelTests implements IJavaSearchConstants {
+public class AbstractJavaSearchTests extends AbstractJavaModelTests implements IJavaScriptSearchConstants {
 
 	public static List JAVA_SEARCH_SUITES = null;
-	protected static IJavaProject JAVA_PROJECT;
+	protected static IJavaScriptProject JAVA_PROJECT;
 	protected static boolean COPY_DIRS = true;
 	protected static int EXACT_RULE = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
 	protected static int EQUIVALENT_RULE = EXACT_RULE | SearchPattern.R_EQUIVALENT_MATCH;
 	protected static int ERASURE_RULE = EXACT_RULE | SearchPattern.R_ERASURE_MATCH;
 	protected static int RAW_RULE = EXACT_RULE | SearchPattern.R_ERASURE_MATCH | SearchPattern.R_EQUIVALENT_MATCH;
 
-//	ICompilationUnit[] workingCopies;
+//	IJavaScriptUnit[] workingCopies;
 //	boolean discard;
 
 	/**
@@ -76,77 +76,77 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 		protected void writeLine() throws CoreException {
 			try {
 				IResource resource = match.getResource();
-				IJavaElement element = getElement(match);
+				IJavaScriptElement element = getElement(match);
 				line = new StringBuffer(getPathString(resource, element));
 				if (this.showProject) {
-					IProject project = element.getJavaProject().getProject();
+					IProject project = element.getJavaScriptProject().getProject();
 					line.append(" [in ");
 					line.append(project.getName());
 					line.append("]");
 				}
-				ICompilationUnit unit = null;
-				if (element instanceof IMethod) {
+				IJavaScriptUnit unit = null;
+				if (element instanceof IFunction) {
 					line.append(" ");
-					IMethod method = (IMethod)element;
+					IFunction method = (IFunction)element;
 					append(method);
-					unit = method.getCompilationUnit();
+					unit = method.getJavaScriptUnit();
 				} else if (element instanceof IType) {
 					line.append(" ");
 					IType type = (IType)element;
 					append(type);
-					unit = type.getCompilationUnit();
+					unit = type.getJavaScriptUnit();
 				} else if (element instanceof IField) {
 					line.append(" ");
 					IField field = (IField)element;
 					append(field);
-					unit = field.getCompilationUnit();
+					unit = field.getJavaScriptUnit();
 				} else if (element instanceof IInitializer) {
 					line.append(" ");
 					IInitializer initializer = (IInitializer)element;
 					append(initializer);
-					unit = initializer.getCompilationUnit();
+					unit = initializer.getJavaScriptUnit();
 				} else if (element instanceof IPackageFragment) {
 					line.append(" ");
 					append((IPackageFragment)element);
 				} else if (element instanceof ILocalVariable) {
 					line.append(" ");
 					ILocalVariable localVar = (ILocalVariable)element;
-					IJavaElement parent = localVar.getParent();
+					IJavaScriptElement parent = localVar.getParent();
 					if (parent instanceof IInitializer) {
 						IInitializer initializer = (IInitializer)parent;
 						append(initializer);
 						line.append(".");
-					} else if (parent instanceof IMethod){ // IMethod
-						IMethod method = (IMethod)parent;
+					} else if (parent instanceof IFunction){ // IFunction
+						IFunction method = (IFunction)parent;
 						append(method);
 						line.append(".");
 					}
 					line.append(localVar.getElementName());
-					unit = (ICompilationUnit)localVar.getAncestor(IJavaElement.COMPILATION_UNIT);
+					unit = (IJavaScriptUnit)localVar.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				} else if (element instanceof ITypeParameter) {
 					line.append(" ");
 					ITypeParameter typeParam = (ITypeParameter)element;
-					IJavaElement parent = typeParam.getParent();
+					IJavaScriptElement parent = typeParam.getParent();
 					if (parent instanceof IType) {
 						IType type = (IType)parent;
 						append(type);
-						unit = type.getCompilationUnit();
-					} else if (parent instanceof IMethod) {
-						IMethod method = (IMethod)parent;
+						unit = type.getJavaScriptUnit();
+					} else if (parent instanceof IFunction) {
+						IFunction method = (IFunction)parent;
 						append(method);
-						unit = method.getCompilationUnit();
+						unit = method.getJavaScriptUnit();
 					} else {
 						line.append("<Unexpected kind of parent for type parameter>");
-						unit = (ICompilationUnit)typeParam.getAncestor(IJavaElement.COMPILATION_UNIT);
+						unit = (IJavaScriptUnit)typeParam.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 					}
 					line.append(".");
 					line.append(typeParam.getElementName());
 				} else if (element instanceof IImportDeclaration) {
 					IImportDeclaration importDeclaration = (IImportDeclaration)element;
-					unit = (ICompilationUnit)importDeclaration.getAncestor(IJavaElement.COMPILATION_UNIT);
+					unit = (IJavaScriptUnit)importDeclaration.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				} else if (element instanceof IPackageDeclaration) {
 					IPackageDeclaration packageDeclaration = (IPackageDeclaration)element;
-					unit = (ICompilationUnit)packageDeclaration.getAncestor(IJavaElement.COMPILATION_UNIT);
+					unit = (IJavaScriptUnit)packageDeclaration.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				}
 				if (resource instanceof IFile) {
 					char[] contents = getSource(resource, element, unit);
@@ -225,7 +225,7 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 						}
 					}
 				}
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				results.append("\n");
 				results.append(e.toString());
 			}
@@ -233,12 +233,12 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 		private boolean showSuperInvocation() {
 			return (this.showFlavors & PatternLocator.SUPER_INVOCATION_FLAVOR) != 0;
 		}
-		protected void append(IField field) throws JavaModelException {
+		protected void append(IField field) throws JavaScriptModelException {
 			append(field.getDeclaringType());
 			line.append(".");
 			line.append(field.getElementName());
 		}
-		private void append(IInitializer initializer) throws JavaModelException {
+		private void append(IInitializer initializer) throws JavaScriptModelException {
 			append(initializer.getDeclaringType());
 			line.append(".");
 			if (Flags.isStatic(initializer.getFlags())) {
@@ -246,7 +246,7 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 			}
 			line.append("{}");
 		}
-		private void append(IMethod method) throws JavaModelException {
+		private void append(IFunction method) throws JavaScriptModelException {
 			if (!method.isConstructor() && method.getReturnType()!=null) {
 				line.append(Signature.toString(method.getReturnType()));
 				line.append(" ");
@@ -280,18 +280,18 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 		private void append(IPackageFragment pkg) {
 			line.append(pkg.getElementName());
 		}
-		private void append(IType type) throws JavaModelException {
-			IJavaElement parent = type.getParent();
+		private void append(IType type) throws JavaScriptModelException {
+			IJavaScriptElement parent = type.getParent();
 			boolean isLocal = false;
 			switch (parent.getElementType()) {
-				case IJavaElement.COMPILATION_UNIT:
+				case IJavaScriptElement.JAVASCRIPT_UNIT:
 					IPackageFragment pkg = type.getPackageFragment();
 					append(pkg);
 					if (!pkg.getElementName().equals(IPackageFragment.DEFAULT_PACKAGE_NAME)) {
 						line.append(".");
 					}
 					break;
-				case IJavaElement.CLASS_FILE:
+				case IJavaScriptElement.CLASS_FILE:
 					IType declaringType = type.getDeclaringType();
 					if (declaringType != null) {
 						append(type.getDeclaringType());
@@ -304,20 +304,20 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 						}
 					}
 					break;
-				case IJavaElement.TYPE:
+				case IJavaScriptElement.TYPE:
 					append((IType)parent);
 					line.append("$");
 					break;
-				case IJavaElement.FIELD:
+				case IJavaScriptElement.FIELD:
 					append((IField)parent);
 					isLocal = true;
 					break;
-				case IJavaElement.INITIALIZER:
+				case IJavaScriptElement.INITIALIZER:
 					append((IInitializer)parent);
 					isLocal = true;
 					break;
-				case IJavaElement.METHOD:
-					append((IMethod)parent);
+				case IJavaScriptElement.METHOD:
+					append((IFunction)parent);
 					isLocal = true;
 					break;
 			}
@@ -335,15 +335,15 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 				line.append(((SourceRefElement)type).occurrenceCount);
 			}
 		}
-		protected IJavaElement getElement(SearchMatch searchMatch) {
-			return (IJavaElement) searchMatch.getElement();
+		protected IJavaScriptElement getElement(SearchMatch searchMatch) {
+			return (IJavaScriptElement) searchMatch.getElement();
 		}
-		protected String getPathString(IResource resource, IJavaElement element) {
+		protected String getPathString(IResource resource, IJavaScriptElement element) {
 			String pathString;
 			if (resource != null) {
 				IPath path = resource.getProjectRelativePath();
 				if (path.segmentCount() == 0) {
-					IJavaElement root = element;
+					IJavaScriptElement root = element;
 					while (root != null && !(root instanceof IPackageFragmentRoot)) {
 						root = root.getParent();
 					}
@@ -365,10 +365,10 @@ public class AbstractJavaSearchTests extends AbstractJavaModelTests implements I
 			}
 			return pathString;
 		}
-		protected char[] getSource(IResource resource, IJavaElement element, ICompilationUnit unit) throws CoreException {
+		protected char[] getSource(IResource resource, IJavaScriptElement element, IJavaScriptUnit unit) throws CoreException {
 			char[] contents = CharOperation.NO_CHAR;
 			if ("js".equals(resource.getFileExtension())) {
-				ICompilationUnit cu = (ICompilationUnit)element.getAncestor(IJavaElement.COMPILATION_UNIT);
+				IJavaScriptUnit cu = (IJavaScriptUnit)element.getAncestor(IJavaScriptElement.JAVASCRIPT_UNIT);
 				if (cu != null && cu.isWorkingCopy()) {
 					// working copy
 					contents = unit.getBuffer().getCharacters();
@@ -481,7 +481,7 @@ protected JavaSearchResultCollector resultCollector;
 					sources[i*2] = this.workingCopies[i].getPath().toString();
 					try {
 						sources[i*2+1] = this.workingCopies[i].getSource();
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						// ignore
 					}
 				}
@@ -517,26 +517,26 @@ protected JavaSearchResultCollector resultCollector;
 			copy(sourceFile, targetFile);
 		}
 	}
-	IJavaSearchScope getJavaSearchScope() {
-		return SearchEngine.createJavaSearchScope(new IJavaProject[] {getJavaProject("JSSearch")});
+	IJavaScriptSearchScope getJavaSearchScope() {
+		return SearchEngine.createJavaSearchScope(new IJavaScriptProject[] {getJavaProject("JSSearch")});
 	}
-	IJavaSearchScope getJavaSearchScope15() {
-		return SearchEngine.createJavaSearchScope(new IJavaProject[] {getJavaProject("JavaSearch15")});
+	IJavaScriptSearchScope getJavaSearchScope15() {
+		return SearchEngine.createJavaSearchScope(new IJavaScriptProject[] {getJavaProject("JavaSearch15")});
 	}
-	IJavaSearchScope getJavaSearchScope15(String packageName, boolean addSubpackages) throws JavaModelException {
+	IJavaScriptSearchScope getJavaSearchScope15(String packageName, boolean addSubpackages) throws JavaScriptModelException {
 		if (packageName == null) return getJavaSearchScope15();
 		return getJavaSearchPackageScope("JavaSearch15", packageName, addSubpackages);
 	}
-	IJavaSearchScope getJavaSearchPackageScope(String projectName, String packageName, boolean addSubpackages) throws JavaModelException {
+	IJavaScriptSearchScope getJavaSearchPackageScope(String projectName, String packageName, boolean addSubpackages) throws JavaScriptModelException {
 		IPackageFragment fragment = getPackageFragment(projectName, "src", packageName);
 		if (fragment == null) return null;
-		IJavaElement[] searchPackages = null;
+		IJavaScriptElement[] searchPackages = null;
 		if (addSubpackages) {
 			// Create list of package with first found one
 			List packages = new ArrayList();
 			packages.add(fragment);
 			// Add all possible subpackages
-			IJavaElement[] children= ((IPackageFragmentRoot)fragment.getParent()).getChildren();
+			IJavaScriptElement[] children= ((IPackageFragmentRoot)fragment.getParent()).getChildren();
 			String[] names = ((PackageFragment)fragment).names;
 			int namesLength = names.length;
 			nextPackage: for (int i= 0, length = children.length; i < length; i++) {
@@ -549,31 +549,31 @@ protected JavaSearchResultCollector resultCollector;
 				}
 				packages.add(currentPackage);
 			}
-			searchPackages = new IJavaElement[packages.size()];
+			searchPackages = new IJavaScriptElement[packages.size()];
 			packages.toArray(searchPackages);
 		} else {
-			searchPackages = new IJavaElement[1];
+			searchPackages = new IJavaScriptElement[1];
 			searchPackages[0] = fragment;
 		}
 		return SearchEngine.createJavaSearchScope(searchPackages);
 	}
-	IJavaSearchScope getJavaSearchCUScope(String projectName, String packageName, String cuName) throws JavaModelException {
-		ICompilationUnit cu = getCompilationUnit(projectName, "src", packageName, cuName);
-		return SearchEngine.createJavaSearchScope(new ICompilationUnit[] { cu });
+	IJavaScriptSearchScope getJavaSearchCUScope(String projectName, String packageName, String cuName) throws JavaScriptModelException {
+		IJavaScriptUnit cu = getCompilationUnit(projectName, "src", packageName, cuName);
+		return SearchEngine.createJavaSearchScope(new IJavaScriptUnit[] { cu });
 	}
-	protected void search(IJavaElement element, int limitTo, IJavaSearchScope scope) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo, IJavaScriptSearchScope scope) throws CoreException {
 		search(element, limitTo, EXACT_RULE, scope, resultCollector);
 	}
-	IJavaSearchScope getJavaSearchWorkingCopiesScope(ICompilationUnit workingCopy) throws JavaModelException {
-		return SearchEngine.createJavaSearchScope(new ICompilationUnit[] { workingCopy });
+	IJavaScriptSearchScope getJavaSearchWorkingCopiesScope(IJavaScriptUnit workingCopy) throws JavaScriptModelException {
+		return SearchEngine.createJavaSearchScope(new IJavaScriptUnit[] { workingCopy });
 	}
-	IJavaSearchScope getJavaSearchWorkingCopiesScope() throws JavaModelException {
+	IJavaScriptSearchScope getJavaSearchWorkingCopiesScope() throws JavaScriptModelException {
 		return SearchEngine.createJavaSearchScope(this.workingCopies);
 	}
-	protected void search(IJavaElement element, int limitTo, int matchRule, IJavaSearchScope scope) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo, int matchRule, IJavaScriptSearchScope scope) throws CoreException {
 		search(element, limitTo, matchRule, scope, resultCollector);
 	}
-	protected void search(IJavaElement element, int limitTo, int matchRule, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo, int matchRule, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		SearchPattern pattern = SearchPattern.createPattern(element, limitTo, matchRule);
 		assertNotNull("Pattern should not be null", pattern);
 		new SearchEngine(workingCopies).search(
@@ -584,7 +584,7 @@ protected JavaSearchResultCollector resultCollector;
 			null
 		);
 	}
-	protected void search(SearchPattern searchPattern, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(SearchPattern searchPattern, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		new SearchEngine().search(
 			searchPattern, 
 			new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
@@ -592,13 +592,13 @@ protected JavaSearchResultCollector resultCollector;
 			requestor,
 			null);
 	}
-	protected void search(String patternString, int searchFor, int limitTo, IJavaSearchScope scope) throws CoreException {
+	protected void search(String patternString, int searchFor, int limitTo, IJavaScriptSearchScope scope) throws CoreException {
 		search(patternString, searchFor, limitTo, EXACT_RULE, scope, resultCollector);
 	}
-	protected void search(String patternString, int searchFor, int limitTo, int matchRule, IJavaSearchScope scope) throws CoreException {
+	protected void search(String patternString, int searchFor, int limitTo, int matchRule, IJavaScriptSearchScope scope) throws CoreException {
 		search(patternString, searchFor, limitTo, matchRule, scope, resultCollector);
 	}
-	protected void search(String patternString, int searchFor, int limitTo, int matchRule, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(String patternString, int searchFor, int limitTo, int matchRule, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		if (patternString.indexOf('*') != -1 || patternString.indexOf('?') != -1) {
 			matchRule |= SearchPattern.R_PATTERN_MATCH;
 		}
@@ -615,13 +615,13 @@ protected JavaSearchResultCollector resultCollector;
 			requestor,
 			null);
 	}
-	protected void searchDeclarationsOfAccessedFields(IJavaElement enclosingElement, SearchRequestor requestor) throws JavaModelException {
+	protected void searchDeclarationsOfAccessedFields(IJavaScriptElement enclosingElement, SearchRequestor requestor) throws JavaScriptModelException {
 		new SearchEngine().searchDeclarationsOfAccessedFields(enclosingElement, requestor, null);
 	}
-	protected void searchDeclarationsOfReferencedTypes(IJavaElement enclosingElement, SearchRequestor requestor) throws JavaModelException {
+	protected void searchDeclarationsOfReferencedTypes(IJavaScriptElement enclosingElement, SearchRequestor requestor) throws JavaScriptModelException {
 		new SearchEngine().searchDeclarationsOfReferencedTypes(enclosingElement, requestor, null);
 	}
-	protected void searchDeclarationsOfSentMessages(IJavaElement enclosingElement, SearchRequestor requestor) throws JavaModelException {
+	protected void searchDeclarationsOfSentMessages(IJavaScriptElement enclosingElement, SearchRequestor requestor) throws JavaScriptModelException {
 		new SearchEngine().searchDeclarationsOfSentMessages(enclosingElement, requestor, null);
 	}
 	protected void setUp () throws Exception {

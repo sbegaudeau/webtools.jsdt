@@ -34,7 +34,7 @@ public void bufferChanged(BufferChangedEvent bufferChangedEvent) {
 protected IBuffer createBuffer(String path, String content) throws CoreException {
 	waitUntilIndexesReady(); // ensure that the indexer is not reading the file
 	this.createFile(path, content);
-	ICompilationUnit cu = this.getCompilationUnit(path);
+	IJavaScriptUnit cu = this.getCompilationUnit(path);
 	IBuffer buffer = cu.getBuffer();
 	buffer.addBufferChangedListener(this);
 	this.events = new ArrayList();
@@ -107,7 +107,7 @@ public void testAppendReadOnly() throws CoreException {
 	try {
 		createJavaProject("P1", new String[] {}, new String[] {"JCL_LIB,JCL_SRC,JCL_SRCROOT"}, "");
 //		IClassFile classFile = getClassFile("P1", getExternalJCLPathString(), "", "system.js");
-		ICompilationUnit unit=getCompilationUnit("P1", getExternalJCLPathString(), "", "system.js");
+		IJavaScriptUnit unit=getCompilationUnit("P1", getExternalJCLPathString(), "", "system.js");
 		buffer = unit.getBuffer();
 		buffer.addBufferChangedListener(this);
 		this.events = new ArrayList();
@@ -155,7 +155,7 @@ public void testGetUnderlyingResource() throws CoreException {
 		"public class A {\n" +
 		"}"
 	);
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		IFile file = this.getFile("P/x/y/A.js");
 		assertEquals("Unexpected underlying resource", file, buffer.getUnderlyingResource());
@@ -482,7 +482,7 @@ public void testInsertEnd() throws CoreException {
 //		"public class A {\n" +
 //		"}"
 //	);
-//	ICompilationUnit copy = null;
+//	IJavaScriptUnit copy = null;
 //	IBuffer buffer = null;
 //	try {
 //		copy = this.getCompilationUnit("P/x/y/A.js").getWorkingCopy(null);

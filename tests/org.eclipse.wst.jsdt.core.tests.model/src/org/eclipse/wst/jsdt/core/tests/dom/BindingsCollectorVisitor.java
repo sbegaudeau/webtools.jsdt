@@ -58,7 +58,7 @@ class BindingsCollectorVisitor extends ASTVisitor {
 	 * @since 3.0
 	 */
 	public void endVisit(AnnotationTypeMemberDeclaration node) {
-		IMethodBinding binding = node.resolveBinding();
+		IFunctionBinding binding = node.resolveBinding();
 		collectBindings(node, binding);
 	}
 
@@ -154,7 +154,7 @@ class BindingsCollectorVisitor extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(ConstructorInvocation)
 	 */
 	public void endVisit(ConstructorInvocation node) {
-		IMethodBinding methodBinding = node.resolveConstructorBinding();
+		IFunctionBinding methodBinding = node.resolveConstructorBinding();
 		collectBindings(node, methodBinding);
 	}
 
@@ -223,26 +223,26 @@ class BindingsCollectorVisitor extends ASTVisitor {
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(MethodDeclaration)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(FunctionDeclaration)
 	 */
-	public void endVisit(MethodDeclaration node) {
-		IMethodBinding methodBinding = node.resolveBinding();
+	public void endVisit(FunctionDeclaration node) {
+		IFunctionBinding methodBinding = node.resolveBinding();
 		collectBindings(node, methodBinding);
 	}
 
 	/**
-	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(MethodInvocation)
+	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(FunctionInvocation)
 	 */
-	public void endVisit(MethodInvocation node) {
+	public void endVisit(FunctionInvocation node) {
 		ITypeBinding typeBinding = node.resolveTypeBinding();
 		collectBindings(node, typeBinding);
 	}
 
 	/**
-	 * @see ASTVisitor#endVisit(MethodRef )
+	 * @see ASTVisitor#endVisit(FunctionRef )
 	 * @since 3.0
 	 */
-	public void endVisit(MethodRef node) {
+	public void endVisit(FunctionRef node) {
 		IBinding binding = node.resolveBinding();
 		collectBindings(node, binding);
 	}
@@ -356,7 +356,7 @@ class BindingsCollectorVisitor extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(SuperConstructorInvocation)
 	 */
 	public void endVisit(SuperConstructorInvocation node) {
-		IMethodBinding methodBinding = node.resolveConstructorBinding();
+		IFunctionBinding methodBinding = node.resolveConstructorBinding();
 		collectBindings(node, methodBinding);
 	}
 

@@ -15,9 +15,9 @@ import java.util.Map;
 import junit.framework.Test;
 
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
@@ -36,9 +36,9 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	}
 	protected void setUp() throws Exception {
 		super.setUp();
-		ICompilationUnit workingCopy = getCompilationUnit("P/X.js");
+		IJavaScriptUnit workingCopy = getCompilationUnit("P/X.js");
 		workingCopy.becomeWorkingCopy(null/*no problem requested*/, null/*no progress*/);
-		this.workingCopies = new ICompilationUnit[] {workingCopy};
+		this.workingCopies = new IJavaScriptUnit[] {workingCopy};
 		setContents(
 			"public class X {\n" +
 			"}"
@@ -53,18 +53,18 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 		super.tearDownSuite();
 	}
 
-	private String createImport(String importName, int flags) throws JavaModelException {
+	private String createImport(String importName, int flags) throws JavaScriptModelException {
 		return createImport(importName, flags, null/*no sibling*/);
 	}
-	private String createImport(String importName, int flags, IJavaElement sibling) throws JavaModelException {
-		ICompilationUnit workingCopy = this.workingCopies[0];
+	private String createImport(String importName, int flags, IJavaScriptElement sibling) throws JavaScriptModelException {
+		IJavaScriptUnit workingCopy = this.workingCopies[0];
 		workingCopy.createImport(importName, sibling, flags, null/*no progress*/);
 		Map options = getJavaProject("P").getOptions(true);
 		options.put(DefaultCodeFormatterConstants.FORMATTER_NUMBER_OF_EMPTY_LINES_TO_PRESERVE, "0");
 		CodeFormatter formatter = ToolFactory.createCodeFormatter(options);
 		String source = workingCopy.getSource();
 		Document document = new Document(source);
-		TextEdit edit = formatter.format(CodeFormatter.K_COMPILATION_UNIT, source, 0, source.length() - 1, 0, "\n");
+		TextEdit edit = formatter.format(CodeFormatter.K_JAVASCRIPT_UNIT, source, 0, source.length() - 1, 0, "\n");
 		try {
 			edit.apply(document, TextEdit.NONE);
 		} catch(MalformedTreeException e) {
@@ -75,7 +75,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 		return document.get();
 	}
 	
-	private void setContents(String contents) throws JavaModelException {
+	private void setContents(String contents) throws JavaScriptModelException {
 		this.workingCopies[0].getBuffer().setContents(contents);
 		this.workingCopies[0].makeConsistent(null/*no progress*/);
 	}
@@ -83,7 +83,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding a static import is reflected in the source.
 	 */
-	public void test001() throws JavaModelException {
+	public void test001() throws JavaScriptModelException {
 		String actualSource = createImport("java.lang.Math.*", Flags.AccStatic);
 		assertSourceEquals(
 			"Unexpected source", 
@@ -97,7 +97,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding a non-static import is reflected in the source.
 	 */
-	public void test002() throws JavaModelException {
+	public void test002() throws JavaScriptModelException {
 		String actualSource = createImport("java.util.ZipFile", Flags.AccDefault);
 		assertSourceEquals(
 			"Unexpected source", 
@@ -111,7 +111,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding the same static import doesn't change the source.
 	 */
-	public void test003() throws JavaModelException {
+	public void test003() throws JavaScriptModelException {
 		setContents(
 			"import static java.lang.Math.*;\n" + 
 			"\n" + 
@@ -131,7 +131,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding the same non-static import doesn't change the source.
 	 */
-	public void test004() throws JavaModelException {
+	public void test004() throws JavaScriptModelException {
 		setContents(
 			"import java.util.ZipFile;\n" + 
 			"\n" + 
@@ -152,7 +152,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	 * Ensures that adding an onDemand static import starting with an existing non-onDemand import
 	 * is reflected in the source.
 	 */
-	public void test005() throws JavaModelException {
+	public void test005() throws JavaScriptModelException {
 		setContents(
 			"import java.util.ZipFile;\n" + 
 			"\n" + 
@@ -174,7 +174,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	 * Ensures that adding an onDemand non-static import starting with an existing non-onDemand import
 	 * is reflected in the source.
 	 */
-	public void test006() throws JavaModelException {
+	public void test006() throws JavaScriptModelException {
 		setContents(
 			"import java.util.ZipFile;\n" + 
 			"import static java.util.ZipFile.*;\n" + 
@@ -197,7 +197,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding an import triggers the correct delta.
 	 */
-	public void test007() throws JavaModelException {
+	public void test007() throws JavaScriptModelException {
 		try {
 			startDeltas();
 			createImport("java.util.ZipFile", Flags.AccDefault);
@@ -213,7 +213,7 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding an import triggers the correct delta.
 	 */
-	public void test008() throws JavaModelException {
+	public void test008() throws JavaScriptModelException {
 		setContents(
 			"import static java.lang.Math.*;\n" + 
 			"\n" + 
@@ -236,14 +236,14 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding an import before a sibling is correctly reflected in the source.
 	 */
-	public void test009() throws JavaModelException {
+	public void test009() throws JavaScriptModelException {
 		setContents(
 			"import static java.lang.Math.*;\n" + 
 			"\n" + 
 			"public class X {\n" + 
 			"}"
 		);
-		IJavaElement sibling = this.workingCopies[0].getImport("java.lang.Math.*");
+		IJavaScriptElement sibling = this.workingCopies[0].getImport("java.lang.Math.*");
 		String actualSource = createImport("java.util.ZipFile", Flags.AccDefault, sibling);
 		assertSourceEquals(
 			"Unexpected source", 
@@ -258,11 +258,11 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding a null import throws the correct exception.
 	 */
-	public void test010() throws JavaModelException {
-		JavaModelException exception = null;
+	public void test010() throws JavaScriptModelException {
+		JavaScriptModelException exception = null;
 		try {
 			createImport(null, Flags.AccStatic);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			exception = e;
 		}
 		assertExceptionEquals(
@@ -274,11 +274,11 @@ public class CreateImportsTests extends AbstractJavaModelTests {
 	/*
 	 * Ensures that adding an import with an invalid name throws the correct exception.
 	 */
-	public void test011() throws JavaModelException {
-		JavaModelException exception = null;
+	public void test011() throws JavaScriptModelException {
+		JavaScriptModelException exception = null;
 		try {
 			createImport("java.,.", Flags.AccStatic);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			exception = e;
 		}
 		assertExceptionEquals(

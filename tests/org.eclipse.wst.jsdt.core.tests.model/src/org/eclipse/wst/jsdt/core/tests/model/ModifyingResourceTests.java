@@ -25,7 +25,7 @@ public class ModifyingResourceTests extends AbstractJavaModelTests {
 public ModifyingResourceTests(String name) {
 	super(name);
 }
-protected void assertElementDescendants(String message,  String expected, IJavaElement element) throws CoreException {
+protected void assertElementDescendants(String message,  String expected, IJavaScriptElement element) throws CoreException {
 	String actual = expandAll(element);
 	if (!expected.equals(actual)){
 	 	System.out.println(Util.displayString(actual, 4));
@@ -122,13 +122,13 @@ protected IFile editFile(String path, String content) throws CoreException {
  * Expands (i.e. open) the given element and returns a toString() representation
  * of the tree.
  */
-protected String expandAll(IJavaElement element) throws CoreException {
+protected String expandAll(IJavaScriptElement element) throws CoreException {
 	StringBuffer buffer = new StringBuffer();
 	this.expandAll(element, 0, buffer);
 	return buffer.toString();
 }
-private void expandAll(IJavaElement element, int tab, StringBuffer buffer) throws CoreException {
-	IJavaElement[] children = null;
+private void expandAll(IJavaScriptElement element, int tab, StringBuffer buffer) throws CoreException {
+	IJavaScriptElement[] children = null;
 	// force opening of element by getting its children
 	if (element instanceof IParent) {
 		IParent parent = (IParent)element;
@@ -146,40 +146,40 @@ protected void renameProject(String project, String newName) throws CoreExceptio
 	this.getProject(project).move(new Path(newName), true, null);
 }
 protected IClassFile getClassFile(String path) {
-	return (IClassFile)JavaCore.create(getFile(path));
+	return (IClassFile)JavaScriptCore.create(getFile(path));
 }
 protected IFolder getFolder(String path) {
 	return getFolder(new Path(path));
 }
 protected IPackageFragment getPackage(String path) {
 	if (path.indexOf('/', 1) != -1) { // if path as more than one segment
-		IJavaElement element = JavaCore.create(this.getFolder(path));
+		IJavaScriptElement element = JavaScriptCore.create(this.getFolder(path));
 		if (element instanceof IPackageFragmentRoot) {
 			return ((IPackageFragmentRoot)element).getPackageFragment("");
 		}
 		return (IPackageFragment)element;
 	}
 	IProject project = this.getProject(path);
-	return JavaCore.create(project).getPackageFragmentRoot(project).getPackageFragment("");
+	return JavaScriptCore.create(project).getPackageFragmentRoot(project).getPackageFragment("");
 }
 protected IPackageFragmentRoot getPackageFragmentRoot(String path) {
 	if (path.indexOf('/', 1) != -1) { // if path as more than one segment
 		if (path.endsWith(".jar")) {
-			return  (IPackageFragmentRoot)JavaCore.create(this.getFile(path));
+			return  (IPackageFragmentRoot)JavaScriptCore.create(this.getFile(path));
 		}
-		return (IPackageFragmentRoot)JavaCore.create(this.getFolder(path));
+		return (IPackageFragmentRoot)JavaScriptCore.create(this.getFolder(path));
 	}
 	IProject project = this.getProject(path);
-	return JavaCore.create(project).getPackageFragmentRoot(project);
+	return JavaScriptCore.create(project).getPackageFragmentRoot(project);
 }
 protected String getSortedByProjectDeltas() {
 	StringBuffer buffer = new StringBuffer();
 	for (int i=0, length = this.deltaListener.deltas.length; i<length; i++) {
-		IJavaElementDelta[] projects = this.deltaListener.deltas[i].getAffectedChildren();
+		IJavaScriptElementDelta[] projects = this.deltaListener.deltas[i].getAffectedChildren();
 		int projectsLength = projects.length;
 		
 		// sort by project
-		IJavaElementDelta[] sorted = new IJavaElementDelta[projectsLength];
+		IJavaScriptElementDelta[] sorted = new IJavaScriptElementDelta[projectsLength];
 		System.arraycopy(projects, 0, sorted, 0, projectsLength);
 		org.eclipse.wst.jsdt.internal.core.util.Util.sort(
 			sorted, 
@@ -224,7 +224,7 @@ protected IClassFile createClassFile(String libPath, String classFileRelativePat
 	IClassFile classFile = getClassFile(libPath + "/" + classFileRelativePath);
 //	classFile.getResource().delete(false, null);
 	Util.delete(classFile.getResource());
-	IJavaProject javaProject = classFile.getJavaProject();
+	IJavaScriptProject javaProject = classFile.getJavaScriptProject();
 	IProject project = javaProject.getProject();
 	String sourcePath = project.getLocation().toOSString() + File.separatorChar + classFile.getType().getElementName() + ".js";
 	String libOSPath = new Path(libPath).segmentCount() > 1 ? getFolder(libPath).getLocation().toOSString() : getProject(libPath).getLocation().toOSString();
@@ -242,12 +242,12 @@ protected IClassFile createClassFile(String libPath, String classFileRelativePat
  *   "/P", "*.txt|com.tests/**"
  * }
  */
-protected IClasspathEntry[] createClasspath(String[] foldersAndPatterns, boolean hasInclusionPatterns, boolean hasExclusionPatterns) {
+protected IIncludePathEntry[] createClasspath(String[] foldersAndPatterns, boolean hasInclusionPatterns, boolean hasExclusionPatterns) {
 	int length = foldersAndPatterns.length;
 	int increment = 1;
 	if (hasInclusionPatterns) increment++;
 	if (hasExclusionPatterns) increment++;
-	IClasspathEntry[] classpath = new IClasspathEntry[length/increment];
+	IIncludePathEntry[] classpath = new IIncludePathEntry[length/increment];
 	for (int i = 0; i < length; i+=increment) {
 		String src = foldersAndPatterns[i];
 		IPath[] accessibleFiles = new IPath[0];
@@ -271,7 +271,7 @@ protected IClasspathEntry[] createClasspath(String[] foldersAndPatterns, boolean
 			}
 		}
 		IPath folderPath = new Path(src);
-		classpath[i/increment] = JavaCore.newSourceEntry(folderPath, accessibleFiles, nonAccessibleFiles, null); 
+		classpath[i/increment] = JavaScriptCore.newSourceEntry(folderPath, accessibleFiles, nonAccessibleFiles, null); 
 	}
 	return classpath;
 }
@@ -286,9 +286,9 @@ protected IClasspathEntry[] createClasspath(String[] foldersAndPatterns, boolean
  *   "/P", "-*.txt|+com.tests/**"
  * }
  */
-protected IClasspathEntry[] createClasspath(String projectName, String[] foldersAndPatterns) {
+protected IIncludePathEntry[] createClasspath(String projectName, String[] foldersAndPatterns) {
 	int length = foldersAndPatterns.length;
-	IClasspathEntry[] classpath = new IClasspathEntry[length/2];
+	IIncludePathEntry[] classpath = new IIncludePathEntry[length/2];
 	for (int i = 0; i < length; i+=2) {
 		String src = foldersAndPatterns[i];
 		String patterns = foldersAndPatterns[i+1];
@@ -296,7 +296,7 @@ protected IClasspathEntry[] createClasspath(String projectName, String[] folders
 	}
 	return classpath;
 }
-public IClasspathEntry createSourceEntry(String referingProjectName, String src, String patterns) {
+public IIncludePathEntry createSourceEntry(String referingProjectName, String src, String patterns) {
 	StringTokenizer tokenizer = new StringTokenizer(patterns, "|");
 	int ruleCount =  tokenizer.countTokens();
 	IAccessRule[] accessRules = new IAccessRule[ruleCount];
@@ -323,12 +323,12 @@ public IClasspathEntry createSourceEntry(String referingProjectName, String src,
 				break;
 		}
 		nonAccessibleRules++;
-		accessRules[j] = JavaCore.newAccessRule(new Path(rule.substring(1)), ignoreIfBetter ? kind | IAccessRule.IGNORE_IF_BETTER : kind);
+		accessRules[j] = JavaScriptCore.newAccessRule(new Path(rule.substring(1)), ignoreIfBetter ? kind | IAccessRule.IGNORE_IF_BETTER : kind);
 	}
 
 	IPath folderPath = new Path(src);
 	if (referingProjectName != null && folderPath.segmentCount() == 1 && !referingProjectName.equals(folderPath.lastSegment())) {
-		return JavaCore.newProjectEntry(folderPath, accessRules, true/*combine access restrictions*/, new IClasspathAttribute[0], false); 
+		return JavaScriptCore.newProjectEntry(folderPath, accessRules, true/*combine access restrictions*/, new IIncludePathAttribute[0], false); 
 	} else {
 		IPath[] accessibleFiles = new IPath[ruleCount-nonAccessibleRules];
 		int accessibleIndex = 0;
@@ -341,7 +341,7 @@ public IClasspathEntry createSourceEntry(String referingProjectName, String src,
 			else
 				nonAccessibleFiles[nonAccessibleIndex++] = accessRule.getPattern();
 		}
-		return JavaCore.newSourceEntry(folderPath, accessibleFiles, nonAccessibleFiles, null); 
+		return JavaScriptCore.newSourceEntry(folderPath, accessibleFiles, nonAccessibleFiles, null); 
 	}
 }
 }

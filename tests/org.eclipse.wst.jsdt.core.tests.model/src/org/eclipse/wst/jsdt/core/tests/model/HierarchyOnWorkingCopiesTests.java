@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
 import org.eclipse.wst.jsdt.core.ITypeHierarchy;
 import junit.framework.Test;
@@ -42,7 +42,7 @@ public void testSimpleSubTypeHierarchy() throws CoreException {
 		"public class A extends B {\n" +
 		"}";
 	this.copy.getBuffer().setContents(newContents);
-	this.copy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	
 	IFile file = null;
 	try {
@@ -53,7 +53,7 @@ public void testSimpleSubTypeHierarchy() throws CoreException {
 			"}");
 	
 		IType type = this.getCompilationUnit("P/src/x/y/B.js").getType("B");
-		ITypeHierarchy h = type.newTypeHierarchy(new ICompilationUnit[] {this.copy}, null);
+		ITypeHierarchy h = type.newTypeHierarchy(new IJavaScriptUnit[] {this.copy}, null);
 
 		assertHierarchyEquals(
 			"Focus: B [in B.js [in x.y [in src [in P]]]]\n" + 
@@ -78,7 +78,7 @@ public void testSimpleSuperTypeHierarchy() throws CoreException {
 		"class B {\n" +
 		"}";
 	this.copy.getBuffer().setContents(newContents);
-	this.copy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	
 	IFile file = null;
 	try {
@@ -89,7 +89,7 @@ public void testSimpleSuperTypeHierarchy() throws CoreException {
 			"}");
 	
 		IType type = this.getCompilationUnit("P/src/x/y/C.js").getType("C");
-		ITypeHierarchy h = type.newSupertypeHierarchy(new ICompilationUnit[] {this.copy}, null);
+		ITypeHierarchy h = type.newSupertypeHierarchy(new IJavaScriptUnit[] {this.copy}, null);
 
 		assertHierarchyEquals(
 			"Focus: C [in C.js [in x.y [in src [in P]]]]\n" + 

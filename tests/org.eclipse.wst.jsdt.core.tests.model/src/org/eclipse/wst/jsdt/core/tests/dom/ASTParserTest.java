@@ -17,7 +17,7 @@ import java.util.HashMap;
 import junit.framework.Test;
 
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 
@@ -89,7 +89,7 @@ public class ASTParserTest extends org.eclipse.wst.jsdt.core.tests.junit.extensi
 	    
 	    parser.setSource(new char[0]);
 	    parser.setSource((char[]) null);
-	    parser.setSource((ICompilationUnit) null);
+	    parser.setSource((IJavaScriptUnit) null);
 	    parser.setSource((IClassFile) null);
 	    
 	    parser.setResolveBindings(false);

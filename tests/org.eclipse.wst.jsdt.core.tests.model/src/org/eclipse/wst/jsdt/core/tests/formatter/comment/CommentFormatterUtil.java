@@ -22,7 +22,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.TextUtilities;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.ToolFactory;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
@@ -177,7 +177,7 @@ public class CommentFormatterUtil {
 	 * @since 3.1
 	 */
 	public static Map createOptions(Map user) {
-		final Map map= JavaCore.getOptions();
+		final Map map= JavaScriptCore.getOptions();
 
 		if (user != null) {
 

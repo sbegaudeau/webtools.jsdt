@@ -15,10 +15,10 @@ import java.util.List;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
@@ -35,14 +35,14 @@ import org.eclipse.wst.jsdt.core.dom.BooleanLiteral;
 import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldAccess;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.IPackageBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
@@ -51,9 +51,9 @@ import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
 import org.eclipse.wst.jsdt.core.dom.ListExpression;
 import org.eclipse.wst.jsdt.core.dom.MemberRef;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.NullLiteral;
 import org.eclipse.wst.jsdt.core.dom.NumberLiteral;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
@@ -112,7 +112,7 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 		 * @since 3.0
 		 */
 		public void endVisit(AnnotationTypeMemberDeclaration node) {
-			IMethodBinding binding = node.resolveBinding();
+			IFunctionBinding binding = node.resolveBinding();
 			collectBindings(node, binding);
 		}
 
@@ -208,7 +208,7 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(ConstructorInvocation)
 		 */
 		public void endVisit(ConstructorInvocation node) {
-			IMethodBinding methodBinding = node.resolveConstructorBinding();
+			IFunctionBinding methodBinding = node.resolveConstructorBinding();
 			collectBindings(node, methodBinding);
 		}
 
@@ -277,26 +277,26 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 		}
 
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(MethodDeclaration)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(FunctionDeclaration)
 		 */
-		public void endVisit(MethodDeclaration node) {
-			IMethodBinding methodBinding = node.resolveBinding();
+		public void endVisit(FunctionDeclaration node) {
+			IFunctionBinding methodBinding = node.resolveBinding();
 			collectBindings(node, methodBinding);
 		}
 
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(MethodInvocation)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(FunctionInvocation)
 		 */
-		public void endVisit(MethodInvocation node) {
+		public void endVisit(FunctionInvocation node) {
 			ITypeBinding typeBinding = node.resolveTypeBinding();
 			collectBindings(node, typeBinding);
 		}
 
 		/**
-		 * @see ASTVisitor#endVisit(MethodRef )
+		 * @see ASTVisitor#endVisit(FunctionRef )
 		 * @since 3.0
 		 */
-		public void endVisit(MethodRef node) {
+		public void endVisit(FunctionRef node) {
 			IBinding binding = node.resolveBinding();
 			collectBindings(node, binding);
 		}
@@ -410,7 +410,7 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 		 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#endVisit(SuperConstructorInvocation)
 		 */
 		public void endVisit(SuperConstructorInvocation node) {
-			IMethodBinding methodBinding = node.resolveConstructorBinding();
+			IFunctionBinding methodBinding = node.resolveConstructorBinding();
 			collectBindings(node, methodBinding);
 		}
 
@@ -490,20 +490,20 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 		return buildModelTestSuite(ASTConverterBindingsTest.class);		
 	}
 
-	public void test0001() throws JavaModelException {
+	public void test0001() throws JavaScriptModelException {
 		checkBindingEqualityForProject("Converter");
 		checkBindingEqualityForProject("Converter15");
 	}
 
 	/**
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	private void checkBindingEqualityForProject(String projectName) throws JavaModelException {
-		IJavaProject javaProject = getJavaProject(projectName);
+	private void checkBindingEqualityForProject(String projectName) throws JavaScriptModelException {
+		IJavaScriptProject javaProject = getJavaProject(projectName);
 		IPackageFragment[] packageFragments = javaProject.getPackageFragments();
 		ArrayList compilationUnitscollector = new ArrayList();
 		for (int j = 0, max2 = packageFragments.length; j < max2; j++) {
-			ICompilationUnit[] units = packageFragments[j].getCompilationUnits();
+			IJavaScriptUnit[] units = packageFragments[j].getJavaScriptUnits();
 			if (units != null) {
 				for (int k = 0, max3 = units.length; k < max3; k++) {
 					compilationUnitscollector.add(units[k]);
@@ -511,16 +511,16 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 			}
 		}
 		final int length = compilationUnitscollector.size();
-		ICompilationUnit[] units = new ICompilationUnit[length];
+		IJavaScriptUnit[] units = new IJavaScriptUnit[length];
 		compilationUnitscollector.toArray(units);
 		long totalTime = 0;
 		for (int j = 0; j < length; j++) {
-			ICompilationUnit currentUnit = units[j];
+			IJavaScriptUnit currentUnit = units[j];
 			ASTNode result = runConversion(AST.JLS3, currentUnit, true);
-			assertEquals("Not a compilation unit", ASTNode.COMPILATION_UNIT, result.getNodeType());
-			CompilationUnit unit = (CompilationUnit) result;
+			assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, result.getNodeType());
+			JavaScriptUnit unit = (JavaScriptUnit) result;
 			result = runConversion(AST.JLS3, currentUnit, true);
-			assertEquals("Not a compilation unit", ASTNode.COMPILATION_UNIT, result.getNodeType());
+			assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, result.getNodeType());
 			if (DEBUG) {
 				if (unit.types().size() > 0 ) {
 					AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) unit.types().get(0);
@@ -536,7 +536,7 @@ public class ASTConverterBindingsTest extends ConverterTestSetup {
 					System.out.println(currentUnit.getElementName());
 				}
 			}
-			CompilationUnit unit2 = (CompilationUnit) result;
+			JavaScriptUnit unit2 = (JavaScriptUnit) result;
 			BindingsCollector collector = new BindingsCollector();
 			unit.accept(collector);
 			List bindings1 = collector.getBindings();

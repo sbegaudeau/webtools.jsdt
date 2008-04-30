@@ -76,41 +76,41 @@ public class AbstractJavaSearchGenericTests extends JavaSearchTests {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(org.eclipse.wst.jsdt.core.IJavaElement, int, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
+	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(org.eclipse.wst.jsdt.core.IJavaScriptElement, int, org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
 	 */
-	protected void search(IJavaElement element, int limitTo) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo) throws CoreException {
 		search(element, limitTo, matchRule, getJavaSearchScope15(), resultCollector);
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(java.lang.String, int, int, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
+	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(java.lang.String, int, int, org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
 	 */
 	protected void search(String patternString, int searchFor, int limitTo) throws CoreException {
 		search(patternString, searchFor, limitTo, matchRule, getJavaSearchScope15(), resultCollector);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(org.eclipse.wst.jsdt.core.IJavaElement, int, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
+	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(org.eclipse.wst.jsdt.core.IJavaScriptElement, int, org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
 	 */
-	protected void search(IJavaElement element, int limitTo, IJavaSearchScope scope) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo, IJavaScriptSearchScope scope) throws CoreException {
 		search(element, limitTo, matchRule, scope, resultCollector);
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(java.lang.String, int, int, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
+	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(java.lang.String, int, int, org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
 	 */
-	protected void search(String patternString, int searchFor, int limitTo, IJavaSearchScope scope) throws CoreException {
+	protected void search(String patternString, int searchFor, int limitTo, IJavaScriptSearchScope scope) throws CoreException {
 		search(patternString, searchFor, limitTo, matchRule, scope, resultCollector);
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(org.eclipse.wst.jsdt.core.IJavaElement, int, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
+	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(org.eclipse.wst.jsdt.core.IJavaScriptElement, int, org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
 	 */
-	protected void search(IJavaElement element, int limitTo, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		search(element, limitTo, matchRule, scope, requestor);
 	}
 	/* (non-Javadoc)
-	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(java.lang.String, int, int, org.eclipse.wst.jsdt.core.search.IJavaSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
+	 * @see org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests#search(java.lang.String, int, int, org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope, org.eclipse.wst.jsdt.core.search.SearchRequestor)
 	 */
-	protected void search(String patternString, int searchFor, int limitTo, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(String patternString, int searchFor, int limitTo, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		search(patternString, searchFor, limitTo, matchRule, scope, requestor);
 	}
 }

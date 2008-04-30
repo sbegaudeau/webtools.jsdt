@@ -509,7 +509,7 @@ public void testGetThrownExceptionTypes() {
  * @test Ensure that thrown exceptions are well decoded when added at the end of the signature
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=155003"
  */
-public void testGetThrownExceptions_Bug155003() throws JavaModelException {
+public void testGetThrownExceptions_Bug155003() throws JavaScriptModelException {
 	String methodSig = "()Ljava.lang.Object;^Ljava.lang.InstantiationException;^Ljava.lang.IllegalAccessException;";
 	assertStringsEqual("Signature#Bug155003#1 is not correct",
 		"Ljava.lang.InstantiationException;\nLjava.lang.IllegalAccessException;\n",

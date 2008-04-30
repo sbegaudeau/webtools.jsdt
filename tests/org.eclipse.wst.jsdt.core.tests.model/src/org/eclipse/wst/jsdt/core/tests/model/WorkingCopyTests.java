@@ -26,11 +26,11 @@ import org.eclipse.team.core.RepositoryProvider;
 
 
 public class WorkingCopyTests extends ModifyingResourceTests {
-	ICompilationUnit cu = null;
-	ICompilationUnit copy = null;
+	IJavaScriptUnit cu = null;
+	IJavaScriptUnit copy = null;
 	
 	public class TestWorkingCopyOwner extends WorkingCopyOwner {
-		public IBuffer createBuffer(ICompilationUnit workingCopy) {
+		public IBuffer createBuffer(IJavaScriptUnit workingCopy) {
 			return new TestBuffer(workingCopy);
 		}
 	}
@@ -74,7 +74,7 @@ protected void tearDown() throws Exception {
  * Ensures that cancelling a make consistent operation doesn't leave the working copy closed
  * (regression test for bug 61719 Incorrect fine grain delta after method copy-rename)
  */
-public void testCancelMakeConsistent() throws JavaModelException {
+public void testCancelMakeConsistent() throws JavaScriptModelException {
 	String newContents =
 		" function bar() {\n" +
 		"  }\n" +
@@ -97,7 +97,7 @@ public void testChangeContent() throws CoreException {
 		"  function bar() {\n" +
 		"}";
 	this.copy.getBuffer().setContents(newContents);
-	this.copy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertSourceEquals(
 		"Unexpected working copy contents",
 		newContents,
@@ -125,7 +125,7 @@ public void testChangeContentOfReadOnlyCU1() throws CoreException {
 		Util.setReadOnly(resource, true);
 		this.copy.getBuffer().setContents("invalid");
 		this.copy.commitWorkingCopy(true, null);
-	} catch(JavaModelException e){
+	} catch(JavaScriptModelException e){
 		didComplain = true;
 	} finally {
 		Util.setReadOnly(resource, readOnlyFlag);
@@ -182,14 +182,14 @@ public void testContents() throws CoreException {
 ///**
 // * Test creating a working copy on a class file with a customized buffer.
 // */
-//public void testOnClassFile() throws JavaModelException, IOException {
+//public void testOnClassFile() throws JavaScriptModelException, IOException {
 //	// ensure the external JCL is copied
 //	setupExternalJCL("jclMin");
 //			
 //	this.attachSource(this.getPackageFragmentRoot("P", this.getExternalJCLPathString()), this.getExternalJCLSourcePath().toOSString(), "src");
 //	IClassFile classFile = this.getClassFile("P", this.getExternalJCLPathString(), "java.lang", "Object.class");
 //	WorkingCopyOwner owner = new TestWorkingCopyOwner();
-//	ICompilationUnit customizedCopy = classFile.getWorkingCopy(owner, null);
+//	IJavaScriptUnit customizedCopy = classFile.getWorkingCopy(owner, null);
 //	try {
 //		IBuffer buffer = customizedCopy.getBuffer();
 //		assertTrue("Unexpected buffer", buffer instanceof TestBuffer);	
@@ -209,9 +209,9 @@ public void testCreation() {
 /**
  * Test creating a working copy with a customized buffer.
  */
-public void testCustomizedBuffer() throws JavaModelException {
+public void testCustomizedBuffer() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new TestWorkingCopyOwner();
-	ICompilationUnit customizedCopy = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit customizedCopy = this.cu.getWorkingCopy(owner, null, null);
 	try {
 		assertTrue("Unexpected buffer", customizedCopy.getBuffer() instanceof TestBuffer);
 	} finally {
@@ -221,9 +221,9 @@ public void testCustomizedBuffer() throws JavaModelException {
 /**
  * Test closing then reopening a working copy with a customized buffer.
  */
-public void testCustomizedBuffer2() throws JavaModelException {
+public void testCustomizedBuffer2() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new TestWorkingCopyOwner();
-	ICompilationUnit customizedCopy = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit customizedCopy = this.cu.getWorkingCopy(owner, null, null);
 	try {
 		customizedCopy.close();
 		customizedCopy.open(null);
@@ -233,13 +233,13 @@ public void testCustomizedBuffer2() throws JavaModelException {
 	}
 }
 /*
- * Test that deleting 2 fields in a JavaCore.run() operation reports the correct delta.
+ * Test that deleting 2 fields in a JavaScriptCore.run() operation reports the correct delta.
  * (regression test for bug 32225 incorrect delta after deleting 2 fields)
  */
 public void testDelete2Fields() throws CoreException {
 	try {
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					IField field1 = copy.getField("field1");
@@ -266,7 +266,7 @@ public void testDelete2Fields() throws CoreException {
  * <li>ensures that working copies are unique
  * <li>ensures committing changes from working copies 
  */
-public void testGeneral() throws JavaModelException, CoreException {
+public void testGeneral() throws JavaScriptModelException, CoreException {
 
 	assertTrue("copy and actual should not be equal", !this.copy.equals(this.cu));
 
@@ -287,15 +287,15 @@ public void testGeneral() throws JavaModelException, CoreException {
 	assertTrue("actual type should still be present", this.cu.getField("field1").exists());
 
 	// getAnother working copy
-	ICompilationUnit copy2= this.cu.getWorkingCopy(null);
+	IJavaScriptUnit copy2= this.cu.getWorkingCopy(null);
 	try {
 		assertTrue("working copies should be unique ", !(this.copy.equals(copy2)));
 	
 		// delete a method from the 2nd working copy.
-		IMethod method= copy2.getMethod("foo", null);
+		IFunction method= copy2.getFunction("foo", null);
 	
 		assertDeletion(method);
-		IMethod originalMethod= this.cu.getMethod("foo", null);
+		IFunction originalMethod= this.cu.getFunction("foo", null);
 		assertTrue("method should still be present in original", originalMethod.exists());
 	
 		// commit the changes from the 2nd copy.
@@ -310,14 +310,14 @@ public void testGeneral() throws JavaModelException, CoreException {
 		try {
 			this.copy.commitWorkingCopy(false, null);
 			assertTrue("commit should have failed", ex);
-		} catch (JavaModelException jme) {
+		} catch (JavaScriptModelException jme) {
 		}
 		
 	
 		// now force the update
 		try {
 			this.copy.commitWorkingCopy(true, null);
-		} catch (JavaModelException jme) {
+		} catch (JavaScriptModelException jme) {
 			assertTrue("commit should work", false);
 		}
 	
@@ -329,7 +329,7 @@ public void testGeneral() throws JavaModelException, CoreException {
 		ex= false;
 		try {
 			this.copy.open(null);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ex= true;
 		}
 		assertTrue("should be able to open working copy a 2nd time", !ex);
@@ -339,7 +339,7 @@ public void testGeneral() throws JavaModelException, CoreException {
 		ex= false;
 		try {
 			this.copy.open(null);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			ex= true;
 		}
 		assertTrue("should not be able to open working copy again", ex);
@@ -363,23 +363,23 @@ public void testGeneral() throws JavaModelException, CoreException {
 //	};
 //	this.createFile("P/lib/A.class", bytes);
 //	IClassFile cf = this.getClassFile("P/lib/A.class");
-//	IJavaElement primary = cf.getPrimaryElement();
+//	IJavaScriptElement primary = cf.getPrimaryElement();
 //	assertEquals("Primary element should be the same", cf, primary);
 //}
 /**
  * Ensures that the primary cu can be retrieved.
  */
 public void testGetPrimaryCU() {
-	IJavaElement primary= this.copy.getPrimaryElement();
-	assertTrue("Element is not a cu", primary instanceof ICompilationUnit && !((ICompilationUnit)primary).isWorkingCopy());
+	IJavaScriptElement primary= this.copy.getPrimaryElement();
+	assertTrue("Element is not a cu", primary instanceof IJavaScriptUnit && !((IJavaScriptUnit)primary).isWorkingCopy());
 	assertTrue("Element should exist", primary.exists());
 }
 /**
  * Ensures that the primary field can be retrieved.
  */
 public void testGetPrimaryField() {
-	IJavaElement primary = this.copy.getField("FIELD").getPrimaryElement();
-	assertTrue("Element is not a field", primary instanceof IField && !((ICompilationUnit)primary.getParent()).isWorkingCopy());
+	IJavaScriptElement primary = this.copy.getField("FIELD").getPrimaryElement();
+	assertTrue("Element is not a field", primary instanceof IField && !((IJavaScriptUnit)primary.getParent()).isWorkingCopy());
 	assertTrue("Element should exist", primary.exists());
 }
 ///**
@@ -387,7 +387,7 @@ public void testGetPrimaryField() {
 // */
 //public void testGetPrimaryImportDeclaration()  {
 //	IImportDeclaration imprt = copy.getImport("java.io.File");
-//	IJavaElement primary = imprt.getPrimaryElement();
+//	IJavaScriptElement primary = imprt.getPrimaryElement();
 //	assertTrue("Element should exist", primary.exists());
 //}
 ///**
@@ -395,7 +395,7 @@ public void testGetPrimaryField() {
 // */
 //public void testGetPrimaryImportContainer() {
 //	IImportContainer container = this.copy.getImportContainer();
-//	IJavaElement primary = container.getPrimaryElement();
+//	IJavaScriptElement primary = container.getPrimaryElement();
 //	assertTrue("Element should not be null", primary != null);
 //	assertTrue("Element should exist", primary.exists());
 //}
@@ -404,48 +404,48 @@ public void testGetPrimaryField() {
 //// */
 ////public void testGetPrimaryInitializer() {
 ////	IType type= copy.getType("A");
-////	IJavaElement primary= type.getInitializer(1).getPrimaryElement();
+////	IJavaScriptElement primary= type.getInitializer(1).getPrimaryElement();
 ////	assertTrue("Element should exist", primary.exists());
 ////}
 ///**
 // */
 //public void testGetPrimaryInnerField() {
 //	IType innerType = this.copy.getType("A").getType("Inner");
-//	IJavaElement primary = innerType.getField("innerField").getPrimaryElement();
+//	IJavaScriptElement primary = innerType.getField("innerField").getPrimaryElement();
 //	assertTrue("Element is not a field", primary instanceof IField);
 //	assertTrue("Element should exist", primary.exists());
 //}
 ///**
 // */
-//public void testGetPrimaryInnerMethod() throws JavaModelException {
+//public void testGetPrimaryInnerMethod() throws JavaScriptModelException {
 //	IType innerType = this.copy.getType("A").getType("Inner");
-//	IJavaElement primary = innerType.getMethods()[0].getPrimaryElement();
-//	assertTrue("Element is not a method", primary instanceof IMethod);
+//	IJavaScriptElement primary = innerType.getMethods()[0].getPrimaryElement();
+//	assertTrue("Element is not a method", primary instanceof IFunction);
 //	assertTrue("Element should exist", primary.exists());
 //}
 ///**
 // */
 //public void testGetPrimaryInnerType() {
 //	IType innerInnerType = this.copy.getType("A").getType("Inner").getType("InnerInner");
-//	IJavaElement primary = innerInnerType.getPrimaryElement();
+//	IJavaScriptElement primary = innerInnerType.getPrimaryElement();
 //	assertTrue("Element is not a method", primary instanceof IType);
 //	assertTrue("Element should exist", primary.exists());
 //
 //	Vector hierarchy = new Vector(5);
-//	IJavaElement parent= primary.getParent();
-//	while (parent.getElementType() > IJavaElement.COMPILATION_UNIT) {
+//	IJavaScriptElement parent= primary.getParent();
+//	while (parent.getElementType() > IJavaScriptElement.JAVASCRIPT_UNIT) {
 //		hierarchy.addElement(parent);
 //		parent = parent.getParent();
 //	}
 //	hierarchy.addElement(parent);
-//	assertTrue("Compilation Unit should not be a working copy", !((ICompilationUnit)hierarchy.lastElement()).isWorkingCopy());
+//	assertTrue("Compilation Unit should not be a working copy", !((IJavaScriptUnit)hierarchy.lastElement()).isWorkingCopy());
 //}
 /**
  * Ensures that the primary method can be retrieved.
  */
-public void testGetPrimaryMethod() throws JavaModelException {
-	IJavaElement primary= this.copy.getMethods()[0].getPrimaryElement();
-	assertTrue("Element is not a method", primary instanceof IMethod);
+public void testGetPrimaryMethod() throws JavaScriptModelException {
+	IJavaScriptElement primary= this.copy.getFunctions()[0].getPrimaryElement();
+	assertTrue("Element is not a method", primary instanceof IFunction);
 	assertTrue("Element should exist", primary.exists());
 }
 /**
@@ -453,11 +453,11 @@ public void testGetPrimaryMethod() throws JavaModelException {
  * not alter the source of the primary compilation
  * unit.
  */
-public void testRenameMethod() throws JavaModelException {
-	IMethod method = this.copy.getMethods()[0];
-	IJavaElement primary= method.getPrimaryElement();
+public void testRenameMethod() throws JavaScriptModelException {
+	IFunction method = this.copy.getFunctions()[0];
+	IJavaScriptElement primary= method.getPrimaryElement();
 	method.rename("bar", false, null);
-	assertEquals("Invalid name of working copy method", "bar", this.copy.getMethods()[0].getElementName());
+	assertEquals("Invalid name of working copy method", "bar", this.copy.getFunctions()[0].getElementName());
 	assertEquals("Invalid name of primary method", "foo", primary.getElementName());
 }
 ///**
@@ -465,7 +465,7 @@ public void testRenameMethod() throws JavaModelException {
 // */
 //public void testGetPrimaryPackageDeclaration() {
 //	IPackageDeclaration pkg = this.copy.getPackageDeclaration("x.y");
-//	IJavaElement primary = pkg.getPrimaryElement();
+//	IJavaScriptElement primary = pkg.getPrimaryElement();
 //	assertTrue("Element should exist", primary.exists());
 //}
 ///**
@@ -473,7 +473,7 @@ public void testRenameMethod() throws JavaModelException {
 // */
 //public void testGetPrimaryType() {
 //	IType type = this.copy.getType("A");
-//	IJavaElement primary= type.getPrimaryElement();
+//	IJavaScriptElement primary= type.getPrimaryElement();
 //	assertTrue("Element should exist", primary.exists());
 //}
 /**
@@ -485,8 +485,8 @@ public void testMoveTypeToAnotherWorkingCopy() throws CoreException {
 		"P/src/B.js",
 		"function B() {\n" +
 		"}");
-	ICompilationUnit cu2 = this.getCompilationUnit("P/src/B.js");
-	ICompilationUnit copy2 = cu2.getWorkingCopy(null);
+	IJavaScriptUnit cu2 = this.getCompilationUnit("P/src/B.js");
+	IJavaScriptUnit copy2 = cu2.getWorkingCopy(null);
 	try {
 		IField fld1 = this.copy.getField("field1");
 //		IType classB = copy2.getType("B");
@@ -514,9 +514,9 @@ public void testMoveTypeToAnotherWorkingCopy() throws CoreException {
 /**
  * Test creating a shared working copy.
  */
-public void testShared1() throws JavaModelException {
+public void testShared1() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit shared = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit shared = this.cu.getWorkingCopy(owner, null, null);
 	try {
 		assertTrue("Should find shared working copy", this.cu.findWorkingCopy(owner) == shared);
 	} finally {
@@ -527,11 +527,11 @@ public void testShared1() throws JavaModelException {
 /**
  * Test several call to creating shared working copy.
  */
-public void testShared2() throws JavaModelException {
+public void testShared2() throws JavaScriptModelException {
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit shared = this.cu.getWorkingCopy(owner, null, null);
+	IJavaScriptUnit shared = this.cu.getWorkingCopy(owner, null, null);
 	try {
-		ICompilationUnit shared2 = this.cu.getWorkingCopy(owner, null, null);
+		IJavaScriptUnit shared2 = this.cu.getWorkingCopy(owner, null, null);
 		assertTrue("Second working copy should be identical to first one", shared2 == shared);
 	} finally {
 		shared.discardWorkingCopy();
@@ -552,65 +552,65 @@ public void testMultipleCommit() {
 //	IType gp = this.copy.getType("A");
 	try {
 		this.copy.createMethod("function anotherMethod() {}\n",null, false, null);
-	} catch (JavaModelException jme) {
+	} catch (JavaScriptModelException jme) {
 		assertTrue("creation failed", false);
 	}
 	
 	// commit the changes from the copy.
 	try {
 		this.copy.commitWorkingCopy(false, null);
-	} catch (JavaModelException t) {
+	} catch (JavaScriptModelException t) {
 		assertTrue("commit failed", false);
 	}
 	
 	// new method added
 	assertTrue("method should exist after commit", 
-		this.cu.getMethod("anotherMethod", new String[]{}).exists());
+		this.cu.getFunction("anotherMethod", new String[]{}).exists());
 
 	//add another method
 	try {
 		this.copy.createMethod("function anotherAnotherMethod() {}\n", null, false, null);
-	} catch (JavaModelException x) {
+	} catch (JavaScriptModelException x) {
 		assertTrue("Creation failed 2", false);
 	}
 
 	//commit the new method
 	try {
 		this.copy.commitWorkingCopy(false, null);
-	} catch (JavaModelException t) {
+	} catch (JavaScriptModelException t) {
 		assertTrue("commit2 failed", false);
 	}
 
 	// new method added
 	assertTrue("second method added should exist after commit", 
-		this.cu.getMethod("anotherAnotherMethod", new String[]{}).exists());
+		this.cu.getFunction("anotherAnotherMethod", new String[]{}).exists());
 }
 /**
  * Creates a working copy on a non-existing compilation unit.
  * (regression test for bug 8921  DCR - Need a way to create a working copy ignoring existing files)
  */
-public void testNonExistingCU() throws JavaModelException {
-	ICompilationUnit nonExistingCU = this.getCompilationUnit("P/src/NonExisting.js");
-	ICompilationUnit workingCopy = null;
+public void testNonExistingCU() throws JavaScriptModelException {
+	IJavaScriptUnit nonExistingCU = this.getCompilationUnit("P/src/NonExisting.js");
+	IJavaScriptUnit workingCopy = null;
 	try {
 		// getBuffer()
 		workingCopy = nonExistingCU.getWorkingCopy(null);
 		assertSourceEquals("Buffer should be empty", "", ((IOpenable)workingCopy).getBuffer().getContents());
 		
 		// exists()
-		assertTrue("Working copy should exists", ((IJavaElement)workingCopy).exists());
+		assertTrue("Working copy should exists", ((IJavaScriptElement)workingCopy).exists());
 		
 		// getCorrespondingResource()
-		assertEquals("Corresponding resource should be null", null, ((IJavaElement)workingCopy).getCorrespondingResource());
+		assertEquals("Corresponding resource should be null", null, ((IJavaScriptElement)workingCopy).getCorrespondingResource());
 		
 		// getPrimaryElement()
 		assertEquals("Unexpected orginal element", nonExistingCU, workingCopy.getPrimaryElement());
 		
 		// getPath()
-		assertEquals("Unexpected path", new Path("/P/src/NonExisting.js"), ((IJavaElement)workingCopy).getPath());
+		assertEquals("Unexpected path", new Path("/P/src/NonExisting.js"), ((IJavaScriptElement)workingCopy).getPath());
 		
 		// getResource()
-		assertEquals("Unexpected resource", nonExistingCU.getResource(), ((IJavaElement)workingCopy).getResource());
+		assertEquals("Unexpected resource", nonExistingCU.getResource(), ((IJavaScriptElement)workingCopy).getResource());
 		
 		// isConsistent()
 		assertTrue("Working copy should be consistent", ((IOpenable)workingCopy).isConsistent());
@@ -619,7 +619,7 @@ public void testNonExistingCU() throws JavaModelException {
 		boolean exception = false;
 		try {
 			workingCopy.restore();
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			exception = true;
 		}
 		assertTrue("Should not be able to restore from primary element", exception);
@@ -662,13 +662,13 @@ public void testNonExistingCU() throws JavaModelException {
  * <li>ensures that the copy cannot be moved to the same location as the primary cu</li>
  * <li>ensures that the copy can be copied to a different location as the primary cu</li>
  */
-public void testOperations() throws JavaModelException {
+public void testOperations() throws JavaScriptModelException {
 	// rename working copy
 	boolean ex= false;
 	try {
 		this.copy.rename("someName.js", false, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Incorrect status code for attempting to rename working copy", jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Incorrect status code for attempting to rename working copy", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 		ex= true;
 	}
 	assertTrue("renaming a working copy should fail", ex);
@@ -677,8 +677,8 @@ public void testOperations() throws JavaModelException {
 	ex= false;
 	try {
 		this.copy.move(this.cu.getParent(), null, "someName.js", false, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Incorrect status code for attempting to move working copy", jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Incorrect status code for attempting to move working copy", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 		ex= true;
 	}
 	assertTrue("moving a working copy should fail", ex);

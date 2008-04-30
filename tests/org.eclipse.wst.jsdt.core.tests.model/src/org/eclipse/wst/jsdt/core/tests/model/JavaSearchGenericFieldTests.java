@@ -47,7 +47,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	 */
 	/*
 	 * Following functionalities are tested:
-	 * 	A) Search using an IJavaElement
+	 * 	A) Search using an IJavaScriptElement
 	 * 		a) single parameter generic type field
 	 * 		b) multiple parameters generic type field
 	 * 		c) single parameterized type field
@@ -59,7 +59,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	 * 			GenericFieldReferenceBB* tests
 	 * 		b) any string characters
 	 * 			GenericFieldReferenceBB* tests
-	 * 	C) Search local variables using an IJavaElement
+	 * 	C) Search local variables using an IJavaScriptElement
 	 * 		a) single parameter generic type field
 	 * 		b) multiple parameters generic type field
 	 * 		c) single parameterized type field
@@ -68,7 +68,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of generic type
 	public void testElementPatternSingleTypeArgument01() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/def/Generic.js").getType("Generic").getField("t");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/s/def/R1.java g2.f.s.def.R1.{} [t] EXACT_MATCH\n" + 
@@ -84,7 +84,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of field of member type declared in a generic type
 	public void testElementPatternSingleTypeArgument02() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/def/Generic.js").getType("Generic").getType("Member").getField("m");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/s/def/R2.java g2.f.s.def.R2.{} [m] EXACT_MATCH\n" + 
@@ -100,7 +100,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of field of generic member type declared in a generic type
 	public void testElementPatternSingleTypeArgument03() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/def/Generic.js").getType("Generic").getType("MemberGeneric").getField("v");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/s/def/R3.java g2.f.s.def.R3.{} [v] EXACT_MATCH\n" + 
@@ -120,7 +120,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of generic member type declared in a non-generic type
 	public void testElementPatternSingleTypeArgument04() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/def/NonGeneric.js").getType("NonGeneric").getType("GenericMember").getField("t");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/s/def/R4.java g2.f.s.def.R4.{} [t] EXACT_MATCH\n" + 
@@ -136,7 +136,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of generic type
 	public void testElementPatternMultipleTypeArgument01() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/def/Generic.js").getType("Generic").getField("t1");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/m/def/R1.java g2.f.m.def.R1.{} [t1] EXACT_MATCH\n" + 
@@ -152,7 +152,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of member type declared in a generic type
 	public void testElementPatternMultipleTypeArgument02() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/def/Generic.js").getType("Generic").getType("Member").getField("m");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/m/def/R2.java g2.f.m.def.R2.{} [m] EXACT_MATCH\n" + 
@@ -168,7 +168,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of generic member type declared in a generic type
 	public void testElementPatternMultipleTypeArgument03() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/def/Generic.js").getType("Generic").getType("MemberGeneric").getField("u2");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/m/def/R3.java g2.f.m.def.R3.{} [u2] EXACT_MATCH\n" + 
@@ -188,7 +188,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	// Search reference to a field of generic member type declared in a non-generic type
 	public void testElementPatternMultipleTypeArgument04() throws CoreException {
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/def/NonGeneric.js").getType("NonGeneric").getType("GenericMember").getField("t3");
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		search(field, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/m/def/R4.java g2.f.m.def.R4.{} [t3] EXACT_MATCH\n" + 
@@ -203,7 +203,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a single parameterized field
 	public void testElementPatternSingleParameterizedType01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R1.js").getType("R1").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R1.js").getType("R1").getField("gen_obj");
@@ -245,7 +245,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a member type field of single parameterized type
 	public void testElementPatternSingleParameterizedType02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R2.js").getType("R2").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R2.js").getType("R2").getField("gen_obj");
@@ -287,7 +287,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a single parameterized member type field of a single parameterized type
 	public void testElementPatternSingleParameterizedType03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R3.js").getType("R3").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R3.js").getType("R3").getField("gen_obj");
@@ -329,7 +329,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a single parameterized member type field
 	public void testElementPatternSingleParameterizedType04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R4.js").getType("R4").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R4.js").getType("R4").getField("gen_obj");
@@ -371,7 +371,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a multiple parameterized field
 	public void testElementPatternMultipleParameterizedType01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R1.js").getType("R1").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R1.js").getType("R1").getField("gen_obj");
@@ -413,7 +413,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a member type field of multiple parameterized type
 	public void testElementPatternMultipleParameterizedType02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R2.js").getType("R2").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R2.js").getType("R2").getField("gen_obj");
@@ -455,7 +455,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a multiple parameterized member type field of a multiple parameterized type
 	public void testElementPatternMultipleParameterizedType03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R3.js").getType("R3").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R3.js").getType("R3").getField("gen_obj");
@@ -497,7 +497,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 	}
 	// Search reference to a multiple parameterized member type field
 	public void testElementPatternMultipleParameterizedType04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g2.f", true /* add all subpackages */);
 		IField field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R4.js").getType("R4").getField("gen");
 		search(field, REFERENCES, scope, resultCollector);
 		field = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R4.js").getType("R4").getField("gen_obj");
@@ -540,7 +540,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 
 	// Search reference to a string pattern
 	public void testStringPattern01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("gen", FIELD, ALL_OCCURRENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java g1.t.m.ref.R1.gen [gen] EXACT_MATCH\n" + 
@@ -562,7 +562,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testStringPattern02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("gen_???", FIELD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java g1.t.m.ref.R1.gen_obj [gen_obj] EXACT_MATCH\n" + 
@@ -608,7 +608,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testStringPattern03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("gen_*", FIELD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/m/ref/RR1.java g2.f.m.ref.RR1.{} [gen_obj] EXACT_MATCH\n" + 
@@ -654,7 +654,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testStringPattern04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("?gen_*", FIELD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java g1.t.m.ref.R1.qgen_obj [qgen_obj] EXACT_MATCH\n" + 
@@ -700,7 +700,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testStringPattern05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("qgen_*", FIELD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g2/f/m/ref/RR1.java g2.f.m.ref.RR1.{} [qgen_obj] EXACT_MATCH\n" + 
@@ -748,7 +748,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 
 	// Search reference to a local variable
 	public void testElementPatternLocalVariables01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R1.js", "gen_obj,", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R1.js", "gen_exc,", "gen_exc");
@@ -769,7 +769,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R1.js", "gen_obj =", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R1.js", "gen_exc =", "gen_exc");
@@ -790,7 +790,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R2.js", "gen_obj,", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R2.js", "gen_exc,", "gen_exc");
@@ -811,7 +811,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R2.js", "gen_obj =", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R2.js", "gen_exc =", "gen_exc");
@@ -832,7 +832,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R3.js", "gen_obj,", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R3.js", "gen_exc,", "gen_exc");
@@ -853,7 +853,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables06() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R3.js", "gen_obj =", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R3.js", "gen_exc =", "gen_exc");
@@ -874,7 +874,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables07() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R4.js", "gen_obj,", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R4.js", "gen_exc,", "gen_exc");
@@ -895,7 +895,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables08() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R4.js", "gen_obj =", "gen_obj");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R4.js", "gen_exc =", "gen_exc");
@@ -916,7 +916,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables09() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_wld, // simple", "gen_wld");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_www, // simple", "gen_www");
@@ -933,7 +933,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables10() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_wld = new GS", "gen_wld");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_www = new GS", "gen_www");
@@ -950,7 +950,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables11() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_wld, // qualified", "gen_wld");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_www, // qualified", "gen_www");
@@ -967,7 +967,7 @@ public class JavaSearchGenericFieldTests extends JavaSearchTests {
 			resultCollector);
 	}
 	public void testElementPatternLocalVariables12() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g4.v.ref", false);
 		ILocalVariable localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_wld = new GM", "gen_wld");
 		search(localVar, ALL_OCCURRENCES, scope, resultCollector);
 		localVar = getLocalVariable("/JavaSearch15/src/g4/v/ref/R5.js", "gen_www = new GM", "gen_www");

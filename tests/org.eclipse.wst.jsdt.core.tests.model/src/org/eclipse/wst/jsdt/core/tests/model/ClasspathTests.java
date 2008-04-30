@@ -37,19 +37,19 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaModelMarker;
-import org.eclipse.wst.jsdt.core.IJavaModelStatus;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelMarker;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatus;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaConventions;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptConventions;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.core.ClasspathEntry;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
@@ -59,13 +59,19 @@ public class ClasspathTests extends ModifyingResourceTests {
 
 	public class TestContainer implements IJsGlobalScopeContainer {
 		IPath path;
-		IClasspathEntry[] entries;
-		TestContainer(IPath path, IClasspathEntry[] entries){
+		IIncludePathEntry[] entries;
+		TestContainer(IPath path, IIncludePathEntry[] entries){
 			this.path = path;
 			this.entries = entries;
 		}
 		public IPath getPath() { return this.path; }
-		public IClasspathEntry[] getClasspathEntries() { return this.entries;	}
+		/**
+		 * @deprecated Use {@link #getIncludepathEntries()} instead
+		 */
+		public IIncludePathEntry[] getClasspathEntries() {
+			return getIncludepathEntries();
+		}
+		public IIncludePathEntry[] getIncludepathEntries() { return this.entries;	}
 		public String getDescription() { return this.path.toString(); 	}
 		public int getKind() { return 0; }
 		/* (non-Javadoc)
@@ -96,7 +102,7 @@ public void setUpSuite() throws Exception {
 	
 	setupExternalJCL("jclMin");
 }
-protected void assertCycleMarkers(IJavaProject project, IJavaProject[] p, int[] expectedCycleParticipants) throws CoreException {
+protected void assertCycleMarkers(IJavaScriptProject project, IJavaScriptProject[] p, int[] expectedCycleParticipants) throws CoreException {
 	waitForAutoBuild();
 	StringBuffer expected = new StringBuffer("{");
 	int expectedCount = 0;
@@ -120,14 +126,14 @@ protected void assertCycleMarkers(IJavaProject project, IJavaProject[] p, int[] 
 	computed.append("}");
 	assertEquals("Invalid cycle detection after setting classpath for: "+project.getElementName(), expected.toString(), computed.toString());
 }
-private void assertEncodeDecodeEntry(String projectName, String expectedEncoded, IClasspathEntry entry) {
-	IJavaProject project = getJavaProject(projectName);
-	String encoded = project.encodeClasspathEntry(entry);
+private void assertEncodeDecodeEntry(String projectName, String expectedEncoded, IIncludePathEntry entry) {
+	IJavaScriptProject project = getJavaProject(projectName);
+	String encoded = project.encodeIncludepathEntry(entry);
 	assertSourceEquals(
 		"Unexpected encoded entry",
 		expectedEncoded,
 		encoded);
-	IClasspathEntry decoded = project.decodeClasspathEntry(encoded);
+	IIncludePathEntry decoded = project.decodeIncludepathEntry(encoded);
 	assertEquals(
 		"Unexpected decoded entry",
 		entry,
@@ -149,12 +155,12 @@ protected File createFolder(File parent, String name) {
 	file.mkdirs();
 	return file;
 }
-protected int numberOfCycleMarkers(IJavaProject javaProject) throws CoreException {
-	IMarker[] markers = javaProject.getProject().findMarkers(IJavaModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+protected int numberOfCycleMarkers(IJavaScriptProject javaProject) throws CoreException {
+	IMarker[] markers = javaProject.getProject().findMarkers(IJavaScriptModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
 	int result = 0;
 	for (int i = 0, length = markers.length; i < length; i++) {
 		IMarker marker = markers[i];
-		String cycleAttr = (String)marker.getAttribute(IJavaModelMarker.CYCLE_DETECTED);
+		String cycleAttr = (String)marker.getAttribute(IJavaScriptModelMarker.CYCLE_DETECTED);
 		if (cycleAttr != null && cycleAttr.equals("true")){ //$NON-NLS-1$
 			result++;
 		}
@@ -167,17 +173,17 @@ protected int numberOfCycleMarkers(IJavaProject javaProject) throws CoreExceptio
  * the root and ensure that it comes alive.
  */
 public void testAddRoot1() throws CoreException {
-	IJavaProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
-	IClasspathEntry[] originalCP= project.getRawClasspath();
+	IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
+	IIncludePathEntry[] originalCP= project.getRawIncludepath();
 
 	try {
-		IClasspathEntry newEntry= JavaCore.newSourceEntry(project.getProject().getFullPath().append("extra"));
+		IIncludePathEntry newEntry= JavaScriptCore.newSourceEntry(project.getProject().getFullPath().append("extra"));
 
-		IClasspathEntry[] newCP= new IClasspathEntry[originalCP.length + 1];
+		IIncludePathEntry[] newCP= new IIncludePathEntry[originalCP.length + 1];
 		System.arraycopy(originalCP, 0 , newCP, 0, originalCP.length);
 		newCP[originalCP.length]= newEntry;
 
-		project.setRawClasspath(newCP, null);
+		project.setRawIncludepath(newCP, null);
 
 		// now create the actual resource for the root and populate it
 		project.getProject().getFolder("extra").create(false, true, null);
@@ -197,8 +203,8 @@ public void testAddRoot1() throws CoreException {
  */
 public void testAddRoot2() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {}, "bin");
-		project.setRawClasspath(createClasspath("P", new String[] {"/P/src", ""}), null);
+		IJavaScriptProject project = createJavaProject("P", new String[] {}, "bin");
+		project.setRawIncludepath(createClasspath("P", new String[] {"/P/src", ""}), null);
 		waitForAutoBuild();
 
 		// now create the actual resource for the root
@@ -216,14 +222,14 @@ public void testAddRoot2() throws CoreException {
  */
 public void testClasspathChangeExternalResources() throws CoreException {
 	try {
-		IJavaProject proj = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject proj = this.createJavaProject("P", new String[] {"src"}, "bin");
 
-		IClasspathEntry[] newEntries = new IClasspathEntry[2];
-		newEntries[0] = JavaCore.newLibraryEntry(getExternalJCLPath(), null, null, false);
-		newEntries[1] = JavaCore.newLibraryEntry(getExternalJCLSourcePath(), null, null, false);
+		IIncludePathEntry[] newEntries = new IIncludePathEntry[2];
+		newEntries[0] = JavaScriptCore.newLibraryEntry(getExternalJCLPath(), null, null, false);
+		newEntries[1] = JavaScriptCore.newLibraryEntry(getExternalJCLSourcePath(), null, null, false);
 		setClasspath(proj, newEntries);
 		startDeltas();
-		IClasspathEntry[] swappedEntries = new IClasspathEntry[2];
+		IIncludePathEntry[] swappedEntries = new IIncludePathEntry[2];
 		swappedEntries[0] = newEntries[1];
 		swappedEntries[1] = newEntries[0];
 		setClasspath(proj, swappedEntries);
@@ -297,13 +303,13 @@ public void testClasspathFileRead() throws CoreException {
 			+"</classpath>	\n";
 
 		this.createFile("/P1/"+JavaProject.CLASSPATH_FILENAME, newCPContent);
-		final IJavaProject jproj = JavaCore.create(proj);
+		final IJavaScriptProject jproj = JavaScriptCore.create(proj);
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			workspace.run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor)	{
 
-					IClasspathEntry[] entries = jproj.readRawClasspath(); // force to read classpath
-					IClasspathEntry entry = entries[0];
+					IIncludePathEntry[] entries = jproj.readRawIncludepath(); // force to read classpath
+					IIncludePathEntry entry = entries[0];
 					assertEquals("first classpath entry should have been read", "/P1/src", entry.getPath().toString());
 
 					assertEquals("output location should have been read", "/P1/bin", jproj.readOutputLocation().toString());
@@ -325,7 +331,7 @@ public void testClasspathForceReload() throws CoreException {
 			workspace.run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor)	throws CoreException {
 
-					p1.getRawClasspath(); // force to read classpath
+					p1.getRawIncludepath(); // force to read classpath
 					createFolder("P1/src");
 					createFolder("P1/bin"); 
 					String newCPContent = 
@@ -341,7 +347,7 @@ public void testClasspathForceReload() throws CoreException {
 					p1.close();
 					assertEquals("output location should not have been refreshed", "/P1", p1.getOutputLocation().toString());
 					
-					p1.setRawClasspath(p1.readRawClasspath(), p1.readOutputLocation(), null);
+					p1.setRawIncludepath(p1.readRawIncludepath(), p1.readOutputLocation(), null);
 					assertEquals("output location should have been refreshed", "/P1/bin", p1.getOutputLocation().toString());
 				}
 			}, null);	
@@ -357,7 +363,7 @@ public void testClasspathForceReload() throws CoreException {
  */
 public void testClasspathCreateLibraryEntry() throws CoreException {
 	try {
-		IJavaProject proj = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject proj = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.createFile("P/src/X.js", "public class X {}");
 		this.createFile("P/src/X.class", "");
 	
@@ -372,7 +378,7 @@ public void testClasspathCreateLibraryEntry() throws CoreException {
 		assertEquals(
 			"Unexpected numbers of compilation units",
 			1,
-			pkg.getCompilationUnits().length);
+			pkg.getJavaScriptUnits().length);
 		assertEquals(
 			"Unexpected numbers of .class files",
 			0,
@@ -380,8 +386,8 @@ public void testClasspathCreateLibraryEntry() throws CoreException {
 			
 		this.setClasspath(
 			proj, 
-			new IClasspathEntry[] {
-				JavaCore.newLibraryEntry(rootFolder.getFullPath(), null, null, false)
+			new IIncludePathEntry[] {
+				JavaScriptCore.newLibraryEntry(rootFolder.getFullPath(), null, null, false)
 			});
 		assertEquals(
 			"Unexpected root kind 2", 
@@ -390,7 +396,7 @@ public void testClasspathCreateLibraryEntry() throws CoreException {
 		assertEquals(
 			"Unexpected numbers of compilation units",
 			0,
-			pkg.getCompilationUnits().length);
+			pkg.getJavaScriptUnits().length);
 		assertEquals(
 			"Unexpected numbers of .class files",
 			1,
@@ -412,10 +418,10 @@ public void testClasspathCreateLibraryEntry() throws CoreException {
  * local jar works and generates the correct deltas.
  */
 public void testClasspathCreateLocalJarLibraryEntry() throws CoreException {
-	IJavaProject proj = this.createJavaProject("P", new String[] {""}, "");
+	IJavaScriptProject proj = this.createJavaProject("P", new String[] {""}, "");
 	IPackageFragmentRoot root = getPackageFragmentRoot("P", "");
-	IClasspathEntry newEntry= JavaCore.newLibraryEntry(getExternalJCLPath(), null, null, false);
-	IClasspathEntry[] newEntries= new IClasspathEntry[]{newEntry};
+	IIncludePathEntry newEntry= JavaScriptCore.newLibraryEntry(getExternalJCLPath(), null, null, false);
+	IIncludePathEntry[] newEntries= new IIncludePathEntry[]{newEntry};
 	IPackageFragmentRoot newRoot= proj.getPackageFragmentRoot(getExternalJCLPathString());
 
 	startDeltas();
@@ -428,13 +434,13 @@ public void testClasspathCreateLocalJarLibraryEntry() throws CoreException {
 			this.deltaListener.deltas.length == 1 && 
 			this.deltaListener.deltas[0].getAffectedChildren().length == 1 &&
 			this.deltaListener.deltas[0].getAffectedChildren()[0].getAffectedChildren().length == 2);
-		IJavaElementDelta d= null;
+		IJavaScriptElementDelta d= null;
 		assertTrue("root should be removed from classpath",(d= getDeltaFor(root, true)) != null &&
-				(d.getFlags() & IJavaElementDelta.F_REMOVED_FROM_CLASSPATH) > 0);
+				(d.getFlags() & IJavaScriptElementDelta.F_REMOVED_FROM_CLASSPATH) > 0);
 
 		
 		assertTrue("root should be added to classpath", (d= getDeltaFor(newRoot, true)) != null &&
-				(d.getFlags() & IJavaElementDelta.F_ADDED_TO_CLASSPATH) > 0);
+				(d.getFlags() & IJavaScriptElementDelta.F_ADDED_TO_CLASSPATH) > 0);
 	} finally {
 		stopDeltas();
 	
@@ -446,16 +452,16 @@ public void testClasspathCreateLocalJarLibraryEntry() throws CoreException {
  * Tests the cross project classpath setting
  */
 public void testClasspathCrossProject() throws CoreException {
-	IJavaProject project = this.createJavaProject("P1", new String[] {""}, "");
+	IJavaScriptProject project = this.createJavaProject("P1", new String[] {""}, "");
 	this.createJavaProject("P2", new String[] {}, "");
 	try {
 		startDeltas();
 		IPackageFragmentRoot oldRoot= getPackageFragmentRoot("P1", "");
- 		IClasspathEntry projectEntry= JavaCore.newProjectEntry(new Path("/P2"), false);
-		IClasspathEntry[] newClasspath= new IClasspathEntry[]{projectEntry};
-		project.setRawClasspath(newClasspath, null);
+ 		IIncludePathEntry projectEntry= JavaScriptCore.newProjectEntry(new Path("/P2"), false);
+		IIncludePathEntry[] newClasspath= new IIncludePathEntry[]{projectEntry};
+		project.setRawIncludepath(newClasspath, null);
 		project.getAllPackageFragmentRoots();
-		IJavaElementDelta removedDelta= getDeltaFor(oldRoot, true);
+		IJavaScriptElementDelta removedDelta= getDeltaFor(oldRoot, true);
 		assertDeltas(
 			"Unexpected delta", 
 			"<project root>[*]: {REMOVED FROM CLASSPATH}", 
@@ -469,14 +475,14 @@ public void testClasspathCrossProject() throws CoreException {
  * Delete a root and ensure the classpath is not updated (i.e. entry isn't removed).
  */
 public void testClasspathDeleteNestedRoot() throws CoreException {
-	IJavaProject project = this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
+	IJavaScriptProject project = this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
 	IPackageFragmentRoot root= getPackageFragmentRoot("P", "nested/src");
-	IClasspathEntry[] originalCP= project.getRawClasspath();
+	IIncludePathEntry[] originalCP= project.getRawIncludepath();
 
 	// delete the root
 	deleteResource(root.getUnderlyingResource());
 
-	IClasspathEntry[] newCP= project.getRawClasspath();
+	IIncludePathEntry[] newCP= project.getRawIncludepath();
 
 	try {
 		// should still be an entry for the "src" folder
@@ -496,9 +502,9 @@ public void testClasspathDiamond() throws CoreException {
 		this.createJavaProject("P1", new String[]{""}, "");
 		this.createJavaProject("P2", new String[]{""}, new String[]{}, new String[]{"/P1"}, "");
 		this.createJavaProject("P3", new String[]{""}, new String[]{}, new String[]{"/P1", "/P2"}, "");
-		IJavaProject p4 = this.createJavaProject("P4", new String[]{""}, new String[]{}, new String[]{"/P2", "/P3"}, "");
+		IJavaScriptProject p4 = this.createJavaProject("P4", new String[]{""}, new String[]{}, new String[]{"/P2", "/P3"}, "");
 	
-		assertTrue("Should not detect cycle", !p4.hasClasspathCycle(null));
+		assertTrue("Should not detect cycle", !p4.hasIncludepathCycle(null));
 		
 	} finally {
 		// cleanup  
@@ -511,15 +517,15 @@ public void testClasspathDiamond() throws CoreException {
  * not updated (i.e. entry isn't removed).
  */
 public void testClasspathDeleteNestedRootParent() throws CoreException {
-	IJavaProject project = this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
+	IJavaScriptProject project = this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
 	IPackageFragmentRoot root= getPackageFragmentRoot("P", "nested/src");
-	IClasspathEntry[] originalCP= project.getRawClasspath();
+	IIncludePathEntry[] originalCP= project.getRawIncludepath();
 
 	// delete the root's parent folder
 	IFolder folder= (IFolder)root.getUnderlyingResource().getParent();
 	deleteResource(folder);
 
-	IClasspathEntry[] newCP= project.getRawClasspath();
+	IIncludePathEntry[] newCP= project.getRawIncludepath();
 
 	try {
 		
@@ -538,11 +544,11 @@ public void testClasspathDeleteNestedRootParent() throws CoreException {
  */
 public void testClasspathExternalize() throws CoreException {
 	try {
-		IJavaProject project= this.createJavaProject("P", new String[] {}, new String[] {getExternalJCLPathString()}, "");
-		IClasspathEntry[] classpath= project.getRawClasspath();
-		IClasspathEntry jar= null;
+		IJavaScriptProject project= this.createJavaProject("P", new String[] {}, new String[] {getExternalJCLPathString()}, "");
+		IIncludePathEntry[] classpath= project.getRawIncludepath();
+		IIncludePathEntry jar= null;
 		for (int i= 0; i < classpath.length; i++) {
-			if (classpath[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+			if (classpath[i].getEntryKind() == IIncludePathEntry.CPE_LIBRARY) {
 				jar= classpath[i];
 				break;
 			}
@@ -550,9 +556,9 @@ public void testClasspathExternalize() throws CoreException {
 		project.close();
 		project.open(null);
 	
-		classpath= project.getRawClasspath();
+		classpath= project.getRawIncludepath();
 		for (int i= 0; i < classpath.length; i++) {
-			if (classpath[i].getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+			if (classpath[i].getEntryKind() == IIncludePathEntry.CPE_LIBRARY) {
 				assertTrue("Paths must be the same", classpath[i].getPath().equals(jar.getPath()));
 				break;
 			}
@@ -565,9 +571,9 @@ public void testClasspathExternalize() throws CoreException {
  * Move a root and ensure the classpath is not updated (i.e. entry not renamed).
  */
 public void testClasspathMoveNestedRoot() throws CoreException {
-	IJavaProject project = this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
+	IJavaScriptProject project = this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
 	IPackageFragmentRoot root= getPackageFragmentRoot("P", "nested/src");
-	IClasspathEntry[] originalCP= project.getRawClasspath();
+	IIncludePathEntry[] originalCP= project.getRawIncludepath();
 
 	// delete the root
 	IFolder folder= (IFolder)root.getUnderlyingResource();
@@ -579,7 +585,7 @@ public void testClasspathMoveNestedRoot() throws CoreException {
 	
 	folder.move(newPath, true, null);
 
-	IClasspathEntry[] newCP= project.getRawClasspath();
+	IIncludePathEntry[] newCP= project.getRawIncludepath();
 
 	IPackageFragmentRoot newRoot= project.getPackageFragmentRoot(project.getProject().getFolder("nested").getFolder("newsrc")); 
 
@@ -589,10 +595,10 @@ public void testClasspathMoveNestedRoot() throws CoreException {
 			newCP[1].equals(originalCP[1]) &&
 			newCP[0].equals(originalCP[0]));
 
-		IJavaElementDelta rootDelta = getDeltaFor(root, true);
-		IJavaElementDelta projectDelta = getDeltaFor(newRoot.getParent(), true);
+		IJavaScriptElementDelta rootDelta = getDeltaFor(root, true);
+		IJavaScriptElementDelta projectDelta = getDeltaFor(newRoot.getParent(), true);
 		assertTrue("should get delta for moved root", rootDelta != null &&
-				rootDelta.getKind() == IJavaElementDelta.REMOVED &&
+				rootDelta.getKind() == IJavaScriptElementDelta.REMOVED &&
 				rootDelta.getFlags() == 0);
 		assertTrue("should get delta indicating content changed for project", this.deltaContentChanged(projectDelta));
 	
@@ -607,9 +613,9 @@ public void testClasspathMoveNestedRoot() throws CoreException {
  */
 public void testClasspathMoveNestedRootParent() throws CoreException {
 	try {
-		IJavaProject project =this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
+		IJavaScriptProject project =this.createJavaProject("P", new String[] {"nested/src"}, new String[] {getExternalJCLPathString()}, "bin");
 		IPackageFragmentRoot root= getPackageFragmentRoot("P", "nested/src");
-		IClasspathEntry[] originalCP= project.getRawClasspath();
+		IIncludePathEntry[] originalCP= project.getRawIncludepath();
 	
 		// delete the root
 		IFolder folder= (IFolder)root.getUnderlyingResource().getParent();
@@ -618,7 +624,7 @@ public void testClasspathMoveNestedRootParent() throws CoreException {
 		newPath= newPath.append(new Path("newsrc"));
 		folder.move(newPath, true, null);
 	
-		IClasspathEntry[] newCP= project.getRawClasspath();
+		IIncludePathEntry[] newCP= project.getRawIncludepath();
 
 		// entry for the "src" folder wasn't replaced
 		// entry for the "src" folder should not be replaced
@@ -635,10 +641,10 @@ public void testClasspathMoveNestedRootParent() throws CoreException {
  */
 public void testClasspathNoChanges() throws CoreException {
 	try {
-		IJavaProject p = this.createJavaProject("P", new String[] {""}, "");
-		IClasspathEntry[] oldClasspath= p.getRawClasspath();
+		IJavaScriptProject p = this.createJavaProject("P", new String[] {""}, "");
+		IIncludePathEntry[] oldClasspath= p.getRawIncludepath();
 		startDeltas();
-		p.setRawClasspath(oldClasspath, null);
+		p.setRawIncludepath(oldClasspath, null);
 		assertDeltas("Unexpected delta", "");
 	} finally {
 		stopDeltas();
@@ -650,11 +656,11 @@ public void testClasspathNoChanges() throws CoreException {
  * the correct deltas.
  */
 public void testClasspathReordering() throws CoreException {
-	IJavaProject proj = this.createJavaProject("P", new String[] {"src"}, new String[] {getExternalJCLPathString()}, "bin");
-	IClasspathEntry[] originalCP = proj.getRawClasspath();
+	IJavaScriptProject proj = this.createJavaProject("P", new String[] {"src"}, new String[] {getExternalJCLPathString()}, "bin");
+	IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	IPackageFragmentRoot root = getPackageFragmentRoot("P", "src");
 	try {
-		IClasspathEntry[] newEntries = new IClasspathEntry[originalCP.length];
+		IIncludePathEntry[] newEntries = new IIncludePathEntry[originalCP.length];
 		int index = originalCP.length - 1;
 		for (int i = 0; i < originalCP.length; i++) {
 			newEntries[index] = originalCP[i];
@@ -663,9 +669,9 @@ public void testClasspathReordering() throws CoreException {
 		startDeltas();
 		setClasspath(proj, newEntries);
 		assertTrue("should be one delta - two roots reordered", this.deltaListener.deltas.length == 1);
-		IJavaElementDelta d = null;
+		IJavaScriptElementDelta d = null;
 		assertTrue("root should be reordered in the classpath", (d = getDeltaFor(root, true)) != null
-			&& (d.getFlags() & IJavaElementDelta.F_REORDER) > 0);
+			&& (d.getFlags() & IJavaScriptElementDelta.F_REORDER) > 0);
 	} finally {
 		stopDeltas();
 		this.deleteProject("P");
@@ -677,14 +683,14 @@ public void testClasspathReordering() throws CoreException {
  */ 
 public void testClasspathValidation01() throws CoreException {
 	try {
-		IJavaProject proj = this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = newCP[0];
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should have detected duplicate entries on the classpath", 
@@ -700,14 +706,14 @@ public void testClasspathValidation01() throws CoreException {
  */ 
 public void testClasspathValidation02() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should have detected nested source folders on the classpath", 
@@ -723,14 +729,14 @@ public void testClasspathValidation02() throws CoreException {
  */ 
 public void testClasspathValidation03() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newLibraryEntry(new Path("/P/src/lib"), null, null);
+		newCP[originalCP.length] = JavaScriptCore.newLibraryEntry(new Path("/P/src/lib"), null, null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should have detected library folder nested inside source folder on the classpath", 
@@ -743,23 +749,23 @@ public void testClasspathValidation03() throws CoreException {
 
 public void testClasspathValidation04() throws CoreException {
 	
-	IJavaProject[] p = null;
+	IJavaScriptProject[] p = null;
 	try {
 
-		p = new IJavaProject[]{
+		p = new IJavaScriptProject[]{
 			this.createJavaProject("P0", new String[] {"src0"}, "bin0"),
 			this.createJavaProject("P1", new String[] {"src1"}, "bin1"),
 		};
 
-		JavaCore.setClasspathVariable("var", new Path("/P1"), null);
+		JavaScriptCore.setIncludepathVariable("var", new Path("/P1"), null);
 		
-		IClasspathEntry[] newClasspath = new IClasspathEntry[]{
-			JavaCore.newSourceEntry(new Path("/P0/src0")),
-			JavaCore.newVariableEntry(new Path("var/src1"), null, null),
+		IIncludePathEntry[] newClasspath = new IIncludePathEntry[]{
+			JavaScriptCore.newSourceEntry(new Path("/P0/src0")),
+			JavaScriptCore.newVariableEntry(new Path("var/src1"), null, null),
 		};
 				
 		// validate classpath
-		IJavaModelStatus status = JavaConventions.validateClasspath(p[0], newClasspath, p[0].getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath, p[0].getOutputLocation());
 		assertStatus(
 			"should not detect external source folder through a variable on the classpath", 
 			"OK",
@@ -772,39 +778,39 @@ public void testClasspathValidation04() throws CoreException {
 
 public void testClasspathValidation05() throws CoreException {
 	
-	IJavaProject[] p = null;
+	IJavaScriptProject[] p = null;
 	try {
 
-		p = new IJavaProject[]{
+		p = new IJavaScriptProject[]{
 			this.createJavaProject("P0", new String[] {"src0", "src1"}, "bin0"),
 			this.createJavaProject("P1", new String[] {"src1"}, "bin1"),
 		};
 
-		JavaCore.setJsGlobalScopeContainer(
+		JavaScriptCore.setJsGlobalScopeContainer(
 		new Path("container/default"), 
-			new IJavaProject[]{ p[0] },
+			new IJavaScriptProject[]{ p[0] },
 			new IJsGlobalScopeContainer[] {
 				new TestContainer(new Path("container/default"),
-					new IClasspathEntry[]{
-						JavaCore.newSourceEntry(new Path("/P0/src0")),
-						JavaCore.newVariableEntry(new Path("var/src1"), null, null) }) 
+					new IIncludePathEntry[]{
+						JavaScriptCore.newSourceEntry(new Path("/P0/src0")),
+						JavaScriptCore.newVariableEntry(new Path("var/src1"), null, null) }) 
 			}, 
 			null);
 		
-		IClasspathEntry[] newClasspath = new IClasspathEntry[]{
-			JavaCore.newSourceEntry(new Path("/P0/src1")),
-			JavaCore.newContainerEntry(new Path("container/default")),
+		IIncludePathEntry[] newClasspath = new IIncludePathEntry[]{
+			JavaScriptCore.newSourceEntry(new Path("/P0/src1")),
+			JavaScriptCore.newContainerEntry(new Path("container/default")),
 		};
 				
 		// validate classpath
-		IJavaModelStatus status = JavaConventions.validateClasspath(p[0], newClasspath, p[0].getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath, p[0].getOutputLocation());
 		assertStatus(
 			"should not have detected external source folder through a container on the classpath", 
 			"OK",
 			status);
 
 		// validate classpath entry
-		status = JavaConventions.validateClasspathEntry(p[0], newClasspath[1], true);
+		status = JavaScriptConventions.validateClasspathEntry(p[0], newClasspath[1], true);
 		assertStatus(
 			"should have detected external source folder through a container on the classpath", 
 			"Invalid classpath container: \'container/default\' in project P0",
@@ -817,20 +823,20 @@ public void testClasspathValidation05() throws CoreException {
 
 public void testClasspathValidation06() throws CoreException {
 	
-	IJavaProject[] p = null;
+	IJavaScriptProject[] p = null;
 	try {
 
-		p = new IJavaProject[]{
+		p = new IJavaScriptProject[]{
 			this.createJavaProject("P0", new String[] {"src"}, "src"),
 		};
 
 		// validate classpath entry
-		IClasspathEntry[] newClasspath = new IClasspathEntry[]{
-			JavaCore.newSourceEntry(new Path("/P0")),
-			JavaCore.newSourceEntry(new Path("/P0/src")),
+		IIncludePathEntry[] newClasspath = new IIncludePathEntry[]{
+			JavaScriptCore.newSourceEntry(new Path("/P0")),
+			JavaScriptCore.newSourceEntry(new Path("/P0/src")),
 		};
 				
-		IJavaModelStatus status = JavaConventions.validateClasspath(p[0], newClasspath, p[0].getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(p[0], newClasspath, p[0].getOutputLocation());
 		assertStatus(
 			"should have detected nested source folder", 
 			"Cannot nest \'P0/src\' inside \'P0\'. To enable the nesting exclude \'src/\' from \'P0\'",
@@ -845,14 +851,14 @@ public void testClasspathValidation06() throws CoreException {
  */ 
 public void testClasspathValidation07() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("src/")});
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("src/")});
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should have allowed nested source folders with exclusion on the classpath", 
@@ -868,14 +874,14 @@ public void testClasspathValidation07() throws CoreException {
  */ 
 public void testClasspathValidation08() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("lib/")});
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("lib/")});
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should have allowed nested lib folders with exclusion on the classpath", 
@@ -890,14 +896,14 @@ public void testClasspathValidation08() throws CoreException {
  */ 
 public void testClasspathValidation09() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/bin/src"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/bin/src"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should not allow nested source folder in putput folder", 
@@ -912,10 +918,10 @@ public void testClasspathValidation09() throws CoreException {
  */ 
 public void testClasspathValidation10() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, originalCP, new Path("/P/src/bin"));
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, originalCP, new Path("/P/src/bin"));
 		
 		assertStatus(
 			"should not allow nested output folder in source folder", 
@@ -930,14 +936,14 @@ public void testClasspathValidation10() throws CoreException {
 */ 
 public void testClasspathValidation11() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newLibraryEntry(new Path("/P/lib"), null, null);
+		newCP[originalCP.length] = JavaScriptCore.newLibraryEntry(new Path("/P/lib"), null, null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should allow nested library folder in output folder", 
@@ -952,18 +958,18 @@ public void testClasspathValidation11() throws CoreException {
  */ 
 public void testClasspathValidation12() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin1");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin1");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = 
-			JavaCore.newSourceEntry(
+			JavaScriptCore.newSourceEntry(
 				new Path("/P/bin2/src"), 
 				new IPath[] {}, 
 				new Path("/P/bin2"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should not allow nested source folder in output folder", 
@@ -978,18 +984,18 @@ public void testClasspathValidation12() throws CoreException {
  */ 
 public void testClasspathValidation13() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin1");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin1");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = 
-			JavaCore.newSourceEntry(
+			JavaScriptCore.newSourceEntry(
 				new Path("/P/src"), 
 				new IPath[] {}, 
 				new Path("/P/src/bin2"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should not allow nested output folder in source folder", 
@@ -1004,18 +1010,18 @@ public void testClasspathValidation13() throws CoreException {
  */ 
 public void testClasspathValidation14() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
 		newCP[originalCP.length] = 
-			JavaCore.newSourceEntry(
+			JavaScriptCore.newSourceEntry(
 				new Path("/P"), 
 				new IPath[] {}, 
 				new Path("/P/bin"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should allow nested output folder in source folder which is project", 
@@ -1030,14 +1036,14 @@ public void testClasspathValidation14() throws CoreException {
  */ 
 public void testClasspathValidation15() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("**/src")});
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("**/src")});
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"End exclusion filter \'src\' with / to fully exclude \'P/src\'",
@@ -1052,14 +1058,14 @@ public void testClasspathValidation15() throws CoreException {
  */ 
 public void testClasspathValidation16() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[0], new Path("/P/bin"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[0], new Path("/P/bin"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"OK",
@@ -1073,14 +1079,14 @@ public void testClasspathValidation16() throws CoreException {
  */ 
 public void testClasspathValidation17() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src1"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src1"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/bin/src2"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/bin/src2"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest \'P/bin/src2\' inside output folder \'P/bin\'",
@@ -1095,14 +1101,14 @@ public void testClasspathValidation17() throws CoreException {
  */ 
 public void testClasspathValidation18() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/S/bin"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/S/bin"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Path \'/S/bin\' must denote location inside project P",
@@ -1116,14 +1122,14 @@ public void testClasspathValidation18() throws CoreException {
  */ 
 public void testClasspathValidation19() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/lib/src"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/lib/src"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should have detected library folder nested inside source folder on the classpath", 
@@ -1139,17 +1145,17 @@ public void testClasspathValidation19() throws CoreException {
  */
 public void testClasspathValidation20() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/S/bin"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/S/bin"));
 		
 		Map options = new Hashtable(5);
-		options.put(JavaCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, JavaCore.DISABLED);
+		options.put(JavaScriptCore.CORE_ENABLE_CLASSPATH_MULTIPLE_OUTPUT_LOCATIONS, JavaScriptCore.DISABLED);
 		proj.setOptions(options);
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Multiple output locations are disabled in project P, cannot associate entry: \'src\' with a specific output",
@@ -1164,17 +1170,17 @@ public void testClasspathValidation20() throws CoreException {
  */
 public void testClasspathValidation21() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[]{new Path("**/src")}, null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[]{new Path("**/src")}, null);
 		
 		Map options = new Hashtable(5);
-		options.put(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaCore.DISABLED);
+		options.put(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaScriptCore.DISABLED);
 		proj.setOptions(options);
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Inclusion or exclusion patterns are disabled in project P, cannot selectively include or exclude from entry: \'src\'",
@@ -1189,15 +1195,15 @@ public void testClasspathValidation21() throws CoreException {
  */
 public void testClasspathValidation22() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/src2"));
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/src2"), new IPath[0], new Path("/P/src"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/src2"));
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/src2"), new IPath[0], new Path("/P/src"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Source folder \'src\' in project P cannot output to distinct source folder \'src2\'",
@@ -1214,15 +1220,15 @@ public void testClasspathValidation22() throws CoreException {
  */
 public void testClasspathValidation23() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/"), new IPath[]{new Path("src/")}, null);
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/"), new IPath[]{new Path("src/")}, null);
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 
 		assertStatus(
 			"OK",
@@ -1240,14 +1246,14 @@ public void testClasspathValidation23() throws CoreException {
  */
 public void testClasspathValidation24() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest \'P/src\' inside output folder \'P\'",
@@ -1262,15 +1268,15 @@ public void testClasspathValidation24() throws CoreException {
  */
 public void testClasspathValidation25() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/lib2"));
-		newCP[originalCP.length+1] = JavaCore.newLibraryEntry(new Path("/P/lib2"), null, null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/lib2"));
+		newCP[originalCP.length+1] = JavaScriptCore.newLibraryEntry(new Path("/P/lib2"), null, null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Source folder \'src\' in project P cannot output to library \'lib2\'",
@@ -1286,15 +1292,15 @@ public void testClasspathValidation25() throws CoreException {
  */
 public void testClasspathValidation26() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newLibraryEntry(new Path("/P/"), null, null);
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], null);
+		newCP[originalCP.length] = JavaScriptCore.newLibraryEntry(new Path("/P/"), null, null);
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest \'P/src\' inside library \'P/\'",
@@ -1309,14 +1315,14 @@ public void testClasspathValidation26() throws CoreException {
  */
 public void testClasspathValidation27() throws CoreException {
 	try {
-		IJavaProject proj1 =  this.createJavaProject("P1", new String[] {}, "");
-		proj1.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
+		IJavaScriptProject proj1 =  this.createJavaProject("P1", new String[] {}, "");
+		proj1.setOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_4);
 
-		IJavaProject proj2 =  this.createJavaProject("P2", new String[] {}, "");
-		proj2.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_1);
-		proj2.setOption(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaCore.WARNING);
+		IJavaScriptProject proj2 =  this.createJavaProject("P2", new String[] {}, "");
+		proj2.setOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_1);
+		proj2.setOption(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaScriptCore.WARNING);
 
-		IJavaModelStatus status = JavaConventions.validateClasspathEntry(proj2, JavaCore.newProjectEntry(new Path("/P1")), false);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspathEntry(proj2, JavaScriptCore.newProjectEntry(new Path("/P1")), false);
 		assertStatus(
 			"Incompatible .class files version in required binaries. Project \'P2\' is targeting a 1.1 runtime, but is compiled against \'P1\' which requires a 1.4 runtime",
 			status);
@@ -1326,47 +1332,47 @@ public void testClasspathValidation27() throws CoreException {
 }
 /**
  * @bug 159325: Any idea why ClasspathEntry checks for string object reference instead of equals
- * @test Ensure that validation is correctly done even for other strings than JavaCore constants...
- * 	Note that it's needed to change JavaCore options as "ignore" is the default value and set option
+ * @test Ensure that validation is correctly done even for other strings than JavaScriptCore constants...
+ * 	Note that it's needed to change JavaScriptCore options as "ignore" is the default value and set option
  * 	to this value on java project will just remove it instead of putting another string object...
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=159325"
  */
 public void testClasspathValidation27_Bug159325_project() throws CoreException {
-	Hashtable javaCoreOptions = JavaCore.getOptions();
+	Hashtable javaCoreOptions = JavaScriptCore.getOptions();
 	try {
-		IJavaProject proj1 =  this.createJavaProject("P1", new String[] {}, "");
-		proj1.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
+		IJavaScriptProject proj1 =  this.createJavaProject("P1", new String[] {}, "");
+		proj1.setOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_4);
 
-		Hashtable options = JavaCore.getOptions();
-		options.put(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaCore.WARNING);
-		JavaCore.setOptions(options);
-		IJavaProject proj2 =  this.createJavaProject("P2", new String[] {}, "");
-		proj2.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_1);
-		proj2.setOption(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, new String("ignore".toCharArray()));
+		Hashtable options = JavaScriptCore.getOptions();
+		options.put(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaScriptCore.WARNING);
+		JavaScriptCore.setOptions(options);
+		IJavaScriptProject proj2 =  this.createJavaProject("P2", new String[] {}, "");
+		proj2.setOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_1);
+		proj2.setOption(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, new String("ignore".toCharArray()));
 
-		IJavaModelStatus status = JavaConventions.validateClasspathEntry(proj2, JavaCore.newProjectEntry(new Path("/P1")), false);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspathEntry(proj2, JavaScriptCore.newProjectEntry(new Path("/P1")), false);
 		assertStatus("OK", status);
 	} finally {
-		JavaCore.setOptions(javaCoreOptions);
+		JavaScriptCore.setOptions(javaCoreOptions);
 		this.deleteProjects(new String[]{"P1", "P2"});
 	}
 }
 public void testClasspathValidation27_Bug159325_lib() throws CoreException {
-	Hashtable javaCoreOptions = JavaCore.getOptions();
+	Hashtable javaCoreOptions = JavaScriptCore.getOptions();
 	try {
-		IJavaProject proj =  this.createJavaProject("P1", new String[] {}, "");
-		proj.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_1);
+		IJavaScriptProject proj =  this.createJavaProject("P1", new String[] {}, "");
+		proj.setOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_1);
 
-		Hashtable options = JavaCore.getOptions();
-		options.put(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaCore.WARNING);
-		JavaCore.setOptions(options);
-		proj.setOption(JavaCore.CORE_INCOMPATIBLE_JDK_LEVEL, new String("ignore".toCharArray()));
+		Hashtable options = JavaScriptCore.getOptions();
+		options.put(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, JavaScriptCore.WARNING);
+		JavaScriptCore.setOptions(options);
+		proj.setOption(JavaScriptCore.CORE_INCOMPATIBLE_JDK_LEVEL, new String("ignore".toCharArray()));
 
-		IClasspathEntry library = JavaCore.newLibraryEntry(new Path(getExternalJCLPathString(JavaCore.VERSION_1_5)), null, null, ClasspathEntry.NO_ACCESS_RULES, null, false);
-		IJavaModelStatus status = JavaConventions.validateClasspathEntry(proj, library, false);
+		IIncludePathEntry library = JavaScriptCore.newLibraryEntry(new Path(getExternalJCLPathString(JavaScriptCore.VERSION_1_5)), null, null, ClasspathEntry.NO_ACCESS_RULES, null, false);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspathEntry(proj, library, false);
 		assertStatus("OK", status);
 	} finally {
-		JavaCore.setOptions(javaCoreOptions);
+		JavaScriptCore.setOptions(javaCoreOptions);
 		this.deleteProjects(new String[]{"P1", "P2"});
 	}
 }
@@ -1376,14 +1382,14 @@ public void testClasspathValidation27_Bug159325_lib() throws CoreException {
  */
 public void testClasspathValidation28() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[]{ new Path("output/") }, new Path("/P/src/output"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[]{ new Path("output/") }, new Path("/P/src/output"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Source folder \'src\' in project P should be allowed to output to excluded source subfolder \'src/output\'",
@@ -1399,14 +1405,14 @@ public void testClasspathValidation28() throws CoreException {
  */
 public void testClasspathValidation29() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/src/output"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/src/output"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest output folder \'P/src/output\' inside \'P/src\'",
@@ -1421,15 +1427,15 @@ public void testClasspathValidation29() throws CoreException {
  */
 public void testClasspathValidation30() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src1"), new IPath[]{new Path("bin/")}, new Path("/P/src1/bin"));
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/src1/bin/src2"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src1"), new IPath[]{new Path("bin/")}, new Path("/P/src1/bin"));
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/src1/bin/src2"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest \'P/src1/bin/src2\' inside output folder \'P/src1/bin\'",
@@ -1444,15 +1450,15 @@ public void testClasspathValidation30() throws CoreException {
  */
 public void testClasspathValidation31() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src1"), new IPath[]{new Path("src2/")}, new Path("/P/src1/src2/bin"));
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/src1/src2"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src1"), new IPath[]{new Path("src2/")}, new Path("/P/src1/src2/bin"));
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/src1/src2"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest output folder \'P/src1/src2/bin\' inside \'P/src1/src2\'",
@@ -1467,15 +1473,15 @@ public void testClasspathValidation31() throws CoreException {
  */
 public void testClasspathValidation32() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src1"), new IPath[]{new Path("src2/")}, new Path("/P/src1/src2"));
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/src1/src2"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src1"), new IPath[]{new Path("src2/")}, new Path("/P/src1/src2"));
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/src1/src2"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Source folder \'src1\' in project P cannot output to distinct source folder \'src1/src2\'",
@@ -1490,14 +1496,14 @@ public void testClasspathValidation32() throws CoreException {
  */
 public void testClasspathValidation33() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/dir/src"), new IPath[]{new Path("src2/")}, new Path("/P/dir"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/dir/src"), new IPath[]{new Path("src2/")}, new Path("/P/dir"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest \'P/dir/src\' inside output folder \'P/dir\'",
@@ -1513,14 +1519,14 @@ public void testClasspathValidation33() throws CoreException {
  */ 
 public void testClasspathValidation34() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("src/")}, new IPath[0], null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("src/")}, new IPath[0], null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should not have allowed nested source folders with inclusion on the classpath", 
@@ -1537,14 +1543,14 @@ public void testClasspathValidation34() throws CoreException {
  */ 
 public void testClasspathValidation35() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("lib/")}, new Path[0], null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("lib/")}, new Path[0], null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should not have allowed nested lib folders with inclusion on the classpath", 
@@ -1560,14 +1566,14 @@ public void testClasspathValidation35() throws CoreException {
  */ 
 public void testClasspathValidation36() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("**/src")}, new Path[0], null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[] {new Path("**/src")}, new Path[0], null);
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"OK",
@@ -1581,17 +1587,17 @@ public void testClasspathValidation36() throws CoreException {
  */
 public void testClasspathValidation37() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[]{new Path("**/src")}, new Path[0], null);
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[]{new Path("**/src")}, new Path[0], null);
 		
 		Map options = new Hashtable(5);
-		options.put(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaCore.DISABLED);
+		options.put(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaScriptCore.DISABLED);
 		proj.setOptions(options);
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Inclusion or exclusion patterns are disabled in project P, cannot selectively include or exclude from entry: \'src\'",
@@ -1605,14 +1611,14 @@ public void testClasspathValidation37() throws CoreException {
  */
 public void testClasspathValidation38() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[]{ new Path("output/") }, new Path[0], new Path("/P/src/output"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[]{ new Path("output/") }, new Path[0], new Path("/P/src/output"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Source folder \'src\' in project P should not be allowed to output to included source subfolder \'src/output\'",
@@ -1627,15 +1633,15 @@ public void testClasspathValidation38() throws CoreException {
  */
 public void testClasspathValidation39() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[]{new Path("test/")}, new Path("/P/bin/test"));
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/test"), new IPath[]{}, new Path("/P/bin"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[]{new Path("test/")}, new Path("/P/bin/test"));
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/test"), new IPath[]{}, new Path("/P/bin"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest output folder \'P/bin/test\' inside output folder \'P/bin\'",
@@ -1649,15 +1655,15 @@ public void testClasspathValidation39() throws CoreException {
  */
 public void testClasspathValidation40() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+2];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+2];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"), new IPath[]{new Path("test/")}, new Path("/P/bin"));
-		newCP[originalCP.length+1] = JavaCore.newSourceEntry(new Path("/P/test"), new IPath[]{}, new Path("/P/bin/test"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[]{new Path("test/")}, new Path("/P/bin"));
+		newCP[originalCP.length+1] = JavaScriptCore.newSourceEntry(new Path("/P/test"), new IPath[]{}, new Path("/P/bin/test"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest output folder \'P/bin/test\' inside output folder \'P/bin\'",
@@ -1671,14 +1677,14 @@ public void testClasspathValidation40() throws CoreException {
  */
 public void testClasspathValidation41() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "bin");
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "bin");
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P/src"), new IPath[]{}, new Path("/P/"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[]{}, new Path("/P/"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"Cannot nest \'P/src\' inside output folder \'P/\'",
@@ -1693,15 +1699,15 @@ public void testClasspathValidation41() throws CoreException {
  */ 
 public void testClasspathValidation42() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		proj.setOption(JavaCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaCore.DISABLED);
-		IClasspathEntry[] originalCP = proj.getRawClasspath();
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		proj.setOption(JavaScriptCore.CORE_ENABLE_CLASSPATH_EXCLUSION_PATTERNS, JavaScriptCore.DISABLED);
+		IIncludePathEntry[] originalCP = proj.getRawIncludepath();
 	
-		IClasspathEntry[] newCP = new IClasspathEntry[originalCP.length+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[originalCP.length+1];
 		System.arraycopy(originalCP, 0, newCP, 0, originalCP.length);
-		newCP[originalCP.length] = JavaCore.newSourceEntry(new Path("/P"));
+		newCP[originalCP.length] = JavaScriptCore.newSourceEntry(new Path("/P"));
 		
-		IJavaModelStatus status = JavaConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspath(proj, newCP, proj.getOutputLocation());
 		
 		assertStatus(
 			"should have detected nested source folders on the classpath", 
@@ -1717,14 +1723,14 @@ public void testClasspathValidation42() throws CoreException {
  */
 public void testClasspathWithDuplicateEntries() throws CoreException {
 	try {
-		IJavaProject project =  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] cp= project.getRawClasspath();
-		IClasspathEntry[] newCp= new IClasspathEntry[cp.length *2];
+		IJavaScriptProject project =  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] cp= project.getRawIncludepath();
+		IIncludePathEntry[] newCp= new IIncludePathEntry[cp.length *2];
 		System.arraycopy(cp, 0, newCp, 0, cp.length);
 		System.arraycopy(cp, 0, newCp, cp.length, cp.length);
 		try {
-			project.setRawClasspath(newCp, null);
-		} catch (JavaModelException jme) {
+			project.setRawIncludepath(newCp, null);
+		} catch (JavaScriptModelException jme) {
 			return;
 		}
 		assertTrue("Setting the classpath with two entries specifying the same path should fail", false);
@@ -1738,44 +1744,44 @@ public void testClasspathWithDuplicateEntries() throws CoreException {
  */
 public void testClasspathDuplicateExtraAttribute() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P1", new String[] {}, "bin");
-		IClasspathAttribute[] extraAttributes = new IClasspathAttribute[2];
-		extraAttributes[0] = JavaCore.newClasspathAttribute("javadoc_location", "http://www.sample-url.org/doc/");
-		extraAttributes[1] = JavaCore.newClasspathAttribute("javadoc_location", "d:/tmp");
+		IJavaScriptProject proj =  this.createJavaProject("P1", new String[] {}, "bin");
+		IIncludePathAttribute[] extraAttributes = new IIncludePathAttribute[2];
+		extraAttributes[0] = JavaScriptCore.newIncludepathAttribute("javadoc_location", "http://www.sample-url.org/doc/");
+		extraAttributes[1] = JavaScriptCore.newIncludepathAttribute("javadoc_location", "d:/tmp");
 
 		// Verify container entry validation
-		IClasspathEntry container = JavaCore.newContainerEntry(new Path("JRE_CONTAINER"), ClasspathEntry.NO_ACCESS_RULES, extraAttributes, false);
-		IJavaModelStatus status = JavaConventions.validateClasspathEntry(proj, container, false);
+		IIncludePathEntry container = JavaScriptCore.newContainerEntry(new Path("JRE_CONTAINER"), ClasspathEntry.NO_ACCESS_RULES, extraAttributes, false);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspathEntry(proj, container, false);
 		assertStatus(
 			"Duplicate extra attribute: \'javadoc_location\' in classpath entry \'JRE_CONTAINER\' for project P1",
 			status);
 
 		// Verify library entry validation
-		IClasspathEntry library = JavaCore.newLibraryEntry(new Path(getExternalJCLPathString()), null, null, ClasspathEntry.NO_ACCESS_RULES, extraAttributes, false);
-		status = JavaConventions.validateClasspathEntry(proj, library, false);
+		IIncludePathEntry library = JavaScriptCore.newLibraryEntry(new Path(getExternalJCLPathString()), null, null, ClasspathEntry.NO_ACCESS_RULES, extraAttributes, false);
+		status = JavaScriptConventions.validateClasspathEntry(proj, library, false);
 		assertStatus(
 			"Duplicate extra attribute: \'javadoc_location\' in classpath entry \'"+getExternalJCLPath()+"\' for project P1",
 			status);
 
 		// Verify project entry validation
 		createJavaProject("P2");
-		IClasspathEntry projectEntry = JavaCore.newProjectEntry(new Path("/P2"), ClasspathEntry.NO_ACCESS_RULES, false, extraAttributes, false);
-		status = JavaConventions.validateClasspathEntry(proj, projectEntry, false);
+		IIncludePathEntry projectEntry = JavaScriptCore.newProjectEntry(new Path("/P2"), ClasspathEntry.NO_ACCESS_RULES, false, extraAttributes, false);
+		status = JavaScriptConventions.validateClasspathEntry(proj, projectEntry, false);
 		assertStatus(
 			"Duplicate extra attribute: \'javadoc_location\' in classpath entry \'/P2\' for project P1",
 			status);
 
 		// Verify source entry validation
 		createFolder("/P1/src");
-		IClasspathEntry sourceEntry = JavaCore.newSourceEntry(new Path("/P1/src"), new IPath[0], new IPath[0], null, extraAttributes);
-		status = JavaConventions.validateClasspathEntry(proj, sourceEntry, false);
+		IIncludePathEntry sourceEntry = JavaScriptCore.newSourceEntry(new Path("/P1/src"), new IPath[0], new IPath[0], null, extraAttributes);
+		status = JavaScriptConventions.validateClasspathEntry(proj, sourceEntry, false);
 		assertStatus(
 			"Duplicate extra attribute: \'javadoc_location\' in classpath entry \'src\' for project P1",
 			status);
 
 		// Verify variable entry validation
-		IClasspathEntry variable = JavaCore.newVariableEntry(new Path("JCL_LIB"), new Path("JCL_SRC"), null, ClasspathEntry.NO_ACCESS_RULES, extraAttributes, false);
-		status = JavaConventions.validateClasspathEntry(proj, variable, false);
+		IIncludePathEntry variable = JavaScriptCore.newVariableEntry(new Path("JCL_LIB"), new Path("JCL_SRC"), null, ClasspathEntry.NO_ACCESS_RULES, extraAttributes, false);
+		status = JavaScriptConventions.validateClasspathEntry(proj, variable, false);
 		assertStatus(
 			"Duplicate extra attribute: \'javadoc_location\' in classpath entry \'"+getExternalJCLPath()+"\' for project P1",
 			status);
@@ -1792,19 +1798,19 @@ public void testClasspathDuplicateExtraAttribute() throws CoreException {
  */
 public void testClasspathWithNonExistentLibraryEntry() throws CoreException {
 	try {
-		IJavaProject project=  this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalPath= project.getRawClasspath();
+		IJavaScriptProject project=  this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalPath= project.getRawIncludepath();
 		IPackageFragmentRoot[] originalRoots= project.getPackageFragmentRoots();
 	
-		IClasspathEntry[] newPath= new IClasspathEntry[originalPath.length + 1];
+		IIncludePathEntry[] newPath= new IIncludePathEntry[originalPath.length + 1];
 		System.arraycopy(originalPath, 0, newPath, 0, originalPath.length);
 	
-		IClasspathEntry newEntry= JavaCore.newLibraryEntry(new Path("c:/nothing/nozip.jar").makeAbsolute(), null, null, false);
+		IIncludePathEntry newEntry= JavaScriptCore.newLibraryEntry(new Path("c:/nothing/nozip.jar").makeAbsolute(), null, null, false);
 		newPath[originalPath.length]= newEntry;
 	
-		project.setRawClasspath(newPath, null);
+		project.setRawIncludepath(newPath, null);
 
-		IClasspathEntry[] getPath= project.getRawClasspath();
+		IIncludePathEntry[] getPath= project.getRawIncludepath();
 		assertTrue("should be the same length", getPath.length == newPath.length);
 		for (int i= 0; i < getPath.length; i++) {
 			assertTrue("entries should be the same", getPath[i].equals(newPath[i]));
@@ -1826,19 +1832,19 @@ public void testClasspathWithNonExistentLibraryEntry() throws CoreException {
  */
 public void testClasspathWithNonExistentProjectEntry() throws CoreException {
 	try {
-		IJavaProject project= this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalPath= project.getRawClasspath();
+		IJavaScriptProject project= this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalPath= project.getRawIncludepath();
 		IPackageFragmentRoot[] originalRoots= project.getPackageFragmentRoots();
 	
-		IClasspathEntry[] newPath= new IClasspathEntry[originalPath.length + 1];
+		IIncludePathEntry[] newPath= new IIncludePathEntry[originalPath.length + 1];
 		System.arraycopy(originalPath, 0, newPath, 0, originalPath.length);
 	
-		IClasspathEntry newEntry= JavaCore.newProjectEntry(new Path("/NoProject"), false);
+		IIncludePathEntry newEntry= JavaScriptCore.newProjectEntry(new Path("/NoProject"), false);
 		newPath[originalPath.length]= newEntry;
 	
-		project.setRawClasspath(newPath, null);
+		project.setRawIncludepath(newPath, null);
 	
-		IClasspathEntry[] getPath= project.getRawClasspath();
+		IIncludePathEntry[] getPath= project.getRawIncludepath();
 		assertTrue("should be the same length", getPath.length == newPath.length);
 		for (int i= 0; i < getPath.length; i++) {
 			assertTrue("entries should be the same", getPath[i].equals(newPath[i]));
@@ -1860,19 +1866,19 @@ public void testClasspathWithNonExistentProjectEntry() throws CoreException {
  */
 public void testClasspathWithNonExistentSourceEntry() throws CoreException {
 	try {
-		IJavaProject project= this.createJavaProject("P", new String[] {"src"}, "bin");
-		IClasspathEntry[] originalPath= project.getRawClasspath();
+		IJavaScriptProject project= this.createJavaProject("P", new String[] {"src"}, "bin");
+		IIncludePathEntry[] originalPath= project.getRawIncludepath();
 		IPackageFragmentRoot[] originalRoots= project.getPackageFragmentRoots();
 
-		IClasspathEntry[] newPath= new IClasspathEntry[originalPath.length + 1];
+		IIncludePathEntry[] newPath= new IIncludePathEntry[originalPath.length + 1];
 		System.arraycopy(originalPath, 0, newPath, 0, originalPath.length);
 
-		IClasspathEntry newEntry= JavaCore.newSourceEntry(new Path("/P/moreSource"));
+		IIncludePathEntry newEntry= JavaScriptCore.newSourceEntry(new Path("/P/moreSource"));
 		newPath[originalPath.length]= newEntry;
 
-		project.setRawClasspath(newPath, null);
+		project.setRawIncludepath(newPath, null);
 
-		IClasspathEntry[] getPath= project.getRawClasspath();
+		IIncludePathEntry[] getPath= project.getRawIncludepath();
 		assertTrue("should be the same length", getPath.length == newPath.length);
 		for (int i= 0; i < getPath.length; i++) {
 			assertTrue("entries should be the same", getPath[i].equals(newPath[i]));
@@ -1894,12 +1900,12 @@ public void testClasspathWithNonExistentSourceEntry() throws CoreException {
 public void testCycleReport() throws CoreException {
 
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {""}, "");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {""}, "");
-		IJavaProject p3 = this.createJavaProject("P3", new String[] {""}, new String[] {}, new String[] {"/P2"}, "");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {""}, "");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {""}, "");
+		IJavaScriptProject p3 = this.createJavaProject("P3", new String[] {""}, new String[] {}, new String[] {"/P2"}, "");
 	
 		// Ensure no cycle reported
-		IJavaProject[] projects = { p1, p2, p3 };
+		IJavaScriptProject[] projects = { p1, p2, p3 };
 		int cycleMarkerCount = 0;
 		for (int i = 0; i < projects.length; i++){
 			cycleMarkerCount += this.numberOfCycleMarkers(projects[i]);
@@ -1907,22 +1913,22 @@ public void testCycleReport() throws CoreException {
 		assertTrue("Should have no cycle markers", cycleMarkerCount == 0);
 	
 		// Add cycle
-		IClasspathEntry[] originalP1CP= p1.getRawClasspath();
-		IClasspathEntry[] originalP2CP= p2.getRawClasspath();
+		IIncludePathEntry[] originalP1CP= p1.getRawIncludepath();
+		IIncludePathEntry[] originalP2CP= p2.getRawIncludepath();
 
 		// Add P1 as a prerequesite of P2
 		int length = originalP2CP.length;
-		IClasspathEntry[] newCP= new IClasspathEntry[length + 1];
+		IIncludePathEntry[] newCP= new IIncludePathEntry[length + 1];
 		System.arraycopy(originalP2CP, 0 , newCP, 0, length);
-		newCP[length]= JavaCore.newProjectEntry(p1.getProject().getFullPath(), false);
-		p2.setRawClasspath(newCP, null);
+		newCP[length]= JavaScriptCore.newProjectEntry(p1.getProject().getFullPath(), false);
+		p2.setRawIncludepath(newCP, null);
 
 		// Add P3 as a prerequesite of P1
 		length = originalP1CP.length;
-		newCP= new IClasspathEntry[length + 1];
+		newCP= new IIncludePathEntry[length + 1];
 		System.arraycopy(originalP1CP, 0 , newCP, 0, length);
-		newCP[length]= JavaCore.newProjectEntry(p3.getProject().getFullPath(), false);
-		p1.setRawClasspath(newCP, null);
+		newCP[length]= JavaScriptCore.newProjectEntry(p3.getProject().getFullPath(), false);
+		p1.setRawIncludepath(newCP, null);
 
 		waitForAutoBuild(); // wait for cycle markers to be created
 		cycleMarkerCount = 0;
@@ -1943,8 +1949,8 @@ public void testCycleReport() throws CoreException {
  */
 public void testDefaultClasspathAndOutputLocation() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "bin");
-		IClasspathEntry[] classpath = project.getRawClasspath();
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "bin");
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		assertTrue("Incorrect default classpath; to many entries", classpath.length == 1);
 		assertTrue("Incorrect default classpath: " + classpath[0], classpath[0].getPath().equals(project.getUnderlyingResource().getFullPath()));
 		IPath output = project.getOutputLocation();
@@ -1959,11 +1965,11 @@ public void testDefaultClasspathAndOutputLocation() throws CoreException {
  * and a delta with removed roots.
  */
 public void testEmptyClasspath() throws CoreException {
-	IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+	IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 	try {
 		startDeltas();
-		setClasspath(project, new IClasspathEntry[] {});
-		IClasspathEntry[] cp= project.getRawClasspath();
+		setClasspath(project, new IIncludePathEntry[] {});
+		IIncludePathEntry[] cp= project.getRawIncludepath();
 		assertTrue("classpath should have no entries", cp.length == 0);
 
 		// ensure the deltas are correct
@@ -2006,7 +2012,7 @@ public void testEncodeDecodeEntry01() {
 	assertEncodeDecodeEntry(
 		"P", 
 		"<classpathentry kind=\"src\" path=\"src\"/>\n", 
-		JavaCore.newSourceEntry(new Path("/P/src"))
+		JavaScriptCore.newSourceEntry(new Path("/P/src"))
 	);
 }
 /*
@@ -2020,12 +2026,12 @@ public void testEncodeDecodeEntry02() {
 		"		<attribute name=\"attrName\" value=\"some value\"/>\n" + 
 		"	</attributes>\n" + 
 		"</classpathentry>\n",
-		JavaCore.newSourceEntry(
+		JavaScriptCore.newSourceEntry(
 			new Path("/P/src"), 
 			new IPath[] {new Path("**/Y.js")},
 			new IPath[] {new Path("**/X.js")},
 			new Path("/P/bin"),
-			new IClasspathAttribute[] {JavaCore.newClasspathAttribute("attrName", "some value")})
+			new IIncludePathAttribute[] {JavaScriptCore.newIncludepathAttribute("attrName", "some value")})
 	);
 }
 /*
@@ -2035,7 +2041,7 @@ public void testEncodeDecodeEntry03() {
 	assertEncodeDecodeEntry(
 		"P1", 
 		"<classpathentry kind=\"src\" path=\"/P2\"/>\n",
-		JavaCore.newProjectEntry(new Path("/P2"))
+		JavaScriptCore.newProjectEntry(new Path("/P2"))
 	);
 }
 /*
@@ -2052,12 +2058,12 @@ public void testEncodeDecodeEntry04() {
 		"		<accessrule kind=\"accessible\" pattern=\"**/A*.java\"/>\n" + 
 		"	</accessrules>\n" + 
 		"</classpathentry>\n",
-		JavaCore.newLibraryEntry(
+		JavaScriptCore.newLibraryEntry(
 			new Path("/P/lib.jar"),
 			new Path("/P/src.zip"),
 			new Path("root"),
-			new IAccessRule[] {JavaCore.newAccessRule(new Path("**/A*.js"), IAccessRule.K_ACCESSIBLE)},
-			new IClasspathAttribute[] {JavaCore.newClasspathAttribute("attr1", "val1")},
+			new IAccessRule[] {JavaScriptCore.newAccessRule(new Path("**/A*.js"), IAccessRule.K_ACCESSIBLE)},
+			new IIncludePathAttribute[] {JavaScriptCore.newIncludepathAttribute("attr1", "val1")},
 			true)
 	);
 }
@@ -2075,12 +2081,12 @@ public void testEncodeDecodeEntry05() {
 		"		<accessrule ignoreifbetter=\"true\" kind=\"accessible\" pattern=\"**/A*.java\"/>\n" + 
 		"	</accessrules>\n" + 
 		"</classpathentry>\n",
-		JavaCore.newLibraryEntry(
+		JavaScriptCore.newLibraryEntry(
 			new Path("/P/lib.jar"),
 			new Path("/P/src.zip"),
 			new Path("root"),
-			new IAccessRule[] {JavaCore.newAccessRule(new Path("**/A*.js"), IAccessRule.K_ACCESSIBLE | IAccessRule.IGNORE_IF_BETTER)},
-			new IClasspathAttribute[] {JavaCore.newClasspathAttribute("attr1", "val1")},
+			new IAccessRule[] {JavaScriptCore.newAccessRule(new Path("**/A*.js"), IAccessRule.K_ACCESSIBLE | IAccessRule.IGNORE_IF_BETTER)},
+			new IIncludePathAttribute[] {JavaScriptCore.newIncludepathAttribute("attr1", "val1")},
 			true)
 	);
 }
@@ -2090,24 +2096,24 @@ public void testEncodeDecodeEntry05() {
  */
 public void testEmptyContainer() throws CoreException {
 	try {
-		IJavaProject proj = createJavaProject("P", new String[] {}, "bin");
+		IJavaScriptProject proj = createJavaProject("P", new String[] {}, "bin");
 
 		startDeltas();
 
 		// create container
-		JavaCore.setJsGlobalScopeContainer(
+		JavaScriptCore.setJsGlobalScopeContainer(
 			new Path("container/default"), 
-			new IJavaProject[]{ proj },
+			new IJavaScriptProject[]{ proj },
 			new IJsGlobalScopeContainer[] {
 				new TestContainer(
 					new Path("container/default"),
-					new IClasspathEntry[] {}) 
+					new IIncludePathEntry[] {}) 
 			}, 
 			null);
 
 		// set P's classpath with this container
-		IClasspathEntry container = JavaCore.newContainerEntry(new Path("container/default"), true);
-		proj.setRawClasspath(new IClasspathEntry[] {container}, new Path("/P"), null);
+		IIncludePathEntry container = JavaScriptCore.newContainerEntry(new Path("container/default"), true);
+		proj.setRawIncludepath(new IIncludePathEntry[] {container}, new Path("/P"), null);
 
 		assertDeltas(
 			"Unexpected delta",
@@ -2125,7 +2131,7 @@ public void testEmptyContainer() throws CoreException {
  */
 public void testEmptyInclusionPattern() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {""}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {""}, "bin");
 		project.open(null);
 		editFile(
 			"/P/.classpath",
@@ -2138,7 +2144,7 @@ public void testEmptyInclusionPattern() throws CoreException {
 		project.getProject().close(null);
 		project.getProject().open(null);
 		project.getPackageFragmentRoot(project.getProject()).open(null);
-		IClasspathEntry[] classpath = project.getRawClasspath();
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		assertClasspathEquals(
 			classpath, 
 			"/P[CPE_SOURCE][K_SOURCE][isExported:false][including:X.java]"
@@ -2153,28 +2159,28 @@ public void testEmptyInclusionPattern() throws CoreException {
  */
 public void testExportContainer() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {""}, "");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {""}, "");
 
 		// create container
-		JavaCore.setJsGlobalScopeContainer(
+		JavaScriptCore.setJsGlobalScopeContainer(
 			new Path("container/default"), 
-			new IJavaProject[]{ p1 },
+			new IJavaScriptProject[]{ p1 },
 			new IJsGlobalScopeContainer[] {
 				new TestContainer(
 					new Path("container/default"),
-					new IClasspathEntry[] {
-						JavaCore.newLibraryEntry(getExternalJCLPath(), null, null)
+					new IIncludePathEntry[] {
+						JavaScriptCore.newLibraryEntry(getExternalJCLPath(), null, null)
 					}) 
 			}, 
 			null);
 
 		// set P1's classpath with this container
-		IClasspathEntry container = JavaCore.newContainerEntry(new Path("container/default"), true);
-		p1.setRawClasspath(new IClasspathEntry[] {container}, new Path("/P1"), null);
+		IIncludePathEntry container = JavaScriptCore.newContainerEntry(new Path("container/default"), true);
+		p1.setRawIncludepath(new IIncludePathEntry[] {container}, new Path("/P1"), null);
 		
 		// create dependent project P2
-		IJavaProject  p2 = this.createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1"}, "");
-		IClasspathEntry[] classpath = ((JavaProject)p2).getExpandedClasspath();
+		IJavaScriptProject  p2 = this.createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1"}, "");
+		IIncludePathEntry[] classpath = ((JavaProject)p2).getExpandedClasspath();
 		
 		// ensure container is exported to P2
 		assertEquals("Unexpected number of classpath entries", 2, classpath.length);
@@ -2189,9 +2195,9 @@ public void testExportContainer() throws CoreException {
  */
 public void testExtraAttributes1() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
-		IClasspathEntry entry = JavaCore.newSourceEntry(new Path("/P"), new IPath[0], new IPath[0], null, new IClasspathAttribute[] {});
-		project.setRawClasspath(new IClasspathEntry[] {entry}, null);
+		IJavaScriptProject project = createJavaProject("P");
+		IIncludePathEntry entry = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[0], new IPath[0], null, new IIncludePathAttribute[] {});
+		project.setRawIncludepath(new IIncludePathEntry[] {entry}, null);
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P/.classpath")));
 		assertSourceEquals(
 			"Unexpected content", 
@@ -2210,10 +2216,10 @@ public void testExtraAttributes1() throws CoreException {
  */
 public void testExtraAttributes2() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
-		IClasspathAttribute attribute = JavaCore.newClasspathAttribute("foo", "some value");
-		IClasspathEntry entry = JavaCore.newSourceEntry(new Path("/P"), new IPath[0], new IPath[0], null, new IClasspathAttribute[] {attribute});
-		project.setRawClasspath(new IClasspathEntry[] {entry}, null);
+		IJavaScriptProject project = createJavaProject("P");
+		IIncludePathAttribute attribute = JavaScriptCore.newIncludepathAttribute("foo", "some value");
+		IIncludePathEntry entry = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[0], new IPath[0], null, new IIncludePathAttribute[] {attribute});
+		project.setRawIncludepath(new IIncludePathEntry[] {entry}, null);
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P/.classpath")));
 		assertSourceEquals(
 			"Unexpected content", 
@@ -2236,11 +2242,11 @@ public void testExtraAttributes2() throws CoreException {
  */
 public void testExtraAttributes3() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
-		IClasspathAttribute attribute1 = JavaCore.newClasspathAttribute("foo", "some value");
-		IClasspathAttribute attribute2 = JavaCore.newClasspathAttribute("bar", "other value");
-		IClasspathEntry entry = JavaCore.newSourceEntry(new Path("/P"), new IPath[0], new IPath[0], null, new IClasspathAttribute[] {attribute1, attribute2});
-		project.setRawClasspath(new IClasspathEntry[] {entry}, null);
+		IJavaScriptProject project = createJavaProject("P");
+		IIncludePathAttribute attribute1 = JavaScriptCore.newIncludepathAttribute("foo", "some value");
+		IIncludePathAttribute attribute2 = JavaScriptCore.newIncludepathAttribute("bar", "other value");
+		IIncludePathEntry entry = JavaScriptCore.newSourceEntry(new Path("/P"), new IPath[0], new IPath[0], null, new IIncludePathAttribute[] {attribute1, attribute2});
+		project.setRawIncludepath(new IIncludePathEntry[] {entry}, null);
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P/.classpath")));
 		assertSourceEquals(
 			"Unexpected content", 
@@ -2264,7 +2270,7 @@ public void testExtraAttributes3() throws CoreException {
  */
 public void testExtraAttributes4() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
+		IJavaScriptProject project = createJavaProject("P");
 		editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -2278,7 +2284,7 @@ public void testExtraAttributes4() throws CoreException {
 			"</classpath>\n"
 		);
 		assertClasspathEquals(
-			project.getRawClasspath(),
+			project.getRawIncludepath(),
 			"/P[CPE_SOURCE][K_SOURCE][isExported:false][attributes:foo=some value]"
 		);
 	} finally {
@@ -2286,41 +2292,41 @@ public void testExtraAttributes4() throws CoreException {
 	}
 }
 /**
- * Test IJavaProject.hasClasspathCycle(IClasspathEntry[]).
+ * Test IJavaScriptProject.hasClasspathCycle(IIncludePathEntry[]).
  */
 public void testHasClasspathCycle() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {""}, "");
-		IJavaProject p2 = this.createJavaProject("P2", new String[] {""}, "");
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {""}, "");
+		IJavaScriptProject p2 = this.createJavaProject("P2", new String[] {""}, "");
 		this.createJavaProject("P3", new String[] {""}, new String[] {}, new String[] {"/P1"}, "");
 	
-		IClasspathEntry[] originalP1CP= p1.getRawClasspath();
-		IClasspathEntry[] originalP2CP= p2.getRawClasspath();
+		IIncludePathEntry[] originalP1CP= p1.getRawIncludepath();
+		IIncludePathEntry[] originalP2CP= p2.getRawIncludepath();
 	
 		// Ensure no cycle reported
-		assertTrue("P1 should not have a cycle", !p1.hasClasspathCycle(originalP1CP));
+		assertTrue("P1 should not have a cycle", !p1.hasIncludepathCycle(originalP1CP));
 
 		// Ensure that adding NervousTest as a prerequesite of P2 doesn't report a cycle
 		int length = originalP2CP.length;
-		IClasspathEntry[] newCP= new IClasspathEntry[length + 1];
+		IIncludePathEntry[] newCP= new IIncludePathEntry[length + 1];
 		System.arraycopy(originalP2CP, 0 , newCP, 0, length);
-		newCP[length]= JavaCore.newProjectEntry(p1.getProject().getFullPath(), false);
-		assertTrue("P2 should not have a cycle", !p2.hasClasspathCycle(newCP));
-		p2.setRawClasspath(newCP, null);
+		newCP[length]= JavaScriptCore.newProjectEntry(p1.getProject().getFullPath(), false);
+		assertTrue("P2 should not have a cycle", !p2.hasIncludepathCycle(newCP));
+		p2.setRawIncludepath(newCP, null);
 
 		// Ensure that adding P3 as a prerequesite of P1 reports a cycle
 		length = originalP1CP.length;
-		newCP= new IClasspathEntry[length + 1];
+		newCP= new IIncludePathEntry[length + 1];
 		System.arraycopy(originalP1CP, 0 , newCP, 0, length);
-		newCP[length]= JavaCore.newProjectEntry(p2.getProject().getFullPath(), false);
-		assertTrue("P3 should have a cycle", p2.hasClasspathCycle(newCP));
+		newCP[length]= JavaScriptCore.newProjectEntry(p2.getProject().getFullPath(), false);
+		assertTrue("P3 should have a cycle", p2.hasIncludepathCycle(newCP));
 
 		// Ensure a cycle is not reported through markers
 		IWorkspace workspace = getJavaModel().getWorkspace();
-		IMarker[] markers = workspace.getRoot().findMarkers(IJavaModelMarker.TRANSIENT_PROBLEM, true, 1);
+		IMarker[] markers = workspace.getRoot().findMarkers(IJavaScriptModelMarker.TRANSIENT_PROBLEM, true, 1);
 		boolean hasCycleMarker = false;
 		for (int i = 0; i < markers.length; i++){
-			if (markers[i].getAttribute(IJavaModelMarker.CYCLE_DETECTED) != null) {
+			if (markers[i].getAttribute(IJavaScriptModelMarker.CYCLE_DETECTED) != null) {
 				hasCycleMarker = true;
 				break;
 			}
@@ -2337,7 +2343,7 @@ public void testHasClasspathCycle() throws CoreException {
  */
 public void testInvalidClasspath1() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -2359,7 +2365,7 @@ public void testInvalidClasspath1() throws CoreException {
  */
 public void testInvalidClasspath2() throws CoreException {
 	try {
-		IJavaProject javaProject = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject javaProject = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -2395,7 +2401,7 @@ public void testInvalidExternalClassFolder() throws CoreException {
 		// remove trailing slash
 		if (Path.fromOSString(externalPath).segmentCount() > 0)
 			externalPath = externalPath.substring(0, externalPath.length()-1);
-		IJavaProject proj =  createJavaProject("P", new String[] {}, new String[] {externalPath}, "bin");
+		IJavaScriptProject proj =  createJavaProject("P", new String[] {}, new String[] {externalPath}, "bin");
 		assertMarkers(
 			"Unexpected markers",
 			"Required library cannot denote external folder: \'" + externalPath + "\' for project P",
@@ -2410,7 +2416,7 @@ public void testInvalidExternalClassFolder() throws CoreException {
 public void testInvalidExternalJar() throws CoreException {
 	try {
 		String jarPath = getExternalPath() + "nonExisting.jar";
-		IJavaProject proj = createJavaProject("P", new String[] {}, new String[] {jarPath}, "bin");
+		IJavaScriptProject proj = createJavaProject("P", new String[] {}, new String[] {jarPath}, "bin");
 		assertMarkers(
 			"Unexpected markers",
 			"Project P is missing required library: \'" + jarPath + "\'",
@@ -2424,7 +2430,7 @@ public void testInvalidExternalJar() throws CoreException {
  */
 public void testInvalidInternalJar1() throws CoreException {
 	try {
-		IJavaProject proj = createJavaProject("P", new String[] {}, new String[] {"/P/nonExisting.jar"}, "bin");
+		IJavaScriptProject proj = createJavaProject("P", new String[] {}, new String[] {"/P/nonExisting.jar"}, "bin");
 		assertMarkers(
 			"Unexpected markers",
 			"Project P is missing required library: \'nonExisting.jar\'",
@@ -2440,7 +2446,7 @@ public void testInvalidInternalJar2() throws CoreException {
 	try {
 		createProject("P1");
 		createFile("/P1/existing.txt", "");
-		IJavaProject proj =  createJavaProject("P2", new String[] {}, new String[] {"/P1/existing.txt"}, "bin");
+		IJavaScriptProject proj =  createJavaProject("P2", new String[] {}, new String[] {"/P1/existing.txt"}, "bin");
 		assertMarkers(
 			"Unexpected markers",
 			"Illegal type of archive for required library: \'/P1/existing.txt\' in project P2",
@@ -2458,7 +2464,7 @@ public void testInvalidInternalJar2() throws CoreException {
 public void testInvalidSourceFolder() throws CoreException {
 	try {
 		createJavaProject("P1");
-		IJavaProject proj = createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1/src1/src2"}, "bin");
+		IJavaScriptProject proj = createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1/src1/src2"}, "bin");
 		assertMarkers(
 			"Unexpected markers",
 			"Project P2 is missing required source folder: \'/P1/src1/src2\'",
@@ -2475,7 +2481,7 @@ public void testInvalidSourceFolder() throws CoreException {
  */
 public void testMissingClasspath() throws CoreException {
 	try {
-		IJavaProject javaProject = createJavaProject("P");
+		IJavaScriptProject javaProject = createJavaProject("P");
 		IProject project = javaProject.getProject();
 		project.close(null);
 		deleteFile(new File(project.getLocation().toOSString(), ".classpath"));
@@ -2499,12 +2505,12 @@ public void testMissingClasspath() throws CoreException {
  */
 public void testMissingPrereq1() throws CoreException {
 	try {
-		IJavaProject javaProject = this.createJavaProject("A", new String[] {}, "");
-		IClasspathEntry[] classpath = 
-			new IClasspathEntry[] {
-				JavaCore.newProjectEntry(new Path("/B"))
+		IJavaScriptProject javaProject = this.createJavaProject("A", new String[] {}, "");
+		IIncludePathEntry[] classpath = 
+			new IIncludePathEntry[] {
+				JavaScriptCore.newProjectEntry(new Path("/B"))
 			};
-		javaProject.setRawClasspath(classpath, null);
+		javaProject.setRawIncludepath(classpath, null);
 		this.assertMarkers(
 			"Unexpected markers",
 			"Project A is missing required Java project: \'B\'",
@@ -2518,7 +2524,7 @@ public void testMissingPrereq1() throws CoreException {
  */
 public void testMissingPrereq2() throws CoreException {
 	try {
-		IJavaProject javaProject = 
+		IJavaScriptProject javaProject = 
 			this.createJavaProject(
 				"A", 
 				new String[] {}, // source folders
@@ -2538,7 +2544,7 @@ public void testMissingPrereq2() throws CoreException {
  */
 public void testMissingPrereq3() throws CoreException {
 	try {
-		IJavaProject javaProject = 
+		IJavaScriptProject javaProject = 
 			this.createJavaProject(
 				"A", 
 				new String[] {}, // source folders
@@ -2558,14 +2564,14 @@ public void testMissingPrereq3() throws CoreException {
  */
 public void testMissingPrereq4() throws CoreException {
 	try {
-		IJavaProject projectA =
+		IJavaScriptProject projectA =
 			this.createJavaProject(
 				"A", 
 				new String[] {}, // source folders
 				new String[] {}, // lib folders
 				new String[] {"/B"}, // projects
 				"");
-		IJavaProject projectB =
+		IJavaScriptProject projectB =
 			this.createJavaProject(
 				"B", 
 				new String[] {}, // source folders
@@ -2615,9 +2621,9 @@ public void testMissingPrereq4() throws CoreException {
  */
 public void testNullClasspath() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		setClasspath(project, null);
-		IClasspathEntry[] cp= project.getRawClasspath();
+		IIncludePathEntry[] cp= project.getRawIncludepath();
 		assertTrue("classpath should have one root entry", cp.length == 1 && cp[0].getPath().equals(project.getUnderlyingResource().getFullPath()));
 	} finally {
 		this.deleteProject("P");
@@ -2629,7 +2635,7 @@ public void testNullClasspath() throws CoreException {
  */
 public void testReadEmptyCustomOutput() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {}, "");
 		this.editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -2638,7 +2644,7 @@ public void testReadEmptyCustomOutput() throws CoreException {
 			"    <classpathentry kind=\"output\" path=\"bin\"/>\n" +
 			"</classpath>"
 		);
-		IClasspathEntry[] classpath = project.getRawClasspath();
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		assertEquals("Unexpected classpath length", 1, classpath.length);
 		assertEquals("Unexpected custom output location", new Path("/P"), classpath[0].getOutputLocation());
 	} finally {
@@ -2652,9 +2658,9 @@ public void testReadEmptyCustomOutput() throws CoreException {
 public void testCombineAccessRules1() throws CoreException {
 	try {
 		createJavaProject("P1");
-		IJavaProject project = createJavaProject("P2");
-		IClasspathEntry entry = JavaCore.newProjectEntry(new Path("/P1"), (IAccessRule[]) null, false/*don't combine*/, new IClasspathAttribute[] {}, false);
-		project.setRawClasspath(new IClasspathEntry[] {entry}, null);
+		IJavaScriptProject project = createJavaProject("P2");
+		IIncludePathEntry entry = JavaScriptCore.newProjectEntry(new Path("/P1"), (IAccessRule[]) null, false/*don't combine*/, new IIncludePathAttribute[] {}, false);
+		project.setRawIncludepath(new IIncludePathEntry[] {entry}, null);
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P2/.classpath")));
 		assertSourceEquals(
 			"Unexpected content", 
@@ -2676,9 +2682,9 @@ public void testCombineAccessRules1() throws CoreException {
 public void testCombineAccessRules2() throws CoreException {
 	try {
 		createJavaProject("P1");
-		IJavaProject project = createJavaProject("P2");
-		IClasspathEntry entry = JavaCore.newProjectEntry(new Path("/P1"), (IAccessRule[]) null, true/*combine*/, new IClasspathAttribute[] {}, false);
-		project.setRawClasspath(new IClasspathEntry[] {entry}, null);
+		IJavaScriptProject project = createJavaProject("P2");
+		IIncludePathEntry entry = JavaScriptCore.newProjectEntry(new Path("/P1"), (IAccessRule[]) null, true/*combine*/, new IIncludePathAttribute[] {}, false);
+		project.setRawIncludepath(new IIncludePathEntry[] {entry}, null);
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P2/.classpath")));
 		assertSourceEquals(
 			"Unexpected content", 
@@ -2699,7 +2705,7 @@ public void testCombineAccessRules2() throws CoreException {
  */
 public void testCombineAccessRules3() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P2");
+		IJavaScriptProject project = createJavaProject("P2");
 		editFile(
 			"/P2/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -2709,7 +2715,7 @@ public void testCombineAccessRules3() throws CoreException {
 			"</classpath>\n"
 		);
 		assertClasspathEquals(
-			project.getRawClasspath(),
+			project.getRawIncludepath(),
 			"/P1[CPE_PROJECT][K_SOURCE][isExported:false][combine access rules:false]"
 		);
 	} finally {
@@ -2722,7 +2728,7 @@ public void testCombineAccessRules3() throws CoreException {
  */
 public void testCombineAccessRules4() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P2");
+		IJavaScriptProject project = createJavaProject("P2");
 		editFile(
 			"/P2/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -2732,7 +2738,7 @@ public void testCombineAccessRules4() throws CoreException {
 			"</classpath>\n"
 		);
 		assertClasspathEquals(
-			project.getRawClasspath(),
+			project.getRawIncludepath(),
 			"/P1[CPE_PROJECT][K_SOURCE][isExported:false][combine access rules:true]"
 		);
 	} finally {
@@ -2745,7 +2751,7 @@ public void testCombineAccessRules4() throws CoreException {
  */
 public void testCombineAccessRules5() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P2");
+		IJavaScriptProject project = createJavaProject("P2");
 		editFile(
 			"/P2/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -2755,7 +2761,7 @@ public void testCombineAccessRules5() throws CoreException {
 			"</classpath>\n"
 		);
 		assertClasspathEquals(
-			project.getRawClasspath(),
+			project.getRawIncludepath(),
 			"/P2/src[CPE_SOURCE][K_SOURCE][isExported:false]"
 		);
 	} finally {
@@ -2766,7 +2772,7 @@ public void testCombineAccessRules5() throws CoreException {
 public void testCycleDetection() throws CoreException {
 	
 	int max = 5;
-	IJavaProject[] p = new IJavaProject[max];
+	IJavaScriptProject[] p = new IJavaScriptProject[max];
 	String[] projectNames = new String[max];
 	try {
 		for (int i = 0; i < max; i++) {
@@ -2774,12 +2780,12 @@ public void testCycleDetection() throws CoreException {
 			p[i] = this.createJavaProject(projectNames[i], new String[] {""}, "");
 		}
 
-		IClasspathEntry[][] extraEntries = new IClasspathEntry[][]{ 
-			{ JavaCore.newProjectEntry(p[1].getPath()), JavaCore.newProjectEntry(p[3].getPath()) },
-			{ JavaCore.newProjectEntry(p[2].getPath()), JavaCore.newProjectEntry(p[3].getPath()) },
-			{ JavaCore.newProjectEntry(p[1].getPath()) }, 
-			{ JavaCore.newProjectEntry(p[4].getPath())}, 
-			{ JavaCore.newProjectEntry(p[3].getPath()), JavaCore.newProjectEntry(p[0].getPath()) } 
+		IIncludePathEntry[][] extraEntries = new IIncludePathEntry[][]{ 
+			{ JavaScriptCore.newProjectEntry(p[1].getPath()), JavaScriptCore.newProjectEntry(p[3].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[2].getPath()), JavaScriptCore.newProjectEntry(p[3].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[1].getPath()) }, 
+			{ JavaScriptCore.newProjectEntry(p[4].getPath())}, 
+			{ JavaScriptCore.newProjectEntry(p[3].getPath()), JavaScriptCore.newProjectEntry(p[0].getPath()) } 
 		}; 
 
 		int[][] expectedCycleParticipants = new int[][] {
@@ -2793,14 +2799,14 @@ public void testCycleDetection() throws CoreException {
 		for (int i = 0; i < p.length; i++){
 
 			// append project references			
-			IClasspathEntry[] oldClasspath = p[i].getRawClasspath();
-			IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries[i].length];
+			IIncludePathEntry[] oldClasspath = p[i].getRawIncludepath();
+			IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries[i].length];
 			System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 			for (int j = 0; j < extraEntries[i].length; j++){
 				newClasspath[oldClasspath.length+j] = extraEntries[i][j];
 			}			
 			// set classpath
-			p[i].setRawClasspath(newClasspath, null);
+			p[i].setRawIncludepath(newClasspath, null);
 
 			// check cycle markers
 			this.assertCycleMarkers(p[i], p, expectedCycleParticipants[i]);
@@ -2816,7 +2822,7 @@ public void testCycleDetection() throws CoreException {
 public void testCycleDetectionThroughVariables() throws CoreException {
 	
 	int max = 5;
-	IJavaProject[] p = new IJavaProject[max];
+	IJavaScriptProject[] p = new IJavaScriptProject[max];
 	String[] projectNames = new String[max];
 	try {
 		for (int i = 0; i < max; i++) {
@@ -2825,12 +2831,12 @@ public void testCycleDetectionThroughVariables() throws CoreException {
 		}
 
 		String[] var = new String[]{ "v0", "v1", "v2"};
-		IClasspathEntry[][] extraEntries = new IClasspathEntry[][]{ 
-			{ JavaCore.newProjectEntry(p[1].getPath()), JavaCore.newVariableEntry(new Path(var[0]), null, null) },
-			{ JavaCore.newProjectEntry(p[2].getPath()), JavaCore.newProjectEntry(p[3].getPath()) },
-			{ JavaCore.newVariableEntry(new Path(var[1]), null, null) }, 
-			{ JavaCore.newVariableEntry(new Path(var[2]), null, null)}, 
-			{ JavaCore.newProjectEntry(p[3].getPath()), JavaCore.newProjectEntry(p[0].getPath()) } 
+		IIncludePathEntry[][] extraEntries = new IIncludePathEntry[][]{ 
+			{ JavaScriptCore.newProjectEntry(p[1].getPath()), JavaScriptCore.newVariableEntry(new Path(var[0]), null, null) },
+			{ JavaScriptCore.newProjectEntry(p[2].getPath()), JavaScriptCore.newProjectEntry(p[3].getPath()) },
+			{ JavaScriptCore.newVariableEntry(new Path(var[1]), null, null) }, 
+			{ JavaScriptCore.newVariableEntry(new Path(var[2]), null, null)}, 
+			{ JavaScriptCore.newProjectEntry(p[3].getPath()), JavaScriptCore.newProjectEntry(p[0].getPath()) } 
 		}; 
 
 		int[][] expectedCycleParticipants = new int[][] {
@@ -2852,17 +2858,17 @@ public void testCycleDetectionThroughVariables() throws CoreException {
 		for (int i = 0; i < p.length; i++){
 
 			// append project references			
-			IClasspathEntry[] oldClasspath = p[i].getRawClasspath();
-			IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries[i].length];
+			IIncludePathEntry[] oldClasspath = p[i].getRawIncludepath();
+			IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries[i].length];
 			System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 			for (int j = 0; j < extraEntries[i].length; j++){
 				newClasspath[oldClasspath.length+j] = extraEntries[i][j];
 			}			
 			// set classpath
-			p[i].setRawClasspath(newClasspath, null);
+			p[i].setRawIncludepath(newClasspath, null);
 
 			// update variable values
-			JavaCore.setClasspathVariables(var, variableValues[i], null);
+			JavaScriptCore.setIncludepathVariables(var, variableValues[i], null);
 			
 			// check cycle markers
 			this.assertCycleMarkers(p[i], p, expectedCycleParticipants[i]);
@@ -2878,7 +2884,7 @@ public void testCycleDetectionThroughVariables() throws CoreException {
 public void testCycleDetectionThroughContainers() throws CoreException {
 	
 	int max = 5;
-	IJavaProject[] p = new IJavaProject[max];
+	IJavaScriptProject[] p = new IJavaScriptProject[max];
 	String[] projectNames = new String[max];
 	try {
 		for (int i = 0; i < max; i++) {
@@ -2889,21 +2895,21 @@ public void testCycleDetectionThroughContainers() throws CoreException {
 		IJsGlobalScopeContainer[] containers = new IJsGlobalScopeContainer[]{ 
 			new TestContainer(
 				new Path("container0/default"), 
-				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[3].getPath()) }),
+				new IIncludePathEntry[]{ JavaScriptCore.newProjectEntry(p[3].getPath()) }),
 			new TestContainer(
 				new Path("container1/default"), 
-				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[1].getPath()) }),
+				new IIncludePathEntry[]{ JavaScriptCore.newProjectEntry(p[1].getPath()) }),
 			new TestContainer(
 				new Path("container2/default"), 
-				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[4].getPath()) }),
+				new IIncludePathEntry[]{ JavaScriptCore.newProjectEntry(p[4].getPath()) }),
 		};
 
-		IClasspathEntry[][] extraEntries = new IClasspathEntry[][]{ 
-			{ JavaCore.newProjectEntry(p[1].getPath()), JavaCore.newContainerEntry(containers[0].getPath()) },
-			{ JavaCore.newProjectEntry(p[2].getPath()), JavaCore.newProjectEntry(p[3].getPath()) },
-			{ JavaCore.newContainerEntry(containers[1].getPath()) }, 
-			{ JavaCore.newContainerEntry(containers[2].getPath())}, 
-			{ JavaCore.newProjectEntry(p[3].getPath()), JavaCore.newProjectEntry(p[0].getPath()) } 
+		IIncludePathEntry[][] extraEntries = new IIncludePathEntry[][]{ 
+			{ JavaScriptCore.newProjectEntry(p[1].getPath()), JavaScriptCore.newContainerEntry(containers[0].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[2].getPath()), JavaScriptCore.newProjectEntry(p[3].getPath()) },
+			{ JavaScriptCore.newContainerEntry(containers[1].getPath()) }, 
+			{ JavaScriptCore.newContainerEntry(containers[2].getPath())}, 
+			{ JavaScriptCore.newProjectEntry(p[3].getPath()), JavaScriptCore.newProjectEntry(p[0].getPath()) } 
 		}; 
 
 		int[][] expectedCycleParticipants = new int[][] {
@@ -2917,32 +2923,32 @@ public void testCycleDetectionThroughContainers() throws CoreException {
 		for (int i = 0; i < p.length; i++){
 
 			// append project references			
-			IClasspathEntry[] oldClasspath = p[i].getRawClasspath();
-			IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries[i].length];
+			IIncludePathEntry[] oldClasspath = p[i].getRawIncludepath();
+			IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries[i].length];
 			System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 			for (int j = 0; j < extraEntries[i].length; j++){
 				newClasspath[oldClasspath.length+j] = extraEntries[i][j];
 			}			
 			// set classpath
-			p[i].setRawClasspath(newClasspath, null);
+			p[i].setRawIncludepath(newClasspath, null);
 
 			// update container paths
 			if (i == p.length - 1){
-				JavaCore.setJsGlobalScopeContainer(
+				JavaScriptCore.setJsGlobalScopeContainer(
 					containers[0].getPath(),
-					new IJavaProject[]{ p[0] },
+					new IJavaScriptProject[]{ p[0] },
 					new IJsGlobalScopeContainer[] { containers[0] },
 					null);
 
-				JavaCore.setJsGlobalScopeContainer(
+				JavaScriptCore.setJsGlobalScopeContainer(
 					containers[1].getPath(),
-					new IJavaProject[]{ p[2] },
+					new IJavaScriptProject[]{ p[2] },
 					new IJsGlobalScopeContainer[] { containers[1] },
 					null);
 
-				JavaCore.setJsGlobalScopeContainer(
+				JavaScriptCore.setJsGlobalScopeContainer(
 					containers[2].getPath(),
-					new IJavaProject[]{ p[3] },
+					new IJavaScriptProject[]{ p[3] },
 					new IJsGlobalScopeContainer[] { containers[2] },
 					null);
 			}
@@ -2960,7 +2966,7 @@ public void testCycleDetectionThroughContainers() throws CoreException {
 public void testCycleDetectionThroughContainerVariants() throws CoreException {
 	
 	int max = 5;
-	IJavaProject[] p = new IJavaProject[max];
+	IJavaScriptProject[] p = new IJavaScriptProject[max];
 	String[] projectNames = new String[max];
 	try {
 		for (int i = 0; i < max; i++) {
@@ -2970,13 +2976,19 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 
 		class LocalTestContainer implements IJsGlobalScopeContainer {
 			IPath path;
-			IClasspathEntry[] entries;
-			LocalTestContainer(IPath path, IClasspathEntry[] entries){
+			IIncludePathEntry[] entries;
+			LocalTestContainer(IPath path, IIncludePathEntry[] entries){
 				this.path = path;
 				this.entries = entries;
 			}
 			public IPath getPath() { return this.path; }
-			public IClasspathEntry[] getClasspathEntries() { return this.entries;	}
+			/**
+			 * @deprecated Use {@link #getIncludepathEntries()} instead
+			 */
+			public IIncludePathEntry[] getClasspathEntries() {
+				return getIncludepathEntries();
+			}
+			public IIncludePathEntry[] getIncludepathEntries() { return this.entries;	}
 			public String getDescription() { return null; 	}
 			public int getKind() { return 0; }
 			/* (non-Javadoc)
@@ -2990,21 +3002,21 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 		IJsGlobalScopeContainer[] containers = new IJsGlobalScopeContainer[]{ 
 			new LocalTestContainer(
 				new Path("container0/default"), 
-				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[3].getPath()) }),
+				new IIncludePathEntry[]{ JavaScriptCore.newProjectEntry(p[3].getPath()) }),
 			new LocalTestContainer(
 				new Path("container0/default"), 
-				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[1].getPath()) }),
+				new IIncludePathEntry[]{ JavaScriptCore.newProjectEntry(p[1].getPath()) }),
 			new LocalTestContainer(
 				new Path("container0/default"), 
-				new IClasspathEntry[]{ JavaCore.newProjectEntry(p[4].getPath()) }),
+				new IIncludePathEntry[]{ JavaScriptCore.newProjectEntry(p[4].getPath()) }),
 		};
 
-		IClasspathEntry[][] extraEntries = new IClasspathEntry[][]{ 
-			{ JavaCore.newProjectEntry(p[1].getPath()), JavaCore.newContainerEntry(containers[0].getPath()) },
-			{ JavaCore.newProjectEntry(p[2].getPath()), JavaCore.newProjectEntry(p[3].getPath()) },
-			{ JavaCore.newContainerEntry(containers[1].getPath()) }, 
-			{ JavaCore.newContainerEntry(containers[2].getPath())}, 
-			{ JavaCore.newProjectEntry(p[3].getPath()), JavaCore.newProjectEntry(p[0].getPath()) } 
+		IIncludePathEntry[][] extraEntries = new IIncludePathEntry[][]{ 
+			{ JavaScriptCore.newProjectEntry(p[1].getPath()), JavaScriptCore.newContainerEntry(containers[0].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[2].getPath()), JavaScriptCore.newProjectEntry(p[3].getPath()) },
+			{ JavaScriptCore.newContainerEntry(containers[1].getPath()) }, 
+			{ JavaScriptCore.newContainerEntry(containers[2].getPath())}, 
+			{ JavaScriptCore.newProjectEntry(p[3].getPath()), JavaScriptCore.newProjectEntry(p[0].getPath()) } 
 		}; 
 
 		int[][] expectedCycleParticipants = new int[][] {
@@ -3018,20 +3030,20 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 		for (int i = 0; i < p.length; i++){
 
 			// append project references			
-			IClasspathEntry[] oldClasspath = p[i].getRawClasspath();
-			IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries[i].length];
+			IIncludePathEntry[] oldClasspath = p[i].getRawIncludepath();
+			IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries[i].length];
 			System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 			for (int j = 0; j < extraEntries[i].length; j++){
 				newClasspath[oldClasspath.length+j] = extraEntries[i][j];
 			}			
 			// set classpath
-			p[i].setRawClasspath(newClasspath, null);
+			p[i].setRawIncludepath(newClasspath, null);
 
 			// update same container path for multiple projects
 			if (i == p.length - 1){
-				JavaCore.setJsGlobalScopeContainer(
+				JavaScriptCore.setJsGlobalScopeContainer(
 					containers[0].getPath(),
-					new IJavaProject[]{ p[0], p[2], p[3] },
+					new IJavaScriptProject[]{ p[0], p[2], p[3] },
 					new IJsGlobalScopeContainer[] { containers[0], containers[1], containers[2] },
 					null);
 			}
@@ -3049,7 +3061,7 @@ public void testCycleDetectionThroughContainerVariants() throws CoreException {
 public void testCycleDetection2() throws CoreException {
 	
 	int max = 5;
-	IJavaProject[] p = new IJavaProject[max];
+	IJavaScriptProject[] p = new IJavaScriptProject[max];
 	String[] projectNames = new String[max];
 	try {
 		for (int i = 0; i < max; i++) {
@@ -3057,12 +3069,12 @@ public void testCycleDetection2() throws CoreException {
 			p[i] = this.createJavaProject(projectNames[i], new String[] {""}, "");
 		}
 
-		IClasspathEntry[][] extraEntries = new IClasspathEntry[][]{ 
-			{ JavaCore.newProjectEntry(p[1].getPath()), JavaCore.newProjectEntry(p[3].getPath()) },
-			{ JavaCore.newProjectEntry(p[2].getPath()) },
-			{ JavaCore.newProjectEntry(p[0].getPath()) }, 
-			{ JavaCore.newProjectEntry(p[4].getPath())}, 
-			{ JavaCore.newProjectEntry(p[0].getPath()) } 
+		IIncludePathEntry[][] extraEntries = new IIncludePathEntry[][]{ 
+			{ JavaScriptCore.newProjectEntry(p[1].getPath()), JavaScriptCore.newProjectEntry(p[3].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[2].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[0].getPath()) }, 
+			{ JavaScriptCore.newProjectEntry(p[4].getPath())}, 
+			{ JavaScriptCore.newProjectEntry(p[0].getPath()) } 
 		}; 
 
 		int[][] expectedCycleParticipants = new int[][] {
@@ -3076,14 +3088,14 @@ public void testCycleDetection2() throws CoreException {
 		for (int i = 0; i < p.length; i++){
 
 			// append project references			
-			IClasspathEntry[] oldClasspath = p[i].getRawClasspath();
-			IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries[i].length];
+			IIncludePathEntry[] oldClasspath = p[i].getRawIncludepath();
+			IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries[i].length];
 			System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 			for (int j = 0; j < extraEntries[i].length; j++){
 				newClasspath[oldClasspath.length+j] = extraEntries[i][j];
 			}			
 			// set classpath
-			p[i].setRawClasspath(newClasspath, null);
+			p[i].setRawIncludepath(newClasspath, null);
 
 			// check cycle markers
 			this.assertCycleMarkers(p[i], p, expectedCycleParticipants[i]);
@@ -3099,7 +3111,7 @@ public void testCycleDetection2() throws CoreException {
 public void testCycleDetection3() throws CoreException {
 	
 	int max = 6;
-	IJavaProject[] p = new IJavaProject[max];
+	IJavaScriptProject[] p = new IJavaScriptProject[max];
 	String[] projectNames = new String[max];
 	try {
 		for (int i = 0; i < max; i++) {
@@ -3107,13 +3119,13 @@ public void testCycleDetection3() throws CoreException {
 			p[i] = this.createJavaProject(projectNames[i], new String[] {""}, "");
 		}
 
-		IClasspathEntry[][] extraEntries = new IClasspathEntry[][]{ 
-			{ JavaCore.newProjectEntry(p[2].getPath()), JavaCore.newProjectEntry(p[4].getPath()) },
-			{ JavaCore.newProjectEntry(p[0].getPath()) },
-			{ JavaCore.newProjectEntry(p[3].getPath()) }, 
-			{ JavaCore.newProjectEntry(p[1].getPath())}, 
-			{ JavaCore.newProjectEntry(p[5].getPath()) }, 
-			{ JavaCore.newProjectEntry(p[1].getPath()) } 
+		IIncludePathEntry[][] extraEntries = new IIncludePathEntry[][]{ 
+			{ JavaScriptCore.newProjectEntry(p[2].getPath()), JavaScriptCore.newProjectEntry(p[4].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[0].getPath()) },
+			{ JavaScriptCore.newProjectEntry(p[3].getPath()) }, 
+			{ JavaScriptCore.newProjectEntry(p[1].getPath())}, 
+			{ JavaScriptCore.newProjectEntry(p[5].getPath()) }, 
+			{ JavaScriptCore.newProjectEntry(p[1].getPath()) } 
 		}; 
 
 		int[][] expectedCycleParticipants = new int[][] {
@@ -3128,14 +3140,14 @@ public void testCycleDetection3() throws CoreException {
 		for (int i = 0; i < p.length; i++){
 
 			// append project references			
-			IClasspathEntry[] oldClasspath = p[i].getRawClasspath();
-			IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries[i].length];
+			IIncludePathEntry[] oldClasspath = p[i].getRawIncludepath();
+			IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries[i].length];
 			System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 			for (int j = 0; j < extraEntries[i].length; j++){
 				newClasspath[oldClasspath.length+j] = extraEntries[i][j];
 			}			
 			// set classpath
-			p[i].setRawClasspath(newClasspath, null);
+			p[i].setRawIncludepath(newClasspath, null);
 
 			// check cycle markers
 			this.assertCycleMarkers(p[i], p, expectedCycleParticipants[i]);
@@ -3158,10 +3170,10 @@ public void testCycleDetection4() throws CoreException {
 			if (containerNeedUpdate) {
 				TestContainer container = new TestContainer(
 					new Path("org.eclipse.wst.jsdt.core.tests.model.container/default"), 
-					new IClasspathEntry[] { JavaCore.newProjectEntry(new Path("/P1")) });
+					new IIncludePathEntry[] { JavaScriptCore.newProjectEntry(new Path("/P1")) });
 				try {
-					JavaCore.setJsGlobalScopeContainer(container.getPath(), new IJavaProject[] {getJavaProject("P2")}, new IJsGlobalScopeContainer[] {container}, null);
-				} catch (JavaModelException e) {
+					JavaScriptCore.setJsGlobalScopeContainer(container.getPath(), new IJavaScriptProject[] {getJavaProject("P2")}, new IJsGlobalScopeContainer[] {container}, null);
+				} catch (JavaScriptModelException e) {
 					e.printStackTrace();
 				}
 				containerNeedUpdate = false;
@@ -3169,16 +3181,16 @@ public void testCycleDetection4() throws CoreException {
 		}
 	};
 	try {
-		IJavaProject p1 = createJavaProject("P1", new String[] {}, new String[] {}, new String[] {"/P2"}, "");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {}, new String[] {"/P2"}, "");
 		TestContainer container = new TestContainer(
 			new Path("org.eclipse.wst.jsdt.core.tests.model.container/default"), 
-			new IClasspathEntry[] {});
-		IJavaProject p2 = createJavaProject("P2", new String[] {}, new String[] {container.getPath().toString()}, "");
-		JavaCore.setJsGlobalScopeContainer(container.getPath(), new IJavaProject[] {p2}, new IJsGlobalScopeContainer[] {container}, null);
+			new IIncludePathEntry[] {});
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {container.getPath().toString()}, "");
+		JavaScriptCore.setJsGlobalScopeContainer(container.getPath(), new IJavaScriptProject[] {p2}, new IJsGlobalScopeContainer[] {container}, null);
 		waitForAutoBuild();
 		getWorkspace().addResourceChangeListener(listener, IResourceChangeEvent.POST_CHANGE);
 		createFile("/P1/test.txt", "");
-		assertCycleMarkers(p1, new IJavaProject[] {p1, p2}, new int[] {1, 1});
+		assertCycleMarkers(p1, new IJavaScriptProject[] {p1, p2}, new int[] {1, 1});
 	} finally {
 		getWorkspace().removeResourceChangeListener(listener);
 		deleteProjects(new String[] {"P1", "P2"});
@@ -3231,9 +3243,9 @@ public void testNoCycleDetection2() throws CoreException {
  */
 public void testNoResourceChange01() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {"src1"}, "bin");
-		IClasspathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
-		project.setRawClasspath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src1"}, "bin");
+		IIncludePathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
+		project.setRawIncludepath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P/.classpath")));
 		assertSourceEquals(
 			"Unexpected content", 
@@ -3252,11 +3264,11 @@ public void testNoResourceChange01() throws CoreException {
  */
 public void testNoResourceChange02() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {"src1"}, "bin");
-		IClasspathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
-		project.setRawClasspath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src1"}, "bin");
+		IIncludePathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
+		project.setRawIncludepath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
 		assertClasspathEquals(
-			project.getRawClasspath(),
+			project.getRawIncludepath(),
 			"/P/src2[CPE_SOURCE][K_SOURCE][isExported:false]"
 		);
 	} finally {
@@ -3268,16 +3280,16 @@ public void testNoResourceChange02() throws CoreException {
  */
 public void testNoResourceChange03() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {"src1"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src1"}, "bin");
 		createFile(
 			"/P/src1/X.js",
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/src1/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P/src1/X.js");
 		cu.open(null);
-		IClasspathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
-		project.setRawClasspath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
+		IIncludePathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
+		project.setRawIncludepath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
 		assertFalse("Compilation unit should not exist", cu.exists());
 	} finally {
 		deleteProject("P");
@@ -3288,11 +3300,11 @@ public void testNoResourceChange03() throws CoreException {
  */
 public void testNoResourceChange04() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {"src1"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src1"}, "bin");
 		createFolder("/P/src2");
-		IClasspathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
+		IIncludePathEntry[] newClasspath = createClasspath("P", new String[] {"/P/src2", ""});
 		startDeltas();
-		project.setRawClasspath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
+		project.setRawIncludepath(newClasspath, false/*cannot modify resources*/, null/*no progress*/);
 		assertDeltas(
 			"Unexpected delta",
 			"P[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
@@ -3309,8 +3321,8 @@ public void testNoResourceChange04() throws CoreException {
  */
 public void testNoResourceChange05() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {"src1"}, "bin");
-		project.setRawClasspath(project.getRawClasspath(), new Path("/P/bin2"), false/*cannot modify resources*/, null/*no progress*/);
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src1"}, "bin");
+		project.setRawIncludepath(project.getRawIncludepath(), new Path("/P/bin2"), false/*cannot modify resources*/, null/*no progress*/);
 		assertEquals(
 			"/P/bin2",
 			project.getOutputLocation().toString());
@@ -3324,7 +3336,7 @@ public void testNoResourceChange05() throws CoreException {
  */
 public void testDuplicateEntries() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {"src"}, "bin");
 		this.editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -3344,12 +3356,12 @@ public void testDuplicateEntries() throws CoreException {
 }
 private void denseCycleDetection(final int numberOfParticipants) throws CoreException {
 	
-	final IJavaProject[] projects = new IJavaProject[numberOfParticipants];
+	final IJavaScriptProject[] projects = new IJavaScriptProject[numberOfParticipants];
 	final String[] projectNames  = new String[numberOfParticipants];
 	final int[] allProjectsInCycle = new int[numberOfParticipants];
 
 	try {
-		JavaCore.run(new IWorkspaceRunnable() {
+		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				for (int i = 0; i < numberOfParticipants; i++){
 					projectNames[i] = "P"+i;
@@ -3357,21 +3369,21 @@ private void denseCycleDetection(final int numberOfParticipants) throws CoreExce
 					allProjectsInCycle[i] = 1;
 				}		
 				for (int i = 0; i < numberOfParticipants; i++){
-					IClasspathEntry[] extraEntries = new IClasspathEntry[numberOfParticipants-1];
+					IIncludePathEntry[] extraEntries = new IIncludePathEntry[numberOfParticipants-1];
 					int index = 0;
 					for (int j = 0; j < numberOfParticipants; j++){
 						if (i == j) continue;
-						extraEntries[index++] = JavaCore.newProjectEntry(projects[j].getPath());
+						extraEntries[index++] = JavaScriptCore.newProjectEntry(projects[j].getPath());
 					}
 					// append project references			
-					IClasspathEntry[] oldClasspath = projects[i].getRawClasspath();
-					IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries.length];
+					IIncludePathEntry[] oldClasspath = projects[i].getRawIncludepath();
+					IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries.length];
 					System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 					for (int j = 0; j < extraEntries.length; j++){
 						newClasspath[oldClasspath.length+j] = extraEntries[j];
 					}			
 					// set classpath
-					projects[i].setRawClasspath(newClasspath, null);
+					projects[i].setRawIncludepath(newClasspath, null);
 				}
 			}
 		}, 
@@ -3394,7 +3406,7 @@ private void denseCycleDetection(final int numberOfParticipants) throws CoreExce
  */
 private void noCycleDetection(final int numberOfParticipants, final boolean useForwardReferences, final boolean createProjectsFirst) throws CoreException {
 	
-	final IJavaProject[] projects = new IJavaProject[numberOfParticipants];
+	final IJavaScriptProject[] projects = new IJavaScriptProject[numberOfParticipants];
 	final String[] projectNames  = new String[numberOfParticipants];
 	final int[] allProjectsInCycle = new int[numberOfParticipants];
 	
@@ -3403,7 +3415,7 @@ private void noCycleDetection(final int numberOfParticipants, final boolean useF
 	
 	try {
 		if (createProjectsFirst) {
-			JavaCore.run(new IWorkspaceRunnable() {
+			JavaScriptCore.run(new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					for (int i = 0; i < numberOfParticipants; i++){
 						projectNames[i] = "P"+i;
@@ -3414,7 +3426,7 @@ private void noCycleDetection(final int numberOfParticipants, final boolean useF
 			},
 			null);
 		}
-		JavaCore.run(new IWorkspaceRunnable() {
+		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				if (!createProjectsFirst) {
 					for (int i = 0; i < numberOfParticipants; i++){
@@ -3424,23 +3436,23 @@ private void noCycleDetection(final int numberOfParticipants, final boolean useF
 					}		
 				}
 				for (int i = 0; i < numberOfParticipants; i++){
-					IClasspathEntry[] extraEntries = new IClasspathEntry[useForwardReferences ? numberOfParticipants - i -1 : i];
+					IIncludePathEntry[] extraEntries = new IIncludePathEntry[useForwardReferences ? numberOfParticipants - i -1 : i];
 					int index = 0;
 					for (int j = useForwardReferences ? i+1 : 0; 
 						useForwardReferences ? (j < numberOfParticipants) : (j < i); 
 						j++){
-						extraEntries[index++] = JavaCore.newProjectEntry(projects[j].getPath());
+						extraEntries[index++] = JavaScriptCore.newProjectEntry(projects[j].getPath());
 					}
 					// append project references			
-					IClasspathEntry[] oldClasspath = projects[i].getRawClasspath();
-					IClasspathEntry[] newClasspath = new IClasspathEntry[oldClasspath.length+extraEntries.length];
+					IIncludePathEntry[] oldClasspath = projects[i].getRawIncludepath();
+					IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldClasspath.length+extraEntries.length];
 					System.arraycopy(oldClasspath, 0 , newClasspath, 0, oldClasspath.length);
 					for (int j = 0; j < extraEntries.length; j++){
 						newClasspath[oldClasspath.length+j] = extraEntries[j];
 					}			
 					// set classpath
 					long innerStart = System.currentTimeMillis(); // time spent in individual CP setting
-					projects[i].setRawClasspath(newClasspath, null);
+					projects[i].setRawIncludepath(newClasspath, null);
 					time[0] += System.currentTimeMillis() - innerStart;
 				}
 				start[0] = System.currentTimeMillis(); // time spent in delta refresh
@@ -3517,7 +3529,7 @@ public void testNestedSourceFolders() throws CoreException, IOException {
 		assertMarkers(
 			"Unexpected markers",
 			"Cannot nest \'P/src/src2\' inside \'P/src\'. To enable the nesting exclude \'src2/\' from \'P/src\'",
-			JavaCore.create(project));
+			JavaScriptCore.create(project));
 	} finally {
 		deleteProject("P");
 	}
@@ -3527,13 +3539,13 @@ public void testNestedSourceFolders() throws CoreException, IOException {
  */
 public void testOptionalEntry1() throws CoreException {
 	try {
-		IJavaProject javaProject = this.createJavaProject("A", new String[] {}, "");
-		IClasspathAttribute attribute = JavaCore.newClasspathAttribute(IClasspathAttribute.OPTIONAL, "true");
-		IClasspathEntry[] classpath = 
-			new IClasspathEntry[] {
-				JavaCore.newSourceEntry(new Path("/A/src"), new IPath[0], new IPath[0], new Path("/A/bin"), new IClasspathAttribute[] {attribute})
+		IJavaScriptProject javaProject = this.createJavaProject("A", new String[] {}, "");
+		IIncludePathAttribute attribute = JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.OPTIONAL, "true");
+		IIncludePathEntry[] classpath = 
+			new IIncludePathEntry[] {
+				JavaScriptCore.newSourceEntry(new Path("/A/src"), new IPath[0], new IPath[0], new Path("/A/bin"), new IIncludePathAttribute[] {attribute})
 			};
-		javaProject.setRawClasspath(classpath, null);
+		javaProject.setRawIncludepath(classpath, null);
 		assertMarkers(
 			"Unexpected markers",
 			"",
@@ -3547,13 +3559,13 @@ public void testOptionalEntry1() throws CoreException {
  */
 public void testOptionalEntry2() throws CoreException {
 	try {
-		IJavaProject javaProject = this.createJavaProject("A", new String[] {}, "");
-		IClasspathAttribute attribute = JavaCore.newClasspathAttribute(IClasspathAttribute.OPTIONAL, "true");
-		IClasspathEntry[] classpath = 
-			new IClasspathEntry[] {
-				JavaCore.newLibraryEntry(new Path("/A/lib"), null, null, null, new IClasspathAttribute[] {attribute}, false)
+		IJavaScriptProject javaProject = this.createJavaProject("A", new String[] {}, "");
+		IIncludePathAttribute attribute = JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.OPTIONAL, "true");
+		IIncludePathEntry[] classpath = 
+			new IIncludePathEntry[] {
+				JavaScriptCore.newLibraryEntry(new Path("/A/lib"), null, null, null, new IIncludePathAttribute[] {attribute}, false)
 			};
-		javaProject.setRawClasspath(classpath, null);
+		javaProject.setRawIncludepath(classpath, null);
 		assertMarkers(
 			"Unexpected markers",
 			"",
@@ -3567,13 +3579,13 @@ public void testOptionalEntry2() throws CoreException {
  */
 public void testOptionalEntry3() throws CoreException {
 	try {
-		IJavaProject javaProject = this.createJavaProject("A", new String[] {}, "");
-		IClasspathAttribute attribute = JavaCore.newClasspathAttribute(IClasspathAttribute.OPTIONAL, "true");
-		IClasspathEntry[] classpath = 
-			new IClasspathEntry[] {
-				JavaCore.newProjectEntry(new Path("/B"), null/*no access rules*/, false/*don't combine access rule*/, new IClasspathAttribute[] {attribute}, false/*not exported*/)
+		IJavaScriptProject javaProject = this.createJavaProject("A", new String[] {}, "");
+		IIncludePathAttribute attribute = JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.OPTIONAL, "true");
+		IIncludePathEntry[] classpath = 
+			new IIncludePathEntry[] {
+				JavaScriptCore.newProjectEntry(new Path("/B"), null/*no access rules*/, false/*don't combine access rule*/, new IIncludePathAttribute[] {attribute}, false/*not exported*/)
 			};
-		javaProject.setRawClasspath(classpath, null);
+		javaProject.setRawIncludepath(classpath, null);
 		assertMarkers(
 			"Unexpected markers",
 			"",
@@ -3639,7 +3651,7 @@ public void testOutputFolder1() throws CoreException, IOException {
 			"Unexpected markers",
 			"Project P is missing required source folder: \'src1\'\n" + 
 			"Project P is missing required source folder: \'src2\'",
-			JavaCore.create(project));
+			JavaScriptCore.create(project));
 	} finally {
 		deleteProject("P");
 	}
@@ -3650,7 +3662,7 @@ public void testOutputFolder1() throws CoreException, IOException {
  */
 public void testReplaceProject() throws CoreException {
 	try {
-		final IJavaProject javaProject = createJavaProject("P", new String[] {"src"}, "bin");
+		final IJavaScriptProject javaProject = createJavaProject("P", new String[] {"src"}, "bin");
 
 		ResourcesPlugin.getWorkspace().run(
 			new IWorkspaceRunnable() {
@@ -3669,7 +3681,7 @@ public void testReplaceProject() throws CoreException {
 				}
 			},
 			null);
-		IClasspathEntry[] classpath = javaProject.getRawClasspath();
+		IIncludePathEntry[] classpath = javaProject.getRawIncludepath();
 		assertEquals("classpath should have been refreshed", new Path("/P/src2"), classpath[0].getPath());
 	} finally {
 		deleteProject("P");
@@ -3682,7 +3694,7 @@ public void testReplaceProject() throws CoreException {
  */
 public void testUnknownAttributes() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
+		IJavaScriptProject project = createJavaProject("P");
 		editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -3692,13 +3704,13 @@ public void testUnknownAttributes() throws CoreException {
 			"	<classpathentry kind=\"output\" path=\"bin\"/>\n" + 
 			"</classpath>\n"
 		);
-		IClasspathEntry[] classpath = project.getRawClasspath();
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		
 		// swap 2 entries
-		IClasspathEntry src1 = classpath[0];
+		IIncludePathEntry src1 = classpath[0];
 		classpath[0] = classpath[1];
 		classpath[1] = src1;
-		project.setRawClasspath(classpath, null);
+		project.setRawIncludepath(classpath, null);
 		
 		// check that .classpath has correct content
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P/.classpath")));
@@ -3722,7 +3734,7 @@ public void testUnknownAttributes() throws CoreException {
  */
 public void testUnknownElements1() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
+		IJavaScriptProject project = createJavaProject("P");
 		editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -3736,13 +3748,13 @@ public void testUnknownElements1() throws CoreException {
 			"	<classpathentry kind=\"output\" path=\"bin\"/>\n" + 
 			"</classpath>\n"
 		);
-		IClasspathEntry[] classpath = project.getRawClasspath();
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		
 		// swap 2 entries
-		IClasspathEntry src1 = classpath[0];
+		IIncludePathEntry src1 = classpath[0];
 		classpath[0] = classpath[1];
 		classpath[1] = src1;
-		project.setRawClasspath(classpath, null);
+		project.setRawIncludepath(classpath, null);
 		
 		// check that .classpath has correct content
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P/.classpath")));
@@ -3770,7 +3782,7 @@ public void testUnknownElements1() throws CoreException {
  */
 public void testUnknownElements2() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
+		IJavaScriptProject project = createJavaProject("P");
 		editFile(
 			"/P/.classpath",
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + 
@@ -3790,13 +3802,13 @@ public void testUnknownElements2() throws CoreException {
 			"	<classpathentry kind=\"output\" path=\"bin\"/>\n" + 
 			"</classpath>\n"
 		);
-		IClasspathEntry[] classpath = project.getRawClasspath();
+		IIncludePathEntry[] classpath = project.getRawIncludepath();
 		
 		// swap 2 entries
-		IClasspathEntry src1 = classpath[0];
+		IIncludePathEntry src1 = classpath[0];
 		classpath[0] = classpath[1];
 		classpath[1] = src1;
-		project.setRawClasspath(classpath, null);
+		project.setRawIncludepath(classpath, null);
 		
 		// check that .classpath has correct content
 		String contents = new String (org.eclipse.wst.jsdt.internal.core.util.Util.getResourceContentsAsCharArray(getFile("/P/.classpath")));
@@ -3832,18 +3844,18 @@ public void testUnknownElements2() throws CoreException {
  */
 public void testBug55992a() throws CoreException {
 	try {
-		IJavaProject proj =  this.createJavaProject("P", new String[] {}, "");
+		IJavaScriptProject proj =  this.createJavaProject("P", new String[] {}, "");
 	
 		IPath path = getExternalJCLPath();
 		IPath sourceAttachmentPath = new Path("jclMin.zip");
-		JavaCore.setClasspathVariables(
+		JavaScriptCore.setIncludepathVariables(
 			new String[] {"TEST_LIB", "TEST_SRC"},
 			new IPath[] {path, sourceAttachmentPath},
 			null);
 
 		ClasspathEntry cp = new ClasspathEntry(
 			IPackageFragmentRoot.K_SOURCE,
-			IClasspathEntry.CPE_VARIABLE,
+			IIncludePathEntry.CPE_VARIABLE,
 			new Path("TEST_LIB"),
 			ClasspathEntry.INCLUDE_ALL, 
 			ClasspathEntry.EXCLUDE_NONE, 
@@ -3854,9 +3866,9 @@ public void testBug55992a() throws CoreException {
 			(IAccessRule[]) null,
 			false,
 			ClasspathEntry.NO_EXTRA_ATTRIBUTES);
-		IJavaModelStatus status = JavaConventions.validateClasspathEntry(proj, cp, false);
+		IJavaScriptModelStatus status = JavaScriptConventions.validateClasspathEntry(proj, cp, false);
 		assertEquals(
-			"assertion failed: Source attachment path \'jclMin.zip\' for IClasspathEntry must be absolute",
+			"assertion failed: Source attachment path \'jclMin.zip\' for IIncludePathEntry must be absolute",
 			status.getMessage());
 	} finally {
 		this.deleteProject("P");
@@ -3868,8 +3880,8 @@ public void testBug55992b() throws CoreException {
 	IWorkspaceDescription preferences = getWorkspace().getDescription();
 	try {
 		preferences.setAutoBuilding(false);
-		IJavaProject javaProject = this.createJavaProject("P", new String[] {"src", "lib"}, "bin");
-		JavaCore.setClasspathVariables(
+		IJavaScriptProject javaProject = this.createJavaProject("P", new String[] {"src", "lib"}, "bin");
+		JavaScriptCore.setIncludepathVariables(
 			new String[] {"TEST_LIB", "TEST_SRC"},
 			new IPath[] {new Path("/lib/tmp.jar"), new Path("tmp.zip")},
 			null);
@@ -3884,7 +3896,7 @@ public void testBug55992b() throws CoreException {
 		);
 		assertMarkers(
 			"Unexpected markers",
-			"assertion failed: Source attachment path \'tmp.zip\' for IClasspathEntry must be absolute",
+			"assertion failed: Source attachment path \'tmp.zip\' for IIncludePathEntry must be absolute",
 			javaProject);
 	} finally {
 		this.deleteProject("P");
@@ -3896,17 +3908,17 @@ public void testBug55992b() throws CoreException {
  */
 public void testRemoveDuplicates() throws CoreException {
 	try {
-		IJavaProject p1 = this.createJavaProject("P1", new String[] {""}, "");
-		IClasspathEntry[] p1ClasspathEntries = new IClasspathEntry[]{JavaCore.newLibraryEntry(getExternalJCLPath(), null, null, true)};
+		IJavaScriptProject p1 = this.createJavaProject("P1", new String[] {""}, "");
+		IIncludePathEntry[] p1ClasspathEntries = new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(getExternalJCLPath(), null, null, true)};
 		setClasspath(p1, p1ClasspathEntries);
-		IJavaProject  p2 = this.createJavaProject("P2", new String[] {""}, "");
-		IClasspathEntry[] p2ClasspathEntries = new IClasspathEntry[]{
-				JavaCore.newProjectEntry(new Path("/P1")),
-				JavaCore.newLibraryEntry(getExternalJCLPath(), null, null, false)
+		IJavaScriptProject  p2 = this.createJavaProject("P2", new String[] {""}, "");
+		IIncludePathEntry[] p2ClasspathEntries = new IIncludePathEntry[]{
+				JavaScriptCore.newProjectEntry(new Path("/P1")),
+				JavaScriptCore.newLibraryEntry(getExternalJCLPath(), null, null, false)
 		};
 		setClasspath(p2, p2ClasspathEntries);
 	
-		IClasspathEntry[] classpath = ((JavaProject)p2).getExpandedClasspath();
+		IIncludePathEntry[] classpath = ((JavaProject)p2).getExpandedClasspath();
 		assertEquals("Unexpected number of classpath entries", 2, classpath.length);
 		assertEquals("Unexpected first entry", "/P1", classpath[0].getPath().toString());
 		assertEquals("Unexpected second entry", getExternalJCLPathString(), classpath[1].getPath().toOSString());

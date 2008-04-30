@@ -22,16 +22,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
 import org.eclipse.wst.jsdt.core.IImportDeclaration;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaModelStatusConstants;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptModelStatusConstants;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageDeclaration;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 
 /*
@@ -78,7 +78,7 @@ public void testDeleteAllImports() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IImportDeclaration[] children= cu.getImports();
 
 		startDeltas();
@@ -119,12 +119,12 @@ public void testDeleteBinaryMethod() throws CoreException {
 		this.createFile("P1/lib/X.class", bytes);
 		
 		IClassFile cf = getClassFile("P1/lib/X.class");
-		IMethod method = cf.getType().getMethod("foo", new String[] {});
+		IFunction method = cf.getType().getFunction("foo", new String[] {});
 		
 		try {
 			method.delete(false, null);
-		} catch (JavaModelException e) {
-			assertTrue("Should be read-only", e.getStatus().getCode() == IJavaModelStatusConstants.READ_ONLY);
+		} catch (JavaScriptModelException e) {
+			assertTrue("Should be read-only", e.getStatus().getCode() == IJavaScriptModelStatusConstants.READ_ONLY);
 			return;
 		}
 		assertTrue("Should not be able to delete a binary method", false);
@@ -156,9 +156,9 @@ public void testDeleteBinaryType() throws CoreException {
 		IType binaryType = cf.getType();
 		
 		try {
-			cf.getJavaModel().delete(new IJavaElement[] {binaryType}, false, null);
-		} catch (JavaModelException e) {
-			assertTrue("Should be read-only", e.getStatus().getCode() == IJavaModelStatusConstants.READ_ONLY);
+			cf.getJavaScriptModel().delete(new IJavaScriptElement[] {binaryType}, false, null);
+		} catch (JavaScriptModelException e) {
+			assertTrue("Should be read-only", e.getStatus().getCode() == IJavaScriptModelStatusConstants.READ_ONLY);
 			return;
 		}
 		assertTrue("Should not be able to delete a class file", false);
@@ -176,7 +176,7 @@ public void testDeleteCompilationUnit1() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 
 		startDeltas();
 		cu.delete(false, null);
@@ -205,7 +205,7 @@ public void testDeleteCompilationUnit2() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 
 		startDeltas();
 		Util.delete(file);
@@ -224,7 +224,7 @@ public void testDeleteCompilationUnit2() throws CoreException {
 }
 /**
  * After deleting a CU in an IWorkspaceRunnable, it should not exist.
- * (regression test for bug 9232 ICompilationUnit.delete() fails)
+ * (regression test for bug 9232 IJavaScriptUnit.delete() fails)
  */
 public void testDeleteCompilationUnit3() throws CoreException {
 	try {
@@ -233,7 +233,7 @@ public void testDeleteCompilationUnit3() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		final ICompilationUnit cu = getCompilationUnit("P/X.js");
+		final IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		
 		// force the cu to be opened
 		cu.open(null);
@@ -273,7 +273,7 @@ public void testDeleteCompilationUnit4() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/p/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/p/X.js");
 
 		startDeltas();
 		cu.delete(false, null);
@@ -304,8 +304,8 @@ public void testDeleteConstructor() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
-		IMethod constructor = cu.getType("X").getMethod("X", new String[] {"QString;"});
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
+		IFunction constructor = cu.getType("X").getFunction("X", new String[] {"QString;"});
 
 		startDeltas();
 		assertDeletion(constructor);
@@ -357,7 +357,7 @@ public void testDeleteField1() throws CoreException { // was testDeleteField
 			"  int field;\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("field");
 
 		startDeltas();
@@ -387,14 +387,14 @@ public void testDeleteField2() throws CoreException { // was testDeleteFieldWith
 			"  int field;\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("field");
 
 		boolean isCanceled = false;
 		try {
 			TestProgressMonitor monitor = TestProgressMonitor.getInstance();
 			monitor.setCancelledCounter(1);
-			getJavaModel().delete(new IJavaElement[] {field}, false, monitor);
+			getJavaModel().delete(new IJavaScriptElement[] {field}, false, monitor);
 		} catch (OperationCanceledException e) {
 			isCanceled = true;
 		}
@@ -415,7 +415,7 @@ public void testDeleteField3() throws CoreException {
 			"  int field;\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		final IField field = cu.getType("X").getField("field");
 
 		startDeltas();
@@ -454,7 +454,7 @@ public void testDeleteField4() throws CoreException {
 			"  private String t = \"sample test\";\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("t");
 		field.delete(false, null);
 		assertSourceEquals(
@@ -478,7 +478,7 @@ public void testDeleteField5() throws CoreException {
 			"  A, B, C\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P1/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P1/X.js");
 		IField field = cu.getType("X").getField("A");
 		field.delete(false, null);
 		assertSourceEquals(
@@ -503,7 +503,7 @@ public void testDeleteImportDeclaration() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IImportDeclaration imp= cu.getImport("q.Y");
 
 		startDeltas();
@@ -534,8 +534,8 @@ public void testDeleteMethod() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
-		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
+		IFunction method = cu.getType("X").getFunction("foo", new String[] {});
 
 		startDeltas();
 		assertDeletion(method);
@@ -604,23 +604,23 @@ public void testDeleteMultipleMembersFromVariousCUs() throws CoreException {
 		//   foo
 		//   main
 		
-		ICompilationUnit cuX = getCompilationUnit("P/a/b/c/X.js");
+		IJavaScriptUnit cuX = getCompilationUnit("P/a/b/c/X.js");
 		IType typeX = cuX.getType("X");
 		IType typeBar = typeX.getType("Bar");
 	
-		IJavaElement[] toBeDeleted = new IJavaElement[8];
+		IJavaScriptElement[] toBeDeleted = new IJavaScriptElement[8];
 		toBeDeleted[0] = cuX.getImport("java.util.Vector");
-		toBeDeleted[1] = typeX.getMethod("main", new String[] {"[QString;"});
+		toBeDeleted[1] = typeX.getFunction("main", new String[] {"[QString;"});
 		toBeDeleted[2] = typeBar;
-		toBeDeleted[3] = typeBar.getMethod("Bar", new String[] {});
-		toBeDeleted[4] = typeBar.getMethod("test", new String[] {});
+		toBeDeleted[3] = typeBar.getFunction("Bar", new String[] {});
+		toBeDeleted[4] = typeBar.getFunction("test", new String[] {});
 		toBeDeleted[5] = typeBar;
 		
-		ICompilationUnit cuY = getCompilationUnit("P/a/b/Y.js");
+		IJavaScriptUnit cuY = getCompilationUnit("P/a/b/Y.js");
 		IType typeY = cuY.getType("Y");
 		
 		toBeDeleted[6] = typeY.getField("foo");
-		toBeDeleted[7] = typeY.getMethod("main", new String[] {"[QString;"});
+		toBeDeleted[7] = typeY.getFunction("main", new String[] {"[QString;"});
 	
 		startDeltas();
 		assertDeletion(toBeDeleted);
@@ -658,7 +658,7 @@ public void testDeletePackageDeclaration() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/a/b/c/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/a/b/c/X.js");
 		IPackageDeclaration packageDeclaration = cu.getPackageDeclaration("a.b.c");
 
 		startDeltas();
@@ -717,7 +717,7 @@ public void testDeletePackageFragment2() throws CoreException {
 		);
 		IPackageFragment pkg = getPackage("P1/src");
 		IFolder folder = getFolder("P1/src");
-		ICompilationUnit cu = getCompilationUnit("P1/src/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P1/src/X.js");
 
 		startDeltas();
 		pkg.delete(false, null);
@@ -751,7 +751,7 @@ public void testDeletePackageFragment3() throws CoreException {
 		);
 		IPackageFragment pkg = getPackage("P1");
 		IProject project = getProject("P1");
-		ICompilationUnit cu = getCompilationUnit("P1/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P1/X.js");
 
 		startDeltas();
 		pkg.delete(false, null);
@@ -810,7 +810,7 @@ public void testDeleteSyntaxErrorField() throws CoreException {
 			"  int field\n" + // missing semi-colon
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IField field = cu.getType("X").getField("field");
 
 		startDeltas();
@@ -843,8 +843,8 @@ public void testDeleteSyntaxErrorInMethod1() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
-		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
+		IFunction method = cu.getType("X").getFunction("foo", new String[] {});
 
 		startDeltas();
 		assertDeletion(method);
@@ -873,8 +873,8 @@ public void testDeleteSyntaxErrorInMethod2() throws CoreException {
 			"  public void foo() \n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
-		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
+		IFunction method = cu.getType("X").getFunction("foo", new String[] {});
 
 		startDeltas();
 		assertDeletion(method);
@@ -904,8 +904,8 @@ public void testDeleteSyntaxErrorInMethod3() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
-		IMethod method = cu.getType("X").getMethod("foo", new String[] {});
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
+		IFunction method = cu.getType("X").getFunction("foo", new String[] {});
 
 		startDeltas();
 		assertDeletion(method);
@@ -934,7 +934,7 @@ public void testDeleteSyntaxErrorType() throws CoreException {
 			"  method() {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IType type = cu.getType("X");
 
 		startDeltas();
@@ -962,7 +962,7 @@ public void testDeleteType1() throws CoreException{
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IType type = cu.getType("X");
 
 		startDeltas();
@@ -992,7 +992,7 @@ public void testDeleteType2() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P1/src/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P1/src/X.js");
 		IType type = cu.getType("X");
 
 		startDeltas();
@@ -1021,16 +1021,16 @@ public void testDeleteWithInvalidInput() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		type = cu.getType("X");
 
 		getJavaModel().delete(null, false, null);
-	} catch (JavaModelException e) {
-		assertTrue("Should be an no elements to process: null supplied", e.getStatus().getCode() == IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+	} catch (JavaScriptModelException e) {
+		assertTrue("Should be an no elements to process: null supplied", e.getStatus().getCode() == IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 		try {
-			getJavaModel().delete(new IJavaElement[] {type}, false, null);
-		} catch (JavaModelException e2) {
-			assertTrue("Should be an no elements to process: null in the array supplied", e2.getStatus().getCode() == IJavaModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
+			getJavaModel().delete(new IJavaScriptElement[] {type}, false, null);
+		} catch (JavaScriptModelException e2) {
+			assertTrue("Should be an no elements to process: null in the array supplied", e2.getStatus().getCode() == IJavaScriptModelStatusConstants.NO_ELEMENTS_TO_PROCESS);
 		}
 		return;
 	} finally {

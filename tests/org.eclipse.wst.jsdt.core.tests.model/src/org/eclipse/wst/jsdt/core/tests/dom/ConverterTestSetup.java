@@ -17,10 +17,10 @@ import java.util.Map;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
@@ -80,19 +80,19 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		super.tearDown();
 	}	
 
-	public void setUpJCLClasspathVariables(String compliance) throws JavaModelException, IOException {
+	public void setUpJCLClasspathVariables(String compliance) throws JavaScriptModelException, IOException {
 		if ("1.5".equals(compliance)) {
-			if (JavaCore.getClasspathVariable("CONVERTER_JCL15_LIB") == null) {
+			if (JavaScriptCore.getIncludepathVariable("CONVERTER_JCL15_LIB") == null) {
 //				setupExternalJCL("converterJclMin1.5");
-				JavaCore.setClasspathVariables(
+				JavaScriptCore.setIncludepathVariables(
 					new String[] {"CONVERTER_JCL15_LIB", "CONVERTER_JCL15_SRC", "CONVERTER_JCL15_SRCROOT"},
 					new IPath[] {getConverterJCLPath(compliance), getConverterJCLSourcePath(compliance), getConverterJCLRootSourcePath()},
 					null);
 			} 
 		} else {
-			if (JavaCore.getClasspathVariable("CONVERTER_JCL_LIB") == null) {
+			if (JavaScriptCore.getIncludepathVariable("CONVERTER_JCL_LIB") == null) {
 //				setupExternalJCL("converterJclMin");
-				JavaCore.setClasspathVariables(
+				JavaScriptCore.setIncludepathVariables(
 					new String[] {"CONVERTER_JCL_LIB", "CONVERTER_JCL_SRC", "CONVERTER_JCL_SRCROOT"},
 					new IPath[] {getConverterJCLPath(), getConverterJCLSourcePath(), getConverterJCLRootSourcePath()},
 					null);
@@ -114,11 +114,11 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		}
 	}
 
-	public ASTNode runConversion(ICompilationUnit unit, boolean resolveBindings) {
+	public ASTNode runConversion(IJavaScriptUnit unit, boolean resolveBindings) {
 		return runConversion(AST_INTERNAL_JLS2, unit, resolveBindings);
 	}
 
-	public ASTNode runConversion(ICompilationUnit unit, int position, boolean resolveBindings) {
+	public ASTNode runConversion(IJavaScriptUnit unit, int position, boolean resolveBindings) {
 		return runConversion(AST_INTERNAL_JLS2, unit, position, resolveBindings);
 	}
 
@@ -126,19 +126,19 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		return runConversion(AST_INTERNAL_JLS2, classFile, position, resolveBindings);
 	}
 	
-	public ASTNode runConversion(char[] source, String unitName, IJavaProject project) {
+	public ASTNode runConversion(char[] source, String unitName, IJavaScriptProject project) {
 		return runConversion(AST_INTERNAL_JLS2, source, unitName, project);
 	}
 
-	public ASTNode runConversion(char[] source, String unitName, IJavaProject project, boolean resolveBindings) {
+	public ASTNode runConversion(char[] source, String unitName, IJavaScriptProject project, boolean resolveBindings) {
 		return runConversion(AST_INTERNAL_JLS2, source, unitName, project, resolveBindings);
 	}
 	
-	public ASTNode runConversion(int astLevel, ICompilationUnit unit, boolean resolveBindings) {
+	public ASTNode runConversion(int astLevel, IJavaScriptUnit unit, boolean resolveBindings) {
 		return runConversion(astLevel, unit, resolveBindings, false);
 	}
 	
-	public ASTNode runConversion(int astLevel, ICompilationUnit unit, boolean resolveBindings, boolean statementsRecovery) {
+	public ASTNode runConversion(int astLevel, IJavaScriptUnit unit, boolean resolveBindings, boolean statementsRecovery) {
 		ASTParser parser = ASTParser.newParser(astLevel);
 		parser.setSource(unit);
 		parser.setResolveBindings(resolveBindings);
@@ -213,7 +213,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 			super.endVisit(node);
 		}
 
-		public void endVisit(MethodInvocation node) {
+		public void endVisit(FunctionInvocation node) {
 			assertNotNull(node+" should have a binding", node.resolveTypeBinding());
 			super.endVisit(node);
 		}
@@ -318,12 +318,12 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 			super.endVisit(node);
 		}
 
-		public void endVisit(MethodDeclaration node) {
+		public void endVisit(FunctionDeclaration node) {
 			assertNotNull(node+" should have a binding", node.resolveBinding());
 			super.endVisit(node);
 		}
 
-		public void endVisit(MethodRef node) {
+		public void endVisit(FunctionRef node) {
 			assertNotNull(node+" should have a binding", node.resolveBinding());
 			super.endVisit(node);
 		}
@@ -394,7 +394,7 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		}
 
 	}
-	public ASTNode runJLS3Conversion(ICompilationUnit unit, boolean resolveBindings, boolean checkJLS2) {
+	public ASTNode runJLS3Conversion(IJavaScriptUnit unit, boolean resolveBindings, boolean checkJLS2) {
 
 		// Create parser
 		ASTParser parser;
@@ -413,15 +413,15 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		ASTNode result = parser.createAST(null);
 		
 		// Verify we get a compilation unit node and that binding are correct
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.COMPILATION_UNIT);
-		CompilationUnit compilationUnit = (CompilationUnit) result;
+		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
+		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
 		if (resolveBindings && compilationUnit.getProblems().length == 0) {
 			compilationUnit.accept(new NullBindingVerifier());
 		}
 		return result;
 	}
 	
-	public ASTNode runConversion(int astLevel, ICompilationUnit unit, int position, boolean resolveBindings) {
+	public ASTNode runConversion(int astLevel, IJavaScriptUnit unit, int position, boolean resolveBindings) {
 
 		// Create parser
 		ASTParser parser = ASTParser.newParser(astLevel);
@@ -433,8 +433,8 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		ASTNode result = parser.createAST(null);
 		
 		// Verify we get a compilation unit node and that binding are correct
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.COMPILATION_UNIT);
-		CompilationUnit compilationUnit = (CompilationUnit) result;
+		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
+		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
 		if (resolveBindings && compilationUnit.getProblems().length == 0) {
 			compilationUnit.accept(new NullBindingVerifier());
 		}
@@ -453,23 +453,23 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		ASTNode result = parser.createAST(null);
 		
 		// Verify we get a compilation unit node and that binding are correct
-		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.COMPILATION_UNIT);
-		CompilationUnit compilationUnit = (CompilationUnit) result;
+		assertTrue("Not a compilation unit", result.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
+		JavaScriptUnit compilationUnit = (JavaScriptUnit) result;
 		if (resolveBindings && compilationUnit.getProblems().length == 0) {
 			compilationUnit.accept(new NullBindingVerifier());
 		}
 		return result;
 	}
 	
-	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaProject project) {
+	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaScriptProject project) {
 		return runConversion(astLevel, source, unitName, project, false);
 	}
 	
-	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaProject project, boolean resolveBindings) {
+	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaScriptProject project, boolean resolveBindings) {
 		return runConversion(astLevel, source, unitName, project, null, resolveBindings);
 	}
 
-	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaProject project, Map options, boolean resolveBindings) {
+	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaScriptProject project, Map options, boolean resolveBindings) {
 		ASTParser parser = ASTParser.newParser(astLevel);
 		parser.setSource(source);
 		parser.setUnitName(unitName);
@@ -481,26 +481,26 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		return parser.createAST(null);
 	}
 	
-	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaProject project, Map options) {
+	public ASTNode runConversion(int astLevel, char[] source, String unitName, IJavaScriptProject project, Map options) {
 		return runConversion(astLevel, source, unitName, project, options, false);
 	}
 	
-	public ASTNode runConversion(char[] source, String unitName, IJavaProject project, Map options, boolean resolveBindings) {
+	public ASTNode runConversion(char[] source, String unitName, IJavaScriptProject project, Map options, boolean resolveBindings) {
 		return runConversion(AST_INTERNAL_JLS2, source, unitName, project, options, resolveBindings);
 	}
-	public ASTNode runConversion(char[] source, String unitName, IJavaProject project, Map options) {
+	public ASTNode runConversion(char[] source, String unitName, IJavaScriptProject project, Map options) {
 		return runConversion(AST_INTERNAL_JLS2, source, unitName, project, options);
 	}	
 
-	protected ASTNode getASTNodeToCompare(org.eclipse.wst.jsdt.core.dom.CompilationUnit unit) {
+	protected ASTNode getASTNodeToCompare(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit unit) {
 		ExpressionStatement statement = (ExpressionStatement) getASTNode(unit, 0, 0, 0);
-		return (ASTNode) ((MethodInvocation) statement.getExpression()).arguments().get(0);
+		return (ASTNode) ((FunctionInvocation) statement.getExpression()).arguments().get(0);
 	}
 
-	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit unit, int typeIndex, int bodyIndex, int statementIndex) {
+	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit unit, int typeIndex, int bodyIndex, int statementIndex) {
 		BodyDeclaration bodyDeclaration = (BodyDeclaration) getASTNode(unit, typeIndex, bodyIndex);
-		if (bodyDeclaration instanceof MethodDeclaration) {
-			MethodDeclaration methodDeclaration = (MethodDeclaration) bodyDeclaration;
+		if (bodyDeclaration instanceof FunctionDeclaration) {
+			FunctionDeclaration methodDeclaration = (FunctionDeclaration) bodyDeclaration;
 			Block block = methodDeclaration.getBody();
 			return (ASTNode) block.statements().get(statementIndex);
 		} else if (bodyDeclaration instanceof TypeDeclaration) {
@@ -514,11 +514,11 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		return null;
 	}
 
-	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit unit, int typeIndex, int bodyIndex) {
+	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit unit, int typeIndex, int bodyIndex) {
 		return (ASTNode) unit.statements().get(bodyIndex);
 	}
 
-	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.CompilationUnit unit, int typeIndex) {
+	protected ASTNode getASTNode(org.eclipse.wst.jsdt.core.dom.JavaScriptUnit unit, int typeIndex) {
 		return (ASTNode) unit.types().get(typeIndex);
 	}
 		
@@ -556,10 +556,10 @@ public abstract class ConverterTestSetup extends AbstractASTTests {
 		return (node.getFlags() & ASTNode.ORIGINAL) != 0;
 	}
 	
-	protected void assertProblemsSize(CompilationUnit compilationUnit, int expectedSize) {
+	protected void assertProblemsSize(JavaScriptUnit compilationUnit, int expectedSize) {
 		assertProblemsSize(compilationUnit, expectedSize, "");
 	}
-	protected void assertProblemsSize(CompilationUnit compilationUnit, int expectedSize, String expectedOutput) {
+	protected void assertProblemsSize(JavaScriptUnit compilationUnit, int expectedSize, String expectedOutput) {
 		final IProblem[] problems = compilationUnit.getProblems();
 		final int length = problems.length;
 		if (length != expectedSize) {

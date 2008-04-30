@@ -15,7 +15,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.*;
@@ -55,9 +55,9 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -105,9 +105,9 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -153,9 +153,9 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Y {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -200,9 +200,9 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Y {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -248,9 +248,9 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("class Y {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -298,9 +298,9 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		buf.append("        bar3();\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -308,7 +308,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		
 		List types = astRoot.types();
 		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-		MethodDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
+		FunctionDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
 		Block body = methodDeclaration.getBody();
 		List statements = body.statements();
 		Statement statement1 = (Statement)statements.get(1);
@@ -341,16 +341,16 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 		IPackageFragment pack1= fSourceFolder.createPackageFragment("test", false, null);
 		StringBuffer buf= new StringBuffer();
 		buf.append("package test; public class Test { }");
-		ICompilationUnit cu= pack1.createCompilationUnit("Test.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("Test.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
 		TypeDeclaration type = (TypeDeclaration) astRoot.types().get(0);
         AST ast = type.getAST();
         
-        MethodDeclaration m = ast.newMethodDeclaration();
+        FunctionDeclaration m = ast.newFunctionDeclaration();
         type.bodyDeclarations().add(m);
         
         Block block = ast.newBlock();
@@ -361,7 +361,7 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
         FieldAccess fa = ast.newFieldAccess();
         fa.setExpression(ast.newThisExpression());
         fa.setName(ast.newSimpleName("x"));
-        MethodInvocation mi = ast.newMethodInvocation();
+        FunctionInvocation mi = ast.newFunctionInvocation();
         mi.setExpression(fa);
         mi.setName(ast.newSimpleName("llall"));
         
@@ -398,9 +398,9 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 //		buf.append("    \n");
 //		buf.append("    }\n");
 //		buf.append("}\n");
-//		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 //		
-//		CompilationUnit astRoot= parseCompilationUnit(cu, false);
+//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
 //		
 //		astRoot.recordModifications();
 //		
@@ -408,8 +408,8 @@ public class ASTRewritingModifyingCopyTest extends ASTRewritingModifyingTest {
 //		
 //		List types = astRoot.types();
 //		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-//		MethodDeclaration methodDeclaration1 = typeDeclaration.getMethods()[0];
-//		MethodDeclaration methodDeclaration2 = typeDeclaration.getMethods()[1];
+//		FunctionDeclaration methodDeclaration1 = typeDeclaration.getMethods()[0];
+//		FunctionDeclaration methodDeclaration2 = typeDeclaration.getMethods()[1];
 //		Javadoc javadoc1 = methodDeclaration1.getJavadoc();
 //		Javadoc javadoc2 = (Javadoc)ASTNode.copySubtree(a, javadoc1);
 //		methodDeclaration2.setJavadoc(javadoc2);

@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.wst.jsdt.core.IClassFile;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.codeassist.RelevanceConstants;
 
 import junit.framework.*;
@@ -45,7 +45,7 @@ protected void assertResults(String expected, String actual) {
 		throw c;
 	}
 }
-public void testCodeSnippetAssistForBug132665() throws JavaModelException {
+public void testCodeSnippetAssistForBug132665() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "bug132665", "Bug132665.class");
 	IType type = cf.getType();
@@ -60,8 +60,8 @@ public void testCodeSnippetAssistForBug132665() throws JavaModelException {
 	type.codeComplete(snippet.toCharArray(), -1, snippet.length(), typeNames, names, modifiers, false, requestor);
 	
 	assertResults(
-		"foo1[METHOD_REF]{foo1(), Lbug132665.Bug132665;, ()V, foo1, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-		"foo3[METHOD_REF]{foo3(), Lbug132665.Bug132665;, ()V, foo3, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
+		"foo1[FUNCTION_REF]{foo1(), Lbug132665.Bug132665;, ()V, foo1, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+		"foo3[FUNCTION_REF]{foo3(), Lbug132665.Bug132665;, ()V, foo3, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
 }

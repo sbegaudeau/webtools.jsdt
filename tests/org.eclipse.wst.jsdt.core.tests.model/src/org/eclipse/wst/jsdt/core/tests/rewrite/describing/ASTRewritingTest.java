@@ -18,17 +18,17 @@ import org.eclipse.jface.text.Document;
 
 import org.eclipse.text.edits.TextEdit;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.AbstractTypeDeclaration;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
@@ -45,7 +45,7 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 	/** @deprecated using deprecated code */
 	private static final int AST_INTERNAL_JLS2 = AST.JLS2;
 	
-	protected IJavaProject project1;
+	protected IJavaScriptProject project1;
 	protected IPackageFragmentRoot sourceFolder;
 	
 	public static Test suite() {
@@ -81,13 +81,13 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		IJavaProject proj= createJavaProject("P", new String[] {"src"}, "bin");
-		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.SPACE);
+		IJavaScriptProject proj= createJavaProject("P", new String[] {"src"}, "bin");
+		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaScriptCore.SPACE);
 		proj.setOption(DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "4");
-		proj.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-		proj.setOption(JavaCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaCore.ERROR);
-		proj.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-		proj.setOption(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
+		proj.setOption(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+		proj.setOption(JavaScriptCore.COMPILER_PB_ASSERT_IDENTIFIER, JavaScriptCore.ERROR);
+		proj.setOption(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+		proj.setOption(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
 
 		this.project1 = proj;
 		this.sourceFolder = this.getPackageFragmentRoot("P", "src");
@@ -100,23 +100,23 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 		super.tearDown();
 	}
 		
-	protected CompilationUnit createAST(ICompilationUnit cu) {
+	protected JavaScriptUnit createAST(IJavaScriptUnit cu) {
 		ASTParser parser= ASTParser.newParser(AST_INTERNAL_JLS2);
 		parser.setSource(cu);
 		parser.setResolveBindings(false);
-		return (CompilationUnit) parser.createAST(null);
+		return (JavaScriptUnit) parser.createAST(null);
 	}
 	
-	protected CompilationUnit createAST3(ICompilationUnit cu) {
+	protected JavaScriptUnit createAST3(IJavaScriptUnit cu) {
 		ASTParser parser= ASTParser.newParser(AST.JLS3);
 		parser.setSource(cu);
 		parser.setResolveBindings(false);
-		return (CompilationUnit) parser.createAST(null);
+		return (JavaScriptUnit) parser.createAST(null);
 	}
 	
-	protected String evaluateRewrite(ICompilationUnit cu, ASTRewrite rewrite) throws Exception {
+	protected String evaluateRewrite(IJavaScriptUnit cu, ASTRewrite rewrite) throws Exception {
 		Document document1= new Document(cu.getSource());
-		TextEdit res= rewrite.rewriteAST(document1, cu.getJavaProject().getOptions(true));
+		TextEdit res= rewrite.rewriteAST(document1, cu.getJavaScriptProject().getOptions(true));
 		res.apply(document1);
 		String content1= document1.get();
 		
@@ -135,11 +135,11 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 		StringAsserts.assertEqualString(actual, expected);
 	}
 	
-	public static TypeDeclaration findTypeDeclaration(CompilationUnit astRoot, String simpleTypeName) {
+	public static TypeDeclaration findTypeDeclaration(JavaScriptUnit astRoot, String simpleTypeName) {
 		return (TypeDeclaration) findAbstractTypeDeclaration(astRoot, simpleTypeName);
 	}
 	
-	public static AbstractTypeDeclaration findAbstractTypeDeclaration(CompilationUnit astRoot, String simpleTypeName) {
+	public static AbstractTypeDeclaration findAbstractTypeDeclaration(JavaScriptUnit astRoot, String simpleTypeName) {
 		List types= astRoot.types();
 		for (int i= 0; i < types.size(); i++) {
 			AbstractTypeDeclaration elem= (AbstractTypeDeclaration) types.get(i);
@@ -151,12 +151,12 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 	}
 	
 	
-	public static MethodDeclaration findMethodDeclaration(CompilationUnit astRoot, String simpleTypeName) {
+	public static FunctionDeclaration findMethodDeclaration(JavaScriptUnit astRoot, String simpleTypeName) {
 		List statements= astRoot.statements();
 		for (int i= 0; i < statements.size(); i++) {
 			Object obj=statements.get(i);
-			if (obj instanceof MethodDeclaration) {
-							MethodDeclaration elem= (MethodDeclaration)obj; 
+			if (obj instanceof FunctionDeclaration) {
+							FunctionDeclaration elem= (FunctionDeclaration)obj; 
 							if (simpleTypeName.equals(elem.getName().getIdentifier())) {
 								return elem;
 							}
@@ -166,8 +166,8 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 	}
 
 
-	public static MethodDeclaration findMethodDeclaration(TypeDeclaration typeDecl, String methodName) {
-		MethodDeclaration[] methods= typeDecl.getMethods();
+	public static FunctionDeclaration findMethodDeclaration(TypeDeclaration typeDecl, String methodName) {
+		FunctionDeclaration[] methods= typeDecl.getMethods();
 		for (int i= 0; i < methods.length; i++) {
 			if (methodName.equals(methods[i].getName().getIdentifier())) {
 				return methods[i];
@@ -189,7 +189,7 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 	}
 
 	/** @deprecated using deprecated code */
-	private void setReturnType(MethodDeclaration methodDeclaration, Type type) {
+	private void setReturnType(FunctionDeclaration methodDeclaration, Type type) {
 		methodDeclaration.setReturnType(type);
 	}
 	
@@ -206,8 +206,8 @@ public class ASTRewritingTest extends AbstractJavaModelTests {
 		return newFieldDecl;
 	}
 	
-	protected MethodDeclaration createNewMethod(AST ast, String name, boolean isAbstract) {
-		MethodDeclaration decl= ast.newMethodDeclaration();
+	protected FunctionDeclaration createNewMethod(AST ast, String name, boolean isAbstract) {
+		FunctionDeclaration decl= ast.newFunctionDeclaration();
 		decl.setName(ast.newSimpleName(name));
 		if (ast.apiLevel() == AST_INTERNAL_JLS2) {
 			setModifiers(decl, isAbstract ? (Modifier.ABSTRACT | Modifier.PRIVATE) : Modifier.PRIVATE);

@@ -24,11 +24,11 @@ public CopyMoveTests(String name) {
  * Attempts to copy the element with optional 
  * forcing. The operation should fail with the failure code.
  */
-public void copyNegative(IJavaElement element, IJavaElement destination, IJavaElement sibling, String rename, boolean force, int failureCode) {
+public void copyNegative(IJavaScriptElement element, IJavaScriptElement destination, IJavaScriptElement sibling, String rename, boolean force, int failureCode) {
 	try {
 		((ISourceManipulation)element).copy(destination, sibling, rename, force, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Code not correct for JavaModelException: " + jme, jme.getStatus().getCode() == failureCode);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Code not correct for JavaScriptModelException: " + jme, jme.getStatus().getCode() == failureCode);
 		return;
 	}
 	assertTrue("The copy should have failed for: " + element, false);
@@ -38,11 +38,11 @@ public void copyNegative(IJavaElement element, IJavaElement destination, IJavaEl
  * Attempts to copy the elements with optional 
  * forcing. The operation should fail with the failure code.
  */
-public void copyNegative(IJavaElement[] elements, IJavaElement[] destinations, IJavaElement[] siblings, String[] renames, boolean force, int failureCode) {
+public void copyNegative(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, IJavaScriptElement[] siblings, String[] renames, boolean force, int failureCode) {
 	try {
 		getJavaModel().copy(elements, destinations, siblings, renames, force, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Code not correct for JavaModelException: " + jme, jme.getStatus().getCode() == failureCode);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Code not correct for JavaScriptModelException: " + jme, jme.getStatus().getCode() == failureCode);
 		return;
 	}
 	assertTrue("The move should have failed for for multiple elements: ", false);
@@ -53,14 +53,14 @@ public void copyNegative(IJavaElement[] elements, IJavaElement[] destinations, I
  * and forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public IJavaElement copyPositive(IJavaElement element, IJavaElement container, IJavaElement sibling, String rename, boolean force) throws JavaModelException {
+public IJavaScriptElement copyPositive(IJavaScriptElement element, IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean force) throws JavaScriptModelException {
 	// if forcing, ensure that a name collision exists
 	if (force) {
-		IJavaElement collision = generateHandle(element, rename, container);
+		IJavaScriptElement collision = generateHandle(element, rename, container);
 		assertTrue("Collision does not exist", collision.exists());
 	}
 
-	IJavaElement copy;
+	IJavaScriptElement copy;
 	try {
 		startDeltas();
 		
@@ -75,15 +75,15 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
 		assertTrue("Copy should exist", copy.exists());
 	
 		//ensure correct position
-		if (element.getElementType() > IJavaElement.COMPILATION_UNIT) {
+		if (element.getElementType() > IJavaScriptElement.JAVASCRIPT_UNIT) {
 			ensureCorrectPositioning((IParent) container, sibling, copy);
 		} else {
-			if (container.getElementType() == IJavaElement.PACKAGE_FRAGMENT_ROOT) {
+			if (container.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
 			} else {
 				// ensure package name is correct
 				if (container.getElementName().equals("")) {
 					// default package - should be no package decl
-					IJavaElement[] children = ((ICompilationUnit) copy).getChildren();
+					IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
 					boolean found = false;
 					for (int i = 0; i < children.length; i++) {
 						if (children[i] instanceof IPackageDeclaration) {
@@ -92,7 +92,7 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
 					}
 					assertTrue("Should not find package decl", !found);
 				} else {
-					IJavaElement[] children = ((ICompilationUnit) copy).getChildren();
+					IJavaScriptElement[] children = ((IJavaScriptUnit) copy).getChildren();
 					boolean found = false;
 					for (int i = 0; i < children.length; i++) {
 						if (children[i] instanceof IPackageDeclaration) {
@@ -104,11 +104,11 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
 				}
 			}
 		}
-		if (copy.getElementType() == IJavaElement.IMPORT_DECLARATION)
-			container = ((ICompilationUnit) container).getImportContainer();
-		IJavaElementDelta destDelta = getDeltaFor(container, true);
-		assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaElementDelta.CHANGED);
-		IJavaElementDelta[] deltas = destDelta.getAddedChildren();
+		if (copy.getElementType() == IJavaScriptElement.IMPORT_DECLARATION)
+			container = ((IJavaScriptUnit) container).getImportContainer();
+		IJavaScriptElementDelta destDelta = getDeltaFor(container, true);
+		assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.CHANGED);
+		IJavaScriptElementDelta[] deltas = destDelta.getAddedChildren();
 		assertTrue("Added children not correct for element copy", deltas[0].getElement().equals(copy));
 	} finally {
 		stopDeltas();
@@ -119,60 +119,60 @@ public IJavaElement copyPositive(IJavaElement element, IJavaElement container, I
  * Generates a new handle to the original element in
  * its new container.
  */
-public IJavaElement generateHandle(IJavaElement original, String rename, IJavaElement container) {
+public IJavaScriptElement generateHandle(IJavaScriptElement original, String rename, IJavaScriptElement container) {
 	String name = original.getElementName();
 	if (rename != null) {
 		name = rename;
 	}
 	switch (container.getElementType()) {
-		case IJavaElement.PACKAGE_FRAGMENT_ROOT :
+		case IJavaScriptElement.PACKAGE_FRAGMENT_ROOT :
 			switch (original.getElementType()) {
-				case IJavaElement.PACKAGE_FRAGMENT :
+				case IJavaScriptElement.PACKAGE_FRAGMENT :
 					return ((IPackageFragmentRoot) container).getPackageFragment(name);
 				default :
 					assertTrue("illegal child type", false);
 					break;
 			}
 			break;
-		case IJavaElement.PACKAGE_FRAGMENT :
+		case IJavaScriptElement.PACKAGE_FRAGMENT :
 			switch (original.getElementType()) {
-				case IJavaElement.COMPILATION_UNIT :
-					return ((IPackageFragment) container).getCompilationUnit(name);
+				case IJavaScriptElement.JAVASCRIPT_UNIT :
+					return ((IPackageFragment) container).getJavaScriptUnit(name);
 				default :
 					assertTrue("illegal child type", false);
 					break;
 			}
 			break;
-		case IJavaElement.COMPILATION_UNIT :
+		case IJavaScriptElement.JAVASCRIPT_UNIT :
 			switch (original.getElementType()) {
-				case IJavaElement.IMPORT_DECLARATION :
-					return ((ICompilationUnit) container).getImport(name);
-				case IJavaElement.PACKAGE_DECLARATION :
-					return ((ICompilationUnit) container).getPackageDeclaration(name);
-				case IJavaElement.TYPE :
+				case IJavaScriptElement.IMPORT_DECLARATION :
+					return ((IJavaScriptUnit) container).getImport(name);
+				case IJavaScriptElement.PACKAGE_DECLARATION :
+					return ((IJavaScriptUnit) container).getPackageDeclaration(name);
+				case IJavaScriptElement.TYPE :
 					if (isMainType(original, container)) {
 						//the cu has been renamed as well
-						container = ((IPackageFragment) container.getParent()).getCompilationUnit(name + ".js");
+						container = ((IPackageFragment) container.getParent()).getJavaScriptUnit(name + ".js");
 					}
-					return ((ICompilationUnit) container).getType(name);
+					return ((IJavaScriptUnit) container).getType(name);
 				default :
 					assertTrue("illegal child type", false);
 					break;
 			}
 			break;
-		case IJavaElement.TYPE :
+		case IJavaScriptElement.TYPE :
 			switch (original.getElementType()) {
-				case IJavaElement.METHOD :
+				case IJavaScriptElement.METHOD :
 					if (name.equals(original.getParent().getElementName())) {
 						//method is a constructor
-						return ((IType) container).getMethod(container.getElementName(), ((IMethod) original).getParameterTypes());
+						return ((IType) container).getFunction(container.getElementName(), ((IFunction) original).getParameterTypes());
 					}
-					return ((IType) container).getMethod(name, ((IMethod) original).getParameterTypes());
-				case IJavaElement.FIELD :
+					return ((IType) container).getFunction(name, ((IFunction) original).getParameterTypes());
+				case IJavaScriptElement.FIELD :
 					return ((IType) container).getField(name);
-				case IJavaElement.TYPE :
+				case IJavaScriptElement.TYPE :
 					return ((IType) container).getType(name);
-				case IJavaElement.INITIALIZER :
+				case IJavaScriptElement.INITIALIZER :
 					//hack to return the first initializer
 					return ((IType) container).getInitializer(1);
 				default :
@@ -190,10 +190,10 @@ public IJavaElement generateHandle(IJavaElement original, String rename, IJavaEl
 /**
  * Returns true if this element is the main type of its compilation unit.
  */
-protected boolean isMainType(IJavaElement element, IJavaElement parent) {
-	if (parent instanceof ICompilationUnit) {
+protected boolean isMainType(IJavaScriptElement element, IJavaScriptElement parent) {
+	if (parent instanceof IJavaScriptUnit) {
 		if (element instanceof IType) {
-			ICompilationUnit cu= (ICompilationUnit)parent;
+			IJavaScriptUnit cu= (IJavaScriptUnit)parent;
 			String typeName = cu.getElementName();
 			typeName = typeName.substring(0, typeName.length() - 5);
 			return element.getElementName().equals(typeName) && element.getParent().equals(cu);
@@ -205,11 +205,11 @@ protected boolean isMainType(IJavaElement element, IJavaElement parent) {
  * Attempts to move the element with optional 
  * forcing. The operation should fail with the failure code.
  */
-public void moveNegative(IJavaElement element, IJavaElement destination, IJavaElement sibling, String rename, boolean force, int failureCode) {
+public void moveNegative(IJavaScriptElement element, IJavaScriptElement destination, IJavaScriptElement sibling, String rename, boolean force, int failureCode) {
 	try {
 		((ISourceManipulation)element).move(destination, sibling, rename, force, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Code not correct for JavaModelException: " + jme, jme.getStatus().getCode() == failureCode);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Code not correct for JavaScriptModelException: " + jme, jme.getStatus().getCode() == failureCode);
 		return;
 	}
 	assertTrue("The move should have failed for: " + element, false);
@@ -219,11 +219,11 @@ public void moveNegative(IJavaElement element, IJavaElement destination, IJavaEl
  * Attempts to move the element with optional 
  * forcing. The operation should fail with the failure code.
  */
-public void moveNegative(IJavaElement[] elements, IJavaElement[] destinations, IJavaElement[] siblings, String[] renames, boolean force, int failureCode) {
+public void moveNegative(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, IJavaScriptElement[] siblings, String[] renames, boolean force, int failureCode) {
 	try {
 		getJavaModel().move(elements, destinations, siblings, renames, force, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Code not correct for JavaModelException: " + jme, jme.getStatus().getCode() == failureCode);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Code not correct for JavaScriptModelException: " + jme, jme.getStatus().getCode() == failureCode);
 		return;
 	}
 	assertTrue("The move should have failed for for multiple elements: ", false);
@@ -234,8 +234,8 @@ public void moveNegative(IJavaElement[] elements, IJavaElement[] destinations, I
  * and forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void movePositive(IJavaElement element, IJavaElement container, IJavaElement sibling, String rename, boolean force) throws JavaModelException {
-	IJavaElement[] siblings = new IJavaElement[] {sibling};
+public void movePositive(IJavaScriptElement element, IJavaScriptElement container, IJavaScriptElement sibling, String rename, boolean force) throws JavaScriptModelException {
+	IJavaScriptElement[] siblings = new IJavaScriptElement[] {sibling};
 	String[] renamings = new String[] {rename};
 	if (sibling == null) {
 		siblings = null;
@@ -243,14 +243,14 @@ public void movePositive(IJavaElement element, IJavaElement container, IJavaElem
 	if (rename == null) {
 		renamings = null;
 	}
-	movePositive(new IJavaElement[] {element}, new IJavaElement[] {container}, siblings, renamings, force);
+	movePositive(new IJavaScriptElement[] {element}, new IJavaScriptElement[] {container}, siblings, renamings, force);
 }
 /**
  * Moves the elements to the containers with optional renaming
  * and forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, IJavaElement[] siblings, String[] names, boolean force) throws JavaModelException {
+public void movePositive(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, IJavaScriptElement[] siblings, String[] names, boolean force) throws JavaScriptModelException {
 	movePositive(elements, destinations, siblings, names, force, null);
 }
 /**
@@ -258,13 +258,13 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
  * and forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, IJavaElement[] siblings, String[] names, boolean force, IProgressMonitor monitor) throws JavaModelException {
+public void movePositive(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, IJavaScriptElement[] siblings, String[] names, boolean force, IProgressMonitor monitor) throws JavaScriptModelException {
 	// if forcing, ensure that a name collision exists
 	int i;
 	if (force) {
 		for (i = 0; i < elements.length; i++) {
-			IJavaElement e = elements[i];
-			IJavaElement collision = null;
+			IJavaScriptElement e = elements[i];
+			IJavaScriptElement collision = null;
 			if (names == null) {
 				collision = generateHandle(e, null, destinations[i]);
 			} else {
@@ -280,8 +280,8 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 		// move
 		getJavaModel().move(elements, destinations, siblings, names, force, monitor);
 		for (i = 0; i < elements.length; i++) {
-			IJavaElement element = elements[i];
-			IJavaElement moved = null;
+			IJavaScriptElement element = elements[i];
+			IJavaScriptElement moved = null;
 			if (names == null) {
 				moved = generateHandle(element, null, destinations[i]);
 			} else {
@@ -289,7 +289,7 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 			}
 			// ensure the original element no longer exists, unless moving within the same container
 			if (!destinations[i].equals(element.getParent())) {
-				if (element.getElementType() == IJavaElement.PACKAGE_FRAGMENT) {
+				if (element.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT) {
 					//moving a package fragment does not necessary mean that it no longer exists
 					//it could have members that are not part of the Java Model
 					try {
@@ -298,7 +298,7 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 							assertTrue("The original element must not exist", !element.exists());
 						}
 					} catch (CoreException ce) {
-						throw new JavaModelException(ce);
+						throw new JavaScriptModelException(ce);
 					}
 				} else {
 					assertTrue("The original element must not exist", !element.exists());
@@ -307,18 +307,18 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 			assertTrue("Moved element should exist", moved.exists());
 	
 			//ensure correct position
-			if (element.getElementType() > IJavaElement.COMPILATION_UNIT) {
+			if (element.getElementType() > IJavaScriptElement.JAVASCRIPT_UNIT) {
 				if (siblings != null && siblings.length > 0) {
 					ensureCorrectPositioning((IParent) moved.getParent(), siblings[i], moved);
 				}
 			} else {
-				IJavaElement container = destinations[i];
-				if (container.getElementType() == IJavaElement.PACKAGE_FRAGMENT_ROOT) {
+				IJavaScriptElement container = destinations[i];
+				if (container.getElementType() == IJavaScriptElement.PACKAGE_FRAGMENT_ROOT) {
 				} else { // ensure package name is correct
 	
 					if (container.getElementName().equals("")) {
 						// default package - should be no package decl
-						IJavaElement[] children = ((ICompilationUnit) moved).getChildren();
+						IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
 						boolean found = false;
 						for (int j = 0; j < children.length; j++) {
 							if (children[j] instanceof IPackageDeclaration) {
@@ -328,7 +328,7 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 						}
 						assertTrue("Should not find package decl", !found);
 					} else {
-						IJavaElement[] children = ((ICompilationUnit) moved).getChildren();
+						IJavaScriptElement[] children = ((IJavaScriptUnit) moved).getChildren();
 						boolean found = false;
 						for (int j = 0; j < children.length; j++) {
 							if (children[j] instanceof IPackageDeclaration) {
@@ -341,20 +341,20 @@ public void movePositive(IJavaElement[] elements, IJavaElement[] destinations, I
 					}
 				}
 			}
-			IJavaElementDelta destDelta = null;
+			IJavaScriptElementDelta destDelta = null;
 			if (isMainType(element, destinations[i]) && names != null && names[i] != null) { //moved/renamed main type to same cu
 				destDelta = getDeltaFor(moved.getParent());
-				assertTrue("Renamed compilation unit as result of main type not added", destDelta != null && destDelta.getKind() == IJavaElementDelta.ADDED);
-				assertTrue("flag should be F_MOVED_FROM", (destDelta.getFlags() & IJavaElementDelta.F_MOVED_FROM) > 0);
+				assertTrue("Renamed compilation unit as result of main type not added", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.ADDED);
+				assertTrue("flag should be F_MOVED_FROM", (destDelta.getFlags() & IJavaScriptElementDelta.F_MOVED_FROM) > 0);
 				assertTrue("moved from handle should be original", destDelta.getMovedFromElement().equals(element.getParent()));
 			} else {
 				destDelta = getDeltaFor(destinations[i], true);
-				assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaElementDelta.CHANGED);
-				IJavaElementDelta[] deltas = destDelta.getAddedChildren();
+				assertTrue("Destination container not changed", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.CHANGED);
+				IJavaScriptElementDelta[] deltas = destDelta.getAddedChildren();
 				assertTrue("Added children not correct for element copy", deltas[i].getElement().equals(moved));
-				assertTrue("should be K_ADDED", deltas[i].getKind() == IJavaElementDelta.ADDED);
-				IJavaElementDelta sourceDelta= getDeltaFor(element, false);
-				assertTrue("should be K_REMOVED", sourceDelta.getKind() == IJavaElementDelta.REMOVED);
+				assertTrue("should be K_ADDED", deltas[i].getKind() == IJavaScriptElementDelta.ADDED);
+				IJavaScriptElementDelta sourceDelta= getDeltaFor(element, false);
+				assertTrue("should be K_REMOVED", sourceDelta.getKind() == IJavaScriptElementDelta.REMOVED);
 			}
 		}
 	} finally {

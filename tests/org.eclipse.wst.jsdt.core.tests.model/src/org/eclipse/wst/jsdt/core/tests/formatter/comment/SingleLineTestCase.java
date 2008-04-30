@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.core.tests.formatter.comment;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.formatter.CodeFormatter;
 import org.eclipse.wst.jsdt.core.formatter.DefaultCodeFormatterConstants;
 
@@ -135,7 +135,7 @@ public class SingleLineTestCase extends CommentTestCase {
 	}
 	
 	public void testCommentWrapping5() {
-		setUserOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.TAB);
+		setUserOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaScriptCore.TAB);
 		String prefix= "public class Test {" + DELIMITER + "	int test; // test test test test test test test test test test test test";
 		String inputInfix= " ";
 		String expectedInfix= DELIMITER + "\t\t\t\t" + PREFIX;

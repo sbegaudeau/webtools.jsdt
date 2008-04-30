@@ -27,12 +27,12 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IAccessRule;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.codeassist.RelevanceConstants;
 import org.eclipse.wst.jsdt.internal.core.JavaModelManager;
 
@@ -85,9 +85,15 @@ public class CompletionTests2 extends ModifyingResourceTests implements Relevanc
 				this.areExported = areExported;
 				this.forbiddenReferences = forbiddenReferences;
 			}
-			public IClasspathEntry[] getClasspathEntries() {
+			/**
+			 * @deprecated Use {@link #getIncludepathEntries()} instead
+			 */
+			public IIncludePathEntry[] getClasspathEntries() {
+				return getIncludepathEntries();
+			}
+			public IIncludePathEntry[] getIncludepathEntries() {
 				int length = this.libPaths.length;
-				IClasspathEntry[] entries = new IClasspathEntry[length];
+				IIncludePathEntry[] entries = new IIncludePathEntry[length];
 				for (int j = 0; j < length; j++) {
 				    IPath path = new Path(new String(this.libPaths[j]));
 				    boolean isExported = this.areExported[j];
@@ -100,15 +106,15 @@ public class CompletionTests2 extends ModifyingResourceTests implements Relevanc
 					    String token = null;
 					    for (int i = 0; i < count; i++) {
 					    	token = tokenizer.nextToken();
-							accessRules[i] = JavaCore.newAccessRule(new Path(token), IAccessRule.K_NON_ACCESSIBLE);
+							accessRules[i] = JavaScriptCore.newAccessRule(new Path(token), IAccessRule.K_NON_ACCESSIBLE);
 						}
 					} else {
 						accessRules = new IAccessRule[0];
 					}
 				    if (path.segmentCount() == 1) {
-				        entries[j] = JavaCore.newProjectEntry(path, accessRules, true, new IClasspathAttribute[0], isExported);
+				        entries[j] = JavaScriptCore.newProjectEntry(path, accessRules, true, new IIncludePathAttribute[0], isExported);
 				    } else {
-						entries[j] = JavaCore.newLibraryEntry(path, null, null, accessRules, new IClasspathAttribute[0], isExported);
+						entries[j] = JavaScriptCore.newLibraryEntry(path, null, null, accessRules, new IIncludePathAttribute[0], isExported);
 				    }
 				}
 				return entries;
@@ -155,12 +161,12 @@ public class CompletionTests2 extends ModifyingResourceTests implements Relevanc
 		public boolean allowFailureContainer() {
 			return true;
 		}
-		public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
+		public void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException {
 			if (containerValues == null) return;
 			try {
-				JavaCore.setJsGlobalScopeContainer(
+				JavaScriptCore.setJsGlobalScopeContainer(
 					containerPath, 
-					new IJavaProject[] {project},
+					new IJavaScriptProject[] {project},
 					new IJsGlobalScopeContainer[] {(IJsGlobalScopeContainer)containerValues.get(project.getElementName())}, 
 					null);
 			} catch (CoreException e) {
@@ -217,7 +223,7 @@ File createDirectory(File parent, String name) {
 public void testBug29832() throws Exception {
 	try {
 		// create variable
-//		JavaCore.setClasspathVariables(
+//		JavaScriptCore.setClasspathVariables(
 //			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 //			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 //			null);
@@ -227,7 +233,7 @@ public void testBug29832() throws Exception {
 		IFile f = getFile("/Completion/ZZZ.js");
 		
 		
-		IJavaProject p = this.createJavaProject(
+		IJavaScriptProject p = this.createJavaProject(
 			"P1",
 			new String[]{"/"},
 			new String[]{},
@@ -253,7 +259,7 @@ public void testBug29832() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("P2", "", "", "X.js");
+		IJavaScriptUnit cu= getCompilationUnit("P2", "", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "z";
@@ -324,7 +330,7 @@ public void testBug29832() throws Exception {
 			}
 		};
 		getWorkspace().run(populate, null);
-		JavaCore.create(project);
+		JavaScriptCore.create(project);
 		
 		waitUntilIndexesReady();
 		
@@ -347,7 +353,7 @@ public void testBug29832() throws Exception {
 public void testBug33560() throws Exception {
 	try {
 		// create variable
-//		JavaCore.setClasspathVariables(
+//		JavaScriptCore.setClasspathVariables(
 //			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 //			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 //			null);
@@ -355,7 +361,7 @@ public void testBug33560() throws Exception {
 		// create P1
 		//IFile f = getFile("/Completion/lib.jar");
 		IFile f = getFile("/Completion/ZZZ.js");
-		IJavaProject p = this.createJavaProject(
+		IJavaScriptProject p = this.createJavaProject(
 					"P1",
 					new String[]{"/"},
 					new String[]{},
@@ -389,7 +395,7 @@ public void testBug33560() throws Exception {
 		
 		// do completion
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("P3", "", "", "X.js");
+		IJavaScriptUnit cu= getCompilationUnit("P3", "", "", "X.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "z";
@@ -455,7 +461,7 @@ public void testBug33560() throws Exception {
 			}
 		};
 		getWorkspace().run(populate, null);
-		JavaCore.create(project);
+		JavaScriptCore.create(project);
 		
 		waitUntilIndexesReady();
 		
@@ -481,7 +487,7 @@ public void testBug33560() throws Exception {
 //public void testBug79288() throws Exception {
 //	try {
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -535,7 +541,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -558,7 +564,7 @@ public void testBug33560() throws Exception {
 //public void testBug91772() throws Exception {
 //	try {
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -617,7 +623,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -642,16 +648,16 @@ public void testBug33560() throws Exception {
 //	}
 //}
 //public void testBug93891() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -703,7 +709,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -723,21 +729,21 @@ public void testBug33560() throws Exception {
 //		manager.containers = new HashMap(5);
 //		manager.variables = new HashMap(5);
 //		
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction1() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.IGNORE);
-//		options.put(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaCore.IGNORE);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.DISABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.IGNORE);
+//		options.put(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaScriptCore.IGNORE);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -782,7 +788,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -796,22 +802,22 @@ public void testBug33560() throws Exception {
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //
 //public void testAccessRestriction2() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.IGNORE);
-//		options.put(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaCore.IGNORE);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.DISABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.IGNORE);
+//		options.put(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaScriptCore.IGNORE);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -865,7 +871,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -879,20 +885,20 @@ public void testBug33560() throws Exception {
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction3() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.DISABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -946,7 +952,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -960,21 +966,21 @@ public void testBug33560() throws Exception {
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction4() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.IGNORE);
-//		options.put(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaCore.IGNORE);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.IGNORE);
+//		options.put(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaScriptCore.IGNORE);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1028,7 +1034,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1042,20 +1048,20 @@ public void testBug33560() throws Exception {
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction5() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1109,7 +1115,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1122,20 +1128,20 @@ public void testBug33560() throws Exception {
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction6() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1214,7 +1220,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P3", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1228,20 +1234,20 @@ public void testBug33560() throws Exception {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
 //		this.deleteProject("P3");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction7() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1312,7 +1318,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1326,20 +1332,20 @@ public void testBug33560() throws Exception {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
 //		this.deleteProject("P3");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction8() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1410,7 +1416,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1425,20 +1431,20 @@ public void testBug33560() throws Exception {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
 //		this.deleteProject("P3");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction9() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1555,7 +1561,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
+//		IJavaScriptUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1573,20 +1579,20 @@ public void testBug33560() throws Exception {
 //		this.deleteProject("P2");
 //		this.deleteProject("P3");
 //		this.deleteProject("PX");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction10() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.DISABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1703,7 +1709,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
+//		IJavaScriptUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1723,20 +1729,20 @@ public void testBug33560() throws Exception {
 //		this.deleteProject("P2");
 //		this.deleteProject("P3");
 //		this.deleteProject("PX");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction11() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -1853,7 +1859,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
+//		IJavaScriptUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -1871,20 +1877,20 @@ public void testBug33560() throws Exception {
 //		this.deleteProject("P2");
 //		this.deleteProject("P3");
 //		this.deleteProject("PX");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction12() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.DISABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -2001,7 +2007,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("PX", "src", "", "X.js");
+//		IJavaScriptUnit cu= getCompilationUnit("PX", "src", "", "X.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -2021,20 +2027,20 @@ public void testBug33560() throws Exception {
 //		this.deleteProject("P2");
 //		this.deleteProject("P3");
 //		this.deleteProject("PX");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction13() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.WARNING);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.WARNING);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -2088,7 +2094,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -2101,20 +2107,20 @@ public void testBug33560() throws Exception {
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestriction14() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.WARNING);
-//		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-//		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.ENABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.WARNING);
+//		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -2168,7 +2174,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "XX";
@@ -2181,19 +2187,19 @@ public void testBug33560() throws Exception {
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testAccessRestrictionX() throws Exception {
-//	Hashtable oldOptions = JavaCore.getOptions();
+//	Hashtable oldOptions = JavaScriptCore.getOptions();
 //	try {
 //		Hashtable options = new Hashtable(oldOptions);
-//		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-//		options.put(JavaCore.CODEASSIST_RESTRICTIONS_CHECK, JavaCore.DISABLED);
-//		JavaCore.setOptions(options);
+//		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+//		options.put(JavaScriptCore.CODEASSIST_RESTRICTIONS_CHECK, JavaScriptCore.DISABLED);
+//		JavaScriptCore.setOptions(options);
 //		
 //		// create variable
-//		JavaCore.setClasspathVariables(
+//		JavaScriptCore.setClasspathVariables(
 //			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 //			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 //			null);
@@ -2243,7 +2249,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "x.fo";
@@ -2251,18 +2257,18 @@ public void testBug33560() throws Exception {
 //		cu.codeComplete(cursorLocation, requestor);
 //		
 //		assertResults(
-//			"foo[METHOD_REF]{foo(), La.XX1;, ()V, foo, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC) + "}",
+//			"foo[FUNCTION_REF]{foo(), La.XX1;, ()V, foo, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC) + "}",
 //			requestor.getResults());
 //	} finally {
 //		this.deleteProject("P1");
 //		this.deleteProject("P2");
-//		JavaCore.setOptions(oldOptions);
+//		JavaScriptCore.setOptions(oldOptions);
 //	}
 //}
 //public void testBug96950() throws Exception {
 //	try {
 //		// create variable
-////		JavaCore.setClasspathVariables(
+////		JavaScriptCore.setClasspathVariables(
 ////			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 ////			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 ////			null);
@@ -2304,7 +2310,7 @@ public void testBug33560() throws Exception {
 //		
 //		// do completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "BreakRules.js");
+//		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "BreakRules.js");
 //		
 //		String str = cu.getSource();
 //		String completeBehind = "Tara";
@@ -2327,7 +2333,7 @@ public void testBug33560() throws Exception {
 //public void testChangeInternalJar() throws CoreException, IOException {
 //	
 //	
-//	IJavaProject p = this.createJavaProject(
+//	IJavaScriptProject p = this.createJavaProject(
 //				"P1",
 //				new String[]{"/"},
 //				new String[]{},
@@ -2346,7 +2352,7 @@ public void testBug33560() throws Exception {
 //			"    public void doit2B(int x) { }\n" + 
 //			"}\n"
 //		};
-//		addLibrary(jarName, "b162621_src.zip", pathAndContents, JavaCore.VERSION_1_4);
+//		addLibrary(jarName, "b162621_src.zip", pathAndContents, JavaScriptCore.VERSION_1_4);
 //
 //		// Wait a little bit to be sure file system is aware of zip file creation
 //		try {
@@ -2371,13 +2377,13 @@ public void testBug33560() throws Exception {
 //
 //		// first completion
 //		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-//		ICompilationUnit unit = getCompilationUnit(path);
+//		IJavaScriptUnit unit = getCompilationUnit(path);
 //		String completeBehind = "test.do";
 //		int cursorLocation = source.lastIndexOf(completeBehind) + completeBehind.length();
 //		unit.codeComplete(cursorLocation, requestor);
 //		assertResults(
-//			"doit2A[METHOD_REF]{doit2A, Lpack.Util;, (II)V, doit2A, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}\n" +
-//			"doit2B[METHOD_REF]{doit2B, Lpack.Util;, (I)V, doit2B, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}",
+//			"doit2A[FUNCTION_REF]{doit2A, Lpack.Util;, (II)V, doit2A, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}\n" +
+//			"doit2B[FUNCTION_REF]{doit2B, Lpack.Util;, (I)V, doit2B, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}",
 //			requestor.getResults());
 //
 //		// change class file to add a third doXXX method and refresh
@@ -2405,9 +2411,9 @@ public void testBug33560() throws Exception {
 //		requestor = new CompletionTestsRequestor2();
 //		unit.codeComplete(cursorLocation, requestor);
 //		assertResults(
-//			"doit2A[METHOD_REF]{doit2A, Lpack.Util;, (II)V, doit2A, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}\n" +
-//			"doit2B[METHOD_REF]{doit2B, Lpack.Util;, (I)V, doit2B, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}\n" +
-//			"doit2C[METHOD_REF]{doit2C, Lpack.Util;, (I)V, doit2C, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}",
+//			"doit2A[FUNCTION_REF]{doit2A, Lpack.Util;, (II)V, doit2A, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}\n" +
+//			"doit2B[FUNCTION_REF]{doit2B, Lpack.Util;, (I)V, doit2B, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}\n" +
+//			"doit2C[FUNCTION_REF]{doit2C, Lpack.Util;, (I)V, doit2C, "+(R_DEFAULT + R_CASE + R_INTERESTING + R_NON_RESTRICTED + R_NON_STATIC) + "}",
 //			requestor.getResults());
 //	} finally {
 //		removeLibraryEntry(this.currentProject, new Path(jarName));

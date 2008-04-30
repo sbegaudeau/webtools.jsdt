@@ -17,10 +17,10 @@ import java.util.List;
 
 import org.eclipse.wst.jsdt.core.IBuffer;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
@@ -32,13 +32,13 @@ import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.AnonymousClassDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ArrayType;
 import org.eclipse.wst.jsdt.core.dom.Assignment;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.PackageDeclaration;
 import org.eclipse.wst.jsdt.core.dom.ParameterizedType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -53,7 +53,7 @@ import org.eclipse.wst.jsdt.core.tests.util.Util;
 
 public class AbstractASTTests extends ModifyingResourceTests {
 
-//	ICompilationUnit[] workingCopies;
+//	IJavaScriptUnit[] workingCopies;
 
 	public AbstractASTTests(String name) {
 		super(name);
@@ -158,8 +158,8 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		while (iterator.hasNext()) {
 			ASTNode node = (ASTNode) iterator.next();
 			buffer.append(node);
-			if (node instanceof CompilationUnit) {
-				IProblem[] problems = ((CompilationUnit) node).getProblems();
+			if (node instanceof JavaScriptUnit) {
+				IProblem[] problems = ((JavaScriptUnit) node).getProblems();
 				if (problems != null) {
 					for (int i = 0, length = problems.length; i < length; i++) {
 						IProblem problem = problems[i];
@@ -226,11 +226,11 @@ public class AbstractASTTests extends ModifyingResourceTests {
 	 * Builds an AST from the info source (which is assumed to be the source attached to the given class file), 
 	 * and returns the AST node that was delimited by the astStart and astEnd of the marker info.
 	 */
-	protected ASTNode buildAST(MarkerInfo markerInfo, IClassFile classFile, boolean reportErrors) throws JavaModelException {
+	protected ASTNode buildAST(MarkerInfo markerInfo, IClassFile classFile, boolean reportErrors) throws JavaScriptModelException {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setSource(classFile);
 		parser.setResolveBindings(true);
-		CompilationUnit unit = (CompilationUnit) parser.createAST(null);
+		JavaScriptUnit unit = (JavaScriptUnit) parser.createAST(null);
 		
 		if (reportErrors) {
 			StringBuffer buffer = new StringBuffer();
@@ -244,15 +244,15 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		return findNode(unit, markerInfo);
 	}
 	
-	protected ASTNode buildAST(ICompilationUnit cu) throws JavaModelException {
+	protected ASTNode buildAST(IJavaScriptUnit cu) throws JavaScriptModelException {
 		return buildAST(null/*use existing contents*/, cu, true/*report errors*/);
 	}
 
-	protected ASTNode buildAST(String newContents, ICompilationUnit cu) throws JavaModelException {
+	protected ASTNode buildAST(String newContents, IJavaScriptUnit cu) throws JavaScriptModelException {
 		return buildAST(newContents, cu, true/*report errors*/);
 	}
 	
-	protected ASTNode buildAST(MarkerInfo markerInfo, IClassFile classFile) throws JavaModelException {
+	protected ASTNode buildAST(MarkerInfo markerInfo, IClassFile classFile) throws JavaScriptModelException {
 		return buildAST(markerInfo, classFile, true/*report errors*/);
 	}
 
@@ -261,16 +261,16 @@ public class AbstractASTTests extends ModifyingResourceTests {
 	 * builds an AST from the resulting source, and returns the AST node that was delimited
 	 * by "*start*" and "*end*".
 	 */
-	protected ASTNode buildAST(String newContents, ICompilationUnit cu, boolean reportErrors) throws JavaModelException {
+	protected ASTNode buildAST(String newContents, IJavaScriptUnit cu, boolean reportErrors) throws JavaScriptModelException {
 		return buildAST(newContents, cu, reportErrors, false/*no statement recovery*/);
 	}
 
-	protected ASTNode buildAST(String newContents, ICompilationUnit cu, boolean reportErrors, boolean enableStatementRecovery) throws JavaModelException {
+	protected ASTNode buildAST(String newContents, IJavaScriptUnit cu, boolean reportErrors, boolean enableStatementRecovery) throws JavaScriptModelException {
 		ASTNode[] nodes = buildASTs(newContents, cu, reportErrors, enableStatementRecovery);
 		if (nodes.length == 0) return null;
 		return nodes[0];		
 	}	
-	protected ASTNode[] buildASTs(String contents, ICompilationUnit cu) throws JavaModelException {
+	protected ASTNode[] buildASTs(String contents, IJavaScriptUnit cu) throws JavaScriptModelException {
 		return buildASTs(contents, cu, true);
 	}
 
@@ -280,11 +280,11 @@ public class AbstractASTTests extends ModifyingResourceTests {
 	 * Builds an AST from the resulting source.
 	 * For each of the pairs, returns the AST node that was delimited by "*start?*" and "*end?*".
 	 */
-	protected ASTNode[] buildASTs(String newContents, ICompilationUnit cu, boolean reportErrors) throws JavaModelException {
+	protected ASTNode[] buildASTs(String newContents, IJavaScriptUnit cu, boolean reportErrors) throws JavaScriptModelException {
 		return buildASTs(newContents, cu, reportErrors, false);
 	}
 	
-	protected ASTNode[] buildASTs(String newContents, ICompilationUnit cu, boolean reportErrors, boolean enableStatementRecovery) throws JavaModelException {
+	protected ASTNode[] buildASTs(String newContents, IJavaScriptUnit cu, boolean reportErrors, boolean enableStatementRecovery) throws JavaScriptModelException {
 		MarkerInfo markerInfo;
 		if (newContents == null) {
 			markerInfo = new MarkerInfo(cu.getSource());
@@ -293,7 +293,7 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		}
 		newContents = markerInfo.source;
 
-		CompilationUnit unit;
+		JavaScriptUnit unit;
 		if (cu.isWorkingCopy()) {
 			cu.getBuffer().setContents(newContents);
 			unit = cu.reconcile(AST.JLS3, reportErrors, enableStatementRecovery, null, null);
@@ -306,7 +306,7 @@ public class AbstractASTTests extends ModifyingResourceTests {
 			parser.setSource(cu);
 			parser.setResolveBindings(true);
 			parser.setStatementsRecovery(enableStatementRecovery);
-			unit = (CompilationUnit) parser.createAST(null);
+			unit = (JavaScriptUnit) parser.createAST(null);
 		}
 		
 		if (reportErrors) {
@@ -336,7 +336,7 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		return markerInfos;
 	}
 
-	protected IVariableBinding[] createVariableBindings(String[] pathAndSources, String[] bindingKeys) throws JavaModelException {
+	protected IVariableBinding[] createVariableBindings(String[] pathAndSources, String[] bindingKeys) throws JavaScriptModelException {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		this.workingCopies = createWorkingCopies(pathAndSources, owner);
 		IBinding[] bindings = resolveBindings(bindingKeys, getJavaProject("P"), owner);
@@ -346,25 +346,25 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		return result;
 	}
 
-	protected IMethodBinding[] createMethodBindings(String[] pathAndSources, String[] bindingKeys) throws JavaModelException {
+	protected IFunctionBinding[] createMethodBindings(String[] pathAndSources, String[] bindingKeys) throws JavaScriptModelException {
 		return createMethodBindings(pathAndSources, bindingKeys, getJavaProject("P"));
 	}
 
-	protected IMethodBinding[] createMethodBindings(String[] pathAndSources, String[] bindingKeys, IJavaProject project) throws JavaModelException {
+	protected IFunctionBinding[] createMethodBindings(String[] pathAndSources, String[] bindingKeys, IJavaScriptProject project) throws JavaScriptModelException {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		this.workingCopies = createWorkingCopies(pathAndSources, owner);
 		IBinding[] bindings = resolveBindings(bindingKeys, project, owner);
 		int length = bindings.length;
-		IMethodBinding[] result = new IMethodBinding[length];
+		IFunctionBinding[] result = new IFunctionBinding[length];
 		System.arraycopy(bindings, 0, result, 0, length);
 		return result;
 	}
 
-	protected ITypeBinding[] createTypeBindings(String[] pathAndSources, String[] bindingKeys) throws JavaModelException {
+	protected ITypeBinding[] createTypeBindings(String[] pathAndSources, String[] bindingKeys) throws JavaScriptModelException {
 		return createTypeBindings(pathAndSources, bindingKeys, getJavaProject("P"));
 	}
 	
-	protected ITypeBinding[] createTypeBindings(String[] pathAndSources, String[] bindingKeys, IJavaProject project) throws JavaModelException {
+	protected ITypeBinding[] createTypeBindings(String[] pathAndSources, String[] bindingKeys, IJavaScriptProject project) throws JavaScriptModelException {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		this.workingCopies = createWorkingCopies(pathAndSources, owner);
 		IBinding[] bindings = resolveBindings(bindingKeys, project, owner);
@@ -374,21 +374,21 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		return result;
 	}
 
-	protected ICompilationUnit[] createWorkingCopies(String[] pathAndSources, WorkingCopyOwner owner) throws JavaModelException {
+	protected IJavaScriptUnit[] createWorkingCopies(String[] pathAndSources, WorkingCopyOwner owner) throws JavaScriptModelException {
 		MarkerInfo[] markerInfos = createMarkerInfos(pathAndSources);
 		return createWorkingCopies(markerInfos, owner);
 	}
 	
-	protected ICompilationUnit[] createWorkingCopies(MarkerInfo[] markerInfos, WorkingCopyOwner owner) throws JavaModelException {
+	protected IJavaScriptUnit[] createWorkingCopies(MarkerInfo[] markerInfos, WorkingCopyOwner owner) throws JavaScriptModelException {
 		return createWorkingCopies(markerInfos, owner, null);
 	}
 
-	protected ICompilationUnit[] createWorkingCopies(MarkerInfo[] markerInfos, WorkingCopyOwner owner, IProblemRequestor problemRequestor) throws JavaModelException {
+	protected IJavaScriptUnit[] createWorkingCopies(MarkerInfo[] markerInfos, WorkingCopyOwner owner, IProblemRequestor problemRequestor) throws JavaScriptModelException {
 		int length = markerInfos.length;
-		ICompilationUnit[] copies = new ICompilationUnit[length];
+		IJavaScriptUnit[] copies = new IJavaScriptUnit[length];
 		for (int i = 0; i < length; i++) {
 			MarkerInfo markerInfo = markerInfos[i];
-			ICompilationUnit workingCopy = getCompilationUnit(markerInfo.path).getWorkingCopy(owner, problemRequestor, null);
+			IJavaScriptUnit workingCopy = getCompilationUnit(markerInfo.path).getWorkingCopy(owner, problemRequestor, null);
 			workingCopy.getBuffer().setContents(markerInfo.source);
 			workingCopy.makeConsistent(null);
 			copies[i] = workingCopy;
@@ -396,18 +396,18 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		return copies;
 	}
 	
-	protected ASTNode findNode(CompilationUnit unit, final MarkerInfo markerInfo) {
+	protected ASTNode findNode(JavaScriptUnit unit, final MarkerInfo markerInfo) {
 		ASTNode[] nodes = findNodes(unit, markerInfo);
 		if (nodes.length == 0)
 			return unit;
 		return nodes[0];
 	}
 	
-	protected ASTNode[] findNodes(CompilationUnit unit, final MarkerInfo markerInfo) {
+	protected ASTNode[] findNodes(JavaScriptUnit unit, final MarkerInfo markerInfo) {
 		class Visitor extends ASTVisitor {
 			ArrayList found = new ArrayList();
 			public void preVisit(ASTNode node) {
-				if (node instanceof CompilationUnit) return;
+				if (node instanceof JavaScriptUnit) return;
 				int index = markerInfo.indexOfASTStart(node.getStartPosition());
 				if (index != -1 && node.getStartPosition() + node.getLength() == markerInfo.astEnds[index]) {
 					this.found.add(node);
@@ -423,7 +423,7 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		return result;
 	}
 
-	protected void resolveASTs(ICompilationUnit[] cus, String[] bindingKeys, ASTRequestor requestor, IJavaProject project, WorkingCopyOwner owner) {
+	protected void resolveASTs(IJavaScriptUnit[] cus, String[] bindingKeys, ASTRequestor requestor, IJavaScriptProject project, WorkingCopyOwner owner) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setResolveBindings(true);
 		parser.setProject(project);
@@ -441,10 +441,10 @@ public class AbstractASTTests extends ModifyingResourceTests {
 				return ((AnonymousClassDeclaration) node).resolveBinding();
 			case ASTNode.TYPE_DECLARATION_STATEMENT:
 				return ((TypeDeclarationStatement) node).resolveBinding();
-			case ASTNode.METHOD_DECLARATION:
-				return ((MethodDeclaration) node).resolveBinding();
-			case ASTNode.METHOD_INVOCATION:
-				return ((MethodInvocation) node).resolveMethodBinding();
+			case ASTNode.FUNCTION_DECLARATION:
+				return ((FunctionDeclaration) node).resolveBinding();
+			case ASTNode.FUNCTION_INVOCATION:
+				return ((FunctionInvocation) node).resolveMethodBinding();
 			case ASTNode.TYPE_PARAMETER:
 				return ((TypeParameter) node).resolveBinding();
 			case ASTNode.PARAMETERIZED_TYPE:
@@ -466,23 +466,23 @@ public class AbstractASTTests extends ModifyingResourceTests {
 		}
 	}
 	
-	protected IBinding[] resolveBindings(String[] bindingKeys, IJavaProject project, WorkingCopyOwner owner) {
+	protected IBinding[] resolveBindings(String[] bindingKeys, IJavaScriptProject project, WorkingCopyOwner owner) {
 		BindingRequestor requestor = new BindingRequestor();
-		resolveASTs(new ICompilationUnit[0], bindingKeys, requestor, project, owner);
+		resolveASTs(new IJavaScriptUnit[0], bindingKeys, requestor, project, owner);
 		return requestor.getBindings(bindingKeys);
 	}
 	
 	/*
 	 * Resolve the bindings of the nodes marked with *start?* and *end?*.
 	 */
-	protected IBinding[] resolveBindings(String contents, ICompilationUnit cu) throws JavaModelException {
+	protected IBinding[] resolveBindings(String contents, IJavaScriptUnit cu) throws JavaScriptModelException {
 		return resolveBindings(contents, cu, true/*report errors*/);
 	}
 
 	/*
 	 * Resolve the bindings of the nodes marked with *start?* and *end?*.
 	 */
-	protected IBinding[] resolveBindings(String contents, ICompilationUnit cu, boolean reportErrors) throws JavaModelException {
+	protected IBinding[] resolveBindings(String contents, IJavaScriptUnit cu, boolean reportErrors) throws JavaScriptModelException {
 		ASTNode[] nodes = buildASTs(contents, cu, reportErrors);
 		if (nodes == null) return null;
 		int length = nodes.length;

@@ -33,7 +33,7 @@ public void testCreateBinaryToolObject() throws CoreException {
 		this.createJavaProject("P", new String[] {}, new String[] {"lib"}, "bin");
 		IFile file = this.createFile("/P/lib/X.class", "");
 		
-		IJavaElement object = JavaCore.create(file);
+		IJavaScriptElement object = JavaScriptCore.create(file);
 		assertTrue("tooling object not created", object != null);
 		assertTrue("class file does not exist", object.exists());
 		assertTrue("wrong object created", object instanceof IClassFile);
@@ -63,17 +63,17 @@ public void testCreateCompilationUnits() throws CoreException {
 			"}"
 		);
 
-		IJavaElement objectA = JavaCore.create(fileA);
+		IJavaScriptElement objectA = JavaScriptCore.create(fileA);
 		assertTrue("tooling object A not created", objectA != null);
-		assertTrue("wrong object A created", objectA instanceof ICompilationUnit);
+		assertTrue("wrong object A created", objectA instanceof IJavaScriptUnit);
 		assertTrue("compilation unit A does not exist", objectA.exists());
 
-		IJavaElement objectB = JavaCore.create(fileB);
+		IJavaScriptElement objectB = JavaScriptCore.create(fileB);
 		assertTrue("tooling object B not created", objectB != null);
-		assertTrue("wrong object B created", objectB instanceof ICompilationUnit);
+		assertTrue("wrong object B created", objectB instanceof IJavaScriptUnit);
 		assertTrue("compilation unit B does not exist", objectB.exists());
 
-		assertEquals("should share project", ((ICompilationUnit)objectA).getJavaProject(), ((ICompilationUnit)objectB).getJavaProject());
+		assertEquals("should share project", ((IJavaScriptUnit)objectA).getJavaScriptProject(), ((IJavaScriptUnit)objectB).getJavaScriptProject());
 	} finally {
 		this.deleteProject("P");
 	}
@@ -90,21 +90,21 @@ public void testCreateCompilationUnitsNotOnClasspath() throws CoreException {
 		IFile fileB = this.createFile("/P/other/nested/B.js", "public class B {}");
 		IFile fileC = this.createFile("/P/C.js", "public class C {}");
 		
-		IJavaElement objectA = JavaCore.create(fileA);
+		IJavaScriptElement objectA = JavaScriptCore.create(fileA);
 		assertTrue("tooling object A not created", objectA != null);
-		assertTrue("wrong object A created", objectA instanceof ICompilationUnit);
+		assertTrue("wrong object A created", objectA instanceof IJavaScriptUnit);
 		assertTrue("compilation unit A should not exist", !objectA.exists());
 
-		IJavaElement objectB = JavaCore.create(fileB);
+		IJavaScriptElement objectB = JavaScriptCore.create(fileB);
 		assertTrue("tooling object B not created", objectB != null);
-		assertTrue("wrong object B created", objectB instanceof ICompilationUnit);
+		assertTrue("wrong object B created", objectB instanceof IJavaScriptUnit);
 		assertTrue("compilation unit B should not exist", !objectB.exists());
 
-		assertEquals("should share project", ((ICompilationUnit)objectA).getJavaProject(), ((ICompilationUnit)objectB).getJavaProject());
+		assertEquals("should share project", ((IJavaScriptUnit)objectA).getJavaScriptProject(), ((IJavaScriptUnit)objectB).getJavaScriptProject());
 
-		IJavaElement objectC = JavaCore.create(fileC);
+		IJavaScriptElement objectC = JavaScriptCore.create(fileC);
 		assertTrue("tooling object C not created", objectC != null);
-		assertTrue("wrong object C created", objectC instanceof ICompilationUnit);
+		assertTrue("wrong object C created", objectC instanceof IJavaScriptUnit);
 		assertTrue("compilation unit C should not exist", !objectC.exists());
 
 		IPackageFragment pkg= (IPackageFragment)objectA.getParent() ;
@@ -124,33 +124,33 @@ public void testCreateCompilationUnitsNotOnClasspath() throws CoreException {
  */
 public void testCreateFolderToolObjects() throws CoreException {
 	try {
-		IJavaProject javaProject = this.createJavaProject("P", new String[] {}, "bin");
+		IJavaScriptProject javaProject = this.createJavaProject("P", new String[] {}, "bin");
 		this.createFolder("/P/src/x/y/z");
 		
 		IFolder src =this.getFolder("/P/src");
 		IFolder res = src.getFolder("x");
-		IJavaElement object = JavaCore.create(res);
+		IJavaScriptElement object = JavaScriptCore.create(res);
 		assertTrue("tooling object 1 should not be created", object == null);
 	
 		//set a classpath
-		IClasspathEntry[] classpath= new IClasspathEntry[] {JavaCore.newSourceEntry(src.getFullPath())};
-		javaProject.setRawClasspath(classpath, null);
+		IIncludePathEntry[] classpath= new IIncludePathEntry[] {JavaScriptCore.newSourceEntry(src.getFullPath())};
+		javaProject.setRawIncludepath(classpath, null);
 	
 		//test with a class path
-		object = JavaCore.create(src);
+		object = JavaScriptCore.create(src);
 		assertTrue("tooling object 2 should be created", object != null);
 		assertTrue("tooling object 2 should be a IPackageFragmentRoot", object instanceof IPackageFragmentRoot);
 		assertEquals("IPackageFragmentRoot 2 name is incorrect", "src", object.getElementName());
 		assertTrue("root 'src' does not exist", object.exists());
 		
-		object = JavaCore.create(res);
+		object = JavaScriptCore.create(res);
 		assertTrue("tooling object 3 should be created", object != null);
 		assertTrue("tooling object 3 should be a IPackageFragment", object instanceof IPackageFragment);
 		assertEquals("IPackageFragment 3 name is incorrect", "x", object.getElementName());
 		assertTrue("package 'com' does not exist", object.exists());
 	
 		IFolder subFolder= res.getFolder("y");
-		object= JavaCore.create(subFolder);
+		object= JavaScriptCore.create(subFolder);
 		assertTrue("tooling object 'x.y' should be created", object != null);
 		assertTrue("tooling object 'x.y' should be a IPackageFragment", object instanceof IPackageFragment);
 		assertEquals("IPackageFragment 'x.y' name is incorrect", "x.y", object.getElementName());
@@ -158,7 +158,7 @@ public void testCreateFolderToolObjects() throws CoreException {
 	
 		//not on or below the class path
 		IFolder bin = this.getFolder("/P/bin");
-		object = JavaCore.create(bin);
+		object = JavaScriptCore.create(bin);
 		assertTrue("tooling object 4 should not be created", object == null);
 	} finally {
 		this.deleteProject("P");
@@ -172,7 +172,7 @@ public void testCreateFromEmptyJavaFile() throws CoreException {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
 		IFile file = this.createFile("/P/src/X.js", "");
 
-		IJavaElement cu = JavaCore.create(file);
+		IJavaScriptElement cu = JavaScriptCore.create(file);
 		assertTrue("does not handle empty Java files", cu != null);
 	} finally {
 		this.deleteProject("P");
@@ -186,7 +186,7 @@ public void testCreateFromFileWithoutExtension() throws CoreException {
 		this.createJavaProject("P", new String[] {"src"}, "bin");
 		IFile file = this.createFile("/P/src/FileWithoutExtension", "public class X {}");
 
-		IJavaElement cu = JavaCore.create(file);
+		IJavaScriptElement cu = JavaScriptCore.create(file);
 		assertTrue("invalid file not detected", cu == null);
 	} finally {
 		this.deleteProject("P");
@@ -196,8 +196,8 @@ public void testCreateFromFileWithoutExtension() throws CoreException {
  * Ensures that factory correctly handles invalid mementos.
  */
 public void testCreateFromInvalidMemento()  {
-	assertTrue("invalid parameter not detected", JavaCore.create((String) null) == null);
-	assertTrue("should return the java model", JavaCore.create("") != null);
+	assertTrue("invalid parameter not detected", JavaScriptCore.create((String) null) == null);
+	assertTrue("should return the java model", JavaScriptCore.create("") != null);
 }
 /**
  * Ensures that a Java model element can be created from a IFile
@@ -208,7 +208,7 @@ public void testCreateJarToolObject() throws CoreException {
 		this.createJavaProject("P", new String[] {}, new String[] {"/P/lib.jar"}, "");
 		IFile file = this.createFile("/P/lib.jar", "");
 
-		IJavaElement jar = JavaCore.create(file);
+		IJavaScriptElement jar = JavaScriptCore.create(file);
 		assertTrue("tooling object not created", jar != null);
 	} finally {
 		this.deleteProject("P");
@@ -223,7 +223,7 @@ public void testCreateLibInOutput() throws CoreException {
 		this.createJavaProject("P", new String[] {}, new String[] {"/P/lib"}, "");
 		IFolder folder = this.createFolder("/P/lib");
 
-		IJavaElement lib = JavaCore.create(folder);
+		IJavaScriptElement lib = JavaScriptCore.create(folder);
 		assertTrue("tooling object not created", lib != null);
 	} finally {
 		this.deleteProject("P");

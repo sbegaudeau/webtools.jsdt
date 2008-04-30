@@ -18,13 +18,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.ElementChangedEvent;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IElementChangedListener;
-import org.eclipse.wst.jsdt.core.IJavaElementDelta;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElementDelta;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.core.*;
 import org.eclipse.wst.jsdt.core.*;
 
@@ -59,8 +59,8 @@ public class JavaElementDeltaTests extends ModifyingResourceTests {
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			for (int i = 0, length = DeltaListener.this.deltas.size(); i < length; i++) {
-				IJavaElementDelta delta = (IJavaElementDelta)this.deltas.get(i);
-				IJavaElementDelta[] children = delta.getAffectedChildren();
+				IJavaScriptElementDelta delta = (IJavaScriptElementDelta)this.deltas.get(i);
+				IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 				if (children.length > 0) {
 					for (int j=0, childrenLength=children.length; j<childrenLength; j++) {
 						buffer.append(children[j]);
@@ -103,13 +103,13 @@ public JavaElementDeltaTests(String name) {
  */
 public void testAddCommentAndCommit() throws CoreException {
 	DeltaListener listener = new DeltaListener(ElementChangedEvent.POST_CHANGE);
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFile("P/X.js",
 			"function X() {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
+		IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(null);
 		
 		// add comment to working copy
@@ -119,7 +119,7 @@ public void testAddCommentAndCommit() throws CoreException {
 			"}");
 
 		// commit working copy
-		JavaCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+		JavaScriptCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
 		copy.commitWorkingCopy(true, null);
 		assertEquals(
 			"Unexpected delta after committing working copy", 
@@ -129,7 +129,7 @@ public void testAddCommentAndCommit() throws CoreException {
 			"			X.js[*]: {CONTENT | FINE GRAINED | PRIMARY RESOURCE}",
 			listener.toString());
 	} finally {
-		JavaCore.removeElementChangedListener(listener);
+		JavaScriptCore.removeElementChangedListener(listener);
 		if (copy != null) copy.discardWorkingCopy();
 		deleteProject("P");
 	}
@@ -186,8 +186,8 @@ public void testAddCuInDefaultPkg2() throws CoreException {
  */
 public void testAddCuAfterProjectOpen() throws CoreException {
 	try {
-		IJavaProject p1 = createJavaProject("P1", new String[] {"src"}, "bin");
-		IJavaProject p2 = createJavaProject("P2", new String[] {"src"}, "bin");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, "bin");
 		createFile("P2/src/X.js",
 			"function X() {\n" +
 			"}");
@@ -195,7 +195,7 @@ public void testAddCuAfterProjectOpen() throws CoreException {
 		project.close(null);
 		
 		// invalidate roots
-		p1.setRawClasspath(new IClasspathEntry[] {}, null);
+		p1.setRawIncludepath(new IIncludePathEntry[] {}, null);
 		
 		// open project
 		project.open(null);
@@ -362,8 +362,8 @@ public void testAddJavaNatureAndClasspath() throws CoreException {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					addJavaNature("P");
 					createFolder("/P/src");
-					getJavaProject("P").setRawClasspath(
-						new IClasspathEntry[] {JavaCore.newSourceEntry(new Path("/P/src"))},
+					getJavaProject("P").setRawIncludepath(
+						new IIncludePathEntry[] {JavaScriptCore.newSourceEntry(new Path("/P/src"))},
 						new Path("/P/bin"),
 						null
 					);
@@ -469,9 +469,9 @@ public void testAddTwoJavaProjectsWithExtraSetClasspath() throws CoreException {
 		ResourcesPlugin.getWorkspace().run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					IJavaProject p1 = createJavaProject("P1", new String[] {""}, "");
+					IJavaScriptProject p1 = createJavaProject("P1", new String[] {""}, "");
 					// should be a no-op and no extra delta volley should be fired
-					p1.setRawClasspath(p1.getRawClasspath(), p1.getOutputLocation(), null);
+					p1.setRawIncludepath(p1.getRawIncludepath(), p1.getOutputLocation(), null);
 					createJavaProject("P2", new String[] {"src"}, "bin");
 				}
 			},
@@ -499,10 +499,10 @@ public void testBatchOperation() throws CoreException {
 			"function A() {\n" +
 			"}");
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					ICompilationUnit unit = getCompilationUnit("P/src/x/A.js");
+					IJavaScriptUnit unit = getCompilationUnit("P/src/x/A.js");
 //					unit.createType("class B {}", null, false, monitor);
 					unit.createField("var i;", null, false, monitor);
 				}
@@ -527,7 +527,7 @@ public void testBatchOperation() throws CoreException {
  */
 public void testBuildProjectUsedAsLib() throws CoreException {
 	try {
-		IJavaProject p1 = createJavaProject("P1", new String[] {"src1"}, new String[] {"JCL_LIB"}, "bin1");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {"src1"}, new String[] {"JCL_LIB"}, "bin1");
 		createJavaProject("P2", new String[] {"src2"}, new String[] {"/P1/bin1"}, "bin2");
 		createFile(
 			"/P1/src1/X.js",
@@ -585,12 +585,12 @@ public void testBuildProjectUsedAsLib() throws CoreException {
  */
 public void testChangeCustomOutput() throws CoreException {
 	try {
-		IJavaProject proj = createJavaProject("P", new String[] {"src"}, "bin", new String[] {"bin1"});
+		IJavaScriptProject proj = createJavaProject("P", new String[] {"src"}, "bin", new String[] {"bin1"});
 		startDeltas();
 		setClasspath(
 			proj, 
-			new IClasspathEntry[] {
-				JavaCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/bin2"))
+			new IIncludePathEntry[] {
+				JavaScriptCore.newSourceEntry(new Path("/P/src"), new IPath[0], new Path("/P/bin2"))
 			});
 		assertDeltas(
 			"Unexpected delta", 
@@ -612,12 +612,12 @@ public void testChangeCustomOutput() throws CoreException {
 //public void testChangeExportFlag() throws CoreException {
 //	try {
 //		createJavaProject("P1");
-//		IJavaProject proj = createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1"}, new boolean[] {false}, "bin");
+//		IJavaScriptProject proj = createJavaProject("P2", new String[] {}, new String[] {}, new String[] {"/P1"}, new boolean[] {false}, "bin");
 //		startDeltas();
 //		setClasspath(
 //			proj, 
-//			new IClasspathEntry[] {
-//				JavaCore.newProjectEntry(new Path("/P1"), true)
+//			new IIncludePathEntry[] {
+//				JavaScriptCore.newProjectEntry(new Path("/P1"), true)
 //			});
 //		assertDeltas(
 //			"Unexpected delta", 
@@ -637,12 +637,12 @@ public void testChangeCustomOutput() throws CoreException {
  */
 public void testChangeRootKind() throws CoreException {
 	try {
-		IJavaProject proj = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject proj = createJavaProject("P", new String[] {"src"}, "bin");
 		startDeltas();
 		setClasspath(
 			proj, 
-			new IClasspathEntry[] {
-				JavaCore.newLibraryEntry(new Path("/P/src"), null, null, false)
+			new IIncludePathEntry[] {
+				JavaScriptCore.newLibraryEntry(new Path("/P/src"), null, null, false)
 			});
 		assertDeltas(
 			"Unexpected delta", 
@@ -766,13 +766,13 @@ public void testCompilationUnitRemoveAndAdd() throws CoreException {
 }
 
 public void testCreateSharedWorkingCopy() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFile("P/X.js",
 			"function X() {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
+		IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 		startDeltas();
 		copy = unit.getWorkingCopy(new WorkingCopyOwner() {}, null, null);
 		assertDeltas(
@@ -789,13 +789,13 @@ public void testCreateSharedWorkingCopy() throws CoreException {
 	}
 }
 public void testCreateWorkingCopy() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFile("P/X.js",
 			"function X() {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
+		IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 		startDeltas();
 		copy = unit.getWorkingCopy(null);
 		assertDeltas(
@@ -929,10 +929,10 @@ public void testDeleteNonJavaFolder() throws CoreException {
  */
 public void testDeleteProjectAfterChangingClasspath() throws CoreException {
 	try {
-		final IJavaProject project = createJavaProject("P");
+		final IJavaScriptProject project = createJavaProject("P");
 		IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				project.setRawClasspath(createClasspath("P", new String[] {"/P/src", ""}), new Path("/P/bin"), monitor);
+				project.setRawIncludepath(createClasspath("P", new String[] {"/P/src", ""}), new Path("/P/bin"), monitor);
 				deleteProject("P");
 			}
 		};
@@ -952,18 +952,18 @@ public void testDeleteProjectAfterChangingClasspath() throws CoreException {
  * (regression test for bug 25197 NPE importing external plugins)
  */
 public void testDeleteProjectSetCPAnotherProject() throws CoreException {
-	final IJavaProject project = createJavaProject("P1", new String[] {"src"}, "bin");
+	final IJavaScriptProject project = createJavaProject("P1", new String[] {"src"}, "bin");
 	createJavaProject("P2", new String[] {}, "");
 
 	try {
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					deleteProject("P2");
-					project.setRawClasspath(
-						new IClasspathEntry[] {
-							JavaCore.newSourceEntry(project.getPath())
+					project.setRawIncludepath(
+						new IIncludePathEntry[] {
+							JavaScriptCore.newSourceEntry(project.getPath())
 						},
 						null);
 				}
@@ -984,13 +984,13 @@ public void testDeleteProjectSetCPAnotherProject() throws CoreException {
 	}
 }
 public void testDiscardWorkingCopy1() throws CoreException { // renamed from testDestroyWorkingCopy
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFile("P/X.js",
 			"public class X {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
+		IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(null);
 		startDeltas();
 		copy.discardWorkingCopy();
@@ -1009,13 +1009,13 @@ public void testDiscardWorkingCopy1() throws CoreException { // renamed from tes
 	}
 }
 public void testDiscardWorkingCopy2() throws CoreException { // renamed from testDestroySharedWorkingCopy
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFile("P/X.js",
 			"public class X {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
+		IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(new WorkingCopyOwner() {}, null, null);
 		startDeltas();
 		copy.discardWorkingCopy();
@@ -1039,14 +1039,14 @@ public void testDiscardWorkingCopy2() throws CoreException { // renamed from tes
  */
 public void testListenerPostChange() throws CoreException {
 	DeltaListener listener = new DeltaListener(ElementChangedEvent.POST_CHANGE);
-	ICompilationUnit wc = null;
+	IJavaScriptUnit wc = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		JavaCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
+		JavaScriptCore.addElementChangedListener(listener, ElementChangedEvent.POST_CHANGE);
 		
 		// cu creation
 		IPackageFragment pkg = getPackage("P");
-		ICompilationUnit cu = pkg.createCompilationUnit(
+		IJavaScriptUnit cu = pkg.createCompilationUnit(
 			"X.js",
 			"public class X {\n" +
 			"}",
@@ -1104,7 +1104,7 @@ public void testListenerPostChange() throws CoreException {
 			"  public void foo() {\n" +
 			"  }\n" +
 			"}");
-		wc.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		wc.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertEquals(
 			"Unexpected delta after reconciling working copy",
 			"",
@@ -1140,7 +1140,7 @@ public void testListenerPostChange() throws CoreException {
 			
 	} finally {
 		if (wc != null) wc.discardWorkingCopy();
-		JavaCore.removeElementChangedListener(listener);
+		JavaScriptCore.removeElementChangedListener(listener);
 		deleteProject("P");
 	}
 }
@@ -1150,14 +1150,14 @@ public void testListenerPostChange() throws CoreException {
  */
 public void testListenerReconcile() throws CoreException {
 	DeltaListener listener = new DeltaListener(ElementChangedEvent.POST_RECONCILE);
-	ICompilationUnit wc = null;
+	IJavaScriptUnit wc = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
-		JavaCore.addElementChangedListener(listener, ElementChangedEvent.POST_RECONCILE);
+		JavaScriptCore.addElementChangedListener(listener, ElementChangedEvent.POST_RECONCILE);
 		
 		// cu creation
 		IPackageFragment pkg = getPackage("P");
-		ICompilationUnit cu = pkg.createCompilationUnit(
+		IJavaScriptUnit cu = pkg.createCompilationUnit(
 			"X.js",
 			"public class X {\n" +
 			"}",
@@ -1204,7 +1204,7 @@ public void testListenerReconcile() throws CoreException {
 			"  public void foo() {\n" +
 			"  }\n" +
 			"}");
-		wc.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		wc.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertEquals(
 			"Unexpected delta after reconciling working copy",
 			"X[*]: {CHILDREN | FINE GRAINED}\n" +
@@ -1233,7 +1233,7 @@ public void testListenerReconcile() throws CoreException {
 			
 	} finally {
 		if (wc != null) wc.discardWorkingCopy();
-		JavaCore.removeElementChangedListener(listener);
+		JavaScriptCore.removeElementChangedListener(listener);
 		deleteProject("P");
 	}
 }
@@ -1280,7 +1280,7 @@ public void testMergeResourceDeltas() throws CoreException {
 	
 }
 public void testModifyMethodBodyAndSave() throws CoreException {
-	ICompilationUnit workingCopy = null;
+	IJavaScriptUnit workingCopy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFolder("P/x/y");
@@ -1290,7 +1290,7 @@ public void testModifyMethodBodyAndSave() throws CoreException {
 			"  public void foo() {\n" +
 			"  }\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js"); 
+		IJavaScriptUnit cu = getCompilationUnit("P/x/y/A.js"); 
 		workingCopy = cu.getWorkingCopy(null);
 		workingCopy.getBuffer().setContents(
 			"package x.y;\n" +
@@ -1407,7 +1407,7 @@ public void testModifyOutputLocation4() throws CoreException {
  */
 public void testModifyProjectDescriptionAndRemoveFolder() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P");
+		IJavaScriptProject project = createJavaProject("P");
 		final IProject projectFolder = project.getProject();
 		final IFolder folder = createFolder("/P/folder");
 		
@@ -1447,7 +1447,7 @@ public void testMoveCuInEnclosingPkg() throws CoreException {
 			"package x.y;\n" +
 			"public class A {\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js"); 
+		IJavaScriptUnit cu = getCompilationUnit("P/x/y/A.js"); 
 		IPackageFragment pkg = getPackage("P/x");
 		
 		startDeltas();
@@ -1513,7 +1513,7 @@ public void testMoveTwoResInRoot() throws CoreException {
 		final IFile f2 = createFile("P/Y.js", "public class Y {}");
 		
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					f1.move(new Path("/P/src/X.js"), true, null);
@@ -1760,11 +1760,11 @@ public void testPackageFragmentRootRemoveAndAdd() throws CoreException {
  */
 public void testRemoveAddBinaryProject() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = createJavaProject("P", new String[] {""}, "");
 		createFile("P/lib.jar", "");
-		project.setRawClasspath(
-			new IClasspathEntry[] {
-				JavaCore.newLibraryEntry(new Path("/P/lib.jar"), null, null)
+		project.setRawIncludepath(
+			new IIncludePathEntry[] {
+				JavaScriptCore.newLibraryEntry(new Path("/P/lib.jar"), null, null)
 			},
 			null
 		);
@@ -1824,13 +1824,13 @@ public void testRemoveAddJavaProject() throws CoreException {
  */
 public void testRemoveCPEntryAndRoot1() throws CoreException {
 	try {
-		IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		
 		// ensure that the project is open (there are clients of the delta only if the project is open)
 		project.open(null);
 		 
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					editFile(
@@ -1861,16 +1861,16 @@ public void testRemoveCPEntryAndRoot1() throws CoreException {
  */
 public void testRemoveCPEntryAndRoot2() throws CoreException {
 	try {
-		final IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		final IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		
 		// ensure that the project is open (there are clients of the delta only if the project is open)
 		project.open(null);
 		 
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					project.setRawClasspath(new IClasspathEntry[] {}, null);
+					project.setRawIncludepath(new IIncludePathEntry[] {}, null);
 					deleteFolder("/P/src");
 				}
 			},
@@ -1893,17 +1893,17 @@ public void testRemoveCPEntryAndRoot2() throws CoreException {
  */
 public void testRemoveCPEntryAndRoot3() throws CoreException {
 	try {
-		final IJavaProject project = createJavaProject("P", new String[] {"src"}, "bin");
+		final IJavaScriptProject project = createJavaProject("P", new String[] {"src"}, "bin");
 		
 		// ensure that the project is open (there are clients of the delta only if the project is open)
 		project.open(null);
 		 
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					deleteFolder("/P/src");
-					project.setRawClasspath(new IClasspathEntry[] {}, null);
+					project.setRawIncludepath(new IIncludePathEntry[] {}, null);
 				}
 			},
 			null);
@@ -2030,7 +2030,7 @@ public void testRemoveNonJavaProjectUpdateDependent3() throws CoreException {
 		deltaState.rootsAreStale = true;
 		
 		startDeltas();
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
 					deleteProject("SP");
@@ -2070,7 +2070,7 @@ public void testRenameJavaProject() throws CoreException {
 	}
 }
 public void testRenameMethodAndSave() throws CoreException {
-	ICompilationUnit workingCopy = null;
+	IJavaScriptUnit workingCopy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFolder("P/x/y");
@@ -2080,7 +2080,7 @@ public void testRenameMethodAndSave() throws CoreException {
 			"  public void foo1() {\n" +
 			"  }\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js"); 
+		IJavaScriptUnit cu = getCompilationUnit("P/x/y/A.js"); 
 		workingCopy = cu.getWorkingCopy(null);
 		workingCopy.getBuffer().setContents(
 			"package x.y;\n" +
@@ -2161,13 +2161,13 @@ public void testRenameOuterPkgFragment() throws CoreException {
  * (only commit should do so)
  */
 public void testSaveWorkingCopy() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createJavaProject("P", new String[] {""}, "");
 		createFile("P/X.js",
 			"public class X {\n" +
 			"}");
-		ICompilationUnit unit = getCompilationUnit("P", "", "", "X.js");
+		IJavaScriptUnit unit = getCompilationUnit("P", "", "", "X.js");
 		copy = unit.getWorkingCopy(null);
 		copy.getType("X").createMethod("void foo() {}", null, true, null);
 		startDeltas();
@@ -2210,12 +2210,12 @@ public void testSetClasspathOnFreshProject() throws CoreException {
 
 		startDeltas();
 
-		IClasspathEntry[] classpath = 
-			new IClasspathEntry[] {
-				JavaCore.newSourceEntry(new Path("/P1/src2")),
-				JavaCore.newLibraryEntry(new Path("/LibProj/mylib.jar"), null, null)
+		IIncludePathEntry[] classpath = 
+			new IIncludePathEntry[] {
+				JavaScriptCore.newSourceEntry(new Path("/P1/src2")),
+				JavaScriptCore.newLibraryEntry(new Path("/LibProj/mylib.jar"), null, null)
 			};
-		p1.setRawClasspath(classpath, null);
+		p1.setRawIncludepath(classpath, null);
 		assertDeltas(
 			"Should notice src2 and myLib additions to the classpath", 
 			"P1[*]: {CHILDREN | CLASSPATH CHANGED}\n" + 
@@ -2239,10 +2239,10 @@ public void testSetClasspathVariable1() throws CoreException {
 		createProject("LibProj");
 		createFile("LibProj/mylib.jar", "");
 		createFile("LibProj/otherlib.jar", "");
-		JavaCore.setClasspathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/mylib.jar")}, null);
+		JavaScriptCore.setIncludepathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/mylib.jar")}, null);
 		createJavaProject("P", new String[] {""}, new String[] {"LIB"}, "");
 		startDeltas();
-		JavaCore.setClasspathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/otherlib.jar")}, null);
+		JavaScriptCore.setIncludepathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/otherlib.jar")}, null);
 		assertDeltas(
 			"Unexpected delta after setting classpath variable", 
 			"P[*]: {CHILDREN}\n" +
@@ -2264,11 +2264,11 @@ public void testSetClasspathVariable2() throws CoreException {
 		createProject("LibProj");
 		createFile("LibProj/mylib.jar", "");
 		createFile("LibProj/otherlib.jar", "");
-		JavaCore.setClasspathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/mylib.jar")}, null);
+		JavaScriptCore.setIncludepathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/mylib.jar")}, null);
 		createJavaProject("P1", new String[] {""}, new String[] {"LIB"}, "");
 		createJavaProject("P2", new String[] {""}, new String[] {"LIB"}, "");
 		startDeltas();
-		JavaCore.setClasspathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/otherlib.jar")}, null);
+		JavaScriptCore.setIncludepathVariables(new String[] {"LIB"}, new IPath[] {new Path("/LibProj/otherlib.jar")}, null);
 		assertEquals(
 			"Unexpected delta after setting classpath variable", 
 			"P1[*]: {CHILDREN}\n" +
@@ -2297,8 +2297,8 @@ public void testWorkingCopyCommit() throws CoreException {
 			"package x.y;\n" +
 			"public class A {\n" +
 			"}");
-		ICompilationUnit cu = getCompilationUnit("P/x/y/A.js");
-		ICompilationUnit copy = cu.getWorkingCopy(null);
+		IJavaScriptUnit cu = getCompilationUnit("P/x/y/A.js");
+		IJavaScriptUnit copy = cu.getWorkingCopy(null);
 		copy.getBuffer().setContents(
 			"package x.y;\n" +
 			"public class A {\n" +

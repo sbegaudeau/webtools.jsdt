@@ -64,7 +64,7 @@ public NameEnvironmentAnswer findBinding(char[] typeName, char[][] packageName, 
 //	if (cus == null) {
 		return this.findTypeFromClassLibs(typeName, packageName,type,requestor);
 //	}
-//	CompilationUnit unit = (CompilationUnit)cus.get(typeName);
+//	JavaScriptUnit unit = (JavaScriptUnit)cus.get(typeName);
 //	if (unit == null) {
 //		return this.findTypeFromClassLibs(typeName, packageName,type,requestor);
 //	}
@@ -77,7 +77,7 @@ public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITy
 //	if (cus == null) {
 //		return this.findTypeFromClassLibs(typeName, packageName);
 //	}
-//	CompilationUnit unit = (CompilationUnit)cus.get(typeName);
+//	JavaScriptUnit unit = (JavaScriptUnit)cus.get(typeName);
 //	if (unit == null) {
 //		return this.findTypeFromClassLibs(typeName, packageName);
 //	}

@@ -15,7 +15,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.*;
@@ -46,9 +46,9 @@ public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 		buf.append("package test0000;\n");
 		buf.append("public class X {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		try {
 			evaluateRewrite(cu, astRoot);
@@ -63,9 +63,9 @@ public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 		buf.append("package test0001;\n");
 		buf.append("public class X {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -89,9 +89,9 @@ public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 		buf.append("import java.awt.*;\n");
 		buf.append("public class X {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -126,9 +126,9 @@ public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 		buf.append("import java.awt.*;\n");
 		buf.append("public class X {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -162,9 +162,9 @@ public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -207,9 +207,9 @@ public class ASTRewritingModifyingOtherTest extends ASTRewritingModifyingTest {
 //		buf.append("    \n");
 //		buf.append("    }\n");
 //		buf.append("}\n");
-//		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 //		
-//		CompilationUnit astRoot= parseCompilationUnit(cu, false);
+//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
 //		
 //		astRoot.recordModifications();
 //		

@@ -15,8 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Hashtable;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.internal.codeassist.RelevanceConstants;
 
 import junit.framework.*;
@@ -68,17 +68,17 @@ File createDirectory(File parent, String name) {
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
 public void test0001() throws Exception {
-	Hashtable oldOptions = JavaCore.getOptions();
+	Hashtable oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-		options.put(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaCore.WARNING);
-		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.DISABLED);
-		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+		options.put(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaScriptCore.WARNING);
+		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
 		// create variable
-//		JavaCore.setClasspathVariables(
+//		JavaScriptCore.setClasspathVariables(
 //			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 //			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 //			null);
@@ -136,7 +136,7 @@ public void test0001() throws Exception {
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, true, false, true);
 		requestor.allowAllRequiredProposals();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "x.fo";
@@ -149,30 +149,30 @@ public void test0001() throws Exception {
 		int start2 = str.lastIndexOf("XX");
 		int end2 = start2 + "XX".length();
 		assertResults(
-				"foo[METHOD_REF]{foo(), La.XX;, ()V, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+				"foo[FUNCTION_REF]{foo(), La.XX;, ()V, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 				"   XX[TYPE_REF]{a.XX, a, La.XX;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n" +
-				"foo[METHOD_REF]{foo(), Lb.XX;, ()V, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+				"foo[FUNCTION_REF]{foo(), Lb.XX;, ()V, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 				"   XX[TYPE_REF]{b.XX, b, Lb.XX;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
 		this.deleteProject("P1");
 		this.deleteProject("P2");
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
 public void test0002() throws Exception {
-	Hashtable oldOptions = JavaCore.getOptions();
+	Hashtable oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
-		options.put(JavaCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaCore.WARNING);
-		options.put(JavaCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaCore.ENABLED);
-		options.put(JavaCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
+		options.put(JavaScriptCore.COMPILER_PB_DISCOURAGED_REFERENCE, JavaScriptCore.WARNING);
+		options.put(JavaScriptCore.CODEASSIST_FORBIDDEN_REFERENCE_CHECK, JavaScriptCore.ENABLED);
+		options.put(JavaScriptCore.CODEASSIST_DISCOURAGED_REFERENCE_CHECK, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
 		// create variable
-//		JavaCore.setClasspathVariables(
+//		JavaScriptCore.setClasspathVariables(
 //			new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 //			new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 //			null);
@@ -230,7 +230,7 @@ public void test0002() throws Exception {
 		// do completion
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, true, false, true);
 		requestor.allowAllRequiredProposals();
-		ICompilationUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
+		IJavaScriptUnit cu= getCompilationUnit("P2", "src", "", "YY.js");
 		
 		String str = cu.getSource();
 		String completeBehind = "x.fo";
@@ -243,13 +243,13 @@ public void test0002() throws Exception {
 		int start2 = str.lastIndexOf("XX");
 		int end2 = start2 + "XX".length();
 		assertResults(
-				"foo[METHOD_REF]{foo(), Lb.XX;, ()V, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+				"foo[FUNCTION_REF]{foo(), Lb.XX;, ()V, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 				"   XX[TYPE_REF]{b.XX, b, Lb.XX;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
 		this.deleteProject("P1");
 		this.deleteProject("P2");
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 }

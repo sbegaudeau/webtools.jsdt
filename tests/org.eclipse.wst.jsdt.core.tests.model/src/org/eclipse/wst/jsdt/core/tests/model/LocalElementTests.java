@@ -11,8 +11,8 @@
 package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
 import org.eclipse.wst.jsdt.core.IType;
 
 import junit.framework.Test;
@@ -61,7 +61,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -95,7 +95,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -131,7 +131,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -169,7 +169,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -205,7 +205,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -263,7 +263,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"	}\n" + 
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -296,8 +296,8 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
-			IType type = cu.getType("X").getMethod("foo", new String[0]).getType("", 1);
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
+			IType type = cu.getType("X").getFunction("foo", new String[0]).getType("", 1);
 			assertEquals(
 				"Unexpected superclass name",
 				"X",
@@ -311,14 +311,14 @@ public class LocalElementTests extends ModifyingResourceTests {
 	 * IMember.getType(...) test
 	 */
 	public void testGetType() {
-		ICompilationUnit cu = getCompilationUnit("P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("P/X.js");
 		IType topLevelType = cu.getType("X");
-		IJavaElement[] types = new IJavaElement[5];
+		IJavaScriptElement[] types = new IJavaScriptElement[5];
 		types[0] = topLevelType.getInitializer(1).getType("", 1);
 		types[1] = topLevelType.getInitializer(1).getType("Y", 1);
 		types[2] = topLevelType.getField("f").getType("", 1);
-		types[3] = topLevelType.getMethod("foo", new String[] {"I", "QString;"}).getType("", 1);
-		types[4] = topLevelType.getMethod("foo", new String[] {"I", "QString;"}).getType("Z", 1);
+		types[3] = topLevelType.getFunction("foo", new String[] {"I", "QString;"}).getType("", 1);
+		types[4] = topLevelType.getFunction("foo", new String[] {"I", "QString;"}).getType("Z", 1);
 		assertElementsEqual(
 			"Unexpected types",
 			"<anonymous #1> [in <initializer #1> [in X [in X.java [in <default> [in <project root> [in P]]]]]]\n" + 
@@ -343,7 +343,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -372,7 +372,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -404,7 +404,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -437,7 +437,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -467,7 +467,7 @@ public class LocalElementTests extends ModifyingResourceTests {
 				"  }\n" +
 				"}"
 			);
-			ICompilationUnit cu = getCompilationUnit("/P/X.js");
+			IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 			assertElementDescendants(
 				"Unexpected compilation unit contents",
 				"X.java\n" + 
@@ -496,7 +496,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "  }\n" +
                 "}"
             );
-            ICompilationUnit cu = getCompilationUnit("/P/X.js");
+            IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
             assertElementDescendants(
                 "Unexpected compilation unit contents",
                 "X.java\n" + 
@@ -528,7 +528,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "  }\n" +
                 "}"
             );
-            ICompilationUnit cu = getCompilationUnit("/P/X.js");
+            IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
             assertElementDescendants(
                 "Unexpected compilation unit contents",
                 "X.java\n" + 
@@ -561,7 +561,7 @@ public class LocalElementTests extends ModifyingResourceTests {
                 "  }\n" +
                 "}"
             );
-            ICompilationUnit cu = getCompilationUnit("/P/X.js");
+            IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
             assertElementDescendants(
                 "Unexpected compilation unit contents",
                 "X.java\n" + 

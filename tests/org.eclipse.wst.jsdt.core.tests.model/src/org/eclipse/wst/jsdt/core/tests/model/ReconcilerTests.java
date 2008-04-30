@@ -38,7 +38,7 @@ import org.eclipse.wst.jsdt.internal.core.search.indexing.IndexManager;
 
 public class ReconcilerTests extends ModifyingResourceTests {
 	
-	protected ICompilationUnit workingCopy;
+	protected IJavaScriptUnit workingCopy;
 	protected ProblemRequestor problemRequestor;
 	
 	/* A problem requestor that auto-cancels on first problem */
@@ -67,19 +67,19 @@ public class ReconcilerTests extends ModifyingResourceTests {
 	}
 	
 	class ReconcileParticipant extends ValidationParticipant {
-		IJavaElementDelta delta;
-		org.eclipse.wst.jsdt.core.dom.CompilationUnit ast;
+		IJavaScriptElementDelta delta;
+		org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast;
 		ReconcileParticipant() {
 			TestvalidationParticipant.PARTICIPANT = this;
 		}
-		public boolean isActive(IJavaProject project) {
+		public boolean isActive(IJavaScriptProject project) {
 			return true;
 		}
 		public void reconcile(ReconcileContext context) {
 			this.delta = context.getDelta();
 			try {
 				this.ast = context.getAST3();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				assertNull("Unexpected exception", e);
 			}
 		}
@@ -106,7 +106,7 @@ protected void assertProblems(String message, String expected) {
 	assertProblems(message, expected, this.problemRequestor);
 }
 // Expect no error as soon as indexing is finished
-protected void assertNoProblem(char[] source, ICompilationUnit unit) throws InterruptedException, JavaModelException {
+protected void assertNoProblem(char[] source, IJavaScriptUnit unit) throws InterruptedException, JavaScriptModelException {
 	IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 	if (this.problemRequestor.problemCount > 0) {
 		// If errors then wait for indexes to finish
@@ -125,28 +125,28 @@ protected void assertNoProblem(char[] source, ICompilationUnit unit) throws Inte
 		}
 	}
 }
-protected void addClasspathEntries(IClasspathEntry[] entries, boolean enableForbiddenReferences) throws JavaModelException {
-	IJavaProject project = getJavaProject("Reconciler");
-	IClasspathEntry[] oldClasspath = project.getRawClasspath();
+protected void addClasspathEntries(IIncludePathEntry[] entries, boolean enableForbiddenReferences) throws JavaScriptModelException {
+	IJavaScriptProject project = getJavaProject("Reconciler");
+	IIncludePathEntry[] oldClasspath = project.getRawIncludepath();
 	int oldLength = oldClasspath.length;
 	int length = entries.length;
-	IClasspathEntry[] newClasspath = new IClasspathEntry[oldLength+length];
+	IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldLength+length];
 	System.arraycopy(oldClasspath, 0, newClasspath, 0, oldLength);
 	System.arraycopy(entries, 0, newClasspath, oldLength, length);
-	project.setRawClasspath(newClasspath, null);
+	project.setRawIncludepath(newClasspath, null);
 	
 	if (enableForbiddenReferences) {
-		project.setOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
+		project.setOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
 	}
 }
-protected void removeClasspathEntries(IClasspathEntry[] entries) throws JavaModelException {
-	IJavaProject project = getJavaProject("Reconciler");
-	IClasspathEntry[] oldClasspath = project.getRawClasspath();
+protected void removeClasspathEntries(IIncludePathEntry[] entries) throws JavaScriptModelException {
+	IJavaScriptProject project = getJavaProject("Reconciler");
+	IIncludePathEntry[] oldClasspath = project.getRawIncludepath();
 	int oldLength = oldClasspath.length;
 	int length = entries.length;
-	IClasspathEntry[] newClasspath = new IClasspathEntry[oldLength-length];
+	IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldLength-length];
 	System.arraycopy(oldClasspath, 0, newClasspath, 0, oldLength-length);
-	project.setRawClasspath(newClasspath, null);
+	project.setRawIncludepath(newClasspath, null);
 }
 /**
  * Setup for the next test.
@@ -162,7 +162,7 @@ public void setUpSuite() throws Exception {
 	super.setUpSuite();
 
 	// Create project with 1.4 compliance
-	IJavaProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
+	IJavaScriptProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
 	createFolder("/Reconciler/src/p1");
 	createFolder("/Reconciler/src/p2");
 	createFile(
@@ -171,12 +171,12 @@ public void setUpSuite() throws Exception {
 		"  }\n" +
 		""
 	);
-	project14.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_4);
-	project14.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.IGNORE);
-	project14.setOption(JavaCore.COMPILER_PB_INVALID_JAVADOC, JavaCore.WARNING);
+	project14.setOption(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4);
+	project14.setOption(JavaScriptCore.COMPILER_PB_UNUSED_LOCAL, JavaScriptCore.IGNORE);
+	project14.setOption(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC, JavaScriptCore.WARNING);
 
 	// Create project with 1.5 compliance
-	IJavaProject project15 = createJavaProject("Reconciler15", new String[] {"src"}, new String[] {"JCL15_LIB"}, "bin", "1.5");
+	IJavaScriptProject project15 = createJavaProject("Reconciler15", new String[] {"src"}, new String[] {"JCL15_LIB"}, "bin", "1.5");
 //	addLibrary(
 //		project15, 
 //		"lib15.jar", 
@@ -208,28 +208,28 @@ public void setUpSuite() throws Exception {
 //			"   String[] value();\n" +
 //			"}"
 //		}, 
-//		JavaCore.VERSION_1_5
+//		JavaScriptCore.VERSION_1_5
 //	);
-//	project15.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.IGNORE);
-//	project15.setOption(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaCore.IGNORE);
+//	project15.setOption(JavaScriptCore.COMPILER_PB_UNUSED_LOCAL, JavaScriptCore.IGNORE);
+//	project15.setOption(JavaScriptCore.COMPILER_PB_RAW_TYPE_REFERENCE, JavaScriptCore.IGNORE);
 }
-private void setUp15WorkingCopy() throws JavaModelException {
+private void setUp15WorkingCopy() throws JavaScriptModelException {
 	setUp15WorkingCopy("Reconciler15/src/p1/X.js", new WorkingCopyOwner() {});
 }
-private void setUp15WorkingCopy(String path, WorkingCopyOwner owner) throws JavaModelException {
+private void setUp15WorkingCopy(String path, WorkingCopyOwner owner) throws JavaScriptModelException {
 	String contents = this.workingCopy.getSource();
 	setUpWorkingCopy(path, contents, owner);
 }
-private void setUpWorkingCopy(String path, String contents) throws JavaModelException {
+private void setUpWorkingCopy(String path, String contents) throws JavaScriptModelException {
 	setUpWorkingCopy(path, contents, new WorkingCopyOwner() {});
 }
-private void setUpWorkingCopy(String path, String contents, WorkingCopyOwner owner) throws JavaModelException {
+private void setUpWorkingCopy(String path, String contents, WorkingCopyOwner owner) throws JavaScriptModelException {
 	this.workingCopy.discardWorkingCopy();
 	this.workingCopy = getCompilationUnit(path).getWorkingCopy(owner, this.problemRequestor, null);
 	setWorkingCopyContents(contents);
 	this.workingCopy.makeConsistent(null);
 }
-void setWorkingCopyContents(String contents) throws JavaModelException {
+void setWorkingCopyContents(String contents) throws JavaScriptModelException {
 	this.workingCopy.getBuffer().setContents(contents);
 	this.problemRequestor.initialize(contents.toCharArray());
 }
@@ -259,13 +259,13 @@ public void test00() throws Exception {
 }
  
 
-public void test00a() throws JavaModelException {
+public void test00a() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"function foo(){\n" +
 		" alert();\n"+ 
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
@@ -296,7 +296,7 @@ public void testAccessRestriction() throws CoreException {
 // */
 //public void testAccessRestriction2() throws CoreException, IOException {
 //	try {
-//		IJavaProject project = createJavaProject("P1");
+//		IJavaScriptProject project = createJavaProject("P1");
 //		addLibrary(
 //			project,
 //			"lib.jar",
@@ -384,10 +384,10 @@ public void testAccessRestriction() throws CoreException {
 //		createJavaProject("P1");
 //		createFolder("/P1/p");
 //		createFile("/P1/p/X.js", "package p; public class X {}");	
-//		IJavaProject p2 = createJavaProject("P2", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
-//		IClasspathEntry[] classpath = p2.getRawClasspath();
+//		IJavaScriptProject p2 = createJavaProject("P2", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
+//		IIncludePathEntry[] classpath = p2.getRawClasspath();
 //		int length = classpath.length;
-//		System.arraycopy(classpath, 0, classpath = new IClasspathEntry[length+1], 0, length);
+//		System.arraycopy(classpath, 0, classpath = new IIncludePathEntry[length+1], 0, length);
 //		classpath[length] = createSourceEntry("P2", "/P1", "+**/p/|-**/*");
 //		p2.setRawClasspath(classpath, null);
 //		setUpWorkingCopy("/P2/src/Y.js", "public class Y extends p.X {}");
@@ -398,11 +398,11 @@ public void testAccessRestriction() throws CoreException {
 //		);
 //		
 //		// remove accessible rule
-//		System.arraycopy(classpath, 0, classpath = new IClasspathEntry[length+1], 0, length);
+//		System.arraycopy(classpath, 0, classpath = new IIncludePathEntry[length+1], 0, length);
 //		classpath[length] = createSourceEntry("P2", "/P1", "-**/*");
 //		p2.setRawClasspath(classpath, null);
 //		this.problemRequestor.initialize(this.workingCopy.getSource().toCharArray());
-//		this.workingCopy.reconcile(ICompilationUnit.NO_AST, true/*force problem detection*/, null, null);
+//		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, true/*force problem detection*/, null, null);
 //		assertProblems(
 //			"Unexpected problems", 
 //			"----------\n" + 
@@ -420,14 +420,14 @@ public void testAccessRestriction() throws CoreException {
 /**
  * Ensures that the reconciler handles duplicate members correctly.
  */
-public void testAddDuplicateMember() throws JavaModelException {
+public void testAddDuplicateMember() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  function foo() {\n" +
 		"  }\n" +
 		"  function foo() {\n" +
 		"  }\n" +
 		" ");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"foo()#2[+]: {}"
@@ -439,7 +439,7 @@ public void testAddDuplicateMember() throws JavaModelException {
  * unit, and fires the Java element delta for the structural changes
  * of the addition of a field and a method.
  */
-public void testAddFieldAndConstructor() throws JavaModelException {
+public void testAddFieldAndConstructor() throws JavaScriptModelException {
 	setWorkingCopyContents(
 			"  var i;\n" +
 			"  function X(p) {\n" +
@@ -447,7 +447,7 @@ public void testAddFieldAndConstructor() throws JavaModelException {
 			"  function foo() {\n" +
 			"  }\n" +
 			" ");
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertDeltas(
 			"Unexpected delta", 
 			"X(p0)[+]: {}\n"+
@@ -460,7 +460,7 @@ public void testAddFieldAndConstructor() throws JavaModelException {
 // * unit, and fires the Java element delta for the structural changes
 // * of the addition of a field and a constructor.
 // */
-//public void testAddImports() throws JavaModelException {
+//public void testAddImports() throws JavaScriptModelException {
 //	setWorkingCopyContents(
 //		"package p1;\n" +
 //		"import p2.*;\n" +
@@ -470,7 +470,7 @@ public void testAddFieldAndConstructor() throws JavaModelException {
 //		"  public void foo() {\n" +
 //		"  }\n" +
 //		"}");
-//	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+//	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 //	assertDeltas(
 //		"Unexpected delta", 
 //		"<import container>[*]: {CHILDREN | FINE GRAINED}\n" +
@@ -484,14 +484,14 @@ public void testAddFieldAndConstructor() throws JavaModelException {
  * unit, and fires the Java element delta for the structural changes
  * of the addition of a method.
  */
-public void testAddMethod1() throws JavaModelException {
+public void testAddMethod1() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  function foo() {\n" +
 		"  }\n" +
 		"  function bar() {\n" +
 		"  }\n" +
 		" ");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"bar()[+]: {}"
@@ -503,13 +503,13 @@ public void testAddMethod1() throws JavaModelException {
  * unit, and fires the Java element delta for the structural changes
  * of the addition of a portion of a new method.
  */
-public void testAddPartialMethod1() throws JavaModelException {
+public void testAddPartialMethod1() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  function some()\n" +
 		"  function foo() {\n" +
 		"  }\n" +
 		" ");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"some()[+]: {}"
@@ -522,14 +522,14 @@ public void testAddPartialMethod1() throws JavaModelException {
  * of the addition of a portion of a new method.  Ensures that when a
  * second part is added to the new method no structural changes are recognized.
  */
-public void testAddPartialMethod1and2() throws JavaModelException {
+public void testAddPartialMethod1and2() throws JavaScriptModelException {
 	// Add partial method before foo
 	setWorkingCopyContents(
 		"  function some()\n" +
 		"  function foo() {\n" +
 		"  }\n" +
 		 "");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	
 	// Add { on partial method
 	clearDeltas();
@@ -538,7 +538,7 @@ public void testAddPartialMethod1and2() throws JavaModelException {
 		"  function foo() {\n" +
 		"  }\n" +
 		"");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"[Working copy] X.js[*]: {CONTENT | FINE GRAINED}"
@@ -548,7 +548,7 @@ public void testAddPartialMethod1and2() throws JavaModelException {
  * Ensures that the AST broadcasted during a reconcile operation is correct.
  * (case of a working copy being reconciled with changes, creating AST and no problem detection)
  */
-public void testBroadcastAST1() throws JavaModelException {
+public void testBroadcastAST1() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"var i;\n" +
 		"");
@@ -563,7 +563,7 @@ public void testBroadcastAST1() throws JavaModelException {
  * Ensures that the AST broadcasted during a reconcile operation is correct.
  * (case of a working copy being reconciled with NO changes, creating AST and forcing problem detection)
  */
-public void testBroadcastAST2() throws JavaModelException {
+public void testBroadcastAST2() throws JavaScriptModelException {
 	this.workingCopy.reconcile(AST.JLS3, true/*force problem detection*/, null/*primary owner*/, null/*no progress*/);
 	assertASTNodeEquals(
 		"Unexpected ast", 
@@ -576,7 +576,7 @@ public void testBroadcastAST2() throws JavaModelException {
  * Ensures that the AST broadcasted during a reconcile operation is correct.
  * (case of a working copy being reconciled with NO changes, creating AST and no problem detection)
  */
-public void testBroadcastAST3() throws JavaModelException {
+public void testBroadcastAST3() throws JavaScriptModelException {
 	this.workingCopy.reconcile(AST.JLS3, false/*don't force problem detection*/, null/*primary owner*/, null/*no progress*/);
 	assertASTNodeEquals(
 		"Unexpected ast", 
@@ -590,7 +590,7 @@ public void testBroadcastAST3() throws JavaModelException {
  * (case of a working copy being reconciled twice in a batch operation)
  */
 public void testBroadcastAST4() throws CoreException {
-	JavaCore.run(
+	JavaScriptCore.run(
 		new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				ReconcilerTests.this.workingCopy.reconcile(AST.JLS3, true/*force problem detection*/, null/*primary owner*/, monitor);
@@ -622,7 +622,7 @@ public void testBufferOpenAfterReconcile() throws CoreException {
 			"  }\n" +
 			"");
 		IBuffer buffer = this.workingCopy.getBuffer();
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		assertTrue("Buffer should still be open", !buffer.isClosed());
 	} finally {
 		deleteFile("/Reconciler/src/p1/Super.js");
@@ -632,7 +632,7 @@ public void testBufferOpenAfterReconcile() throws CoreException {
  * Ensure an OperationCanceledException is correcly thrown when progress monitor is canceled
  * @deprecated using deprecated code
  */
-public void testCancel() throws JavaModelException {
+public void testCancel() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  function foo( s) {\n" +
 		"  }\n" +
@@ -661,7 +661,7 @@ public void testCancel() throws JavaModelException {
 /**
  * Ensures that the delta is correct when adding a category
  */
-public void testCategories1() throws JavaModelException {
+public void testCategories1() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  /**\n" +
 		"   * @category cat1\n" +
@@ -670,7 +670,7 @@ public void testCategories1() throws JavaModelException {
 		"  }\n" +
 		""
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"foo()[*]: {CATEGORIES}"
@@ -679,7 +679,7 @@ public void testCategories1() throws JavaModelException {
 /**
  * Ensures that the delta is correct when removing a category
  */
-public void testCategories2() throws JavaModelException {
+public void testCategories2() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  /**\n" +
 		"   * @category cat1\n" +
@@ -695,7 +695,7 @@ public void testCategories2() throws JavaModelException {
 		"  }\n" +
 		""
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"X[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -705,7 +705,7 @@ public void testCategories2() throws JavaModelException {
 /**
  * Ensures that the delta is correct when changing a category
  */
-public void testCategories3() throws JavaModelException {
+public void testCategories3() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  /**\n" +
 		"   * @category cat1\n" +
@@ -724,7 +724,7 @@ public void testCategories3() throws JavaModelException {
 		"  }\n" +
 		""
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"X[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -735,7 +735,7 @@ public void testCategories3() throws JavaModelException {
  * Ensures that the delta is correct when adding a category to a second field
  * (regression test for bug 125675 @category not reflected in outliner in live fashion)
  */
-public void testCategories4() throws JavaModelException {
+public void testCategories4() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  /**\n" +
 		"   * @category cat1\n" +
@@ -757,7 +757,7 @@ public void testCategories4() throws JavaModelException {
 		"  int f2;\n" +
 		""
 	);	
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"X[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -769,7 +769,7 @@ public void testCategories4() throws JavaModelException {
 // * (regression test for bug 134110 [regression] Does not pick-up interface changes from classes in the build path)
 // */
 //public void testChangeExternalJar() throws CoreException, IOException {
-//	IJavaProject project = getJavaProject("Reconciler");
+//	IJavaScriptProject project = getJavaProject("Reconciler");
 //	String jarPath = getExternalPath() + "lib.jar";
 //	try {
 //		org.eclipse.jsdt.core.tests.util.Util.createJar(new String[] {
@@ -790,7 +790,7 @@ public void testCategories4() throws JavaModelException {
 //			"    foo();\n" +
 //			"  }\n" +
 //			"}");
-//		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+//		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 //		
 //		// change jar and refresh
 //		org.eclipse.jsdt.core.tests.util.Util.createJar(new String[] {
@@ -810,7 +810,7 @@ public void testCategories4() throws JavaModelException {
 //			"    foo(\"a\");\n" +
 //			"  }\n" +
 //			"}");
-//		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+//		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 //		assertProblems(
 //			"Unexpected problems", 
 //			"----------\n" + 
@@ -827,14 +827,14 @@ public void testCategories4() throws JavaModelException {
 // * unit, and fires the Java element deltas for the structural changes
 // * of a method's type parameter change.
 // */
-//public void testChangeMethodTypeParameters() throws JavaModelException {
+//public void testChangeMethodTypeParameters() throws JavaScriptModelException {
 //	setUp15WorkingCopy();
 //	clearDeltas();
 //	setWorkingCopyContents(
 //		"  public <T> void foo() {\n" +
 //		"  }\n" +
 //		"");
-//	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+//	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 //	assertDeltas(
 //		"Unexpected delta", 
 //		"X[*]: {CHILDREN | FINE GRAINED}\n" +
@@ -847,7 +847,7 @@ public void testCategories4() throws JavaModelException {
 // * unit, and fires the Java element deltas for the structural changes
 // * of a type's type parameter change.
 // */
-//public void testChangeTypeTypeParameters() throws JavaModelException {
+//public void testChangeTypeTypeParameters() throws JavaScriptModelException {
 //	setUp15WorkingCopy();
 //	clearDeltas();
 //	setWorkingCopyContents(
@@ -857,7 +857,7 @@ public void testCategories4() throws JavaModelException {
 //		"  function foo() {\n" +
 //		"  }\n" +
 //		"}");
-//	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+//	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 //	assertDeltas(
 //		"Unexpected delta", 
 //		"X[*]: {CONTENT}"
@@ -869,7 +869,7 @@ public void testCategories4() throws JavaModelException {
 // * unit, and fires the Java element deltas for the structural changes
 // * of a method visibility change.
 // */
-//public void testChangeMethodVisibility() throws JavaModelException {
+//public void testChangeMethodVisibility() throws JavaScriptModelException {
 //	setWorkingCopyContents(
 //		"package p1;\n" +
 //		"import p2.*;\n" +
@@ -877,7 +877,7 @@ public void testCategories4() throws JavaModelException {
 //		"  private void foo() {\n" +
 //		"  }\n" +
 //		"}");
-//	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+//	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 //	assertDeltas(
 //		"Unexpected delta", 
 //		"X[*]: {CHILDREN | FINE GRAINED}\n" +
@@ -887,7 +887,7 @@ public void testCategories4() throws JavaModelException {
 /**
  * Ensures that the correct delta is reported when closing the working copy and modifying its buffer.
  */
-public void testCloseWorkingCopy() throws JavaModelException {
+public void testCloseWorkingCopy() throws JavaScriptModelException {
 	IBuffer buffer = this.workingCopy.getBuffer();
 	this.workingCopy.close();
 	buffer.setContents(
@@ -896,7 +896,7 @@ public void testCloseWorkingCopy() throws JavaModelException {
 		"  function bar() {\n" +
 		"  }\n" +
 		"");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"bar()[+]: {}"
@@ -926,7 +926,7 @@ public void testCloseWorkingCopy() throws JavaModelException {
 //			"		}\n" +
 //			"	}\n" +
 //			"}");
-//		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+//		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 //		assertProblems(
 //			"Unexpected problems",
 //			"----------\n" + 
@@ -941,7 +941,7 @@ public void testCloseWorkingCopy() throws JavaModelException {
 // * (regression test for bug 135296 opening a special java file results in an "out of memory" message)
 // */
 //public void testConvertPrimitiveTypeArrayTypeArgument() throws CoreException {
-//	ICompilationUnit otherCopy = null;
+//	IJavaScriptUnit otherCopy = null;
 //	try {
 //		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 //		otherCopy = getWorkingCopy(
@@ -961,7 +961,7 @@ public void testCloseWorkingCopy() throws JavaModelException {
 //			"  }\n" +
 //			"}"
 //		);
-//		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+//		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 //		assertProblems(
 //			"Unexpected problems",
 //			"----------\n" + 
@@ -978,10 +978,10 @@ public void testCloseWorkingCopy() throws JavaModelException {
  * unit, and fires the Java element deltas for the structural changes
  * of a method being deleted.
  */
-public void testDeleteMethod1() throws JavaModelException {
+public void testDeleteMethod1() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"  ");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"foo()[-]: {}"
@@ -993,7 +993,7 @@ public void testDeleteMethod1() throws JavaModelException {
  * unit, and fires the Java element deltas for the structural changes
  * of two methods being deleted.
  */
-public void testDeleteTwoMethods() throws JavaModelException {
+public void testDeleteTwoMethods() throws JavaScriptModelException {
 	// create 2 methods
 	setWorkingCopyContents(
 		"  function foo() {\n" +
@@ -1001,13 +1001,13 @@ public void testDeleteTwoMethods() throws JavaModelException {
 		"  function bar() {\n" +
 		"  }\n" +
 		"");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	
 	// delete the 2 methods
 	clearDeltas();
 	setWorkingCopyContents(
 		"  ");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"bar()[-]: {}\n" +
@@ -1018,7 +1018,7 @@ public void testDeleteTwoMethods() throws JavaModelException {
  * Ensures that excluded part of prereq project are not visible
  */
 public void testExcludePartOfAnotherProject1() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "-**/internal/"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "-**/internal/"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P");
@@ -1034,7 +1034,7 @@ public void testExcludePartOfAnotherProject1() throws CoreException {
 			"public class X extends p.internal.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1053,7 +1053,7 @@ public void testExcludePartOfAnotherProject1() throws CoreException {
  * Ensures that packages that are not in excluded part of prereq project are visible
  */
 public void testExcludePartOfAnotherProject2() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "-**/internal/"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "-**/internal/"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P");
@@ -1069,7 +1069,7 @@ public void testExcludePartOfAnotherProject2() throws CoreException {
 			"public class X extends p.api.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1087,7 +1087,7 @@ public void testExternal1() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	this.problemRequestor =  new ProblemRequestor();
-	IClasspathEntry[] classpath = new IClasspathEntry[] {JavaCore.newLibraryEntry(getExternalJCLPath(), null, null)};
+	IIncludePathEntry[] classpath = new IIncludePathEntry[] {JavaScriptCore.newLibraryEntry(getExternalJCLPath(), null, null)};
 	this.workingCopy = newExternalWorkingCopy("External.js", classpath, this.problemRequestor,
 		"public class External {\n"+
 		"	String foo(){\n"+
@@ -1095,7 +1095,7 @@ public void testExternal1() throws CoreException {
 		"	}\n"+
 		"}\n"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null/*no owner*/, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null/*no owner*/, null);
 
 	assertProblems(
 		"Unexpected problems",
@@ -1122,8 +1122,8 @@ public void testExternal2() throws CoreException {
 		this.workingCopy = null;
 		this.problemRequestor =  new ProblemRequestor();
 		ContainerInitializer.setInitializer(new ClasspathInitializerTests.DefaultContainerInitializer(new String[] {" ", getExternalJCLPathString()}));
-		IClasspathEntry[] classpath = new IClasspathEntry[] {
-			JavaCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"))
+		IIncludePathEntry[] classpath = new IIncludePathEntry[] {
+			JavaScriptCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"))
 		};
 		this.workingCopy = newExternalWorkingCopy("External.js", classpath, this.problemRequestor,
 			"public class External {\n"+
@@ -1132,7 +1132,7 @@ public void testExternal2() throws CoreException {
 			"	}\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null/*no owner*/, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null/*no owner*/, null);
 		assertEquals("Should not get any exception in log", null, listener.log);
 	} finally {
 		Platform.removeLogListener(listener);
@@ -1143,7 +1143,7 @@ public void testExternal2() throws CoreException {
  * Ensures that included part of prereq project are visible
  */
 public void testIncludePartOfAnotherProject1() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "+**/api/"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "+**/api/"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P");
@@ -1159,7 +1159,7 @@ public void testIncludePartOfAnotherProject1() throws CoreException {
 			"public class X extends p.api.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1174,7 +1174,7 @@ public void testIncludePartOfAnotherProject1() throws CoreException {
  * Ensures that packages that are not in included part of prereq project are not visible
  */
 public void testIncludePartOfAnotherProject2() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "+**/api/|-**"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P", "+**/api/|-**"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P");
@@ -1190,7 +1190,7 @@ public void testIncludePartOfAnotherProject2() throws CoreException {
 			"public class X extends p.internal.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1208,13 +1208,13 @@ public void testIncludePartOfAnotherProject2() throws CoreException {
 /**
  * Start with no imports, add an import, and then append to the import name.
  */
-public void testGrowImports() throws JavaModelException {
+public void testGrowImports() throws JavaScriptModelException {
 	// no imports
 	setWorkingCopyContents(
 		"package p1;\n" +
 		"public class X {\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	
 	// add an import
 	clearDeltas();
@@ -1223,7 +1223,7 @@ public void testGrowImports() throws JavaModelException {
 		"import p\n" +
 		"public class X {\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"<import container>[+]: {}"
@@ -1236,7 +1236,7 @@ public void testGrowImports() throws JavaModelException {
 		"import p2\n" +
 		"public class X {\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"<import container>[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -1250,7 +1250,7 @@ public void testGrowImports() throws JavaModelException {
  * (regression test for bug 98127 Access restrictions started showing up after switching to bundle)
  */
 public void testIgnoreIfBetterNonAccessibleRule1() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/", "/P2", "+**/internal/Y"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/", "/P2", "+**/internal/Y"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P1");
@@ -1274,7 +1274,7 @@ public void testIgnoreIfBetterNonAccessibleRule1() throws CoreException {
 			"public class X extends p.internal.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1291,7 +1291,7 @@ public void testIgnoreIfBetterNonAccessibleRule1() throws CoreException {
  * (regression test for bug 98127 Access restrictions started showing up after switching to bundle)
  */
 public void testIgnoreIfBetterNonAccessibleRule2() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/", "/P2", "~**/internal/Y"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/", "/P2", "~**/internal/Y"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P1");
@@ -1315,7 +1315,7 @@ public void testIgnoreIfBetterNonAccessibleRule2() throws CoreException {
 			"public class X extends p.internal.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1336,7 +1336,7 @@ public void testIgnoreIfBetterNonAccessibleRule2() throws CoreException {
  * (regression test for bug 98127 Access restrictions started showing up after switching to bundle)
  */
 public void testIgnoreIfBetterNonAccessibleRule3() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/", "/P2", "-**/internal/Y"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/", "/P2", "-**/internal/Y"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P1");
@@ -1360,7 +1360,7 @@ public void testIgnoreIfBetterNonAccessibleRule3() throws CoreException {
 			"public class X extends p.internal.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1381,7 +1381,7 @@ public void testIgnoreIfBetterNonAccessibleRule3() throws CoreException {
  * (regression test for bug 98127 Access restrictions started showing up after switching to bundle)
  */
 public void testIgnoreIfBetterNonAccessibleRule4() throws CoreException {
-	IClasspathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/"});
+	IIncludePathEntry[] newEntries = createClasspath("Reconciler", new String[] {"/P1", "?**/internal/"});
 	try {
 		addClasspathEntries(newEntries, true);
 		createJavaProject("P1");
@@ -1397,7 +1397,7 @@ public void testIgnoreIfBetterNonAccessibleRule4() throws CoreException {
 			"public class X extends p.internal.Y {\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -1424,7 +1424,7 @@ public void testMethodWithError01() throws CoreException {
 		"  public.void foo() {\n" +
 		"  }\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta after syntax error", 
 		"X[*]: {CHILDREN | FINE GRAINED}\n" +
@@ -1450,7 +1450,7 @@ public void testMethodWithError01() throws CoreException {
 		"  }\n" +
 		"}";
 	setWorkingCopyContents(contents);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta after fixing syntax error", 
 		"X[*]: {CHILDREN | FINE GRAINED}\n" +
@@ -1478,11 +1478,11 @@ public void testMethodWithError02() throws CoreException {
 		"  }\n" +
 		"}";		
 	setWorkingCopyContents(contents);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 
 	// use force flag to refresh problems			
 	this.problemRequestor.initialize(contents.toCharArray());
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, true, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
@@ -1506,11 +1506,11 @@ public void testMethodWithError03() throws CoreException {
 		"  }\n" +
 		"}";
 	setWorkingCopyContents(contents);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 
 	// reconcile with force flag turned off
 	this.problemRequestor.initialize(contents.toCharArray());
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertProblems(
 		"Unexpected problems",
 		""
@@ -1524,7 +1524,7 @@ public void testMethodWithError04() throws CoreException {
 	CancelingProblemRequestor myPbRequestor = new CancelingProblemRequestor();
 	
 	this.workingCopy.discardWorkingCopy();
-	ICompilationUnit x = getCompilationUnit("Reconciler", "src", "p1", "X.js");
+	IJavaScriptUnit x = getCompilationUnit("Reconciler", "src", "p1", "X.js");
 	this.problemRequestor = myPbRequestor;
 	this.workingCopy = x.getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
 
@@ -1537,12 +1537,12 @@ public void testMethodWithError04() throws CoreException {
 		"}	\n";
 	setWorkingCopyContents(contents);
 
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 
 	// use force flag to refresh problems			
 	myPbRequestor.isCanceling = true;
 	myPbRequestor.initialize(contents.toCharArray());
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, true, null, myPbRequestor.progressMonitor);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, true, null, myPbRequestor.progressMonitor);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
@@ -1605,12 +1605,12 @@ public void testMethodWithError05() throws CoreException {
 			"	int indexOf(long value);	\n"+
 			"}	\n");
 	
-		ICompilationUnit compilationUnit = getCompilationUnit("Reconciler", "src", "tests", "AbstractSearchableSource.js");
+		IJavaScriptUnit compilationUnit = getCompilationUnit("Reconciler", "src", "tests", "AbstractSearchableSource.js");
 		ProblemRequestor pbReq =  new ProblemRequestor();
-		ICompilationUnit wc = compilationUnit.getWorkingCopy(new WorkingCopyOwner() {}, pbReq, null);
+		IJavaScriptUnit wc = compilationUnit.getWorkingCopy(new WorkingCopyOwner() {}, pbReq, null);
 		pbReq.initialize(contents.toCharArray());
 		startDeltas();
-		wc.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		wc.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		String actual = pbReq.problems.toString();
 		String expected = 
 			"----------\n" + 
@@ -1757,7 +1757,7 @@ public void testMethodWithError09() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		workingCopy1 = getCompilationUnit("/Reconciler/src/p1/X1.js").getWorkingCopy(owner, null, null);
 		workingCopy1.getBuffer().setContents(
@@ -1776,7 +1776,7 @@ public void testMethodWithError09() throws CoreException {
 			"	public void bar(){}	\n"+
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -1796,7 +1796,7 @@ public void testMethodWithError10() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		createFolder("/Reconciler15/src/test/cheetah");
 		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null, null);
@@ -1821,7 +1821,7 @@ public void testMethodWithError10() throws CoreException {
 			"    }\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -1842,7 +1842,7 @@ public void testMethodWithError11() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		createFolder("/Reconciler15/src/test/cheetah");
 		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null, null);
@@ -1870,7 +1870,7 @@ public void testMethodWithError11() throws CoreException {
 			"    }\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -1891,7 +1891,7 @@ public void testMethodWithError12() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		createFolder("/Reconciler15/src/test/cheetah");
 		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/cheetah/NestedGenerics.js").getWorkingCopy(owner, null, null);
@@ -1919,7 +1919,7 @@ public void testMethodWithError12() throws CoreException {
 			"    }\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -1940,7 +1940,7 @@ public void testMethodWithError13() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/X.js").getWorkingCopy(owner, null, null);
 		createFolder("/Reconciler15/src/test");
@@ -1967,7 +1967,7 @@ public void testMethodWithError13() throws CoreException {
 			"	}\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -1992,7 +1992,7 @@ public void testMethodWithError14() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		workingCopy1 = getCompilationUnit("/Reconciler15/src/test/X.js").getWorkingCopy(owner, null, null);
 		createFolder("/Reconciler15/src/test");
@@ -2015,7 +2015,7 @@ public void testMethodWithError14() throws CoreException {
 			"	}\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -2036,7 +2036,7 @@ public void testMethodWithError14() throws CoreException {
 /**
  * Ensures that the reconciler handles member move correctly.
  */
-public void testMoveMember() throws JavaModelException {
+public void testMoveMember() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"package p1;\n" +
 		"import p2.*;\n" +
@@ -2046,7 +2046,7 @@ public void testMoveMember() throws JavaModelException {
 		"  public void bar() {\n" +
 		"  }\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	clearDeltas();
 	
 	setWorkingCopyContents(
@@ -2058,7 +2058,7 @@ public void testMoveMember() throws JavaModelException {
 		"  public void foo() {\n" +
 		"  }\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta", 
 		"X[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -2070,9 +2070,9 @@ public void testMoveMember() throws JavaModelException {
  * Ensures that the reconciler does nothing when the source
  * to reconcile with is the same as the current contents.
  */
-public void testNoChanges1() throws JavaModelException {
+public void testNoChanges1() throws JavaScriptModelException {
 	setWorkingCopyContents(this.workingCopy.getSource());
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta",
 		"[Working copy] X.java[*]: {CONTENT | FINE GRAINED}"
@@ -2082,7 +2082,7 @@ public void testNoChanges1() throws JavaModelException {
  * Ensures that the reconciler does nothing when the source
  * to reconcile with has the same structure as the current contents.
  */
-public void testNoChanges2() throws JavaModelException {
+public void testNoChanges2() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"package p1;\n" +
 		"import p2.*;\n" +
@@ -2092,7 +2092,7 @@ public void testNoChanges2() throws JavaModelException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta",
 		"[Working copy] X.java[*]: {CONTENT | FINE GRAINED}"
@@ -2103,7 +2103,7 @@ public void testNoChanges2() throws JavaModelException {
  * (regression test for bug 105756 [1.5][model] Incorrect warning on using raw types)
  */
 public void testRawUsage() throws CoreException {
-	ICompilationUnit otherCopy = null;
+	IJavaScriptUnit otherCopy = null;
 	try {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		otherCopy = getWorkingCopy(
@@ -2121,7 +2121,7 @@ public void testRawUsage() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2146,7 +2146,7 @@ public void testReconcileParticipant01() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected participant delta",
 		"[Working copy] X.java[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -2161,7 +2161,7 @@ public void testReconcileParticipant01() throws CoreException {
  */
 public void testReconcileParticipant02() throws CoreException {
 	ReconcileParticipant participant = new ReconcileParticipant(){
-		public boolean isActive(IJavaProject project) {
+		public boolean isActive(IJavaScriptProject project) {
 			return false;
 		}
 	};
@@ -2174,7 +2174,7 @@ public void testReconcileParticipant02() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected participant delta",
 		"<null>",
@@ -2195,7 +2195,7 @@ public void testReconcileParticipant03() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertASTNodeEquals(
 		"Unexpected participant delta",
 		"package p1;\n" + 
@@ -2221,7 +2221,7 @@ public void testReconcileParticipant04() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	org.eclipse.wst.jsdt.core.dom.CompilationUnit ast = this.workingCopy.reconcile(AST.JLS3, false, null, null);
+	org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast = this.workingCopy.reconcile(AST.JLS3, false, null, null);
 	assertSame(
 		"Unexpected participant delta",
 		participant.ast,
@@ -2243,7 +2243,7 @@ public void testReconcileParticipant05() throws CoreException {
 					"}"
 				);
 				context.resetAST();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				e.printStackTrace();
 			}
 		}
@@ -2256,7 +2256,7 @@ public void testReconcileParticipant05() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
@@ -2279,7 +2279,7 @@ public void testReconcileParticipant06() throws CoreException {
 					"}"
 				);
 				context.resetAST();
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				e.printStackTrace();
 			}
 		}
@@ -2291,7 +2291,7 @@ public void testReconcileParticipant06() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
@@ -2308,10 +2308,10 @@ public void testReconcileParticipant06() throws CoreException {
  * (regression test for bug 125291 Enable conditional loading of APT)
  */
 public void testReconcileParticipant07() throws CoreException {
-	IJavaProject project = this.workingCopy.getJavaProject();
-	String originalSourceLevel = project.getOption(JavaCore.COMPILER_SOURCE, true);
+	IJavaScriptProject project = this.workingCopy.getJavaScriptProject();
+	String originalSourceLevel = project.getOption(JavaScriptCore.COMPILER_SOURCE, true);
 	try {
-		project.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_1);
+		project.setOption(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_1);
 		ReconcileParticipant participant = new ReconcileParticipant();
 		setWorkingCopyContents(
 			"package p1;\n" +
@@ -2322,14 +2322,14 @@ public void testReconcileParticipant07() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertDeltas(
 			"Unexpected participant delta",
 			"<null>",
 			participant.delta
 		);
 	} finally {
-		project.setOption(JavaCore.COMPILER_SOURCE, originalSourceLevel);
+		project.setOption(JavaScriptCore.COMPILER_SOURCE, originalSourceLevel);
 	}
 }
 /*
@@ -2355,7 +2355,7 @@ public void testReconcileParticipant08() throws CoreException {
 			context.putProblems("test.marker", new CategorizedProblem[] {});
 		}
 	};
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertProblems(
 		"Unexpected problems",
 		""
@@ -2367,7 +2367,7 @@ public void testReconcileParticipant08() throws CoreException {
  * unit, and fires the Java element deltas for the structural changes
  * of a renaming a method; the original method deleted and the new method added structurally.
  */
-public void testRenameMethod1() throws JavaModelException {
+public void testRenameMethod1() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"package p1;\n" +
 		"import p2.*;\n" +
@@ -2376,7 +2376,7 @@ public void testRenameMethod1() throws JavaModelException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta",
 		"X[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -2390,7 +2390,7 @@ public void testRenameMethod1() throws JavaModelException {
  * unit, and fires the Java element delta for the structural changes
  * of the addition of a portion of a new method.
  */
-public void testRenameWithSyntaxError() throws JavaModelException {
+public void testRenameWithSyntaxError() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"package p1;\n" +
 		"import p2.*;\n" +
@@ -2399,7 +2399,7 @@ public void testRenameWithSyntaxError() throws JavaModelException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Unexpected delta",
 		"X[*]: {CHILDREN | FINE GRAINED}\n" + 
@@ -2412,7 +2412,7 @@ public void testRenameWithSyntaxError() throws JavaModelException {
 		"1. ERROR in /Reconciler/src/p1/X.java (at line 4)\n" + 
 		"	public void bar( {\n" + 
 		"	               ^\n" + 
-		"Syntax error, insert \")\" to complete MethodDeclaration\n" + 
+		"Syntax error, insert \")\" to complete FunctionDeclaration\n" + 
 		"----------\n"
 	);
 }
@@ -2420,8 +2420,8 @@ public void testRenameWithSyntaxError() throws JavaModelException {
  * Ensure that warning are suppressed by an @SuppressWarnings annotation.
  */
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=95056
-public void testSuppressWarnings1() throws JavaModelException {
-	ICompilationUnit otherCopy = null;
+public void testSuppressWarnings1() throws JavaScriptModelException {
+	IJavaScriptUnit otherCopy = null;
 	try {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		otherCopy = getWorkingCopy(
@@ -2440,7 +2440,7 @@ public void testSuppressWarnings1() throws JavaModelException {
 	        "   Zork z;\n" +
 	        "}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2462,8 +2462,8 @@ public void testSuppressWarnings1() throws JavaModelException {
 /*
  * Ensure that warning are suppressed by an @SuppressWarning annotation.
  */
-public void testSuppressWarnings2() throws JavaModelException {
-	ICompilationUnit otherCopy = null;
+public void testSuppressWarnings2() throws JavaScriptModelException {
+	IJavaScriptUnit otherCopy = null;
 	try {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		otherCopy = getWorkingCopy(
@@ -2488,7 +2488,7 @@ public void testSuppressWarnings2() throws JavaModelException {
             "   Zork z;\n" +
             "}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2511,8 +2511,8 @@ public void testSuppressWarnings2() throws JavaModelException {
 /*
  * Ensure that warning are suppressed by an @SuppressWarning annotation.
  */
-public void testSuppressWarnings3() throws JavaModelException {
-	ICompilationUnit otherCopy = null;
+public void testSuppressWarnings3() throws JavaScriptModelException {
+	IJavaScriptUnit otherCopy = null;
 	try {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		otherCopy = getWorkingCopy(
@@ -2533,7 +2533,7 @@ public void testSuppressWarnings3() throws JavaModelException {
             "   Zork z;\n" +				
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2551,8 +2551,8 @@ public void testSuppressWarnings3() throws JavaModelException {
 /*
  * Ensure that warning are suppressed by an @SuppressWarnings annotation.
  */
-public void testSuppressWarnings4() throws JavaModelException {
-	ICompilationUnit otherCopy = null;
+public void testSuppressWarnings4() throws JavaScriptModelException {
+	IJavaScriptUnit otherCopy = null;
 	try {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {};
 		otherCopy = getWorkingCopy(
@@ -2571,7 +2571,7 @@ public void testSuppressWarnings4() throws JavaModelException {
 	        "   Zork z;\n" +
 	        "}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2593,7 +2593,7 @@ public void testSuppressWarnings4() throws JavaModelException {
 /**
  * Ensure that an unhandled exception is detected.
  */
-public void testUnhandledException() throws JavaModelException {
+public void testUnhandledException() throws JavaScriptModelException {
 	setWorkingCopyContents(
 		"package p1;\n" +
 		"public class X {\n" +
@@ -2602,7 +2602,7 @@ public void testUnhandledException() throws JavaModelException {
 		"  }\n" +
 		"}"
 	);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertProblems(
 		"Unexpected problems",
 		"----------\n" + 
@@ -2616,10 +2616,10 @@ public void testUnhandledException() throws JavaModelException {
 /**
  * Check that forcing a make consistent action is leading the next reconcile to not notice changes.
  */
-public void testMakeConsistentFoolingReconciler() throws JavaModelException {
+public void testMakeConsistentFoolingReconciler() throws JavaScriptModelException {
 	setWorkingCopyContents("");
 	this.workingCopy.makeConsistent(null);
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	assertDeltas(
 		"Should have got NO delta", 
 		""
@@ -2630,7 +2630,7 @@ public void testMakeConsistentFoolingReconciler() throws JavaModelException {
  * AST on reconcile: AST without Javadoc comments created
  * @deprecated using deprecated code
  */
-public void testBug60689() throws JavaModelException {
+public void testBug60689() throws JavaScriptModelException {
 	setWorkingCopyContents("public class X {\n" +
 		"	/**\n" +
 		"	 * Returns the length of the string representing the number of \n" +
@@ -2642,7 +2642,7 @@ public void testBug60689() throws JavaModelException {
 		"		return 0;\n" +
 		"}"
 	);
-	org.eclipse.wst.jsdt.core.dom.CompilationUnit testCU = this.workingCopy.reconcile(AST.JLS2, true, null, null);
+	org.eclipse.wst.jsdt.core.dom.JavaScriptUnit testCU = this.workingCopy.reconcile(AST.JLS2, true, null, null);
 	assertNotNull("We should have a comment!", testCU.getCommentList());
 	assertEquals("We should have 1 comment!", 1, testCU.getCommentList().size());
 	testCU = this.workingCopy.reconcile(AST.JLS2, true, null, null);
@@ -2679,7 +2679,7 @@ public void testTwoProjectsWithDifferentCompliances() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, true/*force pb detection*/, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, true/*force pb detection*/, owner, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2697,7 +2697,7 @@ public void testTypeParameterWithBound() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		workingCopy1 = getWorkingCopy(
 			"/Reconciler15/src/test/I.js",
@@ -2718,7 +2718,7 @@ public void testTypeParameterWithBound() throws CoreException {
 			"	}\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -2739,7 +2739,7 @@ public void testTypeParameterStartingWithDollar() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		workingCopy1 = getWorkingCopy(
 			"/Reconciler15/src/test/Y.js",
@@ -2761,7 +2761,7 @@ public void testTypeParameterStartingWithDollar() throws CoreException {
 			"	}\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -2794,7 +2794,7 @@ public void testTypeWithDollarName() throws CoreException {
 		this.workingCopy = getCompilationUnit("Reconciler/src/p1/Y$Z.js").getWorkingCopy(new WorkingCopyOwner() {}, this.problemRequestor, null);
 		
 		this.problemRequestor.initialize(contents.toCharArray());
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2809,7 +2809,7 @@ public void testTypeWithDollarName() throws CoreException {
  * (regression test for bug 125301 Handling of classes with $ in class name.)
  */
 public void testTypeWithDollarName2() throws CoreException {
-	ICompilationUnit workingCopy2 = null; 
+	IJavaScriptUnit workingCopy2 = null; 
 	try {
 		WorkingCopyOwner owner = this.workingCopy.getOwner();
 		workingCopy2 = getWorkingCopy(
@@ -2826,7 +2826,7 @@ public void testTypeWithDollarName2() throws CoreException {
 			"  Y$Z field;\n" +
 			"}"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 		assertProblems(
 			"Unexpected problems",
 			"----------\n" + 
@@ -2844,7 +2844,7 @@ public void testVarargs() throws CoreException {
 	this.workingCopy.discardWorkingCopy(); // don't use the one created in setUp()
 	this.workingCopy = null;
 	WorkingCopyOwner owner = new WorkingCopyOwner() {};
-	ICompilationUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy1 = null;
 	try {
 		workingCopy1 = getWorkingCopy(
 			"/Reconciler15/src/test/X.js",
@@ -2867,7 +2867,7 @@ public void testVarargs() throws CoreException {
 			"	}\n"+
 			"}\n"
 		);
-		this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, owner, null);
+		this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, owner, null);
 
 		assertProblems(
 			"Unexpected problems",
@@ -3113,7 +3113,7 @@ public void testBug118823() throws CoreException, InterruptedException, IOExcept
 			source2
 		);
 		waitUntilIndexesReady();
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.wcOwner = new WorkingCopyOwner() {};
 
 		// Get first working copy and verify that there's no error
@@ -3195,7 +3195,7 @@ public void testBug118823b() throws CoreException, InterruptedException {
 			source2
 		);
 		waitUntilIndexesReady();
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 
 		// Get first working copy and verify that there's no error
 		char[] sourceChars = source1.toCharArray();
@@ -3263,7 +3263,7 @@ public void testBug118823c() throws CoreException, InterruptedException {
 			source2
 		);
 		waitUntilIndexesReady();
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.wcOwner = new WorkingCopyOwner() {};
 
 		// Get first working copy and verify that there's no error
@@ -3359,7 +3359,7 @@ public void test1001() throws CoreException, InterruptedException, IOException {
 			sourcesAsCharArrays[i] = sources[i].toCharArray();
 		}
 		waitUntilIndexesReady();
-		this.workingCopies = new ICompilationUnit[3];
+		this.workingCopies = new IJavaScriptUnit[3];
 		this.wcOwner = new WorkingCopyOwner() {};
 
 		// Get first working copy and verify that there's no error
@@ -3433,7 +3433,7 @@ public void test1002() throws CoreException, InterruptedException, IOException {
 			sourcesAsCharArrays[i] = sources[i].toCharArray();
 		}
 		waitUntilIndexesReady();
-		this.workingCopies = new ICompilationUnit[3];
+		this.workingCopies = new IJavaScriptUnit[3];
 		this.wcOwner = new WorkingCopyOwner() {};
 
 		// Get first working copy and verify that there's no error

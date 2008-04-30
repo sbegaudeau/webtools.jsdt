@@ -14,15 +14,15 @@ import junit.framework.Test;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.*;
 public class WorkingCopySearchTests extends JavaSearchTests {
-	ICompilationUnit workingCopy;
+	IJavaScriptUnit workingCopy;
 	
 	public WorkingCopySearchTests(String name) {
 		super(name);
@@ -46,7 +46,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 		super.setUp();
 		try {
 			this.workingCopy = this.getCompilationUnit("JavaSearch", "src", "wc", "X.js").getWorkingCopy(null);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			e.printStackTrace();
 		}
 	}
@@ -64,11 +64,11 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 * Hierarchy scope on a working copy test.
 	 */
 	public void testHierarchyScopeOnWorkingCopy() throws CoreException {
-		ICompilationUnit unit = this. getCompilationUnit("JavaSearch", "src", "a9", "A.js");
-		ICompilationUnit copy = unit.getWorkingCopy(null);
+		IJavaScriptUnit unit = this. getCompilationUnit("JavaSearch", "src", "a9", "A.js");
+		IJavaScriptUnit copy = unit.getWorkingCopy(null);
 		try {
 			IType type = copy.getType("A");
-			IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
+			IJavaScriptSearchScope scope = SearchEngine.createHierarchyScope(type);
 			assertTrue("a9.A should be included in hierarchy scope", scope.encloses(type));
 			assertTrue("a9.C should be included in hierarchy scope", scope.encloses(copy.getType("C")));
 			assertTrue("a9.B should be included in hierarchy scope", scope.encloses(copy.getType("B")));
@@ -91,16 +91,16 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			false,
 			null);
 		
-		IJavaSearchScope scope = 
+		IJavaScriptSearchScope scope = 
 			SearchEngine.createJavaSearchScope(
-				new IJavaElement[] {this.workingCopy.getParent()});
+				new IJavaScriptElement[] {this.workingCopy.getParent()});
 	//	JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		SearchPattern pattern = SearchPattern.createPattern(
 			"NewType",
 			TYPE,
 			DECLARATIONS, 
 			SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
-		new SearchEngine(new ICompilationUnit[] {this.workingCopy}).search(
+		new SearchEngine(new IJavaScriptUnit[] {this.workingCopy}).search(
 			pattern, 
 			new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
 			scope, 
@@ -124,9 +124,9 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			"}" 
 		);
 		this.workingCopy.makeConsistent(null);
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {this.workingCopy.getParent()});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {this.workingCopy.getParent()});
 		SearchTests.SearchTypeNameRequestor requestor = new SearchTests.SearchTypeNameRequestor();
-		new SearchEngine(new ICompilationUnit[] {this.workingCopy}).searchAllTypeNames(
+		new SearchEngine(new IJavaScriptUnit[] {this.workingCopy}).searchAllTypeNames(
 			null,
 			SearchPattern.R_EXACT_MATCH,
 			null,
@@ -134,7 +134,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			TYPE,
 			scope, 
 			requestor,
-			IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+			IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 			null		
 		);
 		assertSearchResults(
@@ -156,9 +156,9 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			"  }\n" +
 			"}" 
 		);
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {this.workingCopy.getParent()});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {this.workingCopy.getParent()});
 		SearchTests.SearchTypeNameRequestor requestor = new SearchTests.SearchTypeNameRequestor();
-		new SearchEngine(new ICompilationUnit[] {this.workingCopy}).searchAllTypeNames(
+		new SearchEngine(new IJavaScriptUnit[] {this.workingCopy}).searchAllTypeNames(
 			null,
 			SearchPattern.R_EXACT_MATCH,
 			null,
@@ -166,7 +166,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			TYPE,
 			scope, 
 			requestor,
-			IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+			IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 			null		
 		);
 		assertSearchResults(
@@ -181,7 +181,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 * (regression test for bug 44884 Wrong list displayed while code completion)
 	 */
 	public void testAllTypeNames3() throws CoreException {
-		ICompilationUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
+		IJavaScriptUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
 		try {
 			wc.becomeWorkingCopy(null, null);
 			wc.getBuffer().setContents(
@@ -193,7 +193,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			);
 			wc.makeConsistent(null);
 			
-			IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {wc.getParent()});
+			IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {wc.getParent()});
 			SearchTests.SearchTypeNameRequestor requestor = new SearchTests.SearchTypeNameRequestor();
 			new SearchEngine().searchAllTypeNames(
 				"wc3".toCharArray(),
@@ -203,7 +203,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 				TYPE,
 				scope, 
 				requestor,
-				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+				IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 				null		
 			);
 			assertSearchResults(
@@ -220,7 +220,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 * (regression test for bug 44884 Wrong list displayed while code completion)
 	 */
 	public void testAllTypeNames4() throws CoreException {
-		ICompilationUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
+		IJavaScriptUnit wc = getCompilationUnit("/JavaSearch/wc3/X44884.js");
 		try {
 			wc.becomeWorkingCopy(null, null);
 			wc.getBuffer().setContents(
@@ -231,7 +231,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 				"}"
 			);
 			
-			IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {wc.getParent()});
+			IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {wc.getParent()});
 			SearchTests.SearchTypeNameRequestor requestor = new SearchTests.SearchTypeNameRequestor();
 			new SearchEngine().searchAllTypeNames(
 				"wc3".toCharArray(),
@@ -241,7 +241,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 				TYPE,
 				scope, 
 				requestor,
-				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+				IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 				null		
 			);
 			assertSearchResults(
@@ -266,9 +266,9 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			" class BBBCCC {}\n"
 		);
 		this.workingCopy.makeConsistent(null);
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {this.workingCopy.getParent()});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {this.workingCopy.getParent()});
 		SearchTests.SearchTypeNameRequestor requestor = new SearchTests.SearchTypeNameRequestor();
-		new SearchEngine(new ICompilationUnit[] {this.workingCopy}).searchAllTypeNames(
+		new SearchEngine(new IJavaScriptUnit[] {this.workingCopy}).searchAllTypeNames(
 			null,
 			SearchPattern.R_EXACT_MATCH,
 			"A*".toCharArray(),
@@ -276,7 +276,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			TYPE,
 			scope, 
 			requestor,
-			IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+			IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 			null		
 		);
 		assertSearchResults(
@@ -291,10 +291,10 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 */
 	public void testAllTypeNamesBug98684() throws CoreException {
 		try {
-			IJavaProject[] projects = new IJavaProject[2];
+			IJavaScriptProject[] projects = new IJavaScriptProject[2];
 			projects[0] = createJavaProject("P1");
 			projects[1] = createJavaProject("P2");
-			workingCopies = new ICompilationUnit[2];
+			workingCopies = new IJavaScriptUnit[2];
 			workingCopies[0] = getWorkingCopy("/P1/p1/A1.js",
 				"package p1;\n" + 
 				"public class A1 {\n" + 
@@ -310,7 +310,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 				"}"
 			);
 			TypeNameRequestor requestor =  new SearchTests.SearchTypeNameRequestor();
-			IJavaSearchScope scope = 	SearchEngine.createJavaSearchScope(new IJavaElement[] { projects[1] });
+			IJavaScriptSearchScope scope = 	SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { projects[1] });
 			new SearchEngine(this.workingCopies).searchAllTypeNames(
 				null,
 				SearchPattern.R_EXACT_MATCH,
@@ -319,7 +319,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 				TYPE,
 				scope,
 				requestor,
-				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+				IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 				null
 			);
 			assertSearchResults(
@@ -340,7 +340,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	 * (Regression test for bug 5355 search: NPE in searchDeclarationsOfReferencedTypes  )
 	 */
 	public void testDeclarationOfReferencedTypes() throws CoreException {
-		IMethod method = this.workingCopy.getType("X").createMethod(
+		IFunction method = this.workingCopy.getType("X").createMethod(
 			"public void foo() {\n" +
 			"  X x = new X();\n" +
 			"}",
@@ -364,16 +364,16 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	public void testMoveType() throws CoreException {
 		
 		// move type X from working copy in one package to a working copy in another package
-		ICompilationUnit workingCopy1 = getCompilationUnit("JavaSearch", "src", "wc1", "X.js").getWorkingCopy(null);
-		ICompilationUnit workingCopy2 = getCompilationUnit("JavaSearch", "src", "wc2", "Y.js").getWorkingCopy(null);
+		IJavaScriptUnit workingCopy1 = getCompilationUnit("JavaSearch", "src", "wc1", "X.js").getWorkingCopy(null);
+		IJavaScriptUnit workingCopy2 = getCompilationUnit("JavaSearch", "src", "wc2", "Y.js").getWorkingCopy(null);
 		
 		try {
 			workingCopy1.getType("X").move(workingCopy2, null, null, true, null);
 			
-			SearchEngine searchEngine = new SearchEngine(new ICompilationUnit[] {workingCopy1, workingCopy2});
+			SearchEngine searchEngine = new SearchEngine(new IJavaScriptUnit[] {workingCopy1, workingCopy2});
 			
 			// type X should not be visible in old package
-			IJavaSearchScope scope1 = SearchEngine.createJavaSearchScope(new IJavaElement[] {workingCopy1.getParent()});
+			IJavaScriptSearchScope scope1 = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {workingCopy1.getParent()});
 	//		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 			
 			SearchPattern pattern = SearchPattern.createPattern(
@@ -392,7 +392,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 				resultCollector.toString());
 			
 			// type X should be visible in new package
-			IJavaSearchScope scope2 = SearchEngine.createJavaSearchScope(new IJavaElement[] {workingCopy2.getParent()});
+			IJavaScriptSearchScope scope2 = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {workingCopy2.getParent()});
 			resultCollector = new JavaSearchResultCollector();
 			searchEngine.search(
 				pattern, 
@@ -416,9 +416,9 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 	public void testRemoveType() throws CoreException {
 		this.workingCopy.getType("X").delete(true, null);
 		
-		IJavaSearchScope scope = 
+		IJavaScriptSearchScope scope = 
 			SearchEngine.createJavaSearchScope(
-				new IJavaElement[] {this.workingCopy.getParent()});
+				new IJavaScriptElement[] {this.workingCopy.getParent()});
 		
 		// type X should not be visible when working copy hides it
 	//	JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
@@ -427,7 +427,7 @@ public class WorkingCopySearchTests extends JavaSearchTests {
 			TYPE,
 			DECLARATIONS, 
 			SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE);
-		new SearchEngine(new ICompilationUnit[] {this.workingCopy}).search(
+		new SearchEngine(new IJavaScriptUnit[] {this.workingCopy}).search(
 			pattern, 
 			new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
 			scope, 

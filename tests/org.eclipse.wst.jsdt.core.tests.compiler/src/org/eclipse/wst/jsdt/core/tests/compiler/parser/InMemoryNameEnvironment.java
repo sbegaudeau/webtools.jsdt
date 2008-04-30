@@ -64,7 +64,7 @@ public NameEnvironmentAnswer findType(char[] typeName, char[][] packageName, ITy
 //	if (cus == null) {
 //		return this.findTypeFromClassLibs(typeName, packageName);
 //	}
-//	CompilationUnit unit = (CompilationUnit)cus.get(typeName);
+//	JavaScriptUnit unit = (JavaScriptUnit)cus.get(typeName);
 //	if (unit == null) {
 //		return this.findTypeFromClassLibs(typeName, packageName);
 //	}

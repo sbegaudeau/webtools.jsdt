@@ -47,8 +47,8 @@ private void assertOneChange(ITypeHierarchy h) {
 	assertTrue("Change should be for this hierarchy", this.hierarchy == h);
 	assertEquals("Unexpected number of notifications", 1, this.notifications);
 }
-private void addSuper(ICompilationUnit unit, String typeName, String newSuper) throws JavaModelException {
-	ICompilationUnit copy = unit.getWorkingCopy(null);
+private void addSuper(IJavaScriptUnit unit, String typeName, String newSuper) throws JavaScriptModelException {
+	IJavaScriptUnit copy = unit.getWorkingCopy(null);
 	IType type = copy.getTypes()[0];
 	String source = type.getSource();
 	int superIndex = -1;
@@ -61,8 +61,8 @@ private void addSuper(ICompilationUnit unit, String typeName, String newSuper) t
 	copy.createType(newSource, null, true, null);
 	copy.commitWorkingCopy(true, null);
 }
-protected void changeSuper(ICompilationUnit unit, String existingSuper, String newSuper) throws JavaModelException {
-	ICompilationUnit copy = unit.getWorkingCopy(null);
+protected void changeSuper(IJavaScriptUnit unit, String existingSuper, String newSuper) throws JavaScriptModelException {
+	IJavaScriptUnit copy = unit.getWorkingCopy(null);
 	IType type = copy.getTypes()[0];
 	String source = type.getSource();
 	int superIndex = -1;
@@ -75,8 +75,8 @@ protected void changeSuper(ICompilationUnit unit, String existingSuper, String n
 	copy.createType(newSource, null, true, null);
 	copy.commitWorkingCopy(true, null);
 }
-protected void changeVisibility(ICompilationUnit unit, String existingModifier, String newModifier) throws JavaModelException {
-	ICompilationUnit copy = unit.getWorkingCopy(null);
+protected void changeVisibility(IJavaScriptUnit unit, String existingModifier, String newModifier) throws JavaScriptModelException {
+	IJavaScriptUnit copy = unit.getWorkingCopy(null);
 	IType type = copy.getTypes()[0];
 	String source = type.getSource();
 	int modifierIndex = -1;
@@ -119,14 +119,14 @@ protected void tearDown() throws Exception {
  */
 public void testAddAnonymousInRegion() throws CoreException {
 	ITypeHierarchy h = null;
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		copy = getCompilationUnit("TypeHierarchyNotification", "src", "p3", "A.js");
 		copy.becomeWorkingCopy(null, null);
 		
-		IRegion region = JavaCore.newRegion();
+		IRegion region = JavaScriptCore.newRegion();
 		region.add(copy.getParent());
-		h = copy.getJavaProject().newTypeHierarchy(region, null);
+		h = copy.getJavaScriptProject().newTypeHierarchy(region, null);
 		h.addTypeHierarchyChangedListener(this);
 
 		// add a field initialized with a 'new B() {...}' anonymous type
@@ -136,7 +136,7 @@ public void testAddAnonymousInRegion() throws CoreException {
 			"  B field = new B() {};\n" +
 			"}";
 		copy.getBuffer().setContents(newSource);
-		copy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		copy.commitWorkingCopy(true, null);
 
 		this.assertOneChange(h);
@@ -155,15 +155,15 @@ public void testAddAnonymousInRegion() throws CoreException {
  * type hierarchy.
  */
 public void testAddCompilationUnit1() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
 
 	// a cu with no types part of the hierarchy
 	IPackageFragment pkg = getPackageFragment("TypeHierarchyNotification", "src", "p");
-	ICompilationUnit newCU1 = pkg.createCompilationUnit(
+	IJavaScriptUnit newCU1 = pkg.createCompilationUnit(
 		"Z1.js", 
 		"package p;\n" +
 		"\n" +
@@ -189,15 +189,15 @@ public void testAddCompilationUnit1() throws CoreException {
  * type hierarchy.
  */
 public void testAddCompilationUnit2() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
 
 	// a cu with a top level type which is part of the hierarchy
 	IPackageFragment pkg = getPackageFragment("TypeHierarchyNotification", "src", "p");
-	ICompilationUnit newCU2 = pkg.createCompilationUnit(
+	IJavaScriptUnit newCU2 = pkg.createCompilationUnit(
 		"Z2.js", 
 		"package p;\n" +
 		"\n" +
@@ -224,15 +224,15 @@ public void testAddCompilationUnit2() throws CoreException {
  * type hierarchy.
  */
 public void testAddCompilationUnit3() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
 
 	// a cu with an inner type which is part of the hierarchy
 	IPackageFragment pkg = getPackageFragment("TypeHierarchyNotification", "src", "p");
-	ICompilationUnit newCU3 = pkg.createCompilationUnit(
+	IJavaScriptUnit newCU3 = pkg.createCompilationUnit(
 		"Z3.js", 
 		"package p;\n" +
 		"\n" +
@@ -260,8 +260,8 @@ public void testAddCompilationUnit3() throws CoreException {
  * only if one of the types of the CU is part of the region.
  */
 public void testAddCompilationUnitInRegion() throws CoreException, IOException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	IRegion region = JavaCore.newRegion();
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IRegion region = JavaScriptCore.newRegion();
 	region.add(javaProject);
 	ITypeHierarchy h = javaProject.newTypeHierarchy(region, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -270,7 +270,7 @@ public void testAddCompilationUnitInRegion() throws CoreException, IOException {
 		setUpJavaProject("TypeHierarchyDependent");
 		// a cu with no types part of the region
 		IPackageFragment pkg = getPackageFragment("TypeHierarchyDependent", "", "");
-		ICompilationUnit newCU1 = pkg.createCompilationUnit(
+		IJavaScriptUnit newCU1 = pkg.createCompilationUnit(
 			"Z1.js", 
 			"\n" +
 			"public class Z1 {\n" +
@@ -292,7 +292,7 @@ public void testAddCompilationUnitInRegion() throws CoreException, IOException {
 	
 		// a cu with a type which is part of the region and is a subtype of an existing type of the region
 		pkg = getPackageFragment("TypeHierarchyNotification", "src", "p");
-		ICompilationUnit newCU2 = pkg.createCompilationUnit(
+		IJavaScriptUnit newCU2 = pkg.createCompilationUnit(
 			"Z2.js", 
 			"package p;\n" +
 			"\n" +
@@ -316,7 +316,7 @@ public void testAddCompilationUnitInRegion() throws CoreException, IOException {
 		}
 	
 		// a cu with a type which is part of the region and is not a sub type of an existing type of the region
-		ICompilationUnit newCU3 = pkg.createCompilationUnit(
+		IJavaScriptUnit newCU3 = pkg.createCompilationUnit(
 			"Z3.js", 
 			"package p;\n" +
 			"\n" +
@@ -346,14 +346,14 @@ public void testAddCompilationUnitInRegion() throws CoreException, IOException {
  * the typehierarchy has not changed.
  */
 public void testAddExternalCompilationUnit() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
 	
 	IPackageFragment pkg = getPackageFragment("TypeHierarchyNotification", "src", "p.other");
-	ICompilationUnit newCU= pkg.createCompilationUnit(
+	IJavaScriptUnit newCU= pkg.createCompilationUnit(
 		"Z.js", 
 		"package p.other;\n" +
 		"\n" +
@@ -378,8 +378,8 @@ public void testAddExternalCompilationUnit() throws CoreException {
  * When a package is added in an external project, the type hierarchy should not change
  */
 public void testAddExternalPackage() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 
@@ -408,13 +408,13 @@ public void testAddExternalPackage() throws CoreException {
  * the type hierarchy should not change.
  */
 public void testAddExternalProject() throws CoreException {
-	IJavaProject project= getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project= getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
 
-	project.getJavaModel().getWorkspace().getRoot().getProject("NewProject").create(null);
+	project.getJavaScriptModel().getWorkspace().getRoot().getProject("NewProject").create(null);
 	try {
 		assertTrue("Should not receive change", !this.changeReceived);
 	} finally {
@@ -427,9 +427,9 @@ public void testAddExternalProject() throws CoreException {
  * Test adding the same listener twice.
  */
 public void testAddListenerTwice() throws CoreException {
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
-	ICompilationUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 
@@ -449,8 +449,8 @@ public void testAddListenerTwice() throws CoreException {
  * When a package is added, the type hierarchy should change
  */
 public void testAddPackage() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -469,22 +469,22 @@ public void testAddPackage() throws CoreException {
  * When a package fragment root is added, the type hierarchy should change
  */
 public void testAddPackageFragmentRoot() throws CoreException {
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
 
 	// prepare a classpath entry for the new root
-	IClasspathEntry[] originalCP= project.getRawClasspath();
-	IClasspathEntry newEntry= JavaCore.newSourceEntry(project.getProject().getFullPath().append("extra"));
-	IClasspathEntry[] newCP= new IClasspathEntry[originalCP.length + 1];
+	IIncludePathEntry[] originalCP= project.getRawIncludepath();
+	IIncludePathEntry newEntry= JavaScriptCore.newSourceEntry(project.getProject().getFullPath().append("extra"));
+	IIncludePathEntry[] newCP= new IIncludePathEntry[originalCP.length + 1];
 	System.arraycopy(originalCP, 0 , newCP, 0, originalCP.length);
 	newCP[originalCP.length]= newEntry;
 
 	try {
 		// set new classpath
-		project.setRawClasspath(newCP, null);
+		project.setRawIncludepath(newCP, null);
 
 		// now create the actual resource for the root and populate it
 		this.reset();
@@ -501,26 +501,26 @@ public void testAddPackageFragmentRoot() throws CoreException {
  * the type hierarchy should change.
  */
 public void testAddProject() throws CoreException {
-	IJavaProject project= getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project= getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
 
 	// prepare a new classpath entry for the new project
-	IClasspathEntry[] originalCP= project.getRawClasspath();
-	IClasspathEntry newEntry= JavaCore.newProjectEntry(new Path("/NewProject"), false);
-	IClasspathEntry[] newCP= new IClasspathEntry[originalCP.length + 1];
+	IIncludePathEntry[] originalCP= project.getRawIncludepath();
+	IIncludePathEntry newEntry= JavaScriptCore.newProjectEntry(new Path("/NewProject"), false);
+	IIncludePathEntry[] newCP= new IIncludePathEntry[originalCP.length + 1];
 	System.arraycopy(originalCP, 0 , newCP, 0, originalCP.length);
 	newCP[originalCP.length]= newEntry;
 
 	try {
 		// set the new classpath
-		project.setRawClasspath(newCP, null);
+		project.setRawIncludepath(newCP, null);
 
 		// now create the actual resource for the root and populate it
 		this.reset();
-		final IProject newProject = project.getJavaModel().getWorkspace().getRoot().getProject("NewProject");
+		final IProject newProject = project.getJavaScriptModel().getWorkspace().getRoot().getProject("NewProject");
 		IWorkspaceRunnable create = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				newProject.create(null, null);
@@ -529,7 +529,7 @@ public void testAddProject() throws CoreException {
 		};
 		getWorkspace().run(create, null);
 		IProjectDescription description = newProject.getDescription();
-		description.setNatureIds(new String[] {JavaCore.NATURE_ID});
+		description.setNatureIds(new String[] {JavaScriptCore.NATURE_ID});
 		newProject.setDescription(description, null);
 		this.assertOneChange(h);
 	} finally {
@@ -543,8 +543,8 @@ public void testAddProject() throws CoreException {
  */
 public void testAddRemoveClassFile() throws CoreException {
 	// Create type hierarchy on 'java.lang.LinkageError' in 'Minimal.zip'
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit unit = getCompilationUnit("TypeHierarchyNotification", "src", "p", "MyError.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit unit = getCompilationUnit("TypeHierarchyNotification", "src", "p", "MyError.js");
 	IType type = unit.getType("MyError");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -552,9 +552,9 @@ public void testAddRemoveClassFile() throws CoreException {
 	// Create 'patch' folder and add it to classpath
 	IFolder pathFolder = project.getProject().getFolder("patch");
 	pathFolder.create(true, true, null);
-	IClasspathEntry newEntry = JavaCore.newLibraryEntry(pathFolder.getFullPath(), null, null, false);
-	IClasspathEntry[] classpath = project.getRawClasspath();
-	IClasspathEntry[] newClassPath = new IClasspathEntry[classpath.length+1];
+	IIncludePathEntry newEntry = JavaScriptCore.newLibraryEntry(pathFolder.getFullPath(), null, null, false);
+	IIncludePathEntry[] classpath = project.getRawIncludepath();
+	IIncludePathEntry[] newClassPath = new IIncludePathEntry[classpath.length+1];
 	newClassPath[0] = newEntry;
 	System.arraycopy(classpath, 0, newClassPath, 1, classpath.length);
 
@@ -588,7 +588,7 @@ public void testAddRemoveClassFile() throws CoreException {
  */
 public void testChangeFocusModifier() throws CoreException {
 	ITypeHierarchy h = null;
-	ICompilationUnit workingCopy = null;
+	IJavaScriptUnit workingCopy = null;
 	try {
 		createJavaProject("P1");
 		createFolder("/P1/p");
@@ -608,7 +608,7 @@ public void testChangeFocusModifier() throws CoreException {
 			"class X {\n" +
 			"}"
 		);
-		workingCopy.reconcile(ICompilationUnit.NO_AST, false/*no pb detection*/, null/*no workingcopy owner*/, null/*no prgress*/);
+		workingCopy.reconcile(IJavaScriptUnit.NO_AST, false/*no pb detection*/, null/*no workingcopy owner*/, null/*no prgress*/);
 		workingCopy.commitWorkingCopy(false/*don't force*/, null/*no progress*/);
 		
 		assertOneChange(h);
@@ -625,8 +625,8 @@ public void testChangeFocusModifier() throws CoreException {
  * Ensures that a TypeHierarchyNotification is made invalid when the project is closed.
  */
 public void testCloseProject() throws Exception {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -643,8 +643,8 @@ public void testCloseProject() throws Exception {
  * When editing the extends clause of a source type in a hierarchy, we should be notified of change.
  */
 public void testEditExtendsSourceType() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -689,8 +689,8 @@ public void testAddDependentProject() throws CoreException {
  * (regression test for bug 4917 Latest build fails updating TypeHierarchyNotification)
  */
 public void testAddExtendsSourceType1() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "A.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "A.js");
 	IType type= cu.getType("A");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -710,14 +710,14 @@ public void testAddExtendsSourceType1() throws CoreException {
  */
 public void testAddExtendsSourceType2() throws CoreException {
 	ITypeHierarchy h = null;
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		copy = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "A.js");
 		copy.becomeWorkingCopy(null, null);
 		
-		IRegion region = JavaCore.newRegion();
+		IRegion region = JavaScriptCore.newRegion();
 		region.add(copy.getParent());
-		h = copy.getJavaProject().newTypeHierarchy(region, null);
+		h = copy.getJavaScriptProject().newTypeHierarchy(region, null);
 		h.addTypeHierarchyChangedListener(this);
 
 		// add p2.B as the superclass of p2.A
@@ -731,7 +731,7 @@ public void testAddExtendsSourceType2() throws CoreException {
 			newSuper +
 			source.substring(superIndex);
 		copy.getBuffer().setContents(newSource);
-		copy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		copy.commitWorkingCopy(true, null);
 
 		this.assertOneChange(h);
@@ -750,8 +750,8 @@ public void testAddExtendsSourceType2() throws CoreException {
  * (regression test for bug 111396 TypeHierarchy doesn't notify listeners on addition of fully qualified subtypes)
  */
 public void testAddExtendsSourceType3() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit copy = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "B.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit copy = getCompilationUnit("TypeHierarchyNotification", "src", "p2", "B.js");
 	ITypeHierarchy h = null;
 	try {
 		copy.becomeWorkingCopy(null, null);
@@ -769,7 +769,7 @@ public void testAddExtendsSourceType3() throws CoreException {
 			newSuper +
 			source.substring(superIndex);
 		copy.getBuffer().setContents(newSource);
-		copy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		copy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		copy.commitWorkingCopy(true, null);
 		this.assertOneChange(h);
 	} finally {
@@ -783,13 +783,13 @@ public void testAddExtendsSourceType3() throws CoreException {
  * When editing a source type NOT in a hierarchy, we should receive NO CHANGES.
  */
 public void testEditExternalSourceType() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
 
-	ICompilationUnit cu2= getCompilationUnit("TypeHierarchyNotification", "src", "p", "External.js");
+	IJavaScriptUnit cu2= getCompilationUnit("TypeHierarchyNotification", "src", "p", "External.js");
 	IField field= cu2.getType("External").getField("field");
 	try {
 		field.delete(false, null);
@@ -803,8 +803,8 @@ public void testEditExternalSourceType() throws CoreException {
  * we should NOT be notified of a change.
  */
 public void testEditFieldSourceType() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -828,8 +828,8 @@ public void testEditFieldSourceType() throws CoreException {
  * we should be notified of a change.
  */
 public void testEditImportSourceType() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -869,9 +869,9 @@ public void testEditImportSourceType() throws CoreException {
 public void testEditSourceTypes() throws CoreException {
 	// TBD: Find a way to do 2 changes in 2 different CUs at once
 	
-	IJavaProject project= getJavaProject("TypeHierarchyNotification");
-	final ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
-	final ICompilationUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
+	IJavaScriptProject project= getJavaProject("TypeHierarchyNotification");
+	final IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	final IJavaScriptUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -879,13 +879,13 @@ public void testEditSourceTypes() throws CoreException {
 	try {
 		// change the visibility of the super class and the 'extends' of the type we're looking at
 		// in a batch operation
-		JavaCore.run(
+		JavaScriptCore.run(
 			new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) {
 					try {
 						changeVisibility(superCU, "public", "private");
 						changeSuper(cu, "X", "a.A");
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						assertTrue("No exception", false);
 					}
 				}
@@ -903,9 +903,9 @@ public void testEditSourceTypes() throws CoreException {
  * the change affects the visibility of the type.
  */
 public void testEditSuperType() throws CoreException {
-	IJavaProject project= getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
-	ICompilationUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
+	IJavaScriptProject project= getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
 	IType type = cu.getType("X");
 	IType superType= superCU.getType("B");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
@@ -928,9 +928,9 @@ public void testEditSuperType() throws CoreException {
  * When an involved compilation unit is deleted, the type hierarchy should change
  */
 public void testRemoveCompilationUnit() throws CoreException {
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
-	ICompilationUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -947,9 +947,9 @@ public void testRemoveCompilationUnit() throws CoreException {
  * When an uninvolved compilation unit is deleted, the type hierarchy should not change
  */
 public void testRemoveExternalCompilationUnit() throws CoreException {
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
-	ICompilationUnit otherCU = getCompilationUnit("TypeHierarchyNotification", "src", "p", "External.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptUnit otherCU = getCompilationUnit("TypeHierarchyNotification", "src", "p", "External.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -966,8 +966,8 @@ public void testRemoveExternalCompilationUnit() throws CoreException {
  * When a uninvolved package is deleted, the type hierarchy should NOT change
  */
 public void testRemoveExternalPackage() throws CoreException {
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -986,22 +986,22 @@ public void testRemoveExternalPackage() throws CoreException {
  * package fragments, the type hierarchy should not change.
  */
 public void testRemoveExternalPackageFragmentRoot() throws CoreException {
-	IJavaProject project= getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project= getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
 
 	// add a classpath entry for the new root
-	IClasspathEntry[] originalCP= project.getRawClasspath();
-	IClasspathEntry newEntry= JavaCore.newSourceEntry(project.getProject().getFullPath().append("extra"));
-	IClasspathEntry[] newCP= new IClasspathEntry[originalCP.length + 1];
+	IIncludePathEntry[] originalCP= project.getRawIncludepath();
+	IIncludePathEntry newEntry= JavaScriptCore.newSourceEntry(project.getProject().getFullPath().append("extra"));
+	IIncludePathEntry[] newCP= new IIncludePathEntry[originalCP.length + 1];
 	System.arraycopy(originalCP, 0 , newCP, 0, originalCP.length);
 	newCP[originalCP.length]= newEntry;
 	
 	try {
 		// set classpath
-		project.setRawClasspath(newCP, null);
+		project.setRawIncludepath(newCP, null);
 
 		// now create the actual resource for the root and populate it
 		this.reset();
@@ -1013,7 +1013,7 @@ public void testRemoveExternalPackageFragmentRoot() throws CoreException {
 
 		// remove a classpath entry that does not impact the type hierarchy
 		this.reset();
-		project.setRawClasspath(originalCP, null);
+		project.setRawIncludepath(originalCP, null);
 		assertTrue("Should not receive change", !this.changeReceived);
 	} finally {
 		h.removeTypeHierarchyChangedListener(this);
@@ -1028,7 +1028,7 @@ public void testRemoveExternalProject() throws CoreException {
 		this.createJavaProject("External", new String[] {""}, new String[] {"JCL_LIB"}, new String[]{"/TypeHierarchyNotification"}, "");
 		this.createFolder("/External/p");
 		this.createFile("/External/p/Y.js", "package p; public class Y extends X {}");
-		ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+		IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 		IType type = cu.getType("X");
 		ITypeHierarchy h = type.newTypeHierarchy(null);
 		h.addTypeHierarchyChangedListener(this);
@@ -1047,9 +1047,9 @@ public void testRemoveExternalProject() throws CoreException {
  * Test removing a listener while the type hierarchy is notifying listeners.
  */
 public void testRemoveListener() throws CoreException {
-	IJavaProject project= getJavaProject("TypeHierarchyNotification");
-	final ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
-	final ICompilationUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
+	IJavaScriptProject project= getJavaProject("TypeHierarchyNotification");
+	final IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	final IJavaScriptUnit superCU = getCompilationUnit("TypeHierarchyNotification", "src", "b", "B.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	ITypeHierarchyChangedListener listener= new ITypeHierarchyChangedListener() {
@@ -1071,7 +1071,7 @@ public void testRemoveListener() throws CoreException {
 					try {
 						changeVisibility(superCU, "public", "private");
 						changeSuper(cu, "B", "a.A");
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 						assertTrue("No exception", false);
 					}
 				}
@@ -1088,8 +1088,8 @@ public void testRemoveListener() throws CoreException {
  * When a package is deleted, the type hierarchy should change
  */
 public void testRemovePackage() throws CoreException {
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -1106,14 +1106,14 @@ public void testRemovePackage() throws CoreException {
  * When a package fragment root is removed from the classpath, the type hierarchy should change
  */
 public void testRemovePackageFragmentRoots() throws CoreException {
-	IJavaProject project = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
 	
 	try {
-		project.setRawClasspath(null, null);
+		project.setRawIncludepath(null, null);
 		this.assertOneChange(h);
 	} finally {
 		h.removeTypeHierarchyChangedListener(this);
@@ -1127,8 +1127,8 @@ public void testRemoveProject() throws CoreException, IOException {
 	ITypeHierarchy h = null;
 	try {
 		setUpJavaProject("TypeHierarchyDependent");
-		IJavaProject project= getJavaProject("TypeHierarchyDependent");
-		ICompilationUnit cu = getCompilationUnit("TypeHierarchyDependent", "", "", "Dependent.js");
+		IJavaScriptProject project= getJavaProject("TypeHierarchyDependent");
+		IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyDependent", "", "", "Dependent.js");
 		IType type = cu.getType("Dependent");
 		h = type.newTypeHierarchy(project, null);
 		h.addTypeHierarchyChangedListener(this);
@@ -1159,8 +1159,8 @@ public void testRemoveProject() throws CoreException, IOException {
  * the hierarchy should be made invalid.
  */
 public void testRemoveType() throws CoreException {
-	IJavaProject project= getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject project= getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type = cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(project, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -1176,8 +1176,8 @@ public void testRemoveType() throws CoreException {
  * When an involved compilation unit is renamed, the type hierarchy may change.
  */
 public void testRenameCompilationUnit() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
@@ -1193,13 +1193,13 @@ public void testRenameCompilationUnit() throws CoreException {
  * When an uninvolved compilation unit is renamed, the type hierarchy does not change.
  */
 public void testRenameExternalCompilationUnit() throws CoreException {
-	IJavaProject javaProject = getJavaProject("TypeHierarchyNotification");
-	ICompilationUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
+	IJavaScriptProject javaProject = getJavaProject("TypeHierarchyNotification");
+	IJavaScriptUnit cu = getCompilationUnit("TypeHierarchyNotification", "src", "p", "X.js");
 	IType type= cu.getType("X");
 	ITypeHierarchy h = type.newTypeHierarchy(javaProject, null);
 	h.addTypeHierarchyChangedListener(this);
 
-	ICompilationUnit cu2= getCompilationUnit("TypeHierarchyNotification", "src", "p", "External.js");
+	IJavaScriptUnit cu2= getCompilationUnit("TypeHierarchyNotification", "src", "p", "External.js");
 	try {
 		cu2.rename("External2.js", false, null);
 		assertTrue("Should not receive changes", !this.changeReceived);

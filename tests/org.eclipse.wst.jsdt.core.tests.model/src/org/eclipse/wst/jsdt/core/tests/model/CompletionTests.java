@@ -16,7 +16,7 @@ import java.util.Hashtable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.eval.IEvaluationContext;
 import org.eclipse.wst.jsdt.internal.codeassist.RelevanceConstants;
 
@@ -45,7 +45,7 @@ public void tearDownSuite() throws Exception {
 	super.tearDownSuite();
 }
 
-public void test00() throws JavaModelException {
+public void test00() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/Test.js",
 			"MyClass.prototype.someMethod = MyClass_someMethod;"+ 
@@ -63,15 +63,15 @@ public void test00() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-            "someMethod[METHOD_REF]{, Ltest.MyClass;, ()V, someMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME +  R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+            "someMethod[FUNCTION_REF]{, Ltest.MyClass;, ()V, someMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME +  R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             requestor.getResults());
 }
 
 
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=164311
-public void testBug164311() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testBug164311() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -95,8 +95,8 @@ public void testBug164311() throws JavaModelException {
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=164311
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=167750
-public void testBug164311_2() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testBug164311_2() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -125,11 +125,11 @@ public void testBug164311_2() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zork[METHOD_REF]{zork(), Ltest.X;, ()V, zork, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+			"zork[FUNCTION_REF]{zork(), Ltest.X;, ()V, zork, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96213
-public void testBug96213() throws JavaModelException {
+public void testBug96213() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "  function toto( o) {\n"+
@@ -155,8 +155,8 @@ public void testBug96213() throws JavaModelException {
             requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=99811
-public void testBug99811() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testBug99811() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
     try {
     	this.wc = getWorkingCopy(
 	            "/Completion/src/test/A.js",
@@ -182,14 +182,14 @@ public void testBug99811() throws JavaModelException {
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseField1() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseField1() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -212,18 +212,18 @@ public void testCamelCaseField1() throws JavaModelException {
 				"oTTField[FIELD_REF]{oTTField, Lcamelcase.Test;, I, oTTField, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseLocalVariable1() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseLocalVariable1() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -246,18 +246,18 @@ public void testCamelCaseLocalVariable1() throws JavaModelException {
 				"oTTLocal[LOCAL_VARIABLE_REF]{oTTLocal, null, I, oTTLocal, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseMethod1() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseMethod1() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-	this.workingCopies = new ICompilationUnit[1];
+	this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -276,22 +276,22 @@ public void testCamelCaseMethod1() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"oneTwoThree[METHOD_REF]{oneTwoThree(), Lcamelcase.Test;, ()V, oneTwoThree, null, " + (R_DEFAULT + R_INTERESTING + R_CAMEL_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"oTTMethod[METHOD_REF]{oTTMethod(), Lcamelcase.Test;, ()V, oTTMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"oneTwoThree[FUNCTION_REF]{oneTwoThree(), Lcamelcase.Test;, ()V, oneTwoThree, null, " + (R_DEFAULT + R_INTERESTING + R_CAMEL_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"oTTMethod[FUNCTION_REF]{oTTMethod(), Lcamelcase.Test;, ()V, oTTMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseMethodDeclaration1() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseMethodDeclaration1() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -315,22 +315,22 @@ public void testCamelCaseMethodDeclaration1() throws JavaModelException {
 	
 		assertResults(
 				"oTT[POTENTIAL_METHOD_DECLARATION]{oTT, Lcamelcase.Test;, ()V, oTT, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"oneTwoThree[METHOD_DECLARATION]{public void oneTwoThree(), Lcamelcase.SuperClass;, ()V, oneTwoThree, null, " + (R_DEFAULT + R_INTERESTING + R_CAMEL_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"oTTMethod[METHOD_DECLARATION]{public void oTTMethod(), Lcamelcase.SuperClass;, ()V, oTTMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"oneTwoThree[FUNCTION_DECLARATION]{public void oneTwoThree(), Lcamelcase.SuperClass;, ()V, oneTwoThree, null, " + (R_DEFAULT + R_INTERESTING + R_CAMEL_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"oTTMethod[FUNCTION_DECLARATION]{public void oTTMethod(), Lcamelcase.SuperClass;, ()V, oTTMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseType1() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseType1() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[3];
+		this.workingCopies = new IJavaScriptUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -362,18 +362,18 @@ public void testCamelCaseType1() throws JavaModelException {
 				"FFFTest[TYPE_REF]{FFFTest, camelcase, Lcamelcase.FFFTest;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseType2() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseType2() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[3];
+		this.workingCopies = new IJavaScriptUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -404,18 +404,18 @@ public void testCamelCaseType2() throws JavaModelException {
 				"FFFTest[TYPE_REF]{FFFTest, camelcase, Lcamelcase.FFFTest;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseType3() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseType3() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 			
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -439,19 +439,19 @@ public void testCamelCaseType3() throws JavaModelException {
 				"FFFTest[TYPE_REF]{FFFTest, camelcase, Lcamelcase.FFFTest;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseType4() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseType4() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[3];
+		this.workingCopies = new IJavaScriptUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -487,18 +487,18 @@ public void testCamelCaseType4() throws JavaModelException {
 				"Member2.FFFTest[TYPE_REF]{camelcase.Member2.FFFTest, camelcase, Lcamelcase.Member2$FFFTest;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void testCamelCaseType5() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testCamelCaseType5() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -522,12 +522,12 @@ public void testCamelCaseType5() throws JavaModelException {
 				"Test.FoFoFo.FFFTest[TYPE_REF]{FFFTest, camelcase, Lcamelcase.Test$FoFoFo$FFFTest;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef01() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef01() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -575,8 +575,8 @@ public void testCatchClauseExceptionRef01() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef02() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef02() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -625,8 +625,8 @@ public void testCatchClauseExceptionRef02() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef03() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef03() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -676,8 +676,8 @@ public void testCatchClauseExceptionRef03() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef04() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef04() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -725,8 +725,8 @@ public void testCatchClauseExceptionRef04() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef05() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCatchClauseExceptionRef05() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -759,8 +759,8 @@ public void testCatchClauseExceptionRef05() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef06() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCatchClauseExceptionRef06() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -795,8 +795,8 @@ public void testCatchClauseExceptionRef06() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef07() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCatchClauseExceptionRef07() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -833,8 +833,8 @@ public void testCatchClauseExceptionRef07() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef08() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef08() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -883,8 +883,8 @@ public void testCatchClauseExceptionRef08() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef09() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[5];
+public void testCatchClauseExceptionRef09() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -944,8 +944,8 @@ public void testCatchClauseExceptionRef09() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef10() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef10() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -995,8 +995,8 @@ public void testCatchClauseExceptionRef10() throws JavaModelException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
 //IZZBException should not be proposed but to filter this proposal
 //we would need to know subclasses of IZZAException and it's currenlty too costly to compute
-public void testCatchClauseExceptionRef11() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef11() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1044,8 +1044,8 @@ public void testCatchClauseExceptionRef11() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef12() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef12() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1091,8 +1091,8 @@ public void testCatchClauseExceptionRef12() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void testCatchClauseExceptionRef13() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCatchClauseExceptionRef13() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1137,9 +1137,9 @@ public void testCatchClauseExceptionRef13() throws JavaModelException {
 			"IZZBException[TYPE_REF]{IZZBException, test, Ltest.IZZBException;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXCEPTION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void testCatchClauseExceptionRef14() throws JavaModelException {
+public void testCatchClauseExceptionRef14() throws JavaScriptModelException {
 	
-	this.workingCopies = new ICompilationUnit[1];
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1160,11 +1160,11 @@ public void testCatchClauseExceptionRef14() throws JavaModelException {
 		"class IZZException extends Exception {\n" + 
 		"}\n");
 	
-	IJavaProject project = this.workingCopies[0].getJavaProject();
-	String visibilityCheck = project.getOption(JavaCore.CODEASSIST_VISIBILITY_CHECK, true);
+	IJavaScriptProject project = this.workingCopies[0].getJavaScriptProject();
+	String visibilityCheck = project.getOption(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, true);
 	
 	try {
-		project.setOption(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
+		project.setOption(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
 		String str = this.workingCopies[0].getSource();
@@ -1176,12 +1176,12 @@ public void testCatchClauseExceptionRef14() throws JavaModelException {
 				"IZZException[TYPE_REF]{IZZException, test, Ltest.IZZException;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_EXCEPTION + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		project.setOption(JavaCore.CODEASSIST_VISIBILITY_CHECK, visibilityCheck);
+		project.setOption(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, visibilityCheck);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=173907
-public void testCatchClauseExceptionRef15() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void testCatchClauseExceptionRef15() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1225,9 +1225,9 @@ public void testCatchClauseExceptionRef15() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=65737
  */
-public void testCompletion2InterfacesWithSameMethod() throws JavaModelException {
+public void testCompletion2InterfacesWithSameMethod() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "Completion2InterfacesWithSameMethod.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "Completion2InterfacesWithSameMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = "var.meth";
@@ -1238,7 +1238,7 @@ public void testCompletion2InterfacesWithSameMethod() throws JavaModelException 
 			"element:method    completion:method()    relevance:" + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionAbstractMethod1() throws JavaModelException {
+public void testCompletionAbstractMethod1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAbstractMethod1.js",
             "public class CompletionAbstractMethod1 {\n" +
@@ -1264,7 +1264,7 @@ public void testCompletionAbstractMethod1() throws JavaModelException {
             "",
             requestor.getResults());
 }
-public void testCompletionAbstractMethod2() throws JavaModelException {
+public void testCompletionAbstractMethod2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAbstractMethod2.js",
             "public class CompletionAbstractMethod2 {\n" +
@@ -1287,10 +1287,10 @@ public void testCompletionAbstractMethod2() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
     assertResults(
-           "foo[METHOD_REF]{foo(), LCompletionAbstractMethod2$A;, ()V, foo, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED) + "}",
+           "foo[FUNCTION_REF]{foo(), LCompletionAbstractMethod2$A;, ()V, foo, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED) + "}",
            requestor.getResults());
 }
-public void testCompletionAbstractMethod3() throws JavaModelException {
+public void testCompletionAbstractMethod3() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAbstractMethod3.js",
             "public class CompletionAbstractMethod3 {\n" +
@@ -1312,10 +1312,10 @@ public void testCompletionAbstractMethod3() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
     assertResults(
-           "foo[METHOD_REF]{foo(), LCompletionAbstractMethod3$A;, ()V, foo, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED)+"}",
+           "foo[FUNCTION_REF]{foo(), LCompletionAbstractMethod3$A;, ()V, foo, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED)+"}",
            requestor.getResults());
 }
-public void testCompletionAbstractMethod4() throws JavaModelException {
+public void testCompletionAbstractMethod4() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAbstractMethod4.js",
             "public class CompletionAbstractMethod1 {\n" +
@@ -1348,8 +1348,8 @@ public void testCompletionAbstractMethod4() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25578
 */
-public void testCompletionAbstractMethodRelevance1() throws JavaModelException {
-	ICompilationUnit superClass = null;
+public void testCompletionAbstractMethodRelevance1() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionAbstractSuperClass.js",
@@ -1374,9 +1374,9 @@ public void testCompletionAbstractMethodRelevance1() throws JavaModelException {
 	
 		assertResults(
 			"foo[POTENTIAL_METHOD_DECLARATION]{foo, LCompletionAbstractMethodRelevance1;, ()V, foo, null, "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
-			"foo1[METHOD_DECLARATION]{public void foo1(), LCompletionAbstractSuperClass;, ()V, foo1, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
-			"foo3[METHOD_DECLARATION]{public void foo3(), LCompletionAbstractSuperClass;, ()V, foo3, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
-			"foo2[METHOD_DECLARATION]{public void foo2(), LCompletionAbstractSuperClass;, ()V, foo2, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_ABSTRACT_METHOD + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
+			"foo1[FUNCTION_DECLARATION]{public void foo1(), LCompletionAbstractSuperClass;, ()V, foo1, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
+			"foo3[FUNCTION_DECLARATION]{public void foo3(), LCompletionAbstractSuperClass;, ()V, foo3, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
+			"foo2[FUNCTION_DECLARATION]{public void foo2(), LCompletionAbstractSuperClass;, ()V, foo2, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_ABSTRACT_METHOD + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 	} finally {
 		if(superClass != null) {
@@ -1387,8 +1387,8 @@ public void testCompletionAbstractMethodRelevance1() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25578
 */
-public void testCompletionAbstractMethodRelevance2() throws JavaModelException {
-	ICompilationUnit superClass = null;
+public void testCompletionAbstractMethodRelevance2() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperInterface.js",
@@ -1411,8 +1411,8 @@ public void testCompletionAbstractMethodRelevance2() throws JavaModelException {
 	
 		assertResults(
 			"eq[POTENTIAL_METHOD_DECLARATION]{eq, LCompletionAbstractMethodRelevance2;, ()V, eq, null, "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
-			"equals[METHOD_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
-			"eqFoo[METHOD_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperInterface;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_ABSTRACT_METHOD + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
+			"equals[FUNCTION_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
+			"eqFoo[FUNCTION_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperInterface;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_ABSTRACT_METHOD + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 	} finally {
 		if(superClass != null) {
@@ -1420,9 +1420,9 @@ public void testCompletionAbstractMethodRelevance2() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionAfterCase1() throws JavaModelException {
+public void testCompletionAfterCase1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "zz";
@@ -1433,9 +1433,9 @@ public void testCompletionAfterCase1() throws JavaModelException {
 			"element:zzz    completion:zzz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionAfterCase2() throws JavaModelException {
+public void testCompletionAfterCase2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterCase2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "zz";
@@ -1446,8 +1446,8 @@ public void testCompletionAfterCase2() throws JavaModelException {
 			"element:zzz    completion:zzz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionAfterSupercall1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionAfterSupercall1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionAfterSupercall1.js",
 		"public class CompletionAfterSupercall1 extends CompletionAfterSupercall1_1 {\n" +
@@ -1472,12 +1472,12 @@ public void testCompletionAfterSupercall1() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"foo[METHOD_REF]{foo(), LCompletionAfterSupercall1_2;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC+ R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{foo(), LCompletionAfterSupercall1_2;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC+ R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void testCompletionAfterSwitch() throws JavaModelException {
+public void testCompletionAfterSwitch() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterSwitch.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAfterSwitch.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -1488,7 +1488,7 @@ public void testCompletionAfterSwitch() throws JavaModelException {
 			"element:bar    completion:bar()    relevance:" + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_NAME+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionAllMemberTypes() throws JavaModelException {
+public void testCompletionAllMemberTypes() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionAllMemberTypes.js",
             "package test;\n" +
@@ -1517,7 +1517,7 @@ public void testCompletionAllMemberTypes() throws JavaModelException {
 			"CompletionAllMemberTypes.Member1.Member2[TYPE_REF]{Member2, test, Ltest.CompletionAllMemberTypes$Member1$Member2;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             requestor.getResults());
 }
-public void testCompletionAllMemberTypes2() throws JavaModelException {
+public void testCompletionAllMemberTypes2() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionAllMemberTypes2.js",
             "package test;\n" +
@@ -1555,7 +1555,7 @@ public void testCompletionAllMemberTypes2() throws JavaModelException {
 			"CompletionAllMemberTypes2.Member1.Member5[TYPE_REF]{Member5, test, Ltest.CompletionAllMemberTypes2$Member1$Member5;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             requestor.getResults());
 }
-public void testCompletionAllMemberTypes3() throws JavaModelException {
+public void testCompletionAllMemberTypes3() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionAllMemberTypes2.js",
             "package test;\n" +
@@ -1592,8 +1592,8 @@ public void testCompletionAllMemberTypes3() throws JavaModelException {
 			"CompletionAllMemberTypes2.Member1.Member5[TYPE_REF]{Member5, test, Ltest.CompletionAllMemberTypes2$Member1$Member5;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             requestor.getResults());
 }
-public void testCompletionAllMemberTypes4() throws JavaModelException {
-	ICompilationUnit anInterface = null;
+public void testCompletionAllMemberTypes4() throws JavaScriptModelException {
+	IJavaScriptUnit anInterface = null;
 	try {
 		anInterface = getWorkingCopy(
 	            "/Completion/src/test/AnInterface.js",
@@ -1663,13 +1663,13 @@ public void testCompletionAllMemberTypes4() throws JavaModelException {
 	}
 }
 
-public void testCompletionAllMemberTypes5() throws JavaModelException {
-	ICompilationUnit aType = null;
-	Hashtable oldCurrentOptions = JavaCore.getOptions();
+public void testCompletionAllMemberTypes5() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
+	Hashtable oldCurrentOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldCurrentOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		aType = getWorkingCopy(
 	            "/Completion/src/test/AType.js",
@@ -1712,16 +1712,16 @@ public void testCompletionAllMemberTypes5() throws JavaModelException {
 		if(aType != null) {
 			aType.discardWorkingCopy();
 		}
-		JavaCore.setOptions(oldCurrentOptions);
+		JavaScriptCore.setOptions(oldCurrentOptions);
 	}
 }
 
-public void testCompletionAllMemberTypes6() throws JavaModelException {
-	Hashtable oldCurrentOptions = JavaCore.getOptions();
+public void testCompletionAllMemberTypes6() throws JavaScriptModelException {
+	Hashtable oldCurrentOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldCurrentOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 	    this.wc = getWorkingCopy(
 	            "/Completion/src/test/CompletionAllMemberTypes6.js",
@@ -1751,16 +1751,16 @@ public void testCompletionAllMemberTypes6() throws JavaModelException {
 	            "AType.Member1[TYPE_REF]{test.AType.Member1, test, Ltest.AType$Member1;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 	            requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldCurrentOptions);
+		JavaScriptCore.setOptions(oldCurrentOptions);
 	}
 }
 
-public void testCompletionAllMemberTypes7() throws JavaModelException {
-	Hashtable oldCurrentOptions = JavaCore.getOptions();
+public void testCompletionAllMemberTypes7() throws JavaScriptModelException {
+	Hashtable oldCurrentOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldCurrentOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 	    this.wc = getWorkingCopy(
 	            "/Completion/src/test/AType.js",
@@ -1790,13 +1790,13 @@ public void testCompletionAllMemberTypes7() throws JavaModelException {
 				"AType.Member1[TYPE_REF]{Member1, test, Ltest.AType$Member1;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 	            requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldCurrentOptions);
+		JavaScriptCore.setOptions(oldCurrentOptions);
 	}
 }
 
-public void testCompletionAllocationExpressionIsParent1() throws JavaModelException {
+public void testCompletionAllocationExpressionIsParent1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -1811,7 +1811,7 @@ public void testCompletionAllocationExpressionIsParent1() throws JavaModelExcept
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionAllocationExpressionIsParent2() throws JavaModelException {
+public void testCompletionAllocationExpressionIsParent2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAllocationExpressionIsParent2.js",
             "public class CompletionAllocationExpressionIsParent2 {\n" +
@@ -1848,7 +1848,7 @@ public void testCompletionAllocationExpressionIsParent2() throws JavaModelExcept
             requestor.getResults());
 }
 
-public void testCompletionAllocationExpressionIsParent3() throws JavaModelException {
+public void testCompletionAllocationExpressionIsParent3() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAllocationExpressionIsParent3.js",
             "public class CompletionAllocationExpressionIsParent3 {\n" +
@@ -1885,9 +1885,9 @@ public void testCompletionAllocationExpressionIsParent3() throws JavaModelExcept
             requestor.getResults());
 }
 
-public void testCompletionAllocationExpressionIsParent4() throws JavaModelException {
+public void testCompletionAllocationExpressionIsParent4() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent4.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -1903,9 +1903,9 @@ public void testCompletionAllocationExpressionIsParent4() throws JavaModelExcept
 		requestor.getResults());
 }
 
-public void testCompletionAllocationExpressionIsParent5() throws JavaModelException {
+public void testCompletionAllocationExpressionIsParent5() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent5.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAllocationExpressionIsParent5.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -1922,7 +1922,7 @@ public void testCompletionAllocationExpressionIsParent5() throws JavaModelExcept
 }
 
 
-public void testCompletionAllocationExpressionIsParent6() throws JavaModelException {
+public void testCompletionAllocationExpressionIsParent6() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAllocationExpressionIsParent6.js",
             "public class CompletionAllocationExpressionIsParent6 {\n" +
@@ -1961,10 +1961,10 @@ public void testCompletionAllocationExpressionIsParent6() throws JavaModelExcept
             requestor.getResults());
 }
 
-public void testCompletionAmbiguousFieldName() throws JavaModelException {
+public void testCompletionAmbiguousFieldName() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xBa";
@@ -1978,7 +1978,7 @@ public void testCompletionAmbiguousFieldName() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionAmbiguousFieldName2() throws JavaModelException {
+public void testCompletionAmbiguousFieldName2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionAmbiguousFieldName2.js",
             "public class CompletionAmbiguousFieldName2 {\n"+
@@ -2003,10 +2003,10 @@ public void testCompletionAmbiguousFieldName2() throws JavaModelException {
             requestor.getResults());
 }
 
-public void testCompletionAmbiguousFieldName3() throws JavaModelException {
+public void testCompletionAmbiguousFieldName3() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xBa";
@@ -2019,10 +2019,10 @@ public void testCompletionAmbiguousFieldName3() throws JavaModelException {
 		"element:xBar    completion:xBar    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionAmbiguousFieldName4() throws JavaModelException {
+public void testCompletionAmbiguousFieldName4() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName4.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousFieldName4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xBa";
@@ -2034,9 +2034,9 @@ public void testCompletionAmbiguousFieldName4() throws JavaModelException {
 		"element:xBar    completion:xBar    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionAmbiguousType() throws JavaModelException {
+public void testCompletionAmbiguousType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ABC";
@@ -2049,9 +2049,9 @@ public void testCompletionAmbiguousType() throws JavaModelException {
 		"element:ABC    completion:p2.ABC    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionAmbiguousType2() throws JavaModelException {
+public void testCompletionAmbiguousType2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAmbiguousType2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ABC";
@@ -2065,9 +2065,9 @@ public void testCompletionAmbiguousType2() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionArgumentName() throws JavaModelException {
+public void testCompletionArgumentName() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArgumentName.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArgumentName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ClassWithComplexName ";
@@ -2083,9 +2083,9 @@ public void testCompletionArgumentName() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionArrayAccess1() throws JavaModelException {
+public void testCompletionArrayAccess1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArrayAccess1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArrayAccess1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzz";
@@ -2099,7 +2099,7 @@ public void testCompletionArrayAccess1() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84690
-public void testCompletionArrayClone() throws JavaModelException {
+public void testCompletionArrayClone() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionArrayClone.js",
             "package test;\n" +
@@ -2118,12 +2118,12 @@ public void testCompletionArrayClone() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
     assertResults(
-            "clone[METHOD_REF]{clone(), [J, ()Ljava.lang.Object;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+            "clone[FUNCTION_REF]{clone(), [J, ()Ljava.lang.Object;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
             requestor.getResults());
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84690
-public void testCompletionArrayLength() throws JavaModelException {
+public void testCompletionArrayLength() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionArrayLength.js",
             "package test;\n" +
@@ -2146,9 +2146,9 @@ public void testCompletionArrayLength() throws JavaModelException {
             requestor.getResults());
 }
 
-public void testCompletionArraysCloneMethod() throws JavaModelException {
+public void testCompletionArraysCloneMethod() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArraysCloneMethod.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionArraysCloneMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = ".cl";
@@ -2160,9 +2160,9 @@ public void testCompletionArraysCloneMethod() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionAssignmentInMethod1() throws JavaModelException {
+public void testCompletionAssignmentInMethod1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2178,9 +2178,9 @@ public void testCompletionAssignmentInMethod1() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionAssignmentInMethod2() throws JavaModelException {
+public void testCompletionAssignmentInMethod2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2196,9 +2196,9 @@ public void testCompletionAssignmentInMethod2() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionAssignmentInMethod3() throws JavaModelException {
+public void testCompletionAssignmentInMethod3() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -2211,9 +2211,9 @@ public void testCompletionAssignmentInMethod3() throws JavaModelException {
 }
 
 
-public void testCompletionAssignmentInMethod4() throws JavaModelException {
+public void testCompletionAssignmentInMethod4() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod4.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionAssignmentInMethod4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -2226,7 +2226,7 @@ public void testCompletionAssignmentInMethod4() throws JavaModelException {
 }
 
 
-public void testCompletionBasicAnonymousDeclaration1() throws JavaModelException {
+public void testCompletionBasicAnonymousDeclaration1() throws JavaScriptModelException {
 	CompletionResult result = complete(
 			"/Completion/src3/test0000/CompletionBasicCompletionContext.js",
 			"public class CompletionBasicAnonymousDeclaration1 {\n"+
@@ -2243,11 +2243,11 @@ public void testCompletionBasicAnonymousDeclaration1() throws JavaModelException
 	
 	assertResults(
 			"Object[ANONYMOUS_CLASS_DECLARATION]{, Ljava.lang.Object;, ()V, null, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"Object[METHOD_REF<CONSTRUCTOR>]{, Ljava.lang.Object;, ()V, Object, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
+			"Object[FUNCTION_REF<CONSTRUCTOR>]{, Ljava.lang.Object;, ()V, Object, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			result.proposals);
 }
 
-public void testCompletionBasicCompletionContext() throws JavaModelException {
+public void testCompletionBasicCompletionContext() throws JavaScriptModelException {
 	CompletionResult result = complete(
 			"/Completion/src3/test0000/CompletionBasicCompletionContext.js",
 			"package test0000;\n" +
@@ -2269,9 +2269,9 @@ public void testCompletionBasicCompletionContext() throws JavaModelException {
 			result.proposals);
 }
 
-public void testCompletionBasicField1() throws JavaModelException {
+public void testCompletionBasicField1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicField1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicField1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzvar";
@@ -2283,9 +2283,9 @@ public void testCompletionBasicField1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionBasicKeyword1() throws JavaModelException {
+public void testCompletionBasicKeyword1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicKeyword1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicKeyword1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "whil";
@@ -2297,9 +2297,9 @@ public void testCompletionBasicKeyword1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionBasicLocalVariable1() throws JavaModelException {
+public void testCompletionBasicLocalVariable1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicLocalVariable1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicLocalVariable1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzvar";
@@ -2311,9 +2311,9 @@ public void testCompletionBasicLocalVariable1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionBasicMethod1() throws JavaModelException {
+public void testCompletionBasicMethod1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethod1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzfo";
@@ -2321,13 +2321,13 @@ public void testCompletionBasicMethod1() throws JavaModelException {
 	cu.codeComplete(cursorLocation, requestor);
 
 	assertResults(
-			"zzfoo[METHOD_REF]{zzfoo(), LCompletionBasicMethod1;, ()V, zzfoo, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+			"zzfoo[FUNCTION_REF]{zzfoo(), LCompletionBasicMethod1;, ()V, zzfoo, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 
-public void testCompletionBasicMethodDeclaration1() throws JavaModelException {
+public void testCompletionBasicMethodDeclaration1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethodDeclaration1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicMethodDeclaration1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "equals";
@@ -2336,13 +2336,13 @@ public void testCompletionBasicMethodDeclaration1() throws JavaModelException {
 
 	assertResults(
 			"equals[POTENTIAL_METHOD_DECLARATION]{equals, LCompletionBasicMethodDeclaration1;, ()V, equals, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"equals[METHOD_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_EXACT_NAME + R_NON_RESTRICTED) + "}",
+			"equals[FUNCTION_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_EXACT_NAME + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 
-public void testCompletionBasicPackage1() throws JavaModelException {
+public void testCompletionBasicPackage1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPackage1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPackage1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "java.lan";
@@ -2355,9 +2355,9 @@ public void testCompletionBasicPackage1() throws JavaModelException {
 }
 
 
-public void testCompletionBasicPotentialMethodDeclaration1() throws JavaModelException {
+public void testCompletionBasicPotentialMethodDeclaration1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPotentialMethodDeclaration1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicPotentialMethodDeclaration1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zzpot";
@@ -2370,9 +2370,9 @@ public void testCompletionBasicPotentialMethodDeclaration1() throws JavaModelExc
 }
 
 
-public void testCompletionBasicType1() throws JavaModelException {
+public void testCompletionBasicType1() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicType1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBasicType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -2384,8 +2384,8 @@ public void testCompletionBasicType1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionBasicVariableDeclaration1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionBasicVariableDeclaration1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionBasicVariableDeclaration1.js",
 		"public class CompletionBasicVariableDeclaration1 {\n"+
@@ -2403,9 +2403,9 @@ public void testCompletionBasicVariableDeclaration1() throws JavaModelException 
 		requestor.getResults());
 }
 
-public void testCompletionBinaryOperator1() throws JavaModelException {
+public void testCompletionBinaryOperator1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2420,9 +2420,9 @@ public void testCompletionBinaryOperator1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionBinaryOperator2() throws JavaModelException {
+public void testCompletionBinaryOperator2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2437,9 +2437,9 @@ public void testCompletionBinaryOperator2() throws JavaModelException {
 }
 
 
-public void testCompletionBinaryOperator3() throws JavaModelException {
+public void testCompletionBinaryOperator3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionBinaryOperator3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2457,9 +2457,9 @@ public void testCompletionBinaryOperator3() throws JavaModelException {
 /**
  * Ensures that completion is not case sensitive
  */
-public void testCompletionCaseInsensitive() throws JavaModelException {
+public void testCompletionCaseInsensitive() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitive.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitive.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Fiel";
@@ -2475,9 +2475,9 @@ public void testCompletionCaseInsensitive() throws JavaModelException {
 /**
  * Complete a package in a case insensitive way
  */
-public void testCompletionCaseInsensitivePackage() throws JavaModelException {
+public void testCompletionCaseInsensitivePackage() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitivePackage.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCaseInsensitivePackage.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ja";
@@ -2495,9 +2495,9 @@ public void testCompletionCaseInsensitivePackage() throws JavaModelException {
 }
 
 
-public void testCompletionCastIsParent1() throws JavaModelException {
+public void testCompletionCastIsParent1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2529,9 +2529,9 @@ public void testCompletionCastIsParent1() throws JavaModelException {
 }
 
 
-public void testCompletionCastIsParent2() throws JavaModelException {
+public void testCompletionCastIsParent2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCastIsParent2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xx";
@@ -2551,8 +2551,8 @@ public void testCompletionCastIsParent2() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionCatchArgumentName() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionCatchArgumentName() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionCatchArgumentName.js",
 		"public class CompletionCatchArgumentName {\n"+
@@ -2574,19 +2574,19 @@ public void testCompletionCatchArgumentName() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionCatchArgumentName2() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
+public void testCompletionCatchArgumentName2() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
 	
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_ARGUMENT_PREFIXES);
-	options.put(JavaCore.CODEASSIST_ARGUMENT_PREFIXES,"arg"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"loc"); //$NON-NLS-1$
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_ARGUMENT_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_ARGUMENT_PREFIXES,"arg"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"loc"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 	
 	try {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCatchArgumentName2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionCatchArgumentName2.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "Exception ";
@@ -2598,15 +2598,15 @@ public void testCompletionCatchArgumentName2() throws JavaModelException {
 			"element:locException    completion:locException    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NAME_FIRST_PREFIX+ R_NON_RESTRICTED),
 			requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_ARGUMENT_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_ARGUMENT_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 
-public void testCompletionClassLiteralAfterAnonymousType1() throws JavaModelException {
+public void testCompletionClassLiteralAfterAnonymousType1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionClassLiteralAfterAnonymousType1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionClassLiteralAfterAnonymousType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "double.";
@@ -2618,9 +2618,9 @@ public void testCompletionClassLiteralAfterAnonymousType1() throws JavaModelExce
 		requestor.getResults());
 }
 
-public void testCompletionConditionalExpression1() throws JavaModelException {
+public void testCompletionConditionalExpression1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2635,9 +2635,9 @@ public void testCompletionConditionalExpression1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionConditionalExpression2() throws JavaModelException {
+public void testCompletionConditionalExpression2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2652,9 +2652,9 @@ public void testCompletionConditionalExpression2() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionConditionalExpression3() throws JavaModelException {
+public void testCompletionConditionalExpression3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConditionalExpression3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -2673,9 +2673,9 @@ public void testCompletionConditionalExpression3() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=24939
 */
-public void testCompletionConstructorForAnonymousType() throws JavaModelException {
+public void testCompletionConstructorForAnonymousType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConstructorForAnonymousType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionConstructorForAnonymousType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "TypeWithConstructor(";
@@ -2687,9 +2687,9 @@ public void testCompletionConstructorForAnonymousType() throws JavaModelExceptio
 		requestor.getResults());
 }
 
-public void testCompletionEmptyToken1() throws JavaModelException {
+public void testCompletionEmptyToken1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyToken1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyToken1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -2735,7 +2735,7 @@ public void testCompletionEmptyToken1() throws JavaModelException {
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=100808
-public void testCompletionEmptyToken2() throws JavaModelException {
+public void testCompletionEmptyToken2() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/testCompletionEmptyToken2/Test.js",
             "package testCompletionEmptyToken2.");
@@ -2763,7 +2763,7 @@ public void testCompletionEmptyToken2() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25221
 */
-public void testCompletionEmptyTypeName1() throws JavaModelException {
+public void testCompletionEmptyTypeName1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionEmptyTypeName1.js",
             "public class CompletionEmptyTypeName1 {\n"+
@@ -2794,9 +2794,9 @@ public void testCompletionEmptyTypeName1() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25221
 */
-public void testCompletionEmptyTypeName2() throws JavaModelException {
+public void testCompletionEmptyTypeName2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName2.js");
 
 	String str = cu.getSource();
 	String completeBehind = " = ";
@@ -2843,9 +2843,9 @@ public void testCompletionEmptyTypeName2() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=41643
 */
-public void testCompletionEmptyTypeName3() throws JavaModelException {
+public void testCompletionEmptyTypeName3() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionEmptyTypeName3.js");
 
 	String str = cu.getSource();
 	String completeBehind = " = ";
@@ -2894,9 +2894,9 @@ public void testCompletionEmptyTypeName3() throws JavaModelException {
 /**
  * Complete at end of file.
  */
-public void testCompletionEndOfCompilationUnit() throws JavaModelException {
+public void testCompletionEndOfCompilationUnit() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src", "", "CompletionEndOfCompilationUnit.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src", "", "CompletionEndOfCompilationUnit.js");
 	cu.codeComplete(cu.getSourceRange().getOffset() + cu.getSourceRange().getLength(), requestor);
 	assertEquals(
 		"should have two methods of 'foo'", 
@@ -2907,9 +2907,9 @@ public void testCompletionEndOfCompilationUnit() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=66570
  */
-public void testCompletionExactNameCaseInsensitive() throws JavaModelException {
+public void testCompletionExactNameCaseInsensitive() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExactNameCaseInsensitive.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExactNameCaseInsensitive.js");
 
 	String str = cu.getSource();
 	String completeBehind = "(compleTionexactnamecaseInsensitive";
@@ -2924,9 +2924,9 @@ public void testCompletionExactNameCaseInsensitive() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25820
 */
-public void testCompletionExpectedTypeIsNotValid() throws JavaModelException {
+public void testCompletionExpectedTypeIsNotValid() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExpectedTypeIsNotValid.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionExpectedTypeIsNotValid.js");
 
 	String str = cu.getSource();
 	String completeBehind = "new U";
@@ -2938,8 +2938,8 @@ public void testCompletionExpectedTypeIsNotValid() throws JavaModelException {
 		requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=95505
-public void testCompletionExpectedTypeOnEmptyToken1() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionExpectedTypeOnEmptyToken1() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		
 		aType = getWorkingCopy(
@@ -2987,8 +2987,8 @@ public void testCompletionExpectedTypeOnEmptyToken1() throws JavaModelException 
 
 
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=95505
-public void testCompletionExpectedTypeOnEmptyToken3() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionExpectedTypeOnEmptyToken3() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/test/AType.js",
@@ -3039,8 +3039,8 @@ public void testCompletionExpectedTypeOnEmptyToken3() throws JavaModelException 
 
 
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=95505
-public void testCompletionExpectedTypeOnEmptyToken4() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionExpectedTypeOnEmptyToken4() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/test/AInterface.js",
@@ -3088,9 +3088,9 @@ public void testCompletionExpectedTypeOnEmptyToken4() throws JavaModelException 
 }
 
 
-public void testCompletionFieldInitializer1() throws JavaModelException {
+public void testCompletionFieldInitializer1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -3107,9 +3107,9 @@ public void testCompletionFieldInitializer1() throws JavaModelException {
 }
 
 
-public void testCompletionFieldInitializer2() throws JavaModelException {
+public void testCompletionFieldInitializer2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -3126,9 +3126,9 @@ public void testCompletionFieldInitializer2() throws JavaModelException {
 }
 
 
-public void testCompletionFieldInitializer3() throws JavaModelException {
+public void testCompletionFieldInitializer3() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -3141,9 +3141,9 @@ public void testCompletionFieldInitializer3() throws JavaModelException {
 }
 
 
-public void testCompletionFieldInitializer4() throws JavaModelException {
+public void testCompletionFieldInitializer4() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer4.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldInitializer4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -3156,9 +3156,9 @@ public void testCompletionFieldInitializer4() throws JavaModelException {
 }
 
 
-public void testCompletionFieldName() throws JavaModelException {
+public void testCompletionFieldName() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldName.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFieldName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ClassWithComplexName ";
@@ -3178,7 +3178,7 @@ public void testCompletionFieldName() throws JavaModelException {
 /**
  * Complete the type "A" from "new A".
  */
-public void testCompletionFindClass() throws JavaModelException {
+public void testCompletionFindClass() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindClass.js",
             "public class CompletionFindClass {\n" +
@@ -3207,9 +3207,9 @@ public void testCompletionFindClass() throws JavaModelException {
 /**
  * The same type must be find only once
  */
-public void testCompletionFindClass2() throws JavaModelException {
+public void testCompletionFindClass2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindClass2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindClass2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "PX";
@@ -3226,9 +3226,9 @@ public void testCompletionFindClass2() throws JavaModelException {
 /**
  * Complete the type "Default" in the default package example.
  */
-public void testCompletionFindClassDefaultPackage() throws JavaModelException {
+public void testCompletionFindClassDefaultPackage() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionDefaultPackage.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionDefaultPackage.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Def";
@@ -3245,7 +3245,7 @@ public void testCompletionFindClassDefaultPackage() throws JavaModelException {
 /**
  * Complete the constructor "CompletionFindConstructor" from "new CompletionFindConstructor(".
  */
-public void testCompletionFindConstructor() throws JavaModelException {
+public void testCompletionFindConstructor() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindConstructor.js",
             "public class CompletionFindConstructor {\n"+
@@ -3272,7 +3272,7 @@ public void testCompletionFindConstructor() throws JavaModelException {
     
    assertResults(
 			"CompletionFindConstructor[ANONYMOUS_CLASS_DECLARATION]{, LCompletionFindConstructor;, (I)V, null, (i), "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
-			"CompletionFindConstructor[METHOD_REF<CONSTRUCTOR>]{, LCompletionFindConstructor;, (I)V, CompletionFindConstructor, (i), "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}",
+			"CompletionFindConstructor[FUNCTION_REF<CONSTRUCTOR>]{, LCompletionFindConstructor;, (I)V, CompletionFindConstructor, (i), "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 
@@ -3280,7 +3280,7 @@ public void testCompletionFindConstructor() throws JavaModelException {
 /**
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78801
  */
-public void testCompletionFindConstructor2() throws JavaModelException {
+public void testCompletionFindConstructor2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindConstructor2.js",
             "import zconstructors.*;\n"+
@@ -3303,14 +3303,14 @@ public void testCompletionFindConstructor2() throws JavaModelException {
     
     assertEquals(
 			"Constructor2[ANONYMOUS_CLASS_DECLARATION]{, Lzconstructors.Constructor2;, ()V, null, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"Constructor2[METHOD_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor2;, ()V, Constructor2, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
+			"Constructor2[FUNCTION_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor2;, ()V, Constructor2, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 
 /**
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78801
  */
-public void testCompletionFindConstructor3() throws JavaModelException {
+public void testCompletionFindConstructor3() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindConstructor3.js",
             "import zconstructors.*;\n"+
@@ -3333,14 +3333,14 @@ public void testCompletionFindConstructor3() throws JavaModelException {
     
     assertEquals(
 			"Constructor3[ANONYMOUS_CLASS_DECLARATION]{, Lzconstructors.Constructor3;, ()V, null, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"Constructor3[METHOD_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor3;, ()V, Constructor3, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
+			"Constructor3[FUNCTION_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor3;, ()V, Constructor3, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 
 /**
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78801
  */
-public void testCompletionFindConstructor4() throws JavaModelException {
+public void testCompletionFindConstructor4() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindConstructor4.js",
             "import zconstructors.*;\n"+
@@ -3363,14 +3363,14 @@ public void testCompletionFindConstructor4() throws JavaModelException {
     
 	assertEquals(
 			"Constructor4[ANONYMOUS_CLASS_DECLARATION]{, Lzconstructors.Constructor4;, (I)V, null, (i), " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"Constructor4[METHOD_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor4;, (I)V, Constructor4, (i), " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
+			"Constructor4[FUNCTION_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor4;, (I)V, Constructor4, (i), " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 
 /**
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=78801
  */
-public void testCompletionFindConstructor5() throws JavaModelException {
+public void testCompletionFindConstructor5() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindConstructor5.js",
             "import zconstructors.*;\n"+
@@ -3393,16 +3393,16 @@ public void testCompletionFindConstructor5() throws JavaModelException {
     
 	assertEquals(
 			"Constructor5[ANONYMOUS_CLASS_DECLARATION]{, Lzconstructors.Constructor5;, (I)V, null, (arg0), " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"Constructor5[METHOD_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor5;, (I)V, Constructor5, (arg0), " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
+			"Constructor5[FUNCTION_REF<CONSTRUCTOR>]{, Lzconstructors.Constructor5;, (I)V, Constructor5, (arg0), " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 
 /**
  * Complete the exception "Exception" in a catch clause.
  */
-public void testCompletionFindExceptions1() throws JavaModelException {
+public void testCompletionFindExceptions1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -3418,9 +3418,9 @@ public void testCompletionFindExceptions1() throws JavaModelException {
 /**
  * Complete the exception "Exception" in a throws clause.
  */
-public void testCompletionFindExceptions2() throws JavaModelException {
+public void testCompletionFindExceptions2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindException2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -3436,9 +3436,9 @@ public void testCompletionFindExceptions2() throws JavaModelException {
 /**
  * Complete the field "var" from "va";
  */
-public void testCompletionFindField1() throws JavaModelException {
+public void testCompletionFindField1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "va";
@@ -3455,9 +3455,9 @@ public void testCompletionFindField1() throws JavaModelException {
 /**
  * Complete the field "var" from "this.va";
  */
-public void testCompletionFindField2() throws JavaModelException {
+public void testCompletionFindField2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "va";
@@ -3470,9 +3470,9 @@ public void testCompletionFindField2() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionFindField3() throws JavaModelException {
+public void testCompletionFindField3() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindField3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "b.ba";
@@ -3487,7 +3487,7 @@ public void testCompletionFindField3() throws JavaModelException {
 /**
  * Complete the import, "import pac"
  */
-public void testCompletionFindImport1() throws JavaModelException {
+public void testCompletionFindImport1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindImport1.js",
             "import pac\n"+
@@ -3511,7 +3511,7 @@ public void testCompletionFindImport1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionFindImport2() throws JavaModelException {
+public void testCompletionFindImport2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindImport2.js",
             "import pack1.P\n"+
@@ -3536,9 +3536,9 @@ public void testCompletionFindImport2() throws JavaModelException {
 /**
  * Complete the local variable "var";
  */
-public void testCompletionFindLocalVariable() throws JavaModelException {
+public void testCompletionFindLocalVariable() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindLocalVariable.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindLocalVariable.js");
 
 	String str = cu.getSource();
 	String completeBehind = "va";
@@ -3550,7 +3550,7 @@ public void testCompletionFindLocalVariable() throws JavaModelException {
 		requestor.getResults());	
 }
 
-public void testCompletionFindMemberType1() throws JavaModelException {
+public void testCompletionFindMemberType1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindMemberType1.js",
             "interface A1 {\n"+
@@ -3579,7 +3579,7 @@ public void testCompletionFindMemberType1() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionFindMemberType2() throws JavaModelException {
+public void testCompletionFindMemberType2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionPrefixMethodName2.js",
             "interface A2 {\n"+
@@ -3610,9 +3610,9 @@ public void testCompletionFindMemberType2() throws JavaModelException {
 /**
  * Complete the method call "a.foobar" from "a.fooba";
  */
-public void testCompletionFindMethod1() throws JavaModelException {
+public void testCompletionFindMethod1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3627,10 +3627,10 @@ public void testCompletionFindMethod1() throws JavaModelException {
 /**
  * Too much Completion match on interface
  */
-public void testCompletionFindMethod2() throws JavaModelException {
+public void testCompletionFindMethod2() throws JavaScriptModelException {
 	
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethod2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3646,9 +3646,9 @@ public void testCompletionFindMethod2() throws JavaModelException {
 /**
  * Complete the method call "foobar" from "fooba";
  */
-public void testCompletionFindMethodInThis() throws JavaModelException {
+public void testCompletionFindMethodInThis() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInThis.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInThis.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3664,9 +3664,9 @@ public void testCompletionFindMethodInThis() throws JavaModelException {
  * Complete the method call "foobar" from "fooba".  The compilation
  * unit simulates typing in process; ie it has incomplete structure/syntax errors.
  */
-public void testCompletionFindMethodWhenInProcess() throws JavaModelException {
+public void testCompletionFindMethodWhenInProcess() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInProcess.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindMethodInProcess.js");
 
 	String str = cu.getSource();
 	String completeBehind = "fooba";
@@ -3679,9 +3679,9 @@ public void testCompletionFindMethodWhenInProcess() throws JavaModelException {
 	cu.close();
 }
 
-public void testCompletionFindSecondaryType1() throws JavaModelException {
+public void testCompletionFindSecondaryType1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindSecondaryType1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindSecondaryType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "/**/Secondary";
@@ -3694,7 +3694,7 @@ public void testCompletionFindSecondaryType1() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionFindSuperInterface() throws JavaModelException {
+public void testCompletionFindSuperInterface() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionFindSuperInterface.js",
             "public class CompletionFindSuperInterface implements SuperInterface {\n"+
@@ -3715,9 +3715,9 @@ public void testCompletionFindSuperInterface() throws JavaModelException {
 /**
  * Complete the field "bar" from "this.ba"
  */
-public void testCompletionFindThisDotField() throws JavaModelException {
+public void testCompletionFindThisDotField() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.js");
 
 	String str = cu.getSource();
 	String completeBehind = "this.ba";
@@ -3729,8 +3729,8 @@ public void testCompletionFindThisDotField() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void testCompletionImportedType1() throws JavaModelException {
-    this.workingCopies = new ICompilationUnit[2];
+public void testCompletionImportedType1() throws JavaScriptModelException {
+    this.workingCopies = new IJavaScriptUnit[2];
     this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/imported/ZZZZ.js",
 		"package test.imported;"+
@@ -3757,8 +3757,8 @@ public void testCompletionImportedType1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionImportedType2() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCompletionImportedType2() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
@@ -3802,8 +3802,8 @@ public void testCompletionImportedType2() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionImportedType3() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[4];
+public void testCompletionImportedType3() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[4];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
@@ -3845,8 +3845,8 @@ public void testCompletionImportedType3() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionImportedType4() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void testCompletionImportedType4() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
@@ -3881,8 +3881,8 @@ public void testCompletionImportedType4() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionImportedType5() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void testCompletionImportedType5() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/imported1/ZZZZ.js",
 		"package test.imported1;"+
@@ -3918,7 +3918,7 @@ public void testCompletionImportedType5() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends1() throws JavaModelException {
+public void testCompletionInsideExtends1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends1.js",
 			"package test;\n" +
@@ -3948,7 +3948,7 @@ public void testCompletionInsideExtends1() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends10() throws JavaModelException {
+public void testCompletionInsideExtends10() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends10.js",
 			"package test;\n" +
@@ -3975,7 +3975,7 @@ public void testCompletionInsideExtends10() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends11() throws JavaModelException {
+public void testCompletionInsideExtends11() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends11.js",
 			"package test;\n" +
@@ -4005,7 +4005,7 @@ public void testCompletionInsideExtends11() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends12() throws JavaModelException {
+public void testCompletionInsideExtends12() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends12.js",
 			"package test;\n" +
@@ -4029,7 +4029,7 @@ public void testCompletionInsideExtends12() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends2() throws JavaModelException {
+public void testCompletionInsideExtends2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends2.js",
 			"package test;\n" +
@@ -4052,7 +4052,7 @@ public void testCompletionInsideExtends2() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends3() throws JavaModelException {
+public void testCompletionInsideExtends3() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends3.js",
 			"package test;\n" +
@@ -4085,7 +4085,7 @@ public void testCompletionInsideExtends3() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends4() throws JavaModelException {
+public void testCompletionInsideExtends4() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends4.js",
 			"package test;\n" +
@@ -4112,7 +4112,7 @@ public void testCompletionInsideExtends4() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends5() throws JavaModelException {
+public void testCompletionInsideExtends5() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends5.js",
 			"package test;\n" +
@@ -4147,7 +4147,7 @@ public void testCompletionInsideExtends5() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends6() throws JavaModelException {
+public void testCompletionInsideExtends6() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends6.js",
 			"package test;\n" +
@@ -4176,7 +4176,7 @@ public void testCompletionInsideExtends6() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends7() throws JavaModelException {
+public void testCompletionInsideExtends7() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends7.js",
 			"package test;\n" +
@@ -4204,7 +4204,7 @@ public void testCompletionInsideExtends7() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends8() throws JavaModelException {
+public void testCompletionInsideExtends8() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends8.js",
 			"package test;\n" +
@@ -4227,7 +4227,7 @@ public void testCompletionInsideExtends8() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=78151
-public void testCompletionInsideExtends9() throws JavaModelException {
+public void testCompletionInsideExtends9() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideExtends9.js",
 			"package test;\n" +
@@ -4260,7 +4260,7 @@ public void testCompletionInsideExtends9() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=82740
-public void testCompletionInsideGenericClass() throws JavaModelException {
+public void testCompletionInsideGenericClass() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionInsideGenericClass.js",
 			"package test;\n" +
@@ -4281,9 +4281,9 @@ public void testCompletionInsideGenericClass() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionInsideStaticMethod() throws JavaModelException {
+public void testCompletionInsideStaticMethod() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInsideStaticMethod.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInsideStaticMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = "doT";
@@ -4294,9 +4294,9 @@ public void testCompletionInsideStaticMethod() throws JavaModelException {
 			"element:doTheThing    completion:doTheThing()    relevance:" + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionInstanceofOperator1() throws JavaModelException {
+public void testCompletionInstanceofOperator1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInstanceofOperator1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionInstanceofOperator1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "x instanceof WWWCompletionInstanceof";
@@ -4311,9 +4311,9 @@ public void testCompletionInstanceofOperator1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionKeywordAbstract1() throws JavaModelException {
+public void testCompletionKeywordAbstract1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4325,9 +4325,9 @@ public void testCompletionKeywordAbstract1() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionKeywordAbstract10() throws JavaModelException {
+public void testCompletionKeywordAbstract10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4339,9 +4339,9 @@ public void testCompletionKeywordAbstract10() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionKeywordAbstract11() throws JavaModelException {
+public void testCompletionKeywordAbstract11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4352,23 +4352,9 @@ public void testCompletionKeywordAbstract11() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract12() throws JavaModelException {
+public void testCompletionKeywordAbstract12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract12.js");
-
-		String str = cu.getSource();
-		String completeBehind = "abs";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-
-public void testCompletionKeywordAbstract13() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract13.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4380,9 +4366,23 @@ public void testCompletionKeywordAbstract13() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionKeywordAbstract14() throws JavaModelException {
+public void testCompletionKeywordAbstract13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract13.js");
+
+		String str = cu.getSource();
+		String completeBehind = "abs";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+
+public void testCompletionKeywordAbstract14() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4394,9 +4394,9 @@ public void testCompletionKeywordAbstract14() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionKeywordAbstract15() throws JavaModelException {
+public void testCompletionKeywordAbstract15() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract15.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4407,9 +4407,9 @@ public void testCompletionKeywordAbstract15() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract16() throws JavaModelException {
+public void testCompletionKeywordAbstract16() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract16.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4420,9 +4420,9 @@ public void testCompletionKeywordAbstract16() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract2() throws JavaModelException {
+public void testCompletionKeywordAbstract2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4433,9 +4433,9 @@ public void testCompletionKeywordAbstract2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract3() throws JavaModelException {
+public void testCompletionKeywordAbstract3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4446,9 +4446,9 @@ public void testCompletionKeywordAbstract3() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract4() throws JavaModelException {
+public void testCompletionKeywordAbstract4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4459,9 +4459,9 @@ public void testCompletionKeywordAbstract4() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract5() throws JavaModelException {
+public void testCompletionKeywordAbstract5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4472,9 +4472,9 @@ public void testCompletionKeywordAbstract5() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract6() throws JavaModelException {
+public void testCompletionKeywordAbstract6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4485,9 +4485,9 @@ public void testCompletionKeywordAbstract6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract7() throws JavaModelException {
+public void testCompletionKeywordAbstract7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4498,9 +4498,9 @@ public void testCompletionKeywordAbstract7() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract8() throws JavaModelException {
+public void testCompletionKeywordAbstract8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4511,9 +4511,9 @@ public void testCompletionKeywordAbstract8() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAbstract9() throws JavaModelException {
+public void testCompletionKeywordAbstract9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAbstract9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "abs";
@@ -4524,9 +4524,9 @@ public void testCompletionKeywordAbstract9() throws JavaModelException {
 			"element:abstract    completion:abstract    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAssert1() throws JavaModelException {
+public void testCompletionKeywordAssert1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4537,9 +4537,9 @@ public void testCompletionKeywordAssert1() throws JavaModelException {
 			"element:assert    completion:assert    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAssert2() throws JavaModelException {
+public void testCompletionKeywordAssert2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4550,9 +4550,9 @@ public void testCompletionKeywordAssert2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordAssert3() throws JavaModelException {
+public void testCompletionKeywordAssert3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4563,9 +4563,9 @@ public void testCompletionKeywordAssert3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordAssert4() throws JavaModelException {
+public void testCompletionKeywordAssert4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4576,9 +4576,9 @@ public void testCompletionKeywordAssert4() throws JavaModelException {
 			"element:assert    completion:assert    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordAssert5() throws JavaModelException {
+public void testCompletionKeywordAssert5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4589,9 +4589,9 @@ public void testCompletionKeywordAssert5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordAssert6() throws JavaModelException {
+public void testCompletionKeywordAssert6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordAssert6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "as";
@@ -4602,9 +4602,9 @@ public void testCompletionKeywordAssert6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordBreak1() throws JavaModelException {
+public void testCompletionKeywordBreak1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4615,9 +4615,9 @@ public void testCompletionKeywordBreak1() throws JavaModelException {
 			"element:break    completion:break    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordBreak2() throws JavaModelException {
+public void testCompletionKeywordBreak2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4628,9 +4628,9 @@ public void testCompletionKeywordBreak2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordBreak3() throws JavaModelException {
+public void testCompletionKeywordBreak3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4641,9 +4641,9 @@ public void testCompletionKeywordBreak3() throws JavaModelException {
 			"element:break    completion:break    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordBreak4() throws JavaModelException {
+public void testCompletionKeywordBreak4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4654,9 +4654,9 @@ public void testCompletionKeywordBreak4() throws JavaModelException {
 			"element:break    completion:break    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordBreak5() throws JavaModelException {
+public void testCompletionKeywordBreak5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4667,9 +4667,9 @@ public void testCompletionKeywordBreak5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordBreak6() throws JavaModelException {
+public void testCompletionKeywordBreak6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordBreak6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "bre";
@@ -4680,9 +4680,9 @@ public void testCompletionKeywordBreak6() throws JavaModelException {
 			"element:break    completion:break    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase1() throws JavaModelException {
+public void testCompletionKeywordCase1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4693,9 +4693,9 @@ public void testCompletionKeywordCase1() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase10() throws JavaModelException {
+public void testCompletionKeywordCase10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4706,9 +4706,9 @@ public void testCompletionKeywordCase10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordCase2() throws JavaModelException {
+public void testCompletionKeywordCase2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4719,9 +4719,9 @@ public void testCompletionKeywordCase2() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase3() throws JavaModelException {
+public void testCompletionKeywordCase3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4732,9 +4732,9 @@ public void testCompletionKeywordCase3() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase4() throws JavaModelException {
+public void testCompletionKeywordCase4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4745,9 +4745,9 @@ public void testCompletionKeywordCase4() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase5() throws JavaModelException {
+public void testCompletionKeywordCase5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4758,9 +4758,9 @@ public void testCompletionKeywordCase5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordCase6() throws JavaModelException {
+public void testCompletionKeywordCase6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4771,9 +4771,9 @@ public void testCompletionKeywordCase6() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase7() throws JavaModelException {
+public void testCompletionKeywordCase7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4784,9 +4784,9 @@ public void testCompletionKeywordCase7() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase8() throws JavaModelException {
+public void testCompletionKeywordCase8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4797,9 +4797,9 @@ public void testCompletionKeywordCase8() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCase9() throws JavaModelException {
+public void testCompletionKeywordCase9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCase9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cas";
@@ -4810,9 +4810,9 @@ public void testCompletionKeywordCase9() throws JavaModelException {
 			"element:case    completion:case    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch1() throws JavaModelException {
+public void testCompletionKeywordCatch1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4823,9 +4823,9 @@ public void testCompletionKeywordCatch1() throws JavaModelException {
 			"element:catch    completion:catch    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch10() throws JavaModelException {
+public void testCompletionKeywordCatch10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4837,9 +4837,9 @@ public void testCompletionKeywordCatch10() throws JavaModelException {
 			"element:catchz    completion:catchz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch2() throws JavaModelException {
+public void testCompletionKeywordCatch2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4850,9 +4850,9 @@ public void testCompletionKeywordCatch2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch3() throws JavaModelException {
+public void testCompletionKeywordCatch3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4863,9 +4863,9 @@ public void testCompletionKeywordCatch3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch4() throws JavaModelException {
+public void testCompletionKeywordCatch4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4876,9 +4876,9 @@ public void testCompletionKeywordCatch4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch5() throws JavaModelException {
+public void testCompletionKeywordCatch5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4890,9 +4890,9 @@ public void testCompletionKeywordCatch5() throws JavaModelException {
 			"element:catchz    completion:catchz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch6() throws JavaModelException {
+public void testCompletionKeywordCatch6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4903,9 +4903,9 @@ public void testCompletionKeywordCatch6() throws JavaModelException {
 			"element:catch    completion:catch    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch7() throws JavaModelException {
+public void testCompletionKeywordCatch7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4916,9 +4916,9 @@ public void testCompletionKeywordCatch7() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch8() throws JavaModelException {
+public void testCompletionKeywordCatch8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4929,9 +4929,9 @@ public void testCompletionKeywordCatch8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordCatch9() throws JavaModelException {
+public void testCompletionKeywordCatch9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordCatch9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cat";
@@ -4942,9 +4942,9 @@ public void testCompletionKeywordCatch9() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordClass1() throws JavaModelException {
+public void testCompletionKeywordClass1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -4955,24 +4955,9 @@ public void testCompletionKeywordClass1() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass10() throws JavaModelException {
+public void testCompletionKeywordClass10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass10.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:Class    completion:Class    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED)+"\n"+
-			"element:ClassWithComplexName    completion:ClassWithComplexName    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED)+"\n"+
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass11() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -4985,9 +4970,9 @@ public void testCompletionKeywordClass11() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass12() throws JavaModelException {
+public void testCompletionKeywordClass11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5000,22 +4985,9 @@ public void testCompletionKeywordClass12() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass13() throws JavaModelException {
+public void testCompletionKeywordClass12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass13.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass14() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5028,9 +5000,22 @@ public void testCompletionKeywordClass14() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass15() throws JavaModelException {
+public void testCompletionKeywordClass13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass15.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass13.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass14() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5043,9 +5028,9 @@ public void testCompletionKeywordClass15() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass16() throws JavaModelException {
+public void testCompletionKeywordClass15() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass16.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5058,74 +5043,9 @@ public void testCompletionKeywordClass16() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass17() throws JavaModelException {
+public void testCompletionKeywordClass16() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass17.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass18() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass18.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass19() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass19.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass2() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass2.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass20() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass20.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass21() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass21.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5138,9 +5058,74 @@ public void testCompletionKeywordClass21() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass22() throws JavaModelException {
+public void testCompletionKeywordClass17() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass22.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass17.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass18() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass18.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass19() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass19.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass2() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass2.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass20() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass20.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass21() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass21.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5153,9 +5138,9 @@ public void testCompletionKeywordClass22() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass23() throws JavaModelException {
+public void testCompletionKeywordClass22() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass23.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass22.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5168,9 +5153,9 @@ public void testCompletionKeywordClass23() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass24() throws JavaModelException {
+public void testCompletionKeywordClass23() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass24.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass23.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5183,48 +5168,9 @@ public void testCompletionKeywordClass24() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass3() throws JavaModelException {
+public void testCompletionKeywordClass24() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass3.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass4() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass4.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass5() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass5.js");
-
-		String str = cu.getSource();
-		String completeBehind = "cla";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordClass6() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass24.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5237,9 +5183,48 @@ public void testCompletionKeywordClass6() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass7() throws JavaModelException {
+public void testCompletionKeywordClass3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass3.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass4() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass4.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass5() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass5.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordClass6() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5252,9 +5237,9 @@ public void testCompletionKeywordClass7() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass8() throws JavaModelException {
+public void testCompletionKeywordClass7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5267,9 +5252,9 @@ public void testCompletionKeywordClass8() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordClass9() throws JavaModelException {
+public void testCompletionKeywordClass8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cla";
@@ -5282,9 +5267,24 @@ public void testCompletionKeywordClass9() throws JavaModelException {
 			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordContinue1() throws JavaModelException {
+public void testCompletionKeywordClass9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordClass9.js");
+
+		String str = cu.getSource();
+		String completeBehind = "cla";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:Class    completion:Class    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED)+"\n"+
+			"element:ClassWithComplexName    completion:ClassWithComplexName    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED)+"\n"+
+			"element:class    completion:class    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordContinue1() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5295,9 +5295,9 @@ public void testCompletionKeywordContinue1() throws JavaModelException {
 			"element:continue    completion:continue    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordContinue2() throws JavaModelException {
+public void testCompletionKeywordContinue2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5308,9 +5308,9 @@ public void testCompletionKeywordContinue2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordContinue3() throws JavaModelException {
+public void testCompletionKeywordContinue3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5321,9 +5321,9 @@ public void testCompletionKeywordContinue3() throws JavaModelException {
 			"element:continue    completion:continue    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordContinue4() throws JavaModelException {
+public void testCompletionKeywordContinue4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordContinue4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "cont";
@@ -5334,9 +5334,9 @@ public void testCompletionKeywordContinue4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault1() throws JavaModelException {
+public void testCompletionKeywordDefault1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5347,9 +5347,9 @@ public void testCompletionKeywordDefault1() throws JavaModelException {
 			"element:default    completion:default    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault10() throws JavaModelException {
+public void testCompletionKeywordDefault10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5360,9 +5360,9 @@ public void testCompletionKeywordDefault10() throws JavaModelException {
 			"element:Default    completion:Default    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault2() throws JavaModelException {
+public void testCompletionKeywordDefault2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5374,9 +5374,9 @@ public void testCompletionKeywordDefault2() throws JavaModelException {
 			"element:default    completion:default    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault3() throws JavaModelException {
+public void testCompletionKeywordDefault3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5388,9 +5388,9 @@ public void testCompletionKeywordDefault3() throws JavaModelException {
 			"element:default    completion:default    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault4() throws JavaModelException {
+public void testCompletionKeywordDefault4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5401,9 +5401,9 @@ public void testCompletionKeywordDefault4() throws JavaModelException {
 			"element:Default    completion:Default    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault5() throws JavaModelException {
+public void testCompletionKeywordDefault5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5414,9 +5414,9 @@ public void testCompletionKeywordDefault5() throws JavaModelException {
 			"element:Default    completion:Default    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault6() throws JavaModelException {
+public void testCompletionKeywordDefault6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5427,9 +5427,9 @@ public void testCompletionKeywordDefault6() throws JavaModelException {
 			"element:default    completion:default    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault7() throws JavaModelException {
+public void testCompletionKeywordDefault7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5441,9 +5441,9 @@ public void testCompletionKeywordDefault7() throws JavaModelException {
 			"element:default    completion:default    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault8() throws JavaModelException {
+public void testCompletionKeywordDefault8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5455,9 +5455,9 @@ public void testCompletionKeywordDefault8() throws JavaModelException {
 			"element:default    completion:default    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDefault9() throws JavaModelException {
+public void testCompletionKeywordDefault9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDefault9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "def";
@@ -5468,9 +5468,9 @@ public void testCompletionKeywordDefault9() throws JavaModelException {
 			"element:Default    completion:Default    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDo1() throws JavaModelException {
+public void testCompletionKeywordDo1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5482,9 +5482,9 @@ public void testCompletionKeywordDo1() throws JavaModelException {
 			"element:double    completion:double    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDo2() throws JavaModelException {
+public void testCompletionKeywordDo2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5495,9 +5495,9 @@ public void testCompletionKeywordDo2() throws JavaModelException {
 			"element:double    completion:double    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDo3() throws JavaModelException {
+public void testCompletionKeywordDo3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5508,9 +5508,9 @@ public void testCompletionKeywordDo3() throws JavaModelException {
 			"element:double    completion:double    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDo4() throws JavaModelException {
+public void testCompletionKeywordDo4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5522,9 +5522,9 @@ public void testCompletionKeywordDo4() throws JavaModelException {
 			"element:double    completion:double    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDo5() throws JavaModelException {
+public void testCompletionKeywordDo5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5535,9 +5535,9 @@ public void testCompletionKeywordDo5() throws JavaModelException {
 			"element:double    completion:double    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordDo6() throws JavaModelException {
+public void testCompletionKeywordDo6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordDo6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "do";
@@ -5548,9 +5548,9 @@ public void testCompletionKeywordDo6() throws JavaModelException {
 			"element:double    completion:double    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordElse1() throws JavaModelException {
+public void testCompletionKeywordElse1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5561,9 +5561,9 @@ public void testCompletionKeywordElse1() throws JavaModelException {
 			"element:else    completion:else    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordElse2() throws JavaModelException {
+public void testCompletionKeywordElse2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5574,9 +5574,9 @@ public void testCompletionKeywordElse2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordElse3() throws JavaModelException {
+public void testCompletionKeywordElse3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5587,9 +5587,9 @@ public void testCompletionKeywordElse3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordElse4() throws JavaModelException {
+public void testCompletionKeywordElse4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5600,9 +5600,9 @@ public void testCompletionKeywordElse4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordElse5() throws JavaModelException {
+public void testCompletionKeywordElse5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5613,9 +5613,9 @@ public void testCompletionKeywordElse5() throws JavaModelException {
 			"element:else    completion:else    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordElse6() throws JavaModelException {
+public void testCompletionKeywordElse6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5626,9 +5626,9 @@ public void testCompletionKeywordElse6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordElse7() throws JavaModelException {
+public void testCompletionKeywordElse7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5639,9 +5639,9 @@ public void testCompletionKeywordElse7() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordElse8() throws JavaModelException {
+public void testCompletionKeywordElse8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordElse8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "els";
@@ -5652,9 +5652,9 @@ public void testCompletionKeywordElse8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends1() throws JavaModelException {
+public void testCompletionKeywordExtends1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5665,9 +5665,9 @@ public void testCompletionKeywordExtends1() throws JavaModelException {
 			"element:extends    completion:extends    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends10() throws JavaModelException {
+public void testCompletionKeywordExtends10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5678,9 +5678,9 @@ public void testCompletionKeywordExtends10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends2() throws JavaModelException {
+public void testCompletionKeywordExtends2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5691,9 +5691,9 @@ public void testCompletionKeywordExtends2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends3() throws JavaModelException {
+public void testCompletionKeywordExtends3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5704,9 +5704,9 @@ public void testCompletionKeywordExtends3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends4() throws JavaModelException {
+public void testCompletionKeywordExtends4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5717,9 +5717,9 @@ public void testCompletionKeywordExtends4() throws JavaModelException {
 			"element:extends    completion:extends    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends5() throws JavaModelException {
+public void testCompletionKeywordExtends5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5730,9 +5730,9 @@ public void testCompletionKeywordExtends5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends6() throws JavaModelException {
+public void testCompletionKeywordExtends6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5743,9 +5743,9 @@ public void testCompletionKeywordExtends6() throws JavaModelException {
 			"element:extends    completion:extends    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends7() throws JavaModelException {
+public void testCompletionKeywordExtends7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5756,9 +5756,9 @@ public void testCompletionKeywordExtends7() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends8() throws JavaModelException {
+public void testCompletionKeywordExtends8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5769,9 +5769,9 @@ public void testCompletionKeywordExtends8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordExtends9() throws JavaModelException {
+public void testCompletionKeywordExtends9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordExtends9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ext";
@@ -5782,9 +5782,9 @@ public void testCompletionKeywordExtends9() throws JavaModelException {
 			"element:extends    completion:extends    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFalse1() throws JavaModelException {
+public void testCompletionKeywordFalse1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5795,9 +5795,9 @@ public void testCompletionKeywordFalse1() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFalse2() throws JavaModelException {
+public void testCompletionKeywordFalse2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5808,9 +5808,9 @@ public void testCompletionKeywordFalse2() throws JavaModelException {
 			"element:false    completion:false    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFalse3() throws JavaModelException {
+public void testCompletionKeywordFalse3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5821,9 +5821,9 @@ public void testCompletionKeywordFalse3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFalse4() throws JavaModelException {
+public void testCompletionKeywordFalse4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFalse4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fal";
@@ -5835,8 +5835,8 @@ public void testCompletionKeywordFalse4() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=95008
-public void testCompletionKeywordFalse5() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionKeywordFalse5() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -5852,25 +5852,25 @@ public void testCompletionKeywordFalse5() throws JavaModelException {
 
 	assertResults(
 			"Test[TYPE_REF]{Test, test, Ltest.Test;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"finalize[METHOD_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"getClass[METHOD_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"hashCode[METHOD_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"notify[METHOD_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"notifyAll[METHOD_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"wait[METHOD_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"clone[FUNCTION_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"finalize[FUNCTION_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"getClass[FUNCTION_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"hashCode[FUNCTION_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"notify[FUNCTION_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"notifyAll[FUNCTION_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
 			"test[FIELD_REF]{test, Ltest.Test;, Z, test, null, " + (R_DEFAULT + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED) + "}\n" +
-			"equals[METHOD_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED) + "}\n" +
+			"equals[FUNCTION_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED) + "}\n" +
 			"false[KEYWORD]{false, null, null, false, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_TRUE_OR_FALSE + R_NON_RESTRICTED) + "}\n" +
 			"true[KEYWORD]{true, null, null, true, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_TRUE_OR_FALSE + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal1() throws JavaModelException {
+public void testCompletionKeywordFinal1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5881,9 +5881,9 @@ public void testCompletionKeywordFinal1() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal10() throws JavaModelException {
+public void testCompletionKeywordFinal10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5894,9 +5894,9 @@ public void testCompletionKeywordFinal10() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal11() throws JavaModelException {
+public void testCompletionKeywordFinal11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5907,9 +5907,9 @@ public void testCompletionKeywordFinal11() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal12() throws JavaModelException {
+public void testCompletionKeywordFinal12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5920,9 +5920,9 @@ public void testCompletionKeywordFinal12() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal13() throws JavaModelException {
+public void testCompletionKeywordFinal13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal13.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5933,9 +5933,9 @@ public void testCompletionKeywordFinal13() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal14() throws JavaModelException {
+public void testCompletionKeywordFinal14() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5947,9 +5947,9 @@ public void testCompletionKeywordFinal14() throws JavaModelException {
 			"element:finalize    completion:protected void finalize() throws Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal15() throws JavaModelException {
+public void testCompletionKeywordFinal15() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal15.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5960,9 +5960,9 @@ public void testCompletionKeywordFinal15() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal16() throws JavaModelException {
+public void testCompletionKeywordFinal16() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal16.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5974,9 +5974,9 @@ public void testCompletionKeywordFinal16() throws JavaModelException {
 			"element:finalize    completion:protected void finalize() throws Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal17() throws JavaModelException {
+public void testCompletionKeywordFinal17() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal17.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal17.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -5987,9 +5987,9 @@ public void testCompletionKeywordFinal17() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal18() throws JavaModelException {
+public void testCompletionKeywordFinal18() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal18.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal18.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6001,9 +6001,9 @@ public void testCompletionKeywordFinal18() throws JavaModelException {
 			"element:finalize    completion:finalize()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal2() throws JavaModelException {
+public void testCompletionKeywordFinal2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6014,9 +6014,9 @@ public void testCompletionKeywordFinal2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal3() throws JavaModelException {
+public void testCompletionKeywordFinal3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6027,9 +6027,9 @@ public void testCompletionKeywordFinal3() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal4() throws JavaModelException {
+public void testCompletionKeywordFinal4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6040,9 +6040,9 @@ public void testCompletionKeywordFinal4() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal5() throws JavaModelException {
+public void testCompletionKeywordFinal5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6054,9 +6054,9 @@ public void testCompletionKeywordFinal5() throws JavaModelException {
 			"element:finalize    completion:protected void finalize() throws Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal6() throws JavaModelException {
+public void testCompletionKeywordFinal6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6067,9 +6067,9 @@ public void testCompletionKeywordFinal6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal7() throws JavaModelException {
+public void testCompletionKeywordFinal7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6081,9 +6081,9 @@ public void testCompletionKeywordFinal7() throws JavaModelException {
 			"element:finalize    completion:protected void finalize() throws Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal8() throws JavaModelException {
+public void testCompletionKeywordFinal8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6094,9 +6094,9 @@ public void testCompletionKeywordFinal8() throws JavaModelException {
 			"element:final    completion:final    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinal9() throws JavaModelException {
+public void testCompletionKeywordFinal9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinal9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fin";
@@ -6108,9 +6108,9 @@ public void testCompletionKeywordFinal9() throws JavaModelException {
 			"element:finalize    completion:finalize()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE +R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally1() throws JavaModelException {
+public void testCompletionKeywordFinally1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6121,9 +6121,9 @@ public void testCompletionKeywordFinally1() throws JavaModelException {
 			"element:finally    completion:finally    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally10() throws JavaModelException {
+public void testCompletionKeywordFinally10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6134,9 +6134,9 @@ public void testCompletionKeywordFinally10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally11() throws JavaModelException {
+public void testCompletionKeywordFinally11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6147,9 +6147,9 @@ public void testCompletionKeywordFinally11() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally12() throws JavaModelException {
+public void testCompletionKeywordFinally12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6160,9 +6160,9 @@ public void testCompletionKeywordFinally12() throws JavaModelException {
 			"element:finally    completion:finally    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally13() throws JavaModelException {
+public void testCompletionKeywordFinally13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally13.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6174,9 +6174,9 @@ public void testCompletionKeywordFinally13() throws JavaModelException {
 			"element:finallyz    completion:finallyz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally14() throws JavaModelException {
+public void testCompletionKeywordFinally14() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6187,9 +6187,9 @@ public void testCompletionKeywordFinally14() throws JavaModelException {
 			"element:finallyz    completion:finallyz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally2() throws JavaModelException {
+public void testCompletionKeywordFinally2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6200,9 +6200,9 @@ public void testCompletionKeywordFinally2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally3() throws JavaModelException {
+public void testCompletionKeywordFinally3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6213,9 +6213,9 @@ public void testCompletionKeywordFinally3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally4() throws JavaModelException {
+public void testCompletionKeywordFinally4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6226,9 +6226,9 @@ public void testCompletionKeywordFinally4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally5() throws JavaModelException {
+public void testCompletionKeywordFinally5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6239,9 +6239,9 @@ public void testCompletionKeywordFinally5() throws JavaModelException {
 			"element:finally    completion:finally    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally6() throws JavaModelException {
+public void testCompletionKeywordFinally6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6253,9 +6253,9 @@ public void testCompletionKeywordFinally6() throws JavaModelException {
 			"element:finallyz    completion:finallyz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally7() throws JavaModelException {
+public void testCompletionKeywordFinally7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6266,9 +6266,9 @@ public void testCompletionKeywordFinally7() throws JavaModelException {
 			"element:finallyz    completion:finallyz    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally8() throws JavaModelException {
+public void testCompletionKeywordFinally8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6279,9 +6279,9 @@ public void testCompletionKeywordFinally8() throws JavaModelException {
 			"element:finally    completion:finally    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFinally9() throws JavaModelException {
+public void testCompletionKeywordFinally9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFinally9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "finall";
@@ -6292,9 +6292,9 @@ public void testCompletionKeywordFinally9() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFor1() throws JavaModelException {
+public void testCompletionKeywordFor1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6306,9 +6306,9 @@ public void testCompletionKeywordFor1() throws JavaModelException {
 			"element:for    completion:for    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFor2() throws JavaModelException {
+public void testCompletionKeywordFor2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6319,9 +6319,9 @@ public void testCompletionKeywordFor2() throws JavaModelException {
 			"element:foo    completion:foo()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFor3() throws JavaModelException {
+public void testCompletionKeywordFor3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6332,9 +6332,9 @@ public void testCompletionKeywordFor3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordFor4() throws JavaModelException {
+public void testCompletionKeywordFor4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6346,9 +6346,9 @@ public void testCompletionKeywordFor4() throws JavaModelException {
 			"element:for    completion:for    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFor5() throws JavaModelException {
+public void testCompletionKeywordFor5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6359,9 +6359,9 @@ public void testCompletionKeywordFor5() throws JavaModelException {
 			"element:foo    completion:foo()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordFor6() throws JavaModelException {
+public void testCompletionKeywordFor6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordFor6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "fo";
@@ -6372,9 +6372,9 @@ public void testCompletionKeywordFor6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordIf1() throws JavaModelException {
+public void testCompletionKeywordIf1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6385,9 +6385,9 @@ public void testCompletionKeywordIf1() throws JavaModelException {
 			"element:if    completion:if    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordIf2() throws JavaModelException {
+public void testCompletionKeywordIf2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6398,9 +6398,9 @@ public void testCompletionKeywordIf2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordIf3() throws JavaModelException {
+public void testCompletionKeywordIf3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6411,9 +6411,9 @@ public void testCompletionKeywordIf3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordIf4() throws JavaModelException {
+public void testCompletionKeywordIf4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6424,9 +6424,9 @@ public void testCompletionKeywordIf4() throws JavaModelException {
 			"element:if    completion:if    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordIf5() throws JavaModelException {
+public void testCompletionKeywordIf5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6437,9 +6437,9 @@ public void testCompletionKeywordIf5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordIf6() throws JavaModelException {
+public void testCompletionKeywordIf6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordIf6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "if";
@@ -6450,9 +6450,9 @@ public void testCompletionKeywordIf6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordImplements1() throws JavaModelException {
+public void testCompletionKeywordImplements1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6463,9 +6463,9 @@ public void testCompletionKeywordImplements1() throws JavaModelException {
 			"element:implements    completion:implements    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImplements2() throws JavaModelException {
+public void testCompletionKeywordImplements2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6476,9 +6476,9 @@ public void testCompletionKeywordImplements2() throws JavaModelException {
 			"element:implements    completion:implements    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImplements3() throws JavaModelException {
+public void testCompletionKeywordImplements3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6489,9 +6489,9 @@ public void testCompletionKeywordImplements3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordImplements4() throws JavaModelException {
+public void testCompletionKeywordImplements4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6502,9 +6502,9 @@ public void testCompletionKeywordImplements4() throws JavaModelException {
 			"element:implements    completion:implements    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImplements5() throws JavaModelException {
+public void testCompletionKeywordImplements5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6515,9 +6515,9 @@ public void testCompletionKeywordImplements5() throws JavaModelException {
 			"element:implements    completion:implements    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImplements6() throws JavaModelException {
+public void testCompletionKeywordImplements6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImplements6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6528,9 +6528,9 @@ public void testCompletionKeywordImplements6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordImport1() throws JavaModelException {
+public void testCompletionKeywordImport1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6541,9 +6541,9 @@ public void testCompletionKeywordImport1() throws JavaModelException {
 			"element:import    completion:import    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImport2() throws JavaModelException {
+public void testCompletionKeywordImport2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6554,9 +6554,9 @@ public void testCompletionKeywordImport2() throws JavaModelException {
 			"element:import    completion:import    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImport3() throws JavaModelException {
+public void testCompletionKeywordImport3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6567,9 +6567,9 @@ public void testCompletionKeywordImport3() throws JavaModelException {
 			"element:import    completion:import    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImport4() throws JavaModelException {
+public void testCompletionKeywordImport4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6580,9 +6580,9 @@ public void testCompletionKeywordImport4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordImport5() throws JavaModelException {
+public void testCompletionKeywordImport5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6593,9 +6593,9 @@ public void testCompletionKeywordImport5() throws JavaModelException {
 			"element:import    completion:import    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImport6() throws JavaModelException {
+public void testCompletionKeywordImport6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6606,9 +6606,9 @@ public void testCompletionKeywordImport6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordImport7() throws JavaModelException {
+public void testCompletionKeywordImport7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordImport7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6619,9 +6619,9 @@ public void testCompletionKeywordImport7() throws JavaModelException {
 			"element:import    completion:import    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordImport8() throws JavaModelException {
+public void testCompletionKeywordImport8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordImport8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "imp";
@@ -6632,9 +6632,9 @@ public void testCompletionKeywordImport8() throws JavaModelException {
 			"element:import    completion:import    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInstanceof1() throws JavaModelException {
+public void testCompletionKeywordInstanceof1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6645,9 +6645,9 @@ public void testCompletionKeywordInstanceof1() throws JavaModelException {
 			"element:instanceof    completion:instanceof    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInstanceof2() throws JavaModelException {
+public void testCompletionKeywordInstanceof2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6658,9 +6658,9 @@ public void testCompletionKeywordInstanceof2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordInstanceof3() throws JavaModelException {
+public void testCompletionKeywordInstanceof3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6671,9 +6671,9 @@ public void testCompletionKeywordInstanceof3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordInstanceof4() throws JavaModelException {
+public void testCompletionKeywordInstanceof4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6684,9 +6684,9 @@ public void testCompletionKeywordInstanceof4() throws JavaModelException {
 			"element:instanceof    completion:instanceof    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInstanceof5() throws JavaModelException {
+public void testCompletionKeywordInstanceof5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6697,9 +6697,9 @@ public void testCompletionKeywordInstanceof5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordInstanceof6() throws JavaModelException {
+public void testCompletionKeywordInstanceof6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInstanceof6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ins";
@@ -6710,9 +6710,9 @@ public void testCompletionKeywordInstanceof6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface1() throws JavaModelException {
+public void testCompletionKeywordInterface1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6723,9 +6723,9 @@ public void testCompletionKeywordInterface1() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface10() throws JavaModelException {
+public void testCompletionKeywordInterface10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6736,9 +6736,9 @@ public void testCompletionKeywordInterface10() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface11() throws JavaModelException {
+public void testCompletionKeywordInterface11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6749,9 +6749,9 @@ public void testCompletionKeywordInterface11() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface12() throws JavaModelException {
+public void testCompletionKeywordInterface12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6762,9 +6762,9 @@ public void testCompletionKeywordInterface12() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface13() throws JavaModelException {
+public void testCompletionKeywordInterface13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface13.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6775,9 +6775,9 @@ public void testCompletionKeywordInterface13() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface14() throws JavaModelException {
+public void testCompletionKeywordInterface14() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6788,9 +6788,9 @@ public void testCompletionKeywordInterface14() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface15() throws JavaModelException {
+public void testCompletionKeywordInterface15() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface15.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6801,9 +6801,9 @@ public void testCompletionKeywordInterface15() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface16() throws JavaModelException {
+public void testCompletionKeywordInterface16() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface16.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6814,9 +6814,9 @@ public void testCompletionKeywordInterface16() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface17() throws JavaModelException {
+public void testCompletionKeywordInterface17() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface17.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface17.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6827,9 +6827,9 @@ public void testCompletionKeywordInterface17() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface18() throws JavaModelException {
+public void testCompletionKeywordInterface18() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface18.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface18.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6840,9 +6840,9 @@ public void testCompletionKeywordInterface18() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface2() throws JavaModelException {
+public void testCompletionKeywordInterface2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6853,9 +6853,9 @@ public void testCompletionKeywordInterface2() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface3() throws JavaModelException {
+public void testCompletionKeywordInterface3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6866,9 +6866,9 @@ public void testCompletionKeywordInterface3() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface4() throws JavaModelException {
+public void testCompletionKeywordInterface4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6879,9 +6879,9 @@ public void testCompletionKeywordInterface4() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface5() throws JavaModelException {
+public void testCompletionKeywordInterface5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6892,9 +6892,9 @@ public void testCompletionKeywordInterface5() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface6() throws JavaModelException {
+public void testCompletionKeywordInterface6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6905,9 +6905,9 @@ public void testCompletionKeywordInterface6() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface7() throws JavaModelException {
+public void testCompletionKeywordInterface7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6918,9 +6918,9 @@ public void testCompletionKeywordInterface7() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface8() throws JavaModelException {
+public void testCompletionKeywordInterface8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6931,9 +6931,9 @@ public void testCompletionKeywordInterface8() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordInterface9() throws JavaModelException {
+public void testCompletionKeywordInterface9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordInterface9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "interf";
@@ -6944,9 +6944,9 @@ public void testCompletionKeywordInterface9() throws JavaModelException {
 			"element:interface    completion:interface    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNative1() throws JavaModelException {
+public void testCompletionKeywordNative1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6957,9 +6957,9 @@ public void testCompletionKeywordNative1() throws JavaModelException {
 			"element:native    completion:native    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNative2() throws JavaModelException {
+public void testCompletionKeywordNative2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6970,9 +6970,9 @@ public void testCompletionKeywordNative2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordNative3() throws JavaModelException {
+public void testCompletionKeywordNative3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6983,9 +6983,9 @@ public void testCompletionKeywordNative3() throws JavaModelException {
 			"element:native    completion:native    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNative4() throws JavaModelException {
+public void testCompletionKeywordNative4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -6996,9 +6996,9 @@ public void testCompletionKeywordNative4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordNative5() throws JavaModelException {
+public void testCompletionKeywordNative5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -7009,9 +7009,9 @@ public void testCompletionKeywordNative5() throws JavaModelException {
 			"element:native    completion:native    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNative6() throws JavaModelException {
+public void testCompletionKeywordNative6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -7022,9 +7022,9 @@ public void testCompletionKeywordNative6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordNative7() throws JavaModelException {
+public void testCompletionKeywordNative7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -7035,9 +7035,9 @@ public void testCompletionKeywordNative7() throws JavaModelException {
 			"element:native    completion:native    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNative8() throws JavaModelException {
+public void testCompletionKeywordNative8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNative8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nat";
@@ -7048,9 +7048,9 @@ public void testCompletionKeywordNative8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordNew1() throws JavaModelException {
+public void testCompletionKeywordNew1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7061,9 +7061,9 @@ public void testCompletionKeywordNew1() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew10() throws JavaModelException {
+public void testCompletionKeywordNew10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7074,9 +7074,9 @@ public void testCompletionKeywordNew10() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew11() throws JavaModelException {
+public void testCompletionKeywordNew11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7087,9 +7087,9 @@ public void testCompletionKeywordNew11() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew12() throws JavaModelException {
+public void testCompletionKeywordNew12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7100,9 +7100,9 @@ public void testCompletionKeywordNew12() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew13() throws JavaModelException {
+public void testCompletionKeywordNew13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew13.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7113,9 +7113,9 @@ public void testCompletionKeywordNew13() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew14() throws JavaModelException {
+public void testCompletionKeywordNew14() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7126,9 +7126,9 @@ public void testCompletionKeywordNew14() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew15() throws JavaModelException {
+public void testCompletionKeywordNew15() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew15.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7139,9 +7139,9 @@ public void testCompletionKeywordNew15() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew16() throws JavaModelException {
+public void testCompletionKeywordNew16() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew16.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7152,9 +7152,9 @@ public void testCompletionKeywordNew16() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew2() throws JavaModelException {
+public void testCompletionKeywordNew2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7165,9 +7165,9 @@ public void testCompletionKeywordNew2() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew3() throws JavaModelException {
+public void testCompletionKeywordNew3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7178,9 +7178,9 @@ public void testCompletionKeywordNew3() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew4() throws JavaModelException {
+public void testCompletionKeywordNew4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7191,9 +7191,9 @@ public void testCompletionKeywordNew4() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew5() throws JavaModelException {
+public void testCompletionKeywordNew5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7204,9 +7204,9 @@ public void testCompletionKeywordNew5() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew6() throws JavaModelException {
+public void testCompletionKeywordNew6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7217,9 +7217,9 @@ public void testCompletionKeywordNew6() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew7() throws JavaModelException {
+public void testCompletionKeywordNew7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7230,9 +7230,9 @@ public void testCompletionKeywordNew7() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew8() throws JavaModelException {
+public void testCompletionKeywordNew8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7243,9 +7243,9 @@ public void testCompletionKeywordNew8() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNew9() throws JavaModelException {
+public void testCompletionKeywordNew9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNew9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "ne";
@@ -7256,9 +7256,9 @@ public void testCompletionKeywordNew9() throws JavaModelException {
 			"element:new    completion:new    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordNull1() throws JavaModelException {
+public void testCompletionKeywordNull1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nul";
@@ -7269,35 +7269,9 @@ public void testCompletionKeywordNull1() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordNull2() throws JavaModelException {
+public void testCompletionKeywordNull2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull2.js");
-
-		String str = cu.getSource();
-		String completeBehind = "nul";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:null    completion:null    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordNull3() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull3.js");
-
-		String str = cu.getSource();
-		String completeBehind = "nul";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"",
-			requestor.getResults());
-}
-public void testCompletionKeywordNull4() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "nul";
@@ -7308,9 +7282,35 @@ public void testCompletionKeywordNull4() throws JavaModelException {
 			"element:null    completion:null    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPackage1() throws JavaModelException {
+public void testCompletionKeywordNull3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull3.js");
+
+		String str = cu.getSource();
+		String completeBehind = "nul";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"",
+			requestor.getResults());
+}
+public void testCompletionKeywordNull4() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordNull4.js");
+
+		String str = cu.getSource();
+		String completeBehind = "nul";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:null    completion:null    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordPackage1() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7321,9 +7321,9 @@ public void testCompletionKeywordPackage1() throws JavaModelException {
 			"element:package    completion:package    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPackage2() throws JavaModelException {
+public void testCompletionKeywordPackage2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7335,9 +7335,9 @@ public void testCompletionKeywordPackage2() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionKeywordPackage3() throws JavaModelException {
+public void testCompletionKeywordPackage3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7348,9 +7348,9 @@ public void testCompletionKeywordPackage3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPackage4() throws JavaModelException {
+public void testCompletionKeywordPackage4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7361,9 +7361,9 @@ public void testCompletionKeywordPackage4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPackage5() throws JavaModelException {
+public void testCompletionKeywordPackage5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7374,9 +7374,9 @@ public void testCompletionKeywordPackage5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPackage6() throws JavaModelException {
+public void testCompletionKeywordPackage6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7387,9 +7387,9 @@ public void testCompletionKeywordPackage6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPackage7() throws JavaModelException {
+public void testCompletionKeywordPackage7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPackage7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7400,9 +7400,9 @@ public void testCompletionKeywordPackage7() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPackage8() throws JavaModelException {
+public void testCompletionKeywordPackage8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "p", "CompletionKeywordPackage8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pac";
@@ -7413,9 +7413,9 @@ public void testCompletionKeywordPackage8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPrivate1() throws JavaModelException {
+public void testCompletionKeywordPrivate1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7426,9 +7426,9 @@ public void testCompletionKeywordPrivate1() throws JavaModelException {
 			"element:private    completion:private    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPrivate10() throws JavaModelException {
+public void testCompletionKeywordPrivate10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7439,22 +7439,9 @@ public void testCompletionKeywordPrivate10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPrivate2() throws JavaModelException {
+public void testCompletionKeywordPrivate2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate2.js");
-
-		String str = cu.getSource();
-		String completeBehind = "pri";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:private    completion:private    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordPrivate3() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7465,35 +7452,9 @@ public void testCompletionKeywordPrivate3() throws JavaModelException {
 			"element:private    completion:private    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPrivate4() throws JavaModelException {
+public void testCompletionKeywordPrivate3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate4.js");
-
-		String str = cu.getSource();
-		String completeBehind = "pri";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"",
-			requestor.getResults());
-}
-public void testCompletionKeywordPrivate5() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate5.js");
-
-		String str = cu.getSource();
-		String completeBehind = "pri";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"",
-			requestor.getResults());
-}
-public void testCompletionKeywordPrivate6() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7504,9 +7465,35 @@ public void testCompletionKeywordPrivate6() throws JavaModelException {
 			"element:private    completion:private    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPrivate7() throws JavaModelException {
+public void testCompletionKeywordPrivate4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate4.js");
+
+		String str = cu.getSource();
+		String completeBehind = "pri";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"",
+			requestor.getResults());
+}
+public void testCompletionKeywordPrivate5() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate5.js");
+
+		String str = cu.getSource();
+		String completeBehind = "pri";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"",
+			requestor.getResults());
+}
+public void testCompletionKeywordPrivate6() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7517,9 +7504,9 @@ public void testCompletionKeywordPrivate7() throws JavaModelException {
 			"element:private    completion:private    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPrivate8() throws JavaModelException {
+public void testCompletionKeywordPrivate7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7530,9 +7517,22 @@ public void testCompletionKeywordPrivate8() throws JavaModelException {
 			"element:private    completion:private    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPrivate9() throws JavaModelException {
+public void testCompletionKeywordPrivate8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate8.js");
+
+		String str = cu.getSource();
+		String completeBehind = "pri";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:private    completion:private    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordPrivate9() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPrivate9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pri";
@@ -7543,9 +7543,9 @@ public void testCompletionKeywordPrivate9() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordProtected1() throws JavaModelException {
+public void testCompletionKeywordProtected1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7556,9 +7556,9 @@ public void testCompletionKeywordProtected1() throws JavaModelException {
 			"element:protected    completion:protected    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordProtected10() throws JavaModelException {
+public void testCompletionKeywordProtected10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7569,22 +7569,9 @@ public void testCompletionKeywordProtected10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordProtected2() throws JavaModelException {
+public void testCompletionKeywordProtected2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected2.js");
-
-		String str = cu.getSource();
-		String completeBehind = "pro";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:protected    completion:protected    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordProtected3() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7595,35 +7582,9 @@ public void testCompletionKeywordProtected3() throws JavaModelException {
 			"element:protected    completion:protected    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordProtected4() throws JavaModelException {
+public void testCompletionKeywordProtected3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected4.js");
-
-		String str = cu.getSource();
-		String completeBehind = "pro";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"",
-			requestor.getResults());
-}
-public void testCompletionKeywordProtected5() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected5.js");
-
-		String str = cu.getSource();
-		String completeBehind = "pro";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"",
-			requestor.getResults());
-}
-public void testCompletionKeywordProtected6() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7634,9 +7595,35 @@ public void testCompletionKeywordProtected6() throws JavaModelException {
 			"element:protected    completion:protected    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordProtected7() throws JavaModelException {
+public void testCompletionKeywordProtected4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected4.js");
+
+		String str = cu.getSource();
+		String completeBehind = "pro";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"",
+			requestor.getResults());
+}
+public void testCompletionKeywordProtected5() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected5.js");
+
+		String str = cu.getSource();
+		String completeBehind = "pro";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"",
+			requestor.getResults());
+}
+public void testCompletionKeywordProtected6() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7647,9 +7634,9 @@ public void testCompletionKeywordProtected7() throws JavaModelException {
 			"element:protected    completion:protected    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordProtected8() throws JavaModelException {
+public void testCompletionKeywordProtected7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7660,9 +7647,22 @@ public void testCompletionKeywordProtected8() throws JavaModelException {
 			"element:protected    completion:protected    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordProtected9() throws JavaModelException {
+public void testCompletionKeywordProtected8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected8.js");
+
+		String str = cu.getSource();
+		String completeBehind = "pro";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:protected    completion:protected    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordProtected9() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordProtected9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pro";
@@ -7673,9 +7673,9 @@ public void testCompletionKeywordProtected9() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic1() throws JavaModelException {
+public void testCompletionKeywordPublic1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7686,9 +7686,9 @@ public void testCompletionKeywordPublic1() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic10() throws JavaModelException {
+public void testCompletionKeywordPublic10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7699,9 +7699,9 @@ public void testCompletionKeywordPublic10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic11() throws JavaModelException {
+public void testCompletionKeywordPublic11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7712,9 +7712,9 @@ public void testCompletionKeywordPublic11() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic12() throws JavaModelException {
+public void testCompletionKeywordPublic12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7725,9 +7725,9 @@ public void testCompletionKeywordPublic12() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic13() throws JavaModelException {
+public void testCompletionKeywordPublic13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic13.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7738,9 +7738,9 @@ public void testCompletionKeywordPublic13() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic14() throws JavaModelException {
+public void testCompletionKeywordPublic14() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7751,9 +7751,9 @@ public void testCompletionKeywordPublic14() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic15() throws JavaModelException {
+public void testCompletionKeywordPublic15() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic15.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic15.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7764,9 +7764,9 @@ public void testCompletionKeywordPublic15() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic16() throws JavaModelException {
+public void testCompletionKeywordPublic16() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic16.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic16.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7777,9 +7777,9 @@ public void testCompletionKeywordPublic16() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic17() throws JavaModelException {
+public void testCompletionKeywordPublic17() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic17.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic17.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7790,9 +7790,9 @@ public void testCompletionKeywordPublic17() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic18() throws JavaModelException {
+public void testCompletionKeywordPublic18() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic18.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic18.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7803,9 +7803,9 @@ public void testCompletionKeywordPublic18() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic19() throws JavaModelException {
+public void testCompletionKeywordPublic19() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic19.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic19.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7816,9 +7816,9 @@ public void testCompletionKeywordPublic19() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic2() throws JavaModelException {
+public void testCompletionKeywordPublic2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7829,9 +7829,9 @@ public void testCompletionKeywordPublic2() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic20() throws JavaModelException {
+public void testCompletionKeywordPublic20() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7842,9 +7842,9 @@ public void testCompletionKeywordPublic20() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic3() throws JavaModelException {
+public void testCompletionKeywordPublic3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7855,9 +7855,9 @@ public void testCompletionKeywordPublic3() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic4() throws JavaModelException {
+public void testCompletionKeywordPublic4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7868,9 +7868,9 @@ public void testCompletionKeywordPublic4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic5() throws JavaModelException {
+public void testCompletionKeywordPublic5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7881,9 +7881,9 @@ public void testCompletionKeywordPublic5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic6() throws JavaModelException {
+public void testCompletionKeywordPublic6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7894,9 +7894,9 @@ public void testCompletionKeywordPublic6() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic7() throws JavaModelException {
+public void testCompletionKeywordPublic7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7907,9 +7907,9 @@ public void testCompletionKeywordPublic7() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic8() throws JavaModelException {
+public void testCompletionKeywordPublic8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7920,9 +7920,9 @@ public void testCompletionKeywordPublic8() throws JavaModelException {
 			"element:public    completion:public    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordPublic9() throws JavaModelException {
+public void testCompletionKeywordPublic9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordPublic9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "pub";
@@ -7933,9 +7933,9 @@ public void testCompletionKeywordPublic9() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordReturn1() throws JavaModelException {
+public void testCompletionKeywordReturn1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7946,9 +7946,9 @@ public void testCompletionKeywordReturn1() throws JavaModelException {
 			"element:return    completion:return    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordReturn2() throws JavaModelException {
+public void testCompletionKeywordReturn2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7959,9 +7959,9 @@ public void testCompletionKeywordReturn2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordReturn3() throws JavaModelException {
+public void testCompletionKeywordReturn3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7972,9 +7972,9 @@ public void testCompletionKeywordReturn3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordReturn4() throws JavaModelException {
+public void testCompletionKeywordReturn4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7985,9 +7985,9 @@ public void testCompletionKeywordReturn4() throws JavaModelException {
 			"element:return    completion:return    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordReturn5() throws JavaModelException {
+public void testCompletionKeywordReturn5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -7998,9 +7998,9 @@ public void testCompletionKeywordReturn5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordReturn6() throws JavaModelException {
+public void testCompletionKeywordReturn6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordReturn6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "re";
@@ -8011,9 +8011,9 @@ public void testCompletionKeywordReturn6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic1() throws JavaModelException {
+public void testCompletionKeywordStatic1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8024,9 +8024,9 @@ public void testCompletionKeywordStatic1() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic10() throws JavaModelException {
+public void testCompletionKeywordStatic10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8037,9 +8037,9 @@ public void testCompletionKeywordStatic10() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic2() throws JavaModelException {
+public void testCompletionKeywordStatic2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8050,9 +8050,9 @@ public void testCompletionKeywordStatic2() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic3() throws JavaModelException {
+public void testCompletionKeywordStatic3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8063,9 +8063,9 @@ public void testCompletionKeywordStatic3() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic4() throws JavaModelException {
+public void testCompletionKeywordStatic4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8076,9 +8076,9 @@ public void testCompletionKeywordStatic4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic5() throws JavaModelException {
+public void testCompletionKeywordStatic5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8089,9 +8089,9 @@ public void testCompletionKeywordStatic5() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic6() throws JavaModelException {
+public void testCompletionKeywordStatic6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8102,9 +8102,9 @@ public void testCompletionKeywordStatic6() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic7() throws JavaModelException {
+public void testCompletionKeywordStatic7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8115,9 +8115,9 @@ public void testCompletionKeywordStatic7() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic8() throws JavaModelException {
+public void testCompletionKeywordStatic8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8128,9 +8128,9 @@ public void testCompletionKeywordStatic8() throws JavaModelException {
 			"element:static    completion:static    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStatic9() throws JavaModelException {
+public void testCompletionKeywordStatic9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStatic9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sta";
@@ -8141,9 +8141,9 @@ public void testCompletionKeywordStatic9() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp1() throws JavaModelException {
+public void testCompletionKeywordStrictfp1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8154,9 +8154,9 @@ public void testCompletionKeywordStrictfp1() throws JavaModelException {
 			"element:strictfp    completion:strictfp    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp2() throws JavaModelException {
+public void testCompletionKeywordStrictfp2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8167,9 +8167,9 @@ public void testCompletionKeywordStrictfp2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp3() throws JavaModelException {
+public void testCompletionKeywordStrictfp3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8180,9 +8180,9 @@ public void testCompletionKeywordStrictfp3() throws JavaModelException {
 			"element:strictfp    completion:strictfp    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp4() throws JavaModelException {
+public void testCompletionKeywordStrictfp4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8193,9 +8193,9 @@ public void testCompletionKeywordStrictfp4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp5() throws JavaModelException {
+public void testCompletionKeywordStrictfp5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8206,9 +8206,9 @@ public void testCompletionKeywordStrictfp5() throws JavaModelException {
 			"element:strictfp    completion:strictfp    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp6() throws JavaModelException {
+public void testCompletionKeywordStrictfp6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8219,9 +8219,9 @@ public void testCompletionKeywordStrictfp6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp7() throws JavaModelException {
+public void testCompletionKeywordStrictfp7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8232,9 +8232,9 @@ public void testCompletionKeywordStrictfp7() throws JavaModelException {
 			"element:strictfp    completion:strictfp    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordStrictfp8() throws JavaModelException {
+public void testCompletionKeywordStrictfp8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordStrictfp8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "stric";
@@ -8245,9 +8245,9 @@ public void testCompletionKeywordStrictfp8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper1() throws JavaModelException {
+public void testCompletionKeywordSuper1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8260,9 +8260,9 @@ public void testCompletionKeywordSuper1() throws JavaModelException {
 			"element:super    completion:super    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper10() throws JavaModelException {
+public void testCompletionKeywordSuper10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8275,9 +8275,9 @@ public void testCompletionKeywordSuper10() throws JavaModelException {
 			"element:super    completion:super    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper11() throws JavaModelException {
+public void testCompletionKeywordSuper11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8289,7 +8289,7 @@ public void testCompletionKeywordSuper11() throws JavaModelException {
 			"element:SuperInterface    completion:SuperInterface    relevance:" + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper12() throws JavaModelException {
+public void testCompletionKeywordSuper12() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src2/CompletionKeywordSuper12.js",
             "public class CompletionKeywordSuper12 {\n"+
@@ -8316,12 +8316,12 @@ public void testCompletionKeywordSuper12() throws JavaModelException {
             "SuperClass[TYPE_REF]{SuperClass, , LSuperClass;, null, null, " + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
 			"SuperInterface[TYPE_REF]{SuperInterface, , LSuperInterface;, null, null, " + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
 			"super[KEYWORD]{super, null, null, super, null, "+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED)+"}\n" +
-			"super[METHOD_REF<CONSTRUCTOR>]{super(), Ljava.lang.Object;, ()V, super, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
+			"super[FUNCTION_REF<CONSTRUCTOR>]{super(), Ljava.lang.Object;, ()V, super, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper2() throws JavaModelException {
+public void testCompletionKeywordSuper2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8334,9 +8334,9 @@ public void testCompletionKeywordSuper2() throws JavaModelException {
 			"element:super    completion:super    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper3() throws JavaModelException {
+public void testCompletionKeywordSuper3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8348,9 +8348,9 @@ public void testCompletionKeywordSuper3() throws JavaModelException {
 			"element:SuperInterface    completion:SuperInterface    relevance:" + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper4() throws JavaModelException {
+public void testCompletionKeywordSuper4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8363,9 +8363,9 @@ public void testCompletionKeywordSuper4() throws JavaModelException {
 			"element:super    completion:super    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper5() throws JavaModelException {
+public void testCompletionKeywordSuper5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8377,7 +8377,7 @@ public void testCompletionKeywordSuper5() throws JavaModelException {
 			"element:SuperInterface    completion:SuperInterface    relevance:" + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper6() throws JavaModelException {
+public void testCompletionKeywordSuper6() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src2/CompletionKeywordSuper6.js",
             "public class CompletionKeywordSuper6 {\n"+
@@ -8403,12 +8403,12 @@ public void testCompletionKeywordSuper6() throws JavaModelException {
             "SuperClass[TYPE_REF]{SuperClass, , LSuperClass;, null, null, " + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
 			"SuperInterface[TYPE_REF]{SuperInterface, , LSuperInterface;, null, null, " + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
 			"super[KEYWORD]{super, null, null, super, null, "+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED)+"}\n" +
-			"super[METHOD_REF<CONSTRUCTOR>]{super(), Ljava.lang.Object;, ()V, super, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
+			"super[FUNCTION_REF<CONSTRUCTOR>]{super(), Ljava.lang.Object;, ()V, super, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper7() throws JavaModelException {
+public void testCompletionKeywordSuper7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8421,9 +8421,9 @@ public void testCompletionKeywordSuper7() throws JavaModelException {
 			"element:super    completion:super    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper8() throws JavaModelException {
+public void testCompletionKeywordSuper8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8436,9 +8436,9 @@ public void testCompletionKeywordSuper8() throws JavaModelException {
 			"element:super    completion:super    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSuper9() throws JavaModelException {
+public void testCompletionKeywordSuper9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSuper9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sup";
@@ -8450,9 +8450,9 @@ public void testCompletionKeywordSuper9() throws JavaModelException {
 			"element:SuperInterface    completion:SuperInterface    relevance:" + (R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSwitch1() throws JavaModelException {
+public void testCompletionKeywordSwitch1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8463,9 +8463,9 @@ public void testCompletionKeywordSwitch1() throws JavaModelException {
 			"element:switch    completion:switch    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSwitch2() throws JavaModelException {
+public void testCompletionKeywordSwitch2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8476,9 +8476,9 @@ public void testCompletionKeywordSwitch2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSwitch3() throws JavaModelException {
+public void testCompletionKeywordSwitch3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8489,9 +8489,9 @@ public void testCompletionKeywordSwitch3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSwitch4() throws JavaModelException {
+public void testCompletionKeywordSwitch4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8502,9 +8502,9 @@ public void testCompletionKeywordSwitch4() throws JavaModelException {
 			"element:switch    completion:switch    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSwitch5() throws JavaModelException {
+public void testCompletionKeywordSwitch5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8515,9 +8515,9 @@ public void testCompletionKeywordSwitch5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSwitch6() throws JavaModelException {
+public void testCompletionKeywordSwitch6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSwitch6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "sw";
@@ -8528,9 +8528,9 @@ public void testCompletionKeywordSwitch6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized1() throws JavaModelException {
+public void testCompletionKeywordSynchronized1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8541,9 +8541,9 @@ public void testCompletionKeywordSynchronized1() throws JavaModelException {
 			"element:synchronized    completion:synchronized    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized10() throws JavaModelException {
+public void testCompletionKeywordSynchronized10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8554,9 +8554,9 @@ public void testCompletionKeywordSynchronized10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized11() throws JavaModelException {
+public void testCompletionKeywordSynchronized11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8567,9 +8567,9 @@ public void testCompletionKeywordSynchronized11() throws JavaModelException {
 			"element:synchronized    completion:synchronized    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized12() throws JavaModelException {
+public void testCompletionKeywordSynchronized12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8580,9 +8580,9 @@ public void testCompletionKeywordSynchronized12() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized2() throws JavaModelException {
+public void testCompletionKeywordSynchronized2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8593,9 +8593,9 @@ public void testCompletionKeywordSynchronized2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized3() throws JavaModelException {
+public void testCompletionKeywordSynchronized3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8606,9 +8606,9 @@ public void testCompletionKeywordSynchronized3() throws JavaModelException {
 			"element:synchronized    completion:synchronized    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized4() throws JavaModelException {
+public void testCompletionKeywordSynchronized4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8619,9 +8619,9 @@ public void testCompletionKeywordSynchronized4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized5() throws JavaModelException {
+public void testCompletionKeywordSynchronized5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8632,9 +8632,9 @@ public void testCompletionKeywordSynchronized5() throws JavaModelException {
 			"element:synchronized    completion:synchronized    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized6() throws JavaModelException {
+public void testCompletionKeywordSynchronized6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8645,9 +8645,9 @@ public void testCompletionKeywordSynchronized6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized7() throws JavaModelException {
+public void testCompletionKeywordSynchronized7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8658,9 +8658,9 @@ public void testCompletionKeywordSynchronized7() throws JavaModelException {
 			"element:synchronized    completion:synchronized    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized8() throws JavaModelException {
+public void testCompletionKeywordSynchronized8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8671,9 +8671,9 @@ public void testCompletionKeywordSynchronized8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordSynchronized9() throws JavaModelException {
+public void testCompletionKeywordSynchronized9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordSynchronized9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "syn";
@@ -8684,9 +8684,9 @@ public void testCompletionKeywordSynchronized9() throws JavaModelException {
 			"element:synchronized    completion:synchronized    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis1() throws JavaModelException {
+public void testCompletionKeywordThis1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8697,9 +8697,9 @@ public void testCompletionKeywordThis1() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis10() throws JavaModelException {
+public void testCompletionKeywordThis10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8710,9 +8710,9 @@ public void testCompletionKeywordThis10() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordThis11() throws JavaModelException {
+public void testCompletionKeywordThis11() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis11.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis11.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8723,9 +8723,9 @@ public void testCompletionKeywordThis11() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis12() throws JavaModelException {
+public void testCompletionKeywordThis12() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis12.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis12.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8736,9 +8736,9 @@ public void testCompletionKeywordThis12() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordThis13() throws JavaModelException {
+public void testCompletionKeywordThis13() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis13.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis13.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8749,9 +8749,9 @@ public void testCompletionKeywordThis13() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis14() throws JavaModelException {
+public void testCompletionKeywordThis14() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis14.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis14.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8765,7 +8765,7 @@ public void testCompletionKeywordThis14() throws JavaModelException {
 /*
  * bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=42402
  */
-public void testCompletionKeywordThis15() throws JavaModelException {
+public void testCompletionKeywordThis15() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src2/CompletionKeywordThis15.js",
             "public class CompletionKeywordThis15 {\n" +
@@ -8789,9 +8789,9 @@ public void testCompletionKeywordThis15() throws JavaModelException {
 			"this[KEYWORD]{this, null, null, this, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 		requestor.getResults());
 }
-public void testCompletionKeywordThis2() throws JavaModelException {
+public void testCompletionKeywordThis2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8802,9 +8802,9 @@ public void testCompletionKeywordThis2() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis3() throws JavaModelException {
+public void testCompletionKeywordThis3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8815,9 +8815,9 @@ public void testCompletionKeywordThis3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordThis4() throws JavaModelException {
+public void testCompletionKeywordThis4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8828,9 +8828,9 @@ public void testCompletionKeywordThis4() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis5() throws JavaModelException {
+public void testCompletionKeywordThis5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8841,9 +8841,9 @@ public void testCompletionKeywordThis5() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordThis6() throws JavaModelException {
+public void testCompletionKeywordThis6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8854,9 +8854,9 @@ public void testCompletionKeywordThis6() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis7() throws JavaModelException {
+public void testCompletionKeywordThis7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8867,9 +8867,9 @@ public void testCompletionKeywordThis7() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordThis8() throws JavaModelException {
+public void testCompletionKeywordThis8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8880,9 +8880,9 @@ public void testCompletionKeywordThis8() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThis9() throws JavaModelException {
+public void testCompletionKeywordThis9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThis9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thi";
@@ -8893,9 +8893,9 @@ public void testCompletionKeywordThis9() throws JavaModelException {
 			"element:this    completion:this    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrow1() throws JavaModelException {
+public void testCompletionKeywordThrow1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8907,9 +8907,9 @@ public void testCompletionKeywordThrow1() throws JavaModelException {
 			"element:throw    completion:throw    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrow2() throws JavaModelException {
+public void testCompletionKeywordThrow2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8920,9 +8920,9 @@ public void testCompletionKeywordThrow2() throws JavaModelException {
 			"element:Throwable    completion:Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrow3() throws JavaModelException {
+public void testCompletionKeywordThrow3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8933,9 +8933,9 @@ public void testCompletionKeywordThrow3() throws JavaModelException {
 			"element:Throwable    completion:Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrow4() throws JavaModelException {
+public void testCompletionKeywordThrow4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8947,9 +8947,9 @@ public void testCompletionKeywordThrow4() throws JavaModelException {
 			"element:throw    completion:throw    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrow5() throws JavaModelException {
+public void testCompletionKeywordThrow5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8960,9 +8960,9 @@ public void testCompletionKeywordThrow5() throws JavaModelException {
 			"element:Throwable    completion:Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrow6() throws JavaModelException {
+public void testCompletionKeywordThrow6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrow6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thr";
@@ -8973,9 +8973,9 @@ public void testCompletionKeywordThrow6() throws JavaModelException {
 			"element:Throwable    completion:Throwable    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows1() throws JavaModelException {
+public void testCompletionKeywordThrows1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -8986,9 +8986,9 @@ public void testCompletionKeywordThrows1() throws JavaModelException {
 			"element:throws    completion:throws    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows2() throws JavaModelException {
+public void testCompletionKeywordThrows2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -8999,9 +8999,9 @@ public void testCompletionKeywordThrows2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows3() throws JavaModelException {
+public void testCompletionKeywordThrows3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9012,9 +9012,9 @@ public void testCompletionKeywordThrows3() throws JavaModelException {
 			"element:throws    completion:throws    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows4() throws JavaModelException {
+public void testCompletionKeywordThrows4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9025,9 +9025,9 @@ public void testCompletionKeywordThrows4() throws JavaModelException {
 			"element:throws    completion:throws    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows5() throws JavaModelException {
+public void testCompletionKeywordThrows5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9038,9 +9038,9 @@ public void testCompletionKeywordThrows5() throws JavaModelException {
 			"element:throws    completion:throws    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows6() throws JavaModelException {
+public void testCompletionKeywordThrows6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9051,9 +9051,9 @@ public void testCompletionKeywordThrows6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows7() throws JavaModelException {
+public void testCompletionKeywordThrows7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9064,9 +9064,9 @@ public void testCompletionKeywordThrows7() throws JavaModelException {
 			"element:throws    completion:throws    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordThrows8() throws JavaModelException {
+public void testCompletionKeywordThrows8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordThrows8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "thro";
@@ -9077,9 +9077,9 @@ public void testCompletionKeywordThrows8() throws JavaModelException {
 			"element:throws    completion:throws    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient1() throws JavaModelException {
+public void testCompletionKeywordTransient1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9090,9 +9090,9 @@ public void testCompletionKeywordTransient1() throws JavaModelException {
 			"element:transient    completion:transient    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient2() throws JavaModelException {
+public void testCompletionKeywordTransient2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9103,9 +9103,9 @@ public void testCompletionKeywordTransient2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient3() throws JavaModelException {
+public void testCompletionKeywordTransient3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9116,9 +9116,9 @@ public void testCompletionKeywordTransient3() throws JavaModelException {
 			"element:transient    completion:transient    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient4() throws JavaModelException {
+public void testCompletionKeywordTransient4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9129,9 +9129,9 @@ public void testCompletionKeywordTransient4() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient5() throws JavaModelException {
+public void testCompletionKeywordTransient5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9142,9 +9142,9 @@ public void testCompletionKeywordTransient5() throws JavaModelException {
 			"element:transient    completion:transient    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient6() throws JavaModelException {
+public void testCompletionKeywordTransient6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9155,9 +9155,9 @@ public void testCompletionKeywordTransient6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient7() throws JavaModelException {
+public void testCompletionKeywordTransient7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9168,9 +9168,9 @@ public void testCompletionKeywordTransient7() throws JavaModelException {
 			"element:transient    completion:transient    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTransient8() throws JavaModelException {
+public void testCompletionKeywordTransient8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTransient8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tran";
@@ -9181,9 +9181,9 @@ public void testCompletionKeywordTransient8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordTrue1() throws JavaModelException {
+public void testCompletionKeywordTrue1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9194,9 +9194,9 @@ public void testCompletionKeywordTrue1() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordTrue2() throws JavaModelException {
+public void testCompletionKeywordTrue2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9207,9 +9207,9 @@ public void testCompletionKeywordTrue2() throws JavaModelException {
 			"element:true    completion:true    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTrue3() throws JavaModelException {
+public void testCompletionKeywordTrue3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9220,9 +9220,9 @@ public void testCompletionKeywordTrue3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordTrue4() throws JavaModelException {
+public void testCompletionKeywordTrue4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTrue4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tru";
@@ -9234,7 +9234,7 @@ public void testCompletionKeywordTrue4() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=90615
-public void testCompletionKeywordTrue5() throws JavaModelException {
+public void testCompletionKeywordTrue5() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionKeywordTrue5.js",
 			"package test;\n" +
@@ -9257,7 +9257,7 @@ public void testCompletionKeywordTrue5() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=90615
-public void testCompletionKeywordTrue6() throws JavaModelException {
+public void testCompletionKeywordTrue6() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionKeywordTrue6.js",
 			"package test;\n" +
@@ -9277,18 +9277,18 @@ public void testCompletionKeywordTrue6() throws JavaModelException {
 
 	if(CompletionEngine.NO_TYPE_COMPLETION_ON_EMPTY_TOKEN) {
 		assertResults(
-				"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"finalize[METHOD_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"foo[METHOD_REF]{foo(), Ltest.CompletionKeywordTrue6;, ()V, foo, null, " +(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"getClass[METHOD_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"hashCode[METHOD_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"notify[METHOD_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"notifyAll[METHOD_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"wait[METHOD_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"equals[METHOD_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED)+"}\n"+
+				"clone[FUNCTION_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"finalize[FUNCTION_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"foo[FUNCTION_REF]{foo(), Ltest.CompletionKeywordTrue6;, ()V, foo, null, " +(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"getClass[FUNCTION_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"hashCode[FUNCTION_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"notify[FUNCTION_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"notifyAll[FUNCTION_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"equals[FUNCTION_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED)+"}\n"+
 				"var[LOCAL_VARIABLE_REF]{var, null, Z, var, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED)+"}\n"+
 				"false[KEYWORD]{false, null, null, false, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_TRUE_OR_FALSE + R_NON_RESTRICTED)+"}\n"+
 				"true[KEYWORD]{true, null, null, true, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_TRUE_OR_FALSE + R_NON_RESTRICTED) + "}",
@@ -9296,27 +9296,27 @@ public void testCompletionKeywordTrue6() throws JavaModelException {
 	} else {
 		assertResults(
 				"CompletionKeywordTrue6[TYPE_REF]{CompletionKeywordTrue6, test, Ltest.CompletionKeywordTrue6;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"finalize[METHOD_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"foo[METHOD_REF]{foo(), Ltest.CompletionKeywordTrue6;, ()V, foo, null, " +(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"getClass[METHOD_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"hashCode[METHOD_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"notify[METHOD_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"notifyAll[METHOD_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"wait[METHOD_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"equals[METHOD_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED)+"}\n"+
+				"clone[FUNCTION_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"finalize[FUNCTION_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"foo[FUNCTION_REF]{foo(), Ltest.CompletionKeywordTrue6;, ()V, foo, null, " +(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"getClass[FUNCTION_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"hashCode[FUNCTION_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"notify[FUNCTION_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"notifyAll[FUNCTION_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+				"equals[FUNCTION_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED)+"}\n"+
 				"var[LOCAL_VARIABLE_REF]{var, null, Z, var, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED)+"}\n"+
 				"false[KEYWORD]{false, null, null, false, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_TRUE_OR_FALSE + R_NON_RESTRICTED)+"}\n"+
 				"true[KEYWORD]{true, null, null, true, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_TRUE_OR_FALSE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	}
 }
-public void testCompletionKeywordTry1() throws JavaModelException {
+public void testCompletionKeywordTry1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9327,9 +9327,9 @@ public void testCompletionKeywordTry1() throws JavaModelException {
 			"element:try    completion:try    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTry2() throws JavaModelException {
+public void testCompletionKeywordTry2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9340,9 +9340,9 @@ public void testCompletionKeywordTry2() throws JavaModelException {
 			"element:true    completion:true    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTry3() throws JavaModelException {
+public void testCompletionKeywordTry3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "try";
@@ -9353,9 +9353,9 @@ public void testCompletionKeywordTry3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordTry4() throws JavaModelException {
+public void testCompletionKeywordTry4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9366,9 +9366,9 @@ public void testCompletionKeywordTry4() throws JavaModelException {
 			"element:try    completion:try    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTry5() throws JavaModelException {
+public void testCompletionKeywordTry5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "tr";
@@ -9379,9 +9379,9 @@ public void testCompletionKeywordTry5() throws JavaModelException {
 			"element:true    completion:true    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordTry6() throws JavaModelException {
+public void testCompletionKeywordTry6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordTry6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "try";
@@ -9392,9 +9392,9 @@ public void testCompletionKeywordTry6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordVolatile1() throws JavaModelException {
+public void testCompletionKeywordVolatile1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9405,9 +9405,9 @@ public void testCompletionKeywordVolatile1() throws JavaModelException {
 			"element:volatile    completion:volatile    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordVolatile2() throws JavaModelException {
+public void testCompletionKeywordVolatile2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9418,35 +9418,9 @@ public void testCompletionKeywordVolatile2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordVolatile3() throws JavaModelException {
+public void testCompletionKeywordVolatile3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile3.js");
-
-		String str = cu.getSource();
-		String completeBehind = "vol";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"element:volatile    completion:volatile    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
-			requestor.getResults());
-}
-public void testCompletionKeywordVolatile4() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile4.js");
-
-		String str = cu.getSource();
-		String completeBehind = "vol";
-		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
-		cu.codeComplete(cursorLocation, requestor);
-
-		assertEquals(
-			"",
-			requestor.getResults());
-}
-public void testCompletionKeywordVolatile5() throws JavaModelException {
-		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9457,9 +9431,9 @@ public void testCompletionKeywordVolatile5() throws JavaModelException {
 			"element:volatile    completion:volatile    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordVolatile6() throws JavaModelException {
+public void testCompletionKeywordVolatile4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9470,9 +9444,9 @@ public void testCompletionKeywordVolatile6() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordVolatile7() throws JavaModelException {
+public void testCompletionKeywordVolatile5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9483,9 +9457,9 @@ public void testCompletionKeywordVolatile7() throws JavaModelException {
 			"element:volatile    completion:volatile    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordVolatile8() throws JavaModelException {
+public void testCompletionKeywordVolatile6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "vol";
@@ -9496,9 +9470,35 @@ public void testCompletionKeywordVolatile8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile1() throws JavaModelException {
+public void testCompletionKeywordVolatile7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile7.js");
+
+		String str = cu.getSource();
+		String completeBehind = "vol";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"element:volatile    completion:volatile    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
+			requestor.getResults());
+}
+public void testCompletionKeywordVolatile8() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordVolatile8.js");
+
+		String str = cu.getSource();
+		String completeBehind = "vol";
+		int cursorLocation = str.lastIndexOf(completeBehind) + completeBehind.length();
+		cu.codeComplete(cursorLocation, requestor);
+
+		assertEquals(
+			"",
+			requestor.getResults());
+}
+public void testCompletionKeywordWhile1() throws JavaScriptModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9509,9 +9509,9 @@ public void testCompletionKeywordWhile1() throws JavaModelException {
 			"element:while    completion:while    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile10() throws JavaModelException {
+public void testCompletionKeywordWhile10() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile10.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile10.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9522,9 +9522,9 @@ public void testCompletionKeywordWhile10() throws JavaModelException {
 			"element:while    completion:while    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile2() throws JavaModelException {
+public void testCompletionKeywordWhile2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9535,9 +9535,9 @@ public void testCompletionKeywordWhile2() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile3() throws JavaModelException {
+public void testCompletionKeywordWhile3() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile3.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9548,9 +9548,9 @@ public void testCompletionKeywordWhile3() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile4() throws JavaModelException {
+public void testCompletionKeywordWhile4() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile4.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile4.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9561,9 +9561,9 @@ public void testCompletionKeywordWhile4() throws JavaModelException {
 			"element:while    completion:while    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile5() throws JavaModelException {
+public void testCompletionKeywordWhile5() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile5.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile5.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9574,9 +9574,9 @@ public void testCompletionKeywordWhile5() throws JavaModelException {
 			"element:while    completion:while    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile6() throws JavaModelException {
+public void testCompletionKeywordWhile6() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile6.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile6.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9587,9 +9587,9 @@ public void testCompletionKeywordWhile6() throws JavaModelException {
 			"element:while    completion:while    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile7() throws JavaModelException {
+public void testCompletionKeywordWhile7() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile7.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile7.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9600,9 +9600,9 @@ public void testCompletionKeywordWhile7() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile8() throws JavaModelException {
+public void testCompletionKeywordWhile8() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile8.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile8.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9613,9 +9613,9 @@ public void testCompletionKeywordWhile8() throws JavaModelException {
 			"",
 			requestor.getResults());
 }
-public void testCompletionKeywordWhile9() throws JavaModelException {
+public void testCompletionKeywordWhile9() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile9.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src2", "", "CompletionKeywordWhile9.js");
 
 		String str = cu.getSource();
 		String completeBehind = "wh";
@@ -9626,9 +9626,9 @@ public void testCompletionKeywordWhile9() throws JavaModelException {
 			"element:while    completion:while    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionLocalName() throws JavaModelException {
+public void testCompletionLocalName() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionLocalName.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionLocalName.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ClassWithComplexName ";
@@ -9643,8 +9643,8 @@ public void testCompletionLocalName() throws JavaModelException {
 		"element:withComplexName    completion:withComplexName    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionLocalType1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionLocalType1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionLocalType1.js",
 		"public class CompletionLocalType1 {\n" +
@@ -9669,7 +9669,7 @@ public void testCompletionLocalType1() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25815
 */
-public void testCompletionMemberType() throws JavaModelException {
+public void testCompletionMemberType() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionMemberType.js",
             "public class CompletionMemberType {\n"+
@@ -9691,7 +9691,7 @@ public void testCompletionMemberType() throws JavaModelException {
 		"CompletionMemberType.Y[TYPE_REF]{Y, , LCompletionMemberType$Y;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_EXACT_NAME+ R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCompletionMemberType2() throws JavaModelException {
+public void testCompletionMemberType2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionMemberType2.js",
             "public class CompletionMemberType2 {\n"+
@@ -9720,7 +9720,7 @@ public void testCompletionMemberType2() throws JavaModelException {
 			requestor.getResults());
 	}
 }
-public void testCompletionMemberType3() throws JavaModelException {
+public void testCompletionMemberType3() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionArrayClone.js",
             "public class CompletionMemberType3 {\n"+
@@ -9742,9 +9742,9 @@ public void testCompletionMemberType3() throws JavaModelException {
 		"CompletionMemberType3.MemberException[TYPE_REF]{MemberException, test, Ltest.CompletionMemberType3$MemberException;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXCEPTION+ R_UNQUALIFIED + R_NON_RESTRICTED) +"}",
 		requestor.getResults());
 }
-public void testCompletionMessageSendIsParent1() throws JavaModelException {
+public void testCompletionMessageSendIsParent1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9759,9 +9759,9 @@ public void testCompletionMessageSendIsParent1() throws JavaModelException {
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMessageSendIsParent2() throws JavaModelException {
+public void testCompletionMessageSendIsParent2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9776,9 +9776,9 @@ public void testCompletionMessageSendIsParent2() throws JavaModelException {
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMessageSendIsParent3() throws JavaModelException {
+public void testCompletionMessageSendIsParent3() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9793,9 +9793,9 @@ public void testCompletionMessageSendIsParent3() throws JavaModelException {
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMessageSendIsParent4() throws JavaModelException {
+public void testCompletionMessageSendIsParent4() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent4.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9810,9 +9810,9 @@ public void testCompletionMessageSendIsParent4() throws JavaModelException {
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMessageSendIsParent5() throws JavaModelException {
+public void testCompletionMessageSendIsParent5() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent5.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent5.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9827,9 +9827,9 @@ public void testCompletionMessageSendIsParent5() throws JavaModelException {
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMessageSendIsParent6() throws JavaModelException {
+public void testCompletionMessageSendIsParent6() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent6.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMessageSendIsParent6.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -9844,10 +9844,10 @@ public void testCompletionMessageSendIsParent6() throws JavaModelException {
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMethodDeclaration() throws JavaModelException {
+public void testCompletionMethodDeclaration() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration.js");
 
 	String str = cu.getSource();
 	String completeBehind = "eq";
@@ -9860,10 +9860,10 @@ public void testCompletionMethodDeclaration() throws JavaModelException {
 		"element:equals    completion:public boolean equals(Object obj)    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMethodDeclaration10() throws JavaModelException {
+public void testCompletionMethodDeclaration10() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration10.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration10.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -9877,7 +9877,7 @@ public void testCompletionMethodDeclaration10() throws JavaModelException {
 		requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=80063
-public void testCompletionMethodDeclaration11() throws JavaModelException {
+public void testCompletionMethodDeclaration11() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src/test/CompletionMethodDeclaration11.js",
 			"package test;\n" +
@@ -9900,7 +9900,7 @@ public void testCompletionMethodDeclaration11() throws JavaModelException {
 			"fo[POTENTIAL_METHOD_DECLARATION]{fo, Ltest.CompletionMethodDeclaration11_2;, ()V, fo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void testCompletionMethodDeclaration12() throws JavaModelException {
+public void testCompletionMethodDeclaration12() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionMethodDeclaration12.js",
             "package test;\n" +
@@ -9927,8 +9927,8 @@ public void testCompletionMethodDeclaration12() throws JavaModelException {
             "fo[POTENTIAL_METHOD_DECLARATION]{fo, Ltest.CompletionMethodDeclaration12_3;, ()V, fo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
             requestor.getResults());
 }
-public void testCompletionMethodDeclaration2() throws JavaModelException {
-	ICompilationUnit superClass = null;
+public void testCompletionMethodDeclaration2() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass.js",
@@ -9954,8 +9954,8 @@ public void testCompletionMethodDeclaration2() throws JavaModelException {
 	
 		assertResults(
 			"eq[POTENTIAL_METHOD_DECLARATION]{eq, LCompletionMethodDeclaration2;, ()V, eq, null, "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
-			"eqFoo[METHOD_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperClass;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
-			"equals[METHOD_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
+			"eqFoo[FUNCTION_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperClass;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n" +
+			"equals[FUNCTION_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 	} finally {
 		if(superClass != null) {
@@ -9966,8 +9966,8 @@ public void testCompletionMethodDeclaration2() throws JavaModelException {
 /**
  * Completion should not propose declarations of method already locally implemented
  */
-public void testCompletionMethodDeclaration3() throws JavaModelException {
-	ICompilationUnit superClass = null;
+public void testCompletionMethodDeclaration3() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass.js",
@@ -9997,7 +9997,7 @@ public void testCompletionMethodDeclaration3() throws JavaModelException {
 	
 		assertResults(
 			"eq[POTENTIAL_METHOD_DECLARATION]{eq, LCompletionMethodDeclaration3;, ()V, eq, null, "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
-			"equals[METHOD_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
+			"equals[FUNCTION_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 	} finally {
 		if(superClass != null) {
@@ -10005,8 +10005,8 @@ public void testCompletionMethodDeclaration3() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionMethodDeclaration4() throws JavaModelException {
-	ICompilationUnit superClass = null;
+public void testCompletionMethodDeclaration4() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperInterface.js",
@@ -10029,8 +10029,8 @@ public void testCompletionMethodDeclaration4() throws JavaModelException {
 	
 		assertResults(
 			"eq[POTENTIAL_METHOD_DECLARATION]{eq, LCompletionMethodDeclaration4;, ()V, eq, null, "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
-			"equals[METHOD_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-			"eqFoo[METHOD_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperInterface;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_ABSTRACT_METHOD + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
+			"equals[FUNCTION_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+			"eqFoo[FUNCTION_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperInterface;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_ABSTRACT_METHOD + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 	} finally {
 		if(superClass != null) {
@@ -10038,8 +10038,8 @@ public void testCompletionMethodDeclaration4() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionMethodDeclaration5() throws JavaModelException {
-	ICompilationUnit superClass = null;
+public void testCompletionMethodDeclaration5() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass.js",
@@ -10069,23 +10069,23 @@ public void testCompletionMethodDeclaration5() throws JavaModelException {
 	    if(CompletionEngine.NO_TYPE_COMPLETION_ON_EMPTY_TOKEN) {
 			assertResults(
 				"[POTENTIAL_METHOD_DECLARATION]{, LCompletionSuperClass;, ()V, , null, "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
-				"clone[METHOD_DECLARATION]{protected Object clone() throws CloneNotSupportedException, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"eqFoo[METHOD_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperClass;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"equals[METHOD_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"finalize[METHOD_DECLARATION]{protected void finalize() throws Throwable, Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"hashCode[METHOD_DECLARATION]{public int hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"toString[METHOD_DECLARATION]{public String toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+ "}",
+				"clone[FUNCTION_DECLARATION]{protected Object clone() throws CloneNotSupportedException, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"eqFoo[FUNCTION_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperClass;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"equals[FUNCTION_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"finalize[FUNCTION_DECLARATION]{protected void finalize() throws Throwable, Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"hashCode[FUNCTION_DECLARATION]{public int hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"toString[FUNCTION_DECLARATION]{public String toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+ "}",
 				requestor.getResults());
 		} else {
 			assertResults(
 				"[POTENTIAL_METHOD_DECLARATION]{, LCompletionSuperClass;, ()V, , null, "+(R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED)+"}\n" +
 				"CompletionMethodDeclaration5[TYPE_REF]{CompletionMethodDeclaration5, , LCompletionMethodDeclaration5;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-				"clone[METHOD_DECLARATION]{protected Object clone() throws CloneNotSupportedException, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"eqFoo[METHOD_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperClass;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"equals[METHOD_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"finalize[METHOD_DECLARATION]{protected void finalize() throws Throwable, Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"hashCode[METHOD_DECLARATION]{public int hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
-				"toString[METHOD_DECLARATION]{public String toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+ "}",
+				"clone[FUNCTION_DECLARATION]{protected Object clone() throws CloneNotSupportedException, Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"eqFoo[FUNCTION_DECLARATION]{public int eqFoo(int a, Object b), LCompletionSuperClass;, (ILjava.lang.Object;)I, eqFoo, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"equals[FUNCTION_DECLARATION]{public boolean equals(Object obj), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"finalize[FUNCTION_DECLARATION]{protected void finalize() throws Throwable, Ljava.lang.Object;, ()V, finalize, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"hashCode[FUNCTION_DECLARATION]{public int hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED)+"}\n"+
+				"toString[FUNCTION_DECLARATION]{public String toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED)+ "}",
 				requestor.getResults());
 		}
 	} finally {
@@ -10094,10 +10094,10 @@ public void testCompletionMethodDeclaration5() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionMethodDeclaration6() throws JavaModelException {
+public void testCompletionMethodDeclaration6() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration6.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration6.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10109,10 +10109,10 @@ public void testCompletionMethodDeclaration6() throws JavaModelException {
 		"element:CloneNotSupportedException    completion:CloneNotSupportedException    relevance:"+(R_DEFAULT + R_INTERESTING + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMethodDeclaration7() throws JavaModelException {
+public void testCompletionMethodDeclaration7() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration7.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration7.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10125,10 +10125,10 @@ public void testCompletionMethodDeclaration7() throws JavaModelException {
 		"element:clone    completion:protected Object clone() throws CloneNotSupportedException    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMethodDeclaration8() throws JavaModelException {
+public void testCompletionMethodDeclaration8() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration8.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration8.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10141,10 +10141,10 @@ public void testCompletionMethodDeclaration8() throws JavaModelException {
 		"element:clone    completion:protected Object clone() throws CloneNotSupportedException    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMethodDeclaration9() throws JavaModelException {
+public void testCompletionMethodDeclaration9() throws JavaScriptModelException {
 
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration9.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodDeclaration9.js");
 
 	String str = cu.getSource();
 	String completeBehind = "clon";
@@ -10157,9 +10157,9 @@ public void testCompletionMethodDeclaration9() throws JavaModelException {
 		"element:clone    completion:protected Object clone() throws CloneNotSupportedException    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMethodThrowsClause() throws JavaModelException {
+public void testCompletionMethodThrowsClause() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -10170,9 +10170,9 @@ public void testCompletionMethodThrowsClause() throws JavaModelException {
 		"element:Exception    completion:Exception    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXCEPTION + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionMethodThrowsClause2() throws JavaModelException {
+public void testCompletionMethodThrowsClause2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionMethodThrowsClause2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -10183,9 +10183,9 @@ public void testCompletionMethodThrowsClause2() throws JavaModelException {
 		"element:Exception    completion:Exception    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXCEPTION+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionNonEmptyToken1() throws JavaModelException {
+public void testCompletionNonEmptyToken1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonEmptyToken1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonEmptyToken1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -10198,9 +10198,9 @@ public void testCompletionNonEmptyToken1() throws JavaModelException {
 		"element:zzyy    completion:zzyy    position:["+start+","+end+"]    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResultsWithPosition());
 }
-public void testCompletionNonStaticFieldRelevance() throws JavaModelException {
+public void testCompletionNonStaticFieldRelevance() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonStaticFieldRelevance.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionNonStaticFieldRelevance.js");
 
 	String str = cu.getSource();
 	String completeBehind = "var.Ii";
@@ -10215,9 +10215,9 @@ public void testCompletionNonStaticFieldRelevance() throws JavaModelException {
 /**
  * Attempt to do completion with a null requestor
  */
-public void testCompletionNullRequestor() throws JavaModelException {
+public void testCompletionNullRequestor() throws JavaScriptModelException {
 	try {
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionFindThisDotField.js");
 		cu.codeComplete(5, (CompletionRequestor)null);
 	} catch (IllegalArgumentException iae) {
 		return;
@@ -10227,9 +10227,9 @@ public void testCompletionNullRequestor() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=24565
 */
-public void testCompletionObjectsMethodWithInterfaceReceiver() throws JavaModelException {
+public void testCompletionObjectsMethodWithInterfaceReceiver() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionObjectsMethodWithInterfaceReceiver.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionObjectsMethodWithInterfaceReceiver.js");
 
 	String str = cu.getSource();
 	String completeBehind = "hash";
@@ -10243,7 +10243,7 @@ public void testCompletionObjectsMethodWithInterfaceReceiver() throws JavaModelE
 /**
  * Ensures that the code assist features works on class files with associated source.
  */
-public void testCompletionOnClassFile() throws JavaModelException {
+public void testCompletionOnClassFile() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 	IClassFile cu = getClassFile("Completion", "zzz.jar", "jarpack1", "X.class");
 	
@@ -10259,9 +10259,9 @@ public void testCompletionOnClassFile() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25890
 */
-public void testCompletionOnStaticMember1() throws JavaModelException {
+public void testCompletionOnStaticMember1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -10276,9 +10276,9 @@ public void testCompletionOnStaticMember1() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25890
 */
-public void testCompletionOnStaticMember2() throws JavaModelException {
+public void testCompletionOnStaticMember2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOnStaticMember2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "method";
@@ -10293,19 +10293,19 @@ public void testCompletionOnStaticMember2() throws JavaModelException {
 /**
  * Test that an out of bounds index causes an exception.
  */
-public void testCompletionOutOfBounds() throws JavaModelException {
+public void testCompletionOutOfBounds() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOutOfBounds.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionOutOfBounds.js");
 	try {
 		cu.codeComplete(cu.getSource().length() + 1, requestor);
-	} catch (JavaModelException e) {
+	} catch (JavaScriptModelException e) {
 		return;
 	}
 	assertTrue("should have failed", false);
 }
-public void testCompletionPackageAndClass1() throws JavaModelException {
+public void testCompletionPackageAndClass1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Qla3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Qla3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "z1.z2.ql";
@@ -10318,9 +10318,9 @@ public void testCompletionPackageAndClass1() throws JavaModelException {
 			"element:z1.z2.qla0    completion:z1.z2.qla0    relevance:" + (R_DEFAULT + R_INTERESTING + R_CASE + R_QUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionPackageAndClass2() throws JavaModelException {
+public void testCompletionPackageAndClass2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Wla.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "z1.z2.qla0", "Wla.js");
 
 	String str = cu.getSource();
 	String completeBehind = "z1.z2.qla0.";
@@ -10333,7 +10333,7 @@ public void testCompletionPackageAndClass2() throws JavaModelException {
 			"element:Wla    completion:Wla    relevance:" + (R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionPrefixFieldName1() throws JavaModelException {
+public void testCompletionPrefixFieldName1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionPrefixFieldName1.js",
             "public class CompletionPrefixFieldName1 {\n"+
@@ -10360,7 +10360,7 @@ public void testCompletionPrefixFieldName1() throws JavaModelException {
 		"xBar[FIELD_REF]{xBar, LCompletionPrefixFieldName1$classFoo;, I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCompletionPrefixFieldName2() throws JavaModelException {
+public void testCompletionPrefixFieldName2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionPrefixFieldName2.js",
             "public class CompletionPrefixFieldName2 {\n"+
@@ -10386,7 +10386,7 @@ public void testCompletionPrefixFieldName2() throws JavaModelException {
 		"xBar[FIELD_REF]{xBar, LCompletionPrefixFieldName2;, I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCompletionPrefixMethodName1() throws JavaModelException {
+public void testCompletionPrefixMethodName1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionPrefixMethodName1.js",
             "public class CompletionPrefixMethodName1 {\n"+
@@ -10409,11 +10409,11 @@ public void testCompletionPrefixMethodName1() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-		"xBar[METHOD_REF]{CompletionPrefixMethodName1.this.xBar(), LCompletionPrefixMethodName1;, ()I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}\n" +
-		"xBar[METHOD_REF]{xBar(), LCompletionPrefixMethodName1$classFoo;, ()I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED)+"}",
+		"xBar[FUNCTION_REF]{CompletionPrefixMethodName1.this.xBar(), LCompletionPrefixMethodName1;, ()I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}\n" +
+		"xBar[FUNCTION_REF]{xBar(), LCompletionPrefixMethodName1$classFoo;, ()I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCompletionPrefixMethodName2() throws JavaModelException {
+public void testCompletionPrefixMethodName2() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionPrefixMethodName2.js",
             "public class CompletionPrefixMethodName2 {\n"+
@@ -10436,10 +10436,10 @@ public void testCompletionPrefixMethodName2() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-		"xBar[METHOD_REF]{xBar(), LCompletionPrefixMethodName2;, ()I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED)+"}",
+		"xBar[FUNCTION_REF]{xBar(), LCompletionPrefixMethodName2;, ()I, xBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCompletionPrefixMethodName3() throws JavaModelException {
+public void testCompletionPrefixMethodName3() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionPrefixMethodName2.js",
             "public class CompletionPrefixMethodName3 {\n"+
@@ -10462,11 +10462,11 @@ public void testCompletionPrefixMethodName3() throws JavaModelException {
     this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-		"xBar[METHOD_REF]{CompletionPrefixMethodName3.this.xBar(1,, LCompletionPrefixMethodName3;, (II)I, xBar, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME+ R_NON_RESTRICTED)+"}\n"+
-		"xBar[METHOD_REF]{, LCompletionPrefixMethodName3$classFoo;, (II)I, xBar, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
+		"xBar[FUNCTION_REF]{CompletionPrefixMethodName3.this.xBar(1,, LCompletionPrefixMethodName3;, (II)I, xBar, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME+ R_NON_RESTRICTED)+"}\n"+
+		"xBar[FUNCTION_REF]{, LCompletionPrefixMethodName3$classFoo;, (II)I, xBar, (a, b), "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCompletionQualifiedAllocationType1() throws JavaModelException {
+public void testCompletionQualifiedAllocationType1() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionQualifiedAllocationType1.js",
             "public class CompletionQualifiedAllocationType1 {\n"+
@@ -10491,7 +10491,7 @@ public void testCompletionQualifiedAllocationType1() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=26677
 */
-public void testCompletionQualifiedExpectedType() throws JavaModelException {
+public void testCompletionQualifiedExpectedType() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/test/CompletionQualifiedExpectedType.js",
             "import pack1.PX;\n"+
@@ -10523,9 +10523,9 @@ public void testCompletionQualifiedExpectedType() throws JavaModelException {
 /**
  * Complete the type "Repeated", "RepeatedOtherType from "Repeated".
  */
-public void testCompletionRepeatedType() throws JavaModelException {
+public void testCompletionRepeatedType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionRepeatedType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionRepeatedType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "/**/CompletionRepeated";
@@ -10540,9 +10540,9 @@ public void testCompletionRepeatedType() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25591
 */
-public void testCompletionReturnInInitializer() throws JavaModelException {
+public void testCompletionReturnInInitializer() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnInInitializer.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnInInitializer.js");
 
 	String str = cu.getSource();
 	String completeBehind = "eq";
@@ -10553,9 +10553,9 @@ public void testCompletionReturnInInitializer() throws JavaModelException {
 		"element:equals    completion:equals()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionReturnStatementIsParent1() throws JavaModelException {
+public void testCompletionReturnStatementIsParent1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -10585,9 +10585,9 @@ public void testCompletionReturnStatementIsParent1() throws JavaModelException {
 		"element:zzObM    completion:zzObM()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionReturnStatementIsParent2() throws JavaModelException {
+public void testCompletionReturnStatementIsParent2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionReturnStatementIsParent2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "xx";
@@ -10609,9 +10609,9 @@ public void testCompletionReturnStatementIsParent2() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=66908
  */
-public void testCompletionSameClass() throws JavaModelException {
+public void testCompletionSameClass() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionSameClass.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionSameClass.js");
 
 	String str = cu.getSource();
 	String completeBehind = "(CompletionSameClas";
@@ -10622,7 +10622,7 @@ public void testCompletionSameClass() throws JavaModelException {
 			"element:CompletionSameClass    completion:CompletionSameClass    relevance:" + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionSameSuperClass() throws JavaModelException {
+public void testCompletionSameSuperClass() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionSameSuperClass.js",
             "public class CompletionSameSuperClass extends A {\n" +
@@ -10643,13 +10643,13 @@ public void testCompletionSameSuperClass() throws JavaModelException {
 	assertResults(
 		"bar[FIELD_REF]{CompletionSameSuperClass.this.bar, LA;, I, bar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED)+"}\n"+
 		"bar[FIELD_REF]{this.bar, LA;, I, bar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED)+"}\n"+
-		"bar[METHOD_REF]{CompletionSameSuperClass.this.bar(), LA;, ()V, bar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED)+"}\n"+
+		"bar[FUNCTION_REF]{CompletionSameSuperClass.this.bar(), LA;, ()V, bar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED)+"}\n"+
 		"bar[LOCAL_VARIABLE_REF]{bar, null, I, bar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-		"bar[METHOD_REF]{bar(), LA;, ()V, bar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
+		"bar[FUNCTION_REF]{bar(), LA;, ()V, bar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCompletionStaticMethod1() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionStaticMethod1() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
@@ -10681,10 +10681,10 @@ public void testCompletionStaticMethod1() throws JavaModelException {
 	    this.wc.codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"foo0[METHOD_REF]{CompletionStaticMethod1.this.foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
-				"foo0[METHOD_REF]{foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_REF]{CompletionStaticMethod1.foo(), LTypeWithAMethodAndAStaticMethod;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_REF]{foo(), LTypeWithAMethodAndAStaticMethod;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_NAME + R_NON_RESTRICTED) + "}",
+				"foo0[FUNCTION_REF]{CompletionStaticMethod1.this.foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
+				"foo0[FUNCTION_REF]{foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED) + "}\n" +
+				"foo[FUNCTION_REF]{CompletionStaticMethod1.foo(), LTypeWithAMethodAndAStaticMethod;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED) + "}\n" +
+				"foo[FUNCTION_REF]{foo(), LTypeWithAMethodAndAStaticMethod;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_NAME + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		if(aType != null) {
@@ -10692,8 +10692,8 @@ public void testCompletionStaticMethod1() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionStaticMethodDeclaration1() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionStaticMethodDeclaration1() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
@@ -10717,7 +10717,7 @@ public void testCompletionStaticMethodDeclaration1() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, LCompletionStaticMethodDeclaration1;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo0[METHOD_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo0[FUNCTION_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		if(aType != null) {
@@ -10725,8 +10725,8 @@ public void testCompletionStaticMethodDeclaration1() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionStaticMethodDeclaration2() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionStaticMethodDeclaration2() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
@@ -10752,7 +10752,7 @@ public void testCompletionStaticMethodDeclaration2() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, LCompletionStaticMethodDeclaration2$Inner1;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo0[METHOD_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo0[FUNCTION_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		if(aType != null) {
@@ -10760,8 +10760,8 @@ public void testCompletionStaticMethodDeclaration2() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionStaticMethodDeclaration3() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionStaticMethodDeclaration3() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
@@ -10787,7 +10787,7 @@ public void testCompletionStaticMethodDeclaration3() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, LCompletionStaticMethodDeclaration3$Inner1;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo0[METHOD_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo0[FUNCTION_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		if(aType != null) {
@@ -10795,8 +10795,8 @@ public void testCompletionStaticMethodDeclaration3() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionStaticMethodDeclaration4() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionStaticMethodDeclaration4() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
@@ -10824,7 +10824,7 @@ public void testCompletionStaticMethodDeclaration4() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, LLocal1;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo0[METHOD_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo0[FUNCTION_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		if(aType != null) {
@@ -10832,8 +10832,8 @@ public void testCompletionStaticMethodDeclaration4() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionStaticMethodDeclaration5() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionStaticMethodDeclaration5() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
@@ -10861,7 +10861,7 @@ public void testCompletionStaticMethodDeclaration5() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, LLocal1;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo0[METHOD_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo0[FUNCTION_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		if(aType != null) {
@@ -10869,8 +10869,8 @@ public void testCompletionStaticMethodDeclaration5() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionStaticMethodDeclaration6() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionStaticMethodDeclaration6() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/TypeWithAMethodAndAStaticMethod .js",
@@ -10898,7 +10898,7 @@ public void testCompletionStaticMethodDeclaration6() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, LTypeWithAMethodAndAStaticMethod;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo0[METHOD_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo0[FUNCTION_DECLARATION]{public void foo0(), LTypeWithAMethodAndAStaticMethod;, ()V, foo0, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		if(aType != null) {
@@ -10906,8 +10906,8 @@ public void testCompletionStaticMethodDeclaration6() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType() throws JavaModelException {
-	ICompilationUnit superClass = null;
+public void testCompletionSuperType() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass.js",
@@ -10938,11 +10938,11 @@ public void testCompletionSuperType() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType2() throws JavaModelException {
-	ICompilationUnit superClass = null;
-	ICompilationUnit superClass2 = null;
-	ICompilationUnit superInterface = null;
-	ICompilationUnit superInterface2 = null;
+public void testCompletionSuperType2() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
+	IJavaScriptUnit superClass2 = null;
+	IJavaScriptUnit superInterface = null;
+	IJavaScriptUnit superInterface2 = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass.js",
@@ -11003,11 +11003,11 @@ public void testCompletionSuperType2() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType3() throws JavaModelException {
-	ICompilationUnit superClass = null;
-	ICompilationUnit superClass2 = null;
-	ICompilationUnit superInterface = null;
-	ICompilationUnit superInterface2 = null;
+public void testCompletionSuperType3() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
+	IJavaScriptUnit superClass2 = null;
+	IJavaScriptUnit superInterface = null;
+	IJavaScriptUnit superInterface2 = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass.js",
@@ -11068,8 +11068,8 @@ public void testCompletionSuperType3() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType4() throws JavaModelException {
-	ICompilationUnit superClass2 = null;
+public void testCompletionSuperType4() throws JavaScriptModelException {
+	IJavaScriptUnit superClass2 = null;
 	try {
 		superClass2 = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass2.js",
@@ -11099,8 +11099,8 @@ public void testCompletionSuperType4() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType5() throws JavaModelException {
-	ICompilationUnit superInterface2 = null;
+public void testCompletionSuperType5() throws JavaScriptModelException {
+	IJavaScriptUnit superInterface2 = null;
 	try {
 		superInterface2 = getWorkingCopy(
 	            "/Completion/src/CompletionSuperInterface2.js",
@@ -11130,11 +11130,11 @@ public void testCompletionSuperType5() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType6() throws JavaModelException {
-	ICompilationUnit superClass = null;
-	ICompilationUnit superClass2 = null;
-	ICompilationUnit superInterface = null;
-	ICompilationUnit superInterface2 = null;
+public void testCompletionSuperType6() throws JavaScriptModelException {
+	IJavaScriptUnit superClass = null;
+	IJavaScriptUnit superClass2 = null;
+	IJavaScriptUnit superInterface = null;
+	IJavaScriptUnit superInterface2 = null;
 	try {
 		superClass = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass.js",
@@ -11195,8 +11195,8 @@ public void testCompletionSuperType6() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType7() throws JavaModelException {
-	ICompilationUnit superClass2 = null;
+public void testCompletionSuperType7() throws JavaScriptModelException {
+	IJavaScriptUnit superClass2 = null;
 	try {
 		superClass2 = getWorkingCopy(
 	            "/Completion/src/CompletionSuperClass2.js",
@@ -11226,8 +11226,8 @@ public void testCompletionSuperType7() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionSuperType8() throws JavaModelException {
-	ICompilationUnit superInterface2 = null;
+public void testCompletionSuperType8() throws JavaScriptModelException {
+	IJavaScriptUnit superInterface2 = null;
 	try {
 		superInterface2 = getWorkingCopy(
 	            "/Completion/src/CompletionSuperInterface2.js",
@@ -11257,9 +11257,9 @@ public void testCompletionSuperType8() throws JavaModelException {
 		}
 	}
 }
-public void testCompletionThrowStatement() throws JavaModelException {
+public void testCompletionThrowStatement() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionThrowStatement.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionThrowStatement.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Ex";
@@ -11270,9 +11270,9 @@ public void testCompletionThrowStatement() throws JavaModelException {
 		"element:Exception    completion:Exception    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXCEPTION + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionToplevelType1() throws JavaModelException {
+public void testCompletionToplevelType1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "p3", "CompletionToplevelType1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "p3", "CompletionToplevelType1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "CompletionToplevelType1";
@@ -11283,9 +11283,9 @@ public void testCompletionToplevelType1() throws JavaModelException {
 			"element:CompletionToplevelType1    completion:CompletionToplevelType1    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionType1() throws JavaModelException {
+public void testCompletionType1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionType1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionType1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "CT1";
@@ -11297,9 +11297,9 @@ public void testCompletionType1() throws JavaModelException {
 		"element:CT1    completion:q2.CT1    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionUnaryOperator1() throws JavaModelException {
+public void testCompletionUnaryOperator1() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator1.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator1.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -11312,9 +11312,9 @@ public void testCompletionUnaryOperator1() throws JavaModelException {
 			"element:var3    completion:var3    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 			requestor.getResults());
 }
-public void testCompletionUnaryOperator2() throws JavaModelException {
+public void testCompletionUnaryOperator2() throws JavaScriptModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator2.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnaryOperator2.js");
 
 		String str = cu.getSource();
 		String completeBehind = "var";
@@ -11330,9 +11330,9 @@ public void testCompletionUnaryOperator2() throws JavaModelException {
 /*
  * bug : http://dev.eclipse.org/bugs/show_bug.cgi?id=24440
  */
-public void testCompletionUnresolvedEnclosingType() throws JavaModelException {
+public void testCompletionUnresolvedEnclosingType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedEnclosingType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedEnclosingType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "new ZZZ(";
@@ -11342,9 +11342,9 @@ public void testCompletionUnresolvedEnclosingType() throws JavaModelException {
 	assertTrue(
 		requestor.getResults().length() == 0);
 }
-public void testCompletionUnresolvedFieldType() throws JavaModelException {
+public void testCompletionUnresolvedFieldType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedFieldType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedFieldType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -11355,9 +11355,9 @@ public void testCompletionUnresolvedFieldType() throws JavaModelException {
 		"element:barPlus    completion:barPlus()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionUnresolvedParameterType() throws JavaModelException {
+public void testCompletionUnresolvedParameterType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedParameterType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedParameterType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -11368,9 +11368,9 @@ public void testCompletionUnresolvedParameterType() throws JavaModelException {
 		"element:barPlus    completion:barPlus()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionUnresolvedReturnType() throws JavaModelException {
+public void testCompletionUnresolvedReturnType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedReturnType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionUnresolvedReturnType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "bar";
@@ -11381,9 +11381,9 @@ public void testCompletionUnresolvedReturnType() throws JavaModelException {
 		"element:barPlus    completion:barPlus()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInInitializer1() throws JavaModelException {
+public void testCompletionVariableInitializerInInitializer1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11398,9 +11398,9 @@ public void testCompletionVariableInitializerInInitializer1() throws JavaModelEx
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInInitializer2() throws JavaModelException {
+public void testCompletionVariableInitializerInInitializer2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11415,9 +11415,9 @@ public void testCompletionVariableInitializerInInitializer2() throws JavaModelEx
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInInitializer3() throws JavaModelException {
+public void testCompletionVariableInitializerInInitializer3() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11428,9 +11428,9 @@ public void testCompletionVariableInitializerInInitializer3() throws JavaModelEx
 		"element:Object    completion:Object    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInInitializer4() throws JavaModelException {
+public void testCompletionVariableInitializerInInitializer4() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer4.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInInitializer4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11441,9 +11441,9 @@ public void testCompletionVariableInitializerInInitializer4() throws JavaModelEx
 		"element:Object    completion:Object    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInMethod1() throws JavaModelException {
+public void testCompletionVariableInitializerInMethod1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11458,9 +11458,9 @@ public void testCompletionVariableInitializerInMethod1() throws JavaModelExcepti
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInMethod2() throws JavaModelException {
+public void testCompletionVariableInitializerInMethod2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "zz";
@@ -11475,9 +11475,9 @@ public void testCompletionVariableInitializerInMethod2() throws JavaModelExcepti
 		"element:zzlong    completion:zzlong    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInMethod3() throws JavaModelException {
+public void testCompletionVariableInitializerInMethod3() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod3.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod3.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11488,9 +11488,9 @@ public void testCompletionVariableInitializerInMethod3() throws JavaModelExcepti
 		"element:Object    completion:Object    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableInitializerInMethod4() throws JavaModelException {
+public void testCompletionVariableInitializerInMethod4() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod4.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableInitializerInMethod4.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Objec";
@@ -11504,9 +11504,9 @@ public void testCompletionVariableInitializerInMethod4() throws JavaModelExcepti
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25811
 */
-public void testCompletionVariableName1() throws JavaModelException {
+public void testCompletionVariableName1() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName1.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName1.js");
 
 	String str = cu.getSource();
 	String completeBehind = "TEST_FOO_MyClass ";
@@ -11518,14 +11518,14 @@ public void testCompletionVariableName1() throws JavaModelException {
 		"element:myClass    completion:myClass    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVariableName10() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName10() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -11552,19 +11552,19 @@ public void testCompletionVariableName10() throws JavaModelException {
 				"fooBarsuf[VARIABLE_DECLARATION]{fooBarsuf, null, LFooBar;, fooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NAME_LESS_NEW_CHARACTERS + R_NAME_FIRST_SUFFIX + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
-public void testCompletionVariableName11() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName11() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -11591,19 +11591,19 @@ public void testCompletionVariableName11() throws JavaModelException {
 				"preFooBarsuf[VARIABLE_DECLARATION]{preFooBarsuf, null, LFooBar;, preFooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NAME_FIRST_PREFIX + R_NAME_FIRST_SUFFIX + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
-public void testCompletionVariableName12() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName12() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -11630,19 +11630,19 @@ public void testCompletionVariableName12() throws JavaModelException {
 				"preTheFooBarsuf[VARIABLE_DECLARATION]{preTheFooBarsuf, null, LFooBar;, preTheFooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_FIRST_PREFIX + R_NAME_FIRST_SUFFIX + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
-public void testCompletionVariableName13() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName13() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -11669,19 +11669,19 @@ public void testCompletionVariableName13() throws JavaModelException {
 				"preFooBarsuf[VARIABLE_DECLARATION]{preFooBarsuf, null, LFooBar;, preFooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_FIRST_PREFIX + R_NAME_FIRST_SUFFIX + R_NAME_LESS_NEW_CHARACTERS + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
-public void testCompletionVariableName14() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName14() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -11708,20 +11708,20 @@ public void testCompletionVariableName14() throws JavaModelException {
 				"preTheFooBarsuf[VARIABLE_DECLARATION]{preTheFooBarsuf, null, LFooBar;, preTheFooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_FIRST_PREFIX + R_NAME_FIRST_SUFFIX + R_NAME_LESS_NEW_CHARACTERS + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=128045
-public void testCompletionVariableName15() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName15() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -11748,14 +11748,14 @@ public void testCompletionVariableName15() throws JavaModelException {
 				"proFooBarsuf[VARIABLE_DECLARATION]{proFooBarsuf, null, LFooBar;, proFooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_FIRST_SUFFIX + R_CASE + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName16() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName16() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11778,8 +11778,8 @@ public void testCompletionVariableName16() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName17() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName17() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11806,8 +11806,8 @@ public void testCompletionVariableName17() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName18() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName18() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11830,8 +11830,8 @@ public void testCompletionVariableName18() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName19() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName19() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11855,9 +11855,9 @@ public void testCompletionVariableName19() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25811
 */
-public void testCompletionVariableName2() throws JavaModelException {
+public void testCompletionVariableName2() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName2.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName2.js");
 
 	String str = cu.getSource();
 	String completeBehind = "Test_Bar_MyClass ";
@@ -11872,8 +11872,8 @@ public void testCompletionVariableName2() throws JavaModelException {
 		requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName20() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName20() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11906,8 +11906,8 @@ public void testCompletionVariableName20() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName21() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName21() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11933,8 +11933,8 @@ public void testCompletionVariableName21() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName22() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName22() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11963,8 +11963,8 @@ public void testCompletionVariableName22() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName23() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName23() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -11988,8 +11988,8 @@ public void testCompletionVariableName23() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName24() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName24() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12013,8 +12013,8 @@ public void testCompletionVariableName24() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName25() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName25() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12041,8 +12041,8 @@ public void testCompletionVariableName25() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName26() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName26() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12070,8 +12070,8 @@ public void testCompletionVariableName26() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName27() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName27() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12107,8 +12107,8 @@ public void testCompletionVariableName27() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName28() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName28() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12133,8 +12133,8 @@ public void testCompletionVariableName28() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName29() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName29() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12173,18 +12173,18 @@ public void testCompletionVariableName29() throws JavaModelException {
 			"var4[VARIABLE_DECLARATION]{var4, null, Ljava.lang.Object;, var4, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_FIRST_SUFFIX + R_NAME_FIRST_PREFIX + R_NAME_LESS_NEW_CHARACTERS + R_CASE + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
-public void testCompletionVariableName3() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"p1,p2"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"s1,s2"); //$NON-NLS-1$
+public void testCompletionVariableName3() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"p1,p2"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"s1,s2"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName3.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableName3.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "OneName ";
@@ -12212,14 +12212,14 @@ public void testCompletionVariableName3() throws JavaModelException {
 			"element:p2OneNames2    completion:p2OneNames2    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NAME_PREFIX + R_NAME_SUFFIX+ R_NON_RESTRICTED),
 			requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName30() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName30() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12242,8 +12242,8 @@ public void testCompletionVariableName30() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName31() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName31() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12266,8 +12266,8 @@ public void testCompletionVariableName31() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=150228
-public void testCompletionVariableName32() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName32() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12289,8 +12289,8 @@ public void testCompletionVariableName32() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=162743
-public void testCompletionVariableName33() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName33() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12315,8 +12315,8 @@ public void testCompletionVariableName33() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=162968
-public void testCompletionVariableName34() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableName34() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12341,8 +12341,8 @@ public void testCompletionVariableName34() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=166570
-public void testCompletionVariableName35() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testCompletionVariableName35() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
             "/Completion/src/test/Test.js",
             "package test;\n"+
@@ -12369,7 +12369,7 @@ public void testCompletionVariableName35() throws JavaModelException {
 			"zzzTest2[VARIABLE_DECLARATION]{zzzTest2, null, Ltest.Test2;, zzzTest2, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
-public void testCompletionVariableName4() throws JavaModelException {
+public void testCompletionVariableName4() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionVariableName4.js",
             "class FooBar {\n"+
@@ -12392,7 +12392,7 @@ public void testCompletionVariableName4() throws JavaModelException {
 			"theFooBar[VARIABLE_DECLARATION]{theFooBar, null, LFooBar;, theFooBar, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
-public void testCompletionVariableName5() throws JavaModelException {
+public void testCompletionVariableName5() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionVariableName5.js",
             "class FooBar {\n"+
@@ -12415,7 +12415,7 @@ public void testCompletionVariableName5() throws JavaModelException {
 			"theFooBar[VARIABLE_DECLARATION]{theFooBar, null, LFooBar;, theFooBar, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_LESS_NEW_CHARACTERS + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
-public void testCompletionVariableName6() throws JavaModelException {
+public void testCompletionVariableName6() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionVariableName6.js",
             "class FooBar {\n"+
@@ -12438,7 +12438,7 @@ public void testCompletionVariableName6() throws JavaModelException {
 			"theBar[VARIABLE_DECLARATION]{theBar, null, LFooBar;, theBar, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_LESS_NEW_CHARACTERS + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
-public void testCompletionVariableName7() throws JavaModelException {
+public void testCompletionVariableName7() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
             "/Completion/src/CompletionVariableName7.js",
             "class FooBar {\n"+
@@ -12462,14 +12462,14 @@ public void testCompletionVariableName7() throws JavaModelException {
 			requestor.getResults());
 }
 
-public void testCompletionVariableName8() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName8() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -12496,19 +12496,19 @@ public void testCompletionVariableName8() throws JavaModelException {
 				"theFooBarsuf[VARIABLE_DECLARATION]{theFooBarsuf, null, LFooBar;, theFooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_FIRST_SUFFIX + R_CASE + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
-public void testCompletionVariableName9() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object argumentPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
-	Object localPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
+public void testCompletionVariableName9() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object argumentPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pre"); //$NON-NLS-1$
+	Object localPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"suf"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 		this.wc = getWorkingCopy(
@@ -12535,13 +12535,13 @@ public void testCompletionVariableName9() throws JavaModelException {
 				"theFooBarsuf[VARIABLE_DECLARATION]{theFooBarsuf, null, LFooBar;, theFooBarsuf, null, "+(R_DEFAULT + R_INTERESTING + R_NAME_LESS_NEW_CHARACTERS + R_NAME_FIRST_SUFFIX + R_NON_RESTRICTED)+"}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
-		options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,argumentPrefixPreviousValue);
+		options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,localPrefixPreviousValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
-public void testCompletionVariableNameOfArray1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableNameOfArray1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionVariableNameOfArray1.js",
 		"public class CompletionVariableNameOfArray1 {\n"+
@@ -12558,8 +12558,8 @@ public void testCompletionVariableNameOfArray1() throws JavaModelException {
 		"objects[VARIABLE_DECLARATION]{objects, null, [Ljava.lang.Object;, objects, null, " + (R_DEFAULT + R_INTERESTING + R_CASE+ R_NAME_LESS_NEW_CHARACTERS + R_NON_RESTRICTED) + "}",
 		requestor.getResults());
 }
-public void testCompletionVariableNameOfArray2() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableNameOfArray2() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionVariableNameOfArray2.js",
 		"public class CompletionVariableNameOfArray2 {\n"+
@@ -12576,8 +12576,8 @@ public void testCompletionVariableNameOfArray2() throws JavaModelException {
 		"classes[VARIABLE_DECLARATION]{classes, null, [Ljava.lang.Class;, classes, null, " + (R_DEFAULT + R_INTERESTING + R_CASE+ R_NAME_LESS_NEW_CHARACTERS + R_NON_RESTRICTED) + "}",
 		requestor.getResults());
 }
-public void testCompletionVariableNameOfArray3() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableNameOfArray3() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionVariableNameOfArray3.js",
 		"public class CompletionVariableNameOfArray3 {\n"+
@@ -12594,8 +12594,8 @@ public void testCompletionVariableNameOfArray3() throws JavaModelException {
 		"objects[VARIABLE_DECLARATION]{objects, null, [[Ljava.lang.Object;, objects, null, " + (R_DEFAULT + R_INTERESTING + R_CASE+ R_NAME_LESS_NEW_CHARACTERS + R_NON_RESTRICTED) + "}",
 		requestor.getResults());
 }
-public void testCompletionVariableNameOfArray4() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testCompletionVariableNameOfArray4() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/CompletionVariableNameOfArray4.js",
 		"public class CompletionVariableNameOfArray4 {\n"+
@@ -12612,9 +12612,9 @@ public void testCompletionVariableNameOfArray4() throws JavaModelException {
 		"",
 		requestor.getResults());
 }
-public void testCompletionVariableNameUnresolvedType() throws JavaModelException {
+public void testCompletionVariableNameUnresolvedType() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableNameUnresolvedType.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVariableNameUnresolvedType.js");
 
 	String str = cu.getSource();
 	String completeBehind = "ob";
@@ -12626,15 +12626,15 @@ public void testCompletionVariableNameUnresolvedType() throws JavaModelException
 		"",
 		requestor.getResults());
 }
-public void testCompletionVisibilityCheckDisabled() throws JavaModelException {
+public void testCompletionVisibilityCheckDisabled() throws JavaScriptModelException {
 	String visibilityCheckID = "org.eclipse.wst.jsdt.core.codeComplete.visibilityCheck";
-	Hashtable options = JavaCore.getOptions();
+	Hashtable options = JavaScriptCore.getOptions();
 	Object visibilityCheckPreviousValue = options.get(visibilityCheckID);
 	options.put(visibilityCheckID,"disabled");
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 	
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.js");
 
 	String str = cu.getSource();
 	String completeBehind = "x.p";
@@ -12642,7 +12642,7 @@ public void testCompletionVisibilityCheckDisabled() throws JavaModelException {
 	cu.codeComplete(cursorLocation, requestor);
 	
 	options.put(visibilityCheckID,visibilityCheckPreviousValue);
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"should have three methods", 
 		"element:privateFoo    completion:privateFoo()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED)+"\n" +
@@ -12650,15 +12650,15 @@ public void testCompletionVisibilityCheckDisabled() throws JavaModelException {
 		"element:publicFoo    completion:publicFoo()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionVisibilityCheckEnabled() throws JavaModelException {
+public void testCompletionVisibilityCheckEnabled() throws JavaScriptModelException {
 	String visibilityCheckID = "org.eclipse.wst.jsdt.core.codeComplete.visibilityCheck";
-	Hashtable options = JavaCore.getOptions();
+	Hashtable options = JavaScriptCore.getOptions();
 	Object visibilityCheckPreviousValue = options.get(visibilityCheckID);
 	options.put(visibilityCheckID,"enabled");
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 	
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVisibilityCheck.js");
 
 	String str = cu.getSource();
 	String completeBehind = "x.p";
@@ -12666,7 +12666,7 @@ public void testCompletionVisibilityCheckEnabled() throws JavaModelException {
 	cu.codeComplete(cursorLocation, requestor);
 	
 	options.put(visibilityCheckID,visibilityCheckPreviousValue);
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"should have two methods", 
 		"element:protectedFoo    completion:protectedFoo()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED)+"\n" +
@@ -12676,9 +12676,9 @@ public void testCompletionVisibilityCheckEnabled() throws JavaModelException {
 /*
 * http://dev.eclipse.org/bugs/show_bug.cgi?id=25815
 */
-public void testCompletionVoidMethod() throws JavaModelException {
+public void testCompletionVoidMethod() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVoidMethod.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionVoidMethod.js");
 
 	String str = cu.getSource();
 	String completeBehind = "foo";
@@ -12691,9 +12691,9 @@ public void testCompletionVoidMethod() throws JavaModelException {
 		"element:foo3    completion:foo3()    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED+ R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void testCompletionWithBinaryFolder() throws JavaModelException {
+public void testCompletionWithBinaryFolder() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("Completion", "src", "", "CompletionWithBinaryFolder.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src", "", "CompletionWithBinaryFolder.js");
 
 	String str = cu.getSource();
 	String completeBehind = "My";
@@ -12707,8 +12707,8 @@ public void testCompletionWithBinaryFolder() throws JavaModelException {
 		requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=95167
-public void testCompletionWithProblem1() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void testCompletionWithProblem1() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src/test/AType.js",
@@ -12751,15 +12751,15 @@ public void testCompletionWithProblem1() throws JavaModelException {
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck1() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED); //$NON-NLS-1$
+public void testDeprecationCheck1() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
-		this.workingCopies = new ICompilationUnit[3];
+		this.workingCopies = new IJavaScriptUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -12792,21 +12792,21 @@ public void testDeprecationCheck1() throws JavaModelException {
 				"ZZZType2[TYPE_REF]{ZZZType2, deprecation, Ldeprecation.ZZZType2;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck10() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck10() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -12826,25 +12826,25 @@ public void testDeprecationCheck10() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"bar1[METHOD_REF]{bar1(), Ldeprecation.Test;, ()V, bar1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"bar2[METHOD_REF]{bar2(), Ldeprecation.Test;, ()V, bar2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"bar1[FUNCTION_REF]{bar1(), Ldeprecation.Test;, ()V, bar1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"bar2[FUNCTION_REF]{bar2(), Ldeprecation.Test;, ()V, bar2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck11() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED); //$NON-NLS-1$
+public void testDeprecationCheck11() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -12868,21 +12868,21 @@ public void testDeprecationCheck11() throws JavaModelException {
 				"bar2[FIELD_REF]{bar2, Ldeprecation.Test;, I, bar2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck12() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck12() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -12906,21 +12906,21 @@ public void testDeprecationCheck12() throws JavaModelException {
 				"bar2[FIELD_REF]{bar2, Ldeprecation.Test;, I, bar2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck13() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED); //$NON-NLS-1$
+public void testDeprecationCheck13() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -12944,21 +12944,21 @@ public void testDeprecationCheck13() throws JavaModelException {
 				"Test.Inner2[TYPE_REF]{Inner2, deprecation, Ldeprecation.Test$Inner2;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck14() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck14() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -12982,21 +12982,21 @@ public void testDeprecationCheck14() throws JavaModelException {
 				"Test.Inner2[TYPE_REF]{Inner2, deprecation, Ldeprecation.Test$Inner2;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck15() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck15() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13025,21 +13025,21 @@ public void testDeprecationCheck15() throws JavaModelException {
 				"",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck16() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck16() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13062,21 +13062,21 @@ public void testDeprecationCheck16() throws JavaModelException {
 				"ZZZType1[TYPE_REF]{ZZZType1, deprecation, Ldeprecation.ZZZType1;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127628
-public void testDeprecationCheck17() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck17() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13097,20 +13097,20 @@ public void testDeprecationCheck17() throws JavaModelException {
 				"Bug127628Type1[TYPE_REF]{Bug127628Type1, deprecation, Ldeprecation.Bug127628Type1;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck2() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck2() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
-		this.workingCopies = new ICompilationUnit[3];
+		this.workingCopies = new IJavaScriptUnit[3];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13142,21 +13142,21 @@ public void testDeprecationCheck2() throws JavaModelException {
 				"ZZZType1[TYPE_REF]{ZZZType1, deprecation, Ldeprecation.ZZZType1;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck3() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED); //$NON-NLS-1$
+public void testDeprecationCheck3() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 	
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13182,25 +13182,25 @@ public void testDeprecationCheck3() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"foo1[METHOD_REF]{foo1(), Ldeprecation.ZZZType1;, ()V, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
-				"foo2[METHOD_REF]{foo2(), Ldeprecation.ZZZType1;, ()V, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
+				"foo1[FUNCTION_REF]{foo1(), Ldeprecation.ZZZType1;, ()V, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
+				"foo2[FUNCTION_REF]{foo2(), Ldeprecation.ZZZType1;, ()V, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck4() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck4() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13226,24 +13226,24 @@ public void testDeprecationCheck4() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"foo1[METHOD_REF]{foo1(), Ldeprecation.ZZZType1;, ()V, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
+				"foo1[FUNCTION_REF]{foo1(), Ldeprecation.ZZZType1;, ()V, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck5() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED); //$NON-NLS-1$
+public void testDeprecationCheck5() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13271,21 +13271,21 @@ public void testDeprecationCheck5() throws JavaModelException {
 				"ZZZType1.Inner2[TYPE_REF]{Inner2, deprecation, Ldeprecation.ZZZType1$Inner2;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck6() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck6() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13312,21 +13312,21 @@ public void testDeprecationCheck6() throws JavaModelException {
 				"ZZZType1.Inner1[TYPE_REF]{Inner1, deprecation, Ldeprecation.ZZZType1$Inner1;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck7() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED); //$NON-NLS-1$
+public void testDeprecationCheck7() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13356,21 +13356,21 @@ public void testDeprecationCheck7() throws JavaModelException {
 				"foo2[FIELD_REF]{foo2, Ldeprecation.ZZZType1;, I, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck8() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED); //$NON-NLS-1$
+public void testDeprecationCheck8() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13399,21 +13399,21 @@ public void testDeprecationCheck8() throws JavaModelException {
 				"foo1[FIELD_REF]{foo1, Ldeprecation.ZZZType1;, I, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=127296
-public void testDeprecationCheck9() throws JavaModelException {
-	Hashtable options = JavaCore.getOptions();
-	Object optionValue = options.get(JavaCore.CODEASSIST_DEPRECATION_CHECK);
-	options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED); //$NON-NLS-1$
+public void testDeprecationCheck9() throws JavaScriptModelException {
+	Hashtable options = JavaScriptCore.getOptions();
+	Object optionValue = options.get(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK);
+	options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
 
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/deprecation/Test.js",
 			"package deprecation;"+
@@ -13433,17 +13433,17 @@ public void testDeprecationCheck9() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"bar1[METHOD_REF]{bar1(), Ldeprecation.Test;, ()V, bar1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"bar2[METHOD_REF]{bar2(), Ldeprecation.Test;, ()V, bar2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"bar1[FUNCTION_REF]{bar1(), Ldeprecation.Test;, ()V, bar1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"bar2[FUNCTION_REF]{bar2(), Ldeprecation.Test;, ()V, bar2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, optionValue);
+		JavaScriptCore.setOptions(options);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=144858
-public void testDuplicateLocals1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testDuplicateLocals1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -13470,12 +13470,12 @@ public void testDuplicateLocals1() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"bar[METHOD_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"bar[FUNCTION_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=144858
-public void testDuplicateLocals2() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testDuplicateLocals2() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -13506,12 +13506,12 @@ public void testDuplicateLocals2() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"bar[METHOD_REF]{bar(), Ltest.TestException;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"bar[FUNCTION_REF]{bar(), Ltest.TestException;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=144858
-public void testDuplicateLocals3() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testDuplicateLocals3() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -13539,12 +13539,12 @@ public void testDuplicateLocals3() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"bar[METHOD_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"bar[FUNCTION_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=144858
-public void testDuplicateLocals4() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testDuplicateLocals4() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -13573,12 +13573,12 @@ public void testDuplicateLocals4() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"bar[METHOD_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"bar[FUNCTION_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=144858
-public void testDuplicateLocals5() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testDuplicateLocals5() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -13607,12 +13607,12 @@ public void testDuplicateLocals5() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"bar[METHOD_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"bar[FUNCTION_REF]{bar(), Ltest.TestString;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=165662
-public void testDuplicateLocalsType1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testDuplicateLocalsType1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -13642,12 +13642,12 @@ public void testDuplicateLocalsType1() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"bar[METHOD_REF]{bar(), LLocal;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"bar[FUNCTION_REF]{bar(), LLocal;, ()V, bar, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=165662
-public void testDuplicateLocalsType2() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testDuplicateLocalsType2() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -13681,11 +13681,11 @@ public void testDuplicateLocalsType2() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"foo[METHOD_REF]{foo(), LLocal;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{foo(), LLocal;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=139937
-public void testEvaluationContextCompletion() throws JavaModelException {
+public void testEvaluationContextCompletion() throws JavaScriptModelException {
 	class EvaluationContextCompletionRequestor extends CompletionRequestor {
 		public boolean acceptContext;
 		public void accept(CompletionProposal proposal) {
@@ -13696,7 +13696,7 @@ public void testEvaluationContextCompletion() throws JavaModelException {
 		}
 	}
 	String start = "";
-	IJavaProject javaProject = getJavaProject("Completion");
+	IJavaScriptProject javaProject = getJavaProject("Completion");
 	IEvaluationContext context = javaProject.newEvaluationContext();
     EvaluationContextCompletionRequestor rc = new EvaluationContextCompletionRequestor();
 	context.codeComplete(start, start.length(), rc);
@@ -13704,7 +13704,7 @@ public void testEvaluationContextCompletion() throws JavaModelException {
 	assertTrue("acceptContext() method isn't call", rc.acceptContext);
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=140123
-public void testEvaluationContextCompletion2() throws JavaModelException {
+public void testEvaluationContextCompletion2() throws JavaScriptModelException {
 	class EvaluationContextCompletionRequestor extends CompletionRequestor {
 		public boolean acceptContext;
 		public boolean beginReporting;
@@ -13728,7 +13728,7 @@ public void testEvaluationContextCompletion2() throws JavaModelException {
 		}
 	}
 	String start = "";
-	IJavaProject javaProject = getJavaProject("Completion");
+	IJavaScriptProject javaProject = getJavaProject("Completion");
 	IEvaluationContext context = javaProject.newEvaluationContext();
     EvaluationContextCompletionRequestor rc = new EvaluationContextCompletionRequestor();
 	context.codeComplete(start, start.length(), rc);
@@ -13738,8 +13738,8 @@ public void testEvaluationContextCompletion2() throws JavaModelException {
 	assertTrue("endReporting() method isn't call", rc.endReporting);
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=140123
-public void testEvaluationContextCompletion3() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testEvaluationContextCompletion3() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/TestEvaluationContextCompletion3.js",
 		"package test;"+
@@ -13747,7 +13747,7 @@ public void testEvaluationContextCompletion3() throws JavaModelException {
 		"}");
 	
 	String start = "TestEvaluationContextCompletion3";
-	IJavaProject javaProject = getJavaProject("Completion");
+	IJavaScriptProject javaProject = getJavaProject("Completion");
 	IEvaluationContext context = javaProject.newEvaluationContext();
 	
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, false, false);
@@ -13770,8 +13770,8 @@ public void testEvaluationContextCompletion3() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=140123
-public void testEvaluationContextCompletion4() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testEvaluationContextCompletion4() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/TestEvaluationContextCompletion4.js",
 		"package test;"+
@@ -13779,7 +13779,7 @@ public void testEvaluationContextCompletion4() throws JavaModelException {
 		"}");
 	
 	String start = "TestEvaluationContextCompletion4";
-	IJavaProject javaProject = getJavaProject("Completion");
+	IJavaScriptProject javaProject = getJavaProject("Completion");
 	IEvaluationContext context = javaProject.newEvaluationContext();
 	
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, false, false);
@@ -13803,8 +13803,8 @@ public void testEvaluationContextCompletion4() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=141518
-public void testEvaluationContextCompletion5() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testEvaluationContextCompletion5() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/TestEvaluationContextCompletion5.js",
 		"package test;"+
@@ -13812,7 +13812,7 @@ public void testEvaluationContextCompletion5() throws JavaModelException {
 		"}");
 	
 	String start = "someVariable.to";
-	IJavaProject javaProject = getJavaProject("Completion");
+	IJavaScriptProject javaProject = getJavaProject("Completion");
 	IEvaluationContext context = javaProject.newEvaluationContext();
 	
 	context.newVariable( "Object", "someVariable", null );
@@ -13833,12 +13833,12 @@ public void testEvaluationContextCompletion5() throws JavaModelException {
             requestor.getContext());
     
 	assertResults(
-			"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED)+"}",
+			"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports001() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports001() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -13875,8 +13875,8 @@ public void testFavoriteImports001() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports002() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports002() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -13908,13 +13908,13 @@ public void testFavoriteImports002() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports003() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports003() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -13945,8 +13945,8 @@ public void testFavoriteImports003() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports004() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports004() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -13977,8 +13977,8 @@ public void testFavoriteImports004() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports005() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports005() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14015,8 +14015,8 @@ public void testFavoriteImports005() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports006() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports006() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14048,13 +14048,13 @@ public void testFavoriteImports006() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports007() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports007() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14087,13 +14087,13 @@ public void testFavoriteImports007() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports009() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports009() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14126,13 +14126,13 @@ public void testFavoriteImports009() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports011() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports011() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14165,13 +14165,13 @@ public void testFavoriteImports011() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports013() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports013() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14204,13 +14204,13 @@ public void testFavoriteImports013() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports016() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports016() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14244,14 +14244,14 @@ public void testFavoriteImports016() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class Test");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n"+
 			"Test.foo[TYPE_REF]{foo, test, Ltest.Test$foo;, null, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports017() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports017() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14280,12 +14280,12 @@ public void testFavoriteImports017() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.Test;, ()V, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
+			"foo[FUNCTION_REF]{foo(), Ltest.Test;, ()V, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports018() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports018() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14318,14 +14318,14 @@ public void testFavoriteImports018() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class Test");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n"+
 			"foo[FIELD_REF]{foo, Ltest.Test;, I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports019() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports019() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14358,14 +14358,14 @@ public void testFavoriteImports019() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class Test");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n"+
 			"foo[LOCAL_VARIABLE_REF]{foo, null, I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports020() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports020() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14398,15 +14398,15 @@ public void testFavoriteImports020() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class Test");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n"+
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, (I)I, foo, (i), ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, (I)I, foo, (i), ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports022() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports022() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14437,8 +14437,8 @@ public void testFavoriteImports022() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports023() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports023() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14476,8 +14476,8 @@ public void testFavoriteImports023() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports024() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports024() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14508,8 +14508,8 @@ public void testFavoriteImports024() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports025() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports025() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14540,8 +14540,8 @@ public void testFavoriteImports025() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports026() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports026() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14572,8 +14572,8 @@ public void testFavoriteImports026() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports027() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports027() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14604,8 +14604,8 @@ public void testFavoriteImports027() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports028() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports028() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -14635,19 +14635,19 @@ public void testFavoriteImports028() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports030() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testFavoriteImports030() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 				"/Completion/src3/test/Test.js",
 				"package test;\n" +
@@ -14679,23 +14679,23 @@ public void testFavoriteImports030() throws JavaModelException {
 		int start2 = str.lastIndexOf("public class");
 		int end2 = start2 + "".length();
 		assertResults(
-				"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+				"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 				"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports031() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testFavoriteImports031() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 				"/Completion/src3/test/Test.js",
 				"package test;\n" +
@@ -14727,15 +14727,15 @@ public void testFavoriteImports031() throws JavaModelException {
 		int start2 = str.lastIndexOf("public class");
 		int end2 = start2 + "".length();
 		assertResults(
-				"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+				"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 				"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 public void testInconsistentHierarchy1() throws CoreException, IOException {
-	this.workingCopies = new ICompilationUnit[1];
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/p/Test.js",
 		"package p;"+
@@ -14752,12 +14752,12 @@ public void testInconsistentHierarchy1() throws CoreException, IOException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 	assertResults(
-		"hashCode[METHOD_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+		"hashCode[FUNCTION_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 		requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=22072
-public void testLabel1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testLabel1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/label/Test.js",
 		"package label;"+
@@ -14786,8 +14786,8 @@ public void testLabel1() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=22072
-public void testLabel2() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testLabel2() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/label/Test.js",
 		"package label;"+
@@ -14817,8 +14817,8 @@ public void testLabel2() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=22072
-public void testLabel3() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testLabel3() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/label/Test.js",
 		"package label;"+
@@ -14845,8 +14845,8 @@ public void testLabel3() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=22072
-public void testLabel4() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testLabel4() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/label/Test.js",
 		"package label;"+
@@ -14874,8 +14874,8 @@ public void testLabel4() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=22072
-public void testLabel5() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testLabel5() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/label/Test.js",
 		"package label;"+
@@ -14904,8 +14904,8 @@ public void testLabel5() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=22072
-public void testLabel6() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testLabel6() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/label/Test.js",
 		"package label;"+
@@ -14935,14 +14935,14 @@ public void testLabel6() throws JavaModelException {
 			requestor.getResults());
 }
 public void testParameterNames1() throws CoreException, IOException {
-	Hashtable options = JavaCore.getOptions();
-	Object timeout = options.get(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC);
-	options.put(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC,"2000"); //$NON-NLS-1$
+	Hashtable options = JavaScriptCore.getOptions();
+	Object timeout = options.get(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC);
+	options.put(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC,"2000"); //$NON-NLS-1$
 	
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 
 	try {
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/p/Test.js",
 			"package p;"+
@@ -14968,19 +14968,19 @@ public void testParameterNames1() throws CoreException, IOException {
 			this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 			
 			assertResults(
-				"foo[METHOD_REF]{foo(), Ldoctest.X;, (Ljava.lang.Object;)V, foo, (param), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+				"foo[FUNCTION_REF]{foo(), Ldoctest.X;, (Ljava.lang.Object;)V, foo, (param), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 		} finally {
 			removeLibrary("Completion", "tmpDoc.jar");
 		}
 	} finally {
-		options.put(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, timeout);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, timeout);
+		JavaScriptCore.setOptions(options);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=22072
-public void testStaticMembers1() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void testStaticMembers1() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -15017,13 +15017,13 @@ public void testStaticMembers1() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"supeStaticMethod[METHOD_REF]{supeStaticMethod(), Ltest.SuperStaticMembers;, ()I, supeStaticMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
+			"supeStaticMethod[FUNCTION_REF]{supeStaticMethod(), Ltest.SuperStaticMembers;, ()I, supeStaticMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
 			"superStaticField[FIELD_REF]{superStaticField, Ltest.SuperStaticMembers;, I, superStaticField, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
 			"StaticMembers.Clazz[TYPE_REF]{Clazz, test, Ltest.StaticMembers$Clazz;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
 			"StaticMembers.StaticClazz[TYPE_REF]{StaticClazz, test, Ltest.StaticMembers$StaticClazz;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
 			"class[FIELD_REF]{class, null, Ljava.lang.Class;, class, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
 			"staticField[FIELD_REF]{staticField, Ltest.StaticMembers;, I, staticField, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
-			"staticMethod[METHOD_REF]{staticMethod(), Ltest.StaticMembers;, ()I, staticMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
+			"staticMethod[FUNCTION_REF]{staticMethod(), Ltest.StaticMembers;, ()I, staticMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}\n" +
 			"this[KEYWORD]{this, null, null, this, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }

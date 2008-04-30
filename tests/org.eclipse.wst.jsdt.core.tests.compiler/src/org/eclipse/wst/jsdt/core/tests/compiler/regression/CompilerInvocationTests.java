@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.compiler.CategorizedProblem;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.internal.compiler.CompilationResult;
@@ -659,7 +659,7 @@ public void runTaskTagsOptionsTest(
 		Map customOptions,
 		String expectedTags) {
 	TasksReader reader = new TasksReader();
-	Map options = JavaCore.getDefaultOptions();
+	Map options = JavaScriptCore.getDefaultOptions();
 	if (customOptions != null) {
 		options.putAll(customOptions);
 	}
@@ -701,7 +701,7 @@ public void test003_task_tags_options() {
 // reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
 public void _test004_task_tags_options() {
 	Map customOptions = new HashMap();
-	customOptions.put(JavaCore.COMPILER_TASK_PRIORITIES, "");
+	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, "");
 	this.runTaskTagsOptionsTest(
 		new String[] {
 			"X.java",
@@ -719,7 +719,7 @@ public void _test004_task_tags_options() {
 // reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
 public void _test005_task_tags_options() {
 	Map customOptions = new HashMap();
-	customOptions.put(JavaCore.COMPILER_TASK_PRIORITIES, ",,");
+	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, ",,");
 	this.runTaskTagsOptionsTest(
 		new String[] {
 			"X.java",
@@ -738,7 +738,7 @@ public void _test005_task_tags_options() {
 // reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
 public void _test006_task_tags_options() {
 	Map customOptions = new HashMap();
-	customOptions.put(JavaCore.COMPILER_TASK_PRIORITIES, "A,B,C,D,E");
+	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, "A,B,C,D,E");
 	this.runTaskTagsOptionsTest(
 		new String[] {
 			"X.java",
@@ -756,7 +756,7 @@ public void _test006_task_tags_options() {
 // effect of changing priorities
 public void test007_task_tags_options() {
 	Map customOptions = new HashMap();
-	customOptions.put(JavaCore.COMPILER_TASK_PRIORITIES, "NORMAL,NORMAL,NORMAL");
+	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, "NORMAL,NORMAL,NORMAL");
 	this.runTaskTagsOptionsTest(
 		new String[] {
 			"X.java",
@@ -774,7 +774,7 @@ public void test007_task_tags_options() {
 // reactivate when bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=143402 is fixed
 public void _test008_task_tags_options() {
 	Map customOptions = new HashMap();
-	customOptions.put(JavaCore.COMPILER_TASK_PRIORITIES, "NORMAL,NORMAL"); // one less than the number of tags
+	customOptions.put(JavaScriptCore.COMPILER_TASK_PRIORITIES, "NORMAL,NORMAL"); // one less than the number of tags
 	this.runTaskTagsOptionsTest(
 		new String[] {
 			"X.java",

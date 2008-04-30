@@ -19,14 +19,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.*;
 import org.eclipse.wst.jsdt.core.IBuffer;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class WorkingCopyNotInClasspathTests extends ModifyingResourceTests {
 
-	private ICompilationUnit workingCopy;
+	private IJavaScriptUnit workingCopy;
 
 public WorkingCopyNotInClasspathTests(String name) {
 	super(name);
@@ -44,7 +44,7 @@ public void setUp() throws Exception {
 		IFile file = this.createFile("P/txt/X.js",
 			"public class X {\n" +
 			"}");
-		ICompilationUnit cu = (ICompilationUnit)JavaCore.create(file);	
+		IJavaScriptUnit cu = (IJavaScriptUnit)JavaScriptCore.create(file);	
 		this.workingCopy = cu.getWorkingCopy(null);
 	} catch (CoreException e) {
 		e.printStackTrace();
@@ -65,7 +65,7 @@ public void tearDown() throws Exception {
 }
 
 public void testCommitWorkingCopy1() throws CoreException {
-	ICompilationUnit primary = this.workingCopy.getPrimary();
+	IJavaScriptUnit primary = this.workingCopy.getPrimary();
 	assertTrue("Primary element should not be null", primary != null);
 
 	IBuffer workingCopyBuffer = this.workingCopy.getBuffer();
@@ -86,11 +86,11 @@ public void testCommitWorkingCopy1() throws CoreException {
 		new String(Util.getResourceContentsAsCharArray(originalFile)));
 }
 /*
- * Ensures that commiting a non-primary working copy that is inside a folder that is excluded doesn't throw a JavaModelException
+ * Ensures that commiting a non-primary working copy that is inside a folder that is excluded doesn't throw a JavaScriptModelException
  * (regression test for bug 52355 Not present exception trying to create a class in excluded package)
  */
 public void testCommitWorkingCopy2() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		createJavaProject( "P2", new String[] {"src"}, null, null, null, "bin", null, null, new String[][] {new String[] {"p1/"}}, "1.4");
 		createFolder("/P2/src/p1/p2");
@@ -114,7 +114,7 @@ public void testExistence()  {
 	assertTrue("Working copy should exist", this.workingCopy.exists());
 }
 public void testGetSource() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createJavaProject("P1", new String[] {}, "bin");
 		this.createFolder("/P1/src/junit/test");
@@ -123,7 +123,7 @@ public void testGetSource() throws CoreException {
 			"public class X {\n" +
 			"}";
 		IFile file = this.createFile("/P1/src/junit/test/X.js", source);
-		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+		IJavaScriptUnit cu = JavaScriptCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		assertEquals(
 			"Unexpected source",
@@ -142,12 +142,12 @@ public void testParentExistence() {
  * (regression test for bug 40322 Error creating new Java projects)
  */
 public void testReconcileNonExistingProject() throws CoreException {
-	ICompilationUnit wc = null;
+	IJavaScriptUnit wc = null;
 	try {
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		IFile file = root.getProject("NonExisting").getFile("A.js");
-		wc = JavaCore.createCompilationUnitFrom(file).getWorkingCopy(null);
-		wc.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		wc = JavaScriptCore.createCompilationUnitFrom(file).getWorkingCopy(null);
+		wc.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 	} finally {
 		if (wc != null) {
 			wc.discardWorkingCopy();
@@ -159,15 +159,15 @@ public void testReconcileNonExistingProject() throws CoreException {
  * (regression test for bug 55421 Cannot save a .java file in a non-java project anymore)
  */
 public void testReconcileSimpleProject() throws CoreException {
-	ICompilationUnit wc = null;
+	IJavaScriptUnit wc = null;
 	try {
 	    IProject project = createProject("SimpleProject");
 		IFile file = project.getFile("A.js");
-		wc = JavaCore.createCompilationUnitFrom(file);
+		wc = JavaScriptCore.createCompilationUnitFrom(file);
 		ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
 		wc.becomeWorkingCopy(pbRequestor, null);
 		wc.getBuffer().setContents("public class A {}");
-		wc.reconcile(ICompilationUnit.NO_AST, true/*force problem detection*/, null, null);
+		wc.reconcile(IJavaScriptUnit.NO_AST, true/*force problem detection*/, null, null);
 	} finally {
 		if (wc != null) {
 			wc.discardWorkingCopy();
@@ -181,14 +181,14 @@ public void testReconcileSimpleProject() throws CoreException {
  * (regression test for bug 104486 newNotPresentException when reconciling CU in a non-java project)
  */
 public void testReconcileSimpleProject2() throws CoreException {
-	ICompilationUnit wc = null;
+	IJavaScriptUnit wc = null;
 	try {
 	    IProject project = createProject("SimpleProject");
 		IFile file = project.getFile("A.js");
-		wc = JavaCore.createCompilationUnitFrom(file);
+		wc = JavaScriptCore.createCompilationUnitFrom(file);
 		ReconcilerTests.ProblemRequestor pbRequestor = new ReconcilerTests.ProblemRequestor();
 		wc.becomeWorkingCopy(pbRequestor, null);
-		wc.reconcile(ICompilationUnit.NO_AST, true/*force problem detection*/, null, null);
+		wc.reconcile(IJavaScriptUnit.NO_AST, true/*force problem detection*/, null, null);
 	} finally {
 		if (wc != null) {
 			wc.discardWorkingCopy();
@@ -209,16 +209,16 @@ public void testSimpleProject() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+		IJavaScriptUnit cu = JavaScriptCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		try {
 			copy.getChildren();
-		} catch (JavaModelException e) {
-			assertTrue("Should not get JavaModelException", false);
+		} catch (JavaScriptModelException e) {
+			assertTrue("Should not get JavaScriptModelException", false);
 		}
 	} finally {
 		if (copy != null) {
-			((ICompilationUnit)copy).discardWorkingCopy();
+			((IJavaScriptUnit)copy).discardWorkingCopy();
 		}
 		deleteProject("SimpleProject");
 	}
@@ -228,7 +228,7 @@ public void testSimpleProject() throws CoreException {
  * Ensure that a primary cu (which is outside the classpath) does not exist.
  */
 public void testPrimaryExistence() {
-	ICompilationUnit primary = this.workingCopy.getPrimary();
+	IJavaScriptUnit primary = this.workingCopy.getPrimary();
 	assertTrue(
 		"Primary compilation unit should not exist", 
 		!primary.exists());
@@ -245,14 +245,14 @@ public void testIsOpen() {
  * Ensure that a primary cu (which is outside the classpath) is not opened.
  */
 public void testPrimaryIsOpen() {
-	ICompilationUnit original = this.workingCopy.getPrimary();
+	IJavaScriptUnit original = this.workingCopy.getPrimary();
 	assertTrue(
 		"Primary compilation should not be opened", 
 		!original.isOpen());
 }
 // 31799 - asking project options on non-Java project populates the perProjectInfo cache incorrectly
 public void testIsOnClasspath() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createProject("SimpleProject");
 		this.createFolder("/SimpleProject/src/junit/test");
@@ -261,11 +261,11 @@ public void testIsOnClasspath() throws CoreException {
 			"public class X {\n" +
 			"}";
 		IFile file = this.createFile("/SimpleProject/src/junit/test/X.js", source);
-		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+		IJavaScriptUnit cu = JavaScriptCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		
 		// working creation will cause it to open, and thus request project options
-		boolean isOnClasspath = copy.getJavaProject().isOnClasspath(copy);
+		boolean isOnClasspath = copy.getJavaScriptProject().isOnIncludepath(copy);
 		assertTrue("working copy shouldn't answer to isOnClasspath", !isOnClasspath);
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
@@ -275,14 +275,14 @@ public void testIsOnClasspath() throws CoreException {
 
 // 42281
 public void testReconcileAndCommit1() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createJavaProject("JavaProject", new String[] {"src"}, "bin");
 		this.createFolder("/JavaProject/src/native.1");
 		String source = 
 			"class X {}";
 		IFile file = this.createFile("/JavaProject/src/native.1/X.js", source);
-		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+		IJavaScriptUnit cu = JavaScriptCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		
 		IBuffer workingCopyBuffer = copy.getBuffer();
@@ -294,7 +294,7 @@ public void testReconcileAndCommit1() throws CoreException {
 			"}";
 			
 		workingCopyBuffer.setContents(newContents);
-		copy.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		copy.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		copy.commitWorkingCopy(true, null);
 		
 		IFile originalFile = (IFile)cu.getResource();
@@ -302,7 +302,7 @@ public void testReconcileAndCommit1() throws CoreException {
 			"Unexpected contents", 
 			newContents, 
 			new String(Util.getResourceContentsAsCharArray(originalFile)));
-	} catch(JavaModelException e) {
+	} catch(JavaScriptModelException e) {
 		e.printStackTrace();		
 		assertTrue("No exception should have occurred: "+ e.getMessage(), false);
 	} finally {
@@ -313,14 +313,14 @@ public void testReconcileAndCommit1() throws CoreException {
 
 // 41583
 public void testReconcileAndCommit2() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createProject("SimpleProject");
 		this.createFolder("/SimpleProject/src/native.1");
 		String source = 
 			"class X {}";
 		IFile file = this.createFile("/SimpleProject/src/native.1/X.js", source);
-		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+		IJavaScriptUnit cu = JavaScriptCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		
 		IBuffer workingCopyBuffer = copy.getBuffer();
@@ -332,7 +332,7 @@ public void testReconcileAndCommit2() throws CoreException {
 			"}";
 			
 		workingCopyBuffer.setContents(newContents);
-		copy.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		copy.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		copy.commitWorkingCopy(true, null);
 		IFile originalFile = (IFile)cu.getResource();
 		assertSourceEquals(
@@ -341,7 +341,7 @@ public void testReconcileAndCommit2() throws CoreException {
 			new String(Util.getResourceContentsAsCharArray(originalFile)));
 
 		assertTrue("buffer should not have been saved successfully", workingCopyBuffer.hasUnsavedChanges());
-	} catch(JavaModelException e) {
+	} catch(JavaScriptModelException e) {
 		e.printStackTrace();		
 		assertTrue("No exception should have occurred: "+ e.getMessage(), false);
 	} finally {
@@ -351,14 +351,14 @@ public void testReconcileAndCommit2() throws CoreException {
 }
 // 43879 - variation on 41583 (using primary working copy)
 public void testReconcileAndCommit3() throws CoreException {
-	ICompilationUnit primary = null;
+	IJavaScriptUnit primary = null;
 	try {
 		this.createProject("SimpleProject");
 		this.createFolder("/SimpleProject/src/native.1");
 		String source = 
 			"class X {}";
 		IFile file = this.createFile("/SimpleProject/src/native.1/X.js", source);
-		primary = JavaCore.createCompilationUnitFrom(file);
+		primary = JavaScriptCore.createCompilationUnitFrom(file);
 		primary.becomeWorkingCopy(null, null);
 		
 		IBuffer workingCopyBuffer = primary.getBuffer();
@@ -370,7 +370,7 @@ public void testReconcileAndCommit3() throws CoreException {
 			"}";
 			
 		workingCopyBuffer.setContents(newContents);
-		primary.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		primary.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		primary.commitWorkingCopy(true, null);
 		IFile originalFile = (IFile)primary.getResource();
 		assertSourceEquals(
@@ -379,7 +379,7 @@ public void testReconcileAndCommit3() throws CoreException {
 			new String(Util.getResourceContentsAsCharArray(originalFile)));
 
 		assertTrue("buffer should have been saved successfully", !workingCopyBuffer.hasUnsavedChanges());
-	} catch(JavaModelException e) {
+	} catch(JavaScriptModelException e) {
 		e.printStackTrace();		
 		assertTrue("No exception should have occurred: "+ e.getMessage(), false);
 	} finally {
@@ -389,14 +389,14 @@ public void testReconcileAndCommit3() throws CoreException {
 }
 // 44580 - invalid unit name
 public void testReconcileAndCommit4() throws CoreException {
-	ICompilationUnit primary = null;
+	IJavaScriptUnit primary = null;
 	try {
 		this.createProject("SimpleProject");
 		this.createFolder("/SimpleProject/src/native.1");
 		String source = 
 			"class X {}";
 		IFile file = this.createFile("/SimpleProject/src/native.1/some invalid name.js", source);
-		primary = JavaCore.createCompilationUnitFrom(file);
+		primary = JavaScriptCore.createCompilationUnitFrom(file);
 		primary.becomeWorkingCopy(null, null);
 		
 		IBuffer workingCopyBuffer = primary.getBuffer();
@@ -408,7 +408,7 @@ public void testReconcileAndCommit4() throws CoreException {
 			"}";
 			
 		workingCopyBuffer.setContents(newContents);
-		primary.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		primary.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		primary.commitWorkingCopy(true, null);
 		IFile originalFile = (IFile)primary.getResource();
 		assertSourceEquals(
@@ -417,7 +417,7 @@ public void testReconcileAndCommit4() throws CoreException {
 			new String(Util.getResourceContentsAsCharArray(originalFile)));
 
 		assertTrue("buffer should have been saved successfully", !workingCopyBuffer.hasUnsavedChanges());
-	} catch(JavaModelException e) {
+	} catch(JavaScriptModelException e) {
 		e.printStackTrace();		
 		assertTrue("No exception should have occurred: "+ e.getMessage(), false);
 	} finally {
@@ -428,7 +428,7 @@ public void testReconcileAndCommit4() throws CoreException {
 
 // 44580 - invalid unit name
 public void testReconcileAndCommit5() throws CoreException {
-	ICompilationUnit copy = null;
+	IJavaScriptUnit copy = null;
 	try {
 		this.createJavaProject("JavaProject", new String[] {"src"}, "bin");
 		this.createFolder("/JavaProject/src/p");
@@ -436,7 +436,7 @@ public void testReconcileAndCommit5() throws CoreException {
 			"package p; \n" +
 			"public class X {}";
 		IFile file = this.createFile("/JavaProject/src/invalid unit name.js", source);
-		ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+		IJavaScriptUnit cu = JavaScriptCore.createCompilationUnitFrom(file);
 		copy = cu.getWorkingCopy(null);
 		
 		IBuffer workingCopyBuffer = copy.getBuffer();
@@ -448,7 +448,7 @@ public void testReconcileAndCommit5() throws CoreException {
 			"}";
 			
 		workingCopyBuffer.setContents(newContents);
-		copy.reconcile(ICompilationUnit.NO_AST, true, null, null);
+		copy.reconcile(IJavaScriptUnit.NO_AST, true, null, null);
 		copy.commitWorkingCopy(true, null);
 		
 		IFile originalFile = (IFile)cu.getResource();
@@ -456,7 +456,7 @@ public void testReconcileAndCommit5() throws CoreException {
 			"Unexpected contents", 
 			newContents, 
 			new String(Util.getResourceContentsAsCharArray(originalFile)));
-	} catch(JavaModelException e) {
+	} catch(JavaScriptModelException e) {
 		e.printStackTrace();		
 		assertTrue("No exception should have occurred: "+ e.getMessage(), false);
 	} finally {

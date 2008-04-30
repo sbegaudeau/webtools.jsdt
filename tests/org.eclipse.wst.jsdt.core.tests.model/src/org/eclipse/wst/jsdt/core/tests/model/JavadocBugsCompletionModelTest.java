@@ -12,7 +12,7 @@ package org.eclipse.wst.jsdt.core.tests.model;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.codeassist.CompletionEngine;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
@@ -46,7 +46,7 @@ protected void setUp() throws Exception {
  * Bug 3270: [javadoc][assist] Javadoc content assist should show classes after @throws tag (1GDWWV9)
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=3270"
  */
-public void testBug3270() throws JavaModelException {
+public void testBug3270() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -67,7 +67,7 @@ public void testBug3270() throws JavaModelException {
 		);
 	}
 }
-public void testBug3270a() throws JavaModelException {
+public void testBug3270a() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -82,7 +82,7 @@ public void testBug3270a() throws JavaModelException {
 		"IllegalMonitorStateException[TYPE_REF]{IllegalMonitorStateException, java.lang, Ljava.lang.IllegalMonitorStateException;, null, null, "+this.positions+R_DICUNRE+"}"
 	);
 }
-public void testBug3270b() throws JavaModelException {
+public void testBug3270b() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -102,7 +102,7 @@ public void testBug3270b() throws JavaModelException {
  * Bug 22043: [javadoc][assist] Code Completion in Javadoc @see/@link doesn't work on partially entered argument types
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=22043"
  */
-public void testBug22043() throws JavaModelException {
+public void testBug22043() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"/**\n" + 
@@ -120,7 +120,7 @@ public void testBug22043() throws JavaModelException {
 	);
 }
 
-public void testBug22043a() throws JavaModelException {
+public void testBug22043a() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"/**\n" + 
@@ -132,11 +132,11 @@ public void testBug22043a() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/javadoc/bugs/BasicTestBugs.js", source, true, "thisIsAMethod", 2); // 2nd occurence
 	assertResults(
-		"thisIsAMethod[METHOD_REF]{thisIsAMethod(String), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.String;)V, thisIsAMethod, (param), "+this.positions+R_DICENNRNS+"}"
+		"thisIsAMethod[FUNCTION_REF]{thisIsAMethod(String), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.String;)V, thisIsAMethod, (param), "+this.positions+R_DICENNRNS+"}"
 	);
 }
 
-public void testBug22043b() throws JavaModelException {
+public void testBug22043b() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"/**\n" + 
@@ -148,11 +148,11 @@ public void testBug22043b() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/javadoc/bugs/BasicTestBugs.js", source, true, "thisIsAMethod(", 2); // 2nd occurence
 	assertResults(
-		"thisIsAMethod[METHOD_REF]{thisIsAMethod(String), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.String;)V, thisIsAMethod, (param), "+this.positions+R_DICENUNR+"}"
+		"thisIsAMethod[FUNCTION_REF]{thisIsAMethod(String), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.String;)V, thisIsAMethod, (param), "+this.positions+R_DICENUNR+"}"
 	);
 }
 
-public void testBug22043c() throws JavaModelException {
+public void testBug22043c() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"/**\n" + 
@@ -165,8 +165,8 @@ public void testBug22043c() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/javadoc/bugs/BasicTestBugs.js", source, true, "thisIsAMethod(", 2); // 2nd occurence
 	assertResults(
-		"thisIsAMethod[METHOD_REF]{thisIsAMethod(Object), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.Object;)V, thisIsAMethod, (str), "+this.positions+R_DICENUNR+"}\n" + 
-		"thisIsAMethod[METHOD_REF]{thisIsAMethod(String), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.String;)V, thisIsAMethod, (param), "+this.positions+R_DICENUNR+"}"
+		"thisIsAMethod[FUNCTION_REF]{thisIsAMethod(Object), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.Object;)V, thisIsAMethod, (str), "+this.positions+R_DICENUNR+"}\n" + 
+		"thisIsAMethod[FUNCTION_REF]{thisIsAMethod(String), Ljavadoc.bugs.BasicTestBugs;, (Ljava.lang.String;)V, thisIsAMethod, (param), "+this.positions+R_DICENUNR+"}"
 	);
 }
 
@@ -174,7 +174,7 @@ public void testBug22043c() throws JavaModelException {
  * Bug 67732: [javadoc][assist] Content assist doesn't work in Javadoc "line breaks"
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=67732"
  */
-public void testBug67732() throws JavaModelException {
+public void testBug67732() throws JavaScriptModelException {
 	String source =
 		"package javadoc.bugs;\n" + 
 		"/**\n" + 
@@ -185,7 +185,7 @@ public void testBug67732() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/javadoc/bugs/BasicTestBugs.js", source, true, "to");
 	assertSortedResults(
-		"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}"
+		"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}"
 	);
 }
 
@@ -193,7 +193,7 @@ public void testBug67732() throws JavaModelException {
  * Bug 68757: [javadoc][assist] inconsistent type qualification
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=68757"
  */
-public void testBug68757() throws JavaModelException {
+public void testBug68757() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -214,7 +214,7 @@ public void testBug68757() throws JavaModelException {
 		"OtherType[TYPE_REF]{OtherType, javadoc.tests, Ljavadoc.tests.OtherType;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void testBug68757a() throws JavaModelException {
+public void testBug68757a() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -234,7 +234,7 @@ public void testBug68757a() throws JavaModelException {
 		"OtherType[TYPE_REF]{javadoc.tests.OtherType, javadoc.tests, Ljavadoc.tests.OtherType;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
-public void testBug68757b() throws JavaModelException {
+public void testBug68757b() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -260,7 +260,7 @@ public void testBug68757b() throws JavaModelException {
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=75551"
  * TODO (frederic) fix while fixing bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=96237
  */
-public void _testBug75551() throws JavaModelException {
+public void _testBug75551() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -289,7 +289,7 @@ public void _testBug75551() throws JavaModelException {
  * Bug 86112: [javadoc][assist] Wrong reference to binary static initializer in javadoc
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=86112"
  */
-public void testBug86112() throws JavaModelException {
+public void testBug86112() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -309,18 +309,18 @@ public void testBug86112() throws JavaModelException {
 	};
 	completeInJavadoc(sources, true, "#", 0); // empty token
 	assertSortedResults(
-		"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"equals[METHOD_REF]{equals(Object), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+this.positions+R_DICNRNS+"}\n" + 
-		"finalize[METHOD_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"getClass[METHOD_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"hashCode[METHOD_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"notify[METHOD_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"notifyAll[METHOD_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"wait[METHOD_REF]{wait(long, int), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), "+this.positions+R_DICNRNS+"}\n" + 
-		"wait[METHOD_REF]{wait(long), Ljava.lang.Object;, (J)V, wait, (millis), "+this.positions+R_DICNRNS+"}\n" + 
-		"wait[METHOD_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, "+this.positions+R_DICNRNS+"}\n" + 
-		"Terminator[METHOD_REF<CONSTRUCTOR>]{Terminator(), Ljavadoc.bugs.Terminator;, ()V, Terminator, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"clone[FUNCTION_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"equals[FUNCTION_REF]{equals(Object), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), "+this.positions+R_DICNRNS+"}\n" + 
+		"finalize[FUNCTION_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"getClass[FUNCTION_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"hashCode[FUNCTION_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"notify[FUNCTION_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"notifyAll[FUNCTION_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"wait[FUNCTION_REF]{wait(long, int), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), "+this.positions+R_DICNRNS+"}\n" + 
+		"wait[FUNCTION_REF]{wait(long), Ljava.lang.Object;, (J)V, wait, (millis), "+this.positions+R_DICNRNS+"}\n" + 
+		"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"Terminator[FUNCTION_REF<CONSTRUCTOR>]{Terminator(), Ljavadoc.bugs.Terminator;, ()V, Terminator, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
@@ -328,7 +328,7 @@ public void testBug86112() throws JavaModelException {
  * Bug 87868: [javadoc][assist] Wrong reference to binary static initializer in javadoc
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=87868"
  */
-public void testBug87868() throws JavaModelException {
+public void testBug87868() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.bugs;\n" + 
@@ -340,7 +340,7 @@ public void testBug87868() throws JavaModelException {
 		"}";
 	completeInJavadoc("/Completion/src/javadoc/bugs/BasicTestBugs.js", source, true, "meth");
 	assertSortedResults(
-		"method[METHOD_REF]{method(Object), Ljavadoc.bugs.BasicTestBugs<TS;>;, (TS;)V, method, (s), "+this.positions+R_DICNRNS+"}"
+		"method[FUNCTION_REF]{method(Object), Ljavadoc.bugs.BasicTestBugs<TS;>;, (TS;)V, method, (s), "+this.positions+R_DICNRNS+"}"
 	);
 }
 
@@ -348,7 +348,7 @@ public void testBug87868() throws JavaModelException {
  * Bug 113374: [javadoc][assist] do not propose anything if the prefix is preceded by a special character
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=113374"
  */
-public void testBug113374a() throws JavaModelException {
+public void testBug113374a() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.bugs;\n" + 
@@ -360,7 +360,7 @@ public void testBug113374a() throws JavaModelException {
 	completeInJavadoc("/Completion/src/javadoc/bugs/BasicTestBugs.js", source, true, "co");
 	assertSortedResults("");
 }
-public void testBug113374b() throws JavaModelException {
+public void testBug113374b() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.bugs;\n" + 
@@ -377,7 +377,7 @@ public void testBug113374b() throws JavaModelException {
  * Bug 113376: [javadoc][assist] wrong overwrite range on completion followed by a tag
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=113376"
  */
-public void testBug113376a() throws JavaModelException {
+public void testBug113376a() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestFields.js",
@@ -399,7 +399,7 @@ public void testBug113376a() throws JavaModelException {
 		"Collection[TYPE_REF]{javadoc.util.Collection, javadoc.util, Ljavadoc.util.Collection;, null, null, "+this.positions+R_DICENQNR+"}"
 	);
 }
-public void testBug113376b() throws JavaModelException {
+public void testBug113376b() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestFields.js",
@@ -426,7 +426,7 @@ public void testBug113376b() throws JavaModelException {
  * Bug 114341: [javadoc][assist] range of the qualified type completion in javadoc text isn't corect
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=114341"
  */
-public void testBug114341a() throws JavaModelException {
+public void testBug114341a() throws JavaScriptModelException {
 	String source =
 		"package javadoc.text;\n" + 
 		"public class BasicTestTextIns {\n" + 
@@ -440,12 +440,12 @@ public void testBug114341a() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "Secondary.Mem");
 	assertSortedResults(
-		"Secondary.Member[JAVADOC_TYPE_REF]{{@link Member}, javadoc.text, Ljavadoc.text.Secondary$Member;, null, null, "+this.positions+R_DICNRIT+"}\n" + 
+		"Secondary.Member[JSDOC_TYPE_REF]{{@link Member}, javadoc.text, Ljavadoc.text.Secondary$Member;, null, null, "+this.positions+R_DICNRIT+"}\n" + 
 		"Secondary.Member[TYPE_REF]{Member, javadoc.text, Ljavadoc.text.Secondary$Member;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
 
-public void testBug114341b() throws JavaModelException {
+public void testBug114341b() throws JavaScriptModelException {
 	String source =
 		"package javadoc.text;\n" + 
 		"public class BasicTestTextIns {\n" + 
@@ -463,7 +463,7 @@ public void testBug114341b() throws JavaModelException {
 	);
 }
 
-public void testBug114341c() throws JavaModelException {
+public void testBug114341c() throws JavaScriptModelException {
 	String source =
 		"package javadoc.text;\n" + 
 		"public class BasicTestTextIns {\n" + 
@@ -480,7 +480,7 @@ public void testBug114341c() throws JavaModelException {
 		"Secondary.Member[TYPE_REF]{Member, javadoc.text, Ljavadoc.text.Secondary$Member;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
-public void testBug114341d() throws JavaModelException {
+public void testBug114341d() throws JavaScriptModelException {
 	String source =
 		"package javadoc.text;\n" + 
 		"public class BasicTestTextIns {\n" + 
@@ -494,12 +494,12 @@ public void testBug114341d() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/javadoc/text/BasicTestTextIns.js", source, true, "javadoc.text.Secondary.Mem");
 	assertSortedResults(
-		"Secondary.Member[JAVADOC_TYPE_REF]{{@link Member}, javadoc.text, Ljavadoc.text.Secondary$Member;, null, null, "+this.positions+R_DICNRIT+"}\n" + 
+		"Secondary.Member[JSDOC_TYPE_REF]{{@link Member}, javadoc.text, Ljavadoc.text.Secondary$Member;, null, null, "+this.positions+R_DICNRIT+"}\n" + 
 		"Secondary.Member[TYPE_REF]{Member, javadoc.text, Ljavadoc.text.Secondary$Member;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
 
-public void testBug114341e() throws JavaModelException {
+public void testBug114341e() throws JavaScriptModelException {
 	String source =
 		"package javadoc.text;\n" + 
 		"public class BasicTestTextIns {\n" + 
@@ -517,7 +517,7 @@ public void testBug114341e() throws JavaModelException {
 	);
 }
 
-public void testBug114341f() throws JavaModelException {
+public void testBug114341f() throws JavaScriptModelException {
 	String source =
 		"package javadoc.text;\n" + 
 		"public class BasicTestTextIns {\n" + 
@@ -539,7 +539,7 @@ public void testBug114341f() throws JavaModelException {
  * Bug 115662: [javadoc][assist] link completion in types
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=115662"
  */
-public void testBug115662a() throws JavaModelException {
+public void testBug115662a() throws JavaScriptModelException {
 	String source =
 		"package bugs.b115662;\n" + 
 		"/**\n" + 
@@ -550,12 +550,12 @@ public void testBug115662a() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b115662/Test.js", source, true, "to");
 	assertSortedResults(
-		"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}\n" + 
 		"toto[FIELD_REF]{toto, Lbugs.b115662.Tests;, I, toto, null, "+this.positions+R_DICNRNS+"}"
 	);
 }
 
-public void testBug115662b() throws JavaModelException {
+public void testBug115662b() throws JavaScriptModelException {
 	String source =
 		"package bugs.b115662;\n" + 
 		"/**\n" + 
@@ -566,12 +566,12 @@ public void testBug115662b() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b115662/Test.js", source, true, "to");
 	assertSortedResults(
-		"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}\n" + 
+		"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICNRNS+"}\n" + 
 		"toto[FIELD_REF]{toto, Lbugs.b115662.Tests;, I, toto, null, "+this.positions+R_DICNRNS+"}"
 	);
 }
 
-public void testBug115662c() throws JavaModelException {
+public void testBug115662c() throws JavaScriptModelException {
 	String source =
 		"package bugs.b115662;\n" + 
 		"/**\n" + 
@@ -582,7 +582,7 @@ public void testBug115662c() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b115662/Test.js", source, true, "toString");
 	assertSortedResults(
-		"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICENNRNS+"}"
+		"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, "+this.positions+R_DICENNRNS+"}"
 	);
 }
 
@@ -590,7 +590,7 @@ public void testBug115662c() throws JavaModelException {
  * Bug 117183: [javadoc][assist] No completion in text when cursor location is followed by a '.'
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=117183"
  */
-public void testBug117183a() throws JavaModelException {
+public void testBug117183a() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -608,11 +608,11 @@ public void testBug117183a() throws JavaModelException {
 	};
 	completeInJavadoc(sources, true, "Reference#A_");
 	assertSortedResults(
-		"A_STATIC_FIELD[JAVADOC_FIELD_REF]{{@link Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICNRIT+"}\n" + 
-		"A_STATIC_FIELD[JAVADOC_VALUE_REF]{{@value Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICNRIT+"}"
+		"A_STATIC_FIELD[JSDOC_FIELD_REF]{{@link Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICNRIT+"}\n" + 
+		"A_STATIC_FIELD[JSDOC_VALUE_REF]{{@value Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICNRIT+"}"
 	);
 }
-public void testBug117183b() throws JavaModelException {
+public void testBug117183b() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -630,11 +630,11 @@ public void testBug117183b() throws JavaModelException {
 	};
 	completeInJavadoc(sources, true, "Reference#A_STATIC_FIELD");
 	assertSortedResults(
-		"A_STATIC_FIELD[JAVADOC_FIELD_REF]{{@link Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICENNRIT+"}\n" + 
-		"A_STATIC_FIELD[JAVADOC_VALUE_REF]{{@value Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICENNRIT+"}"
+		"A_STATIC_FIELD[JSDOC_FIELD_REF]{{@link Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICENNRIT+"}\n" + 
+		"A_STATIC_FIELD[JSDOC_VALUE_REF]{{@value Reference#A_STATIC_FIELD}, Ljavadoc.bugs.Reference;, I, A_STATIC_FIELD, null, "+this.positions+R_DICENNRIT+"}"
 	);
 }
-public void testBug117183c() throws JavaModelException {
+public void testBug117183c() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -646,11 +646,11 @@ public void testBug117183c() throws JavaModelException {
 	};
 	completeInJavadoc(sources, true, "Obj");
 	assertSortedResults(
-		"Object[JAVADOC_TYPE_REF]{{@link Object}, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNRIT+"}\n" + 
+		"Object[JSDOC_TYPE_REF]{{@link Object}, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNRIT+"}\n" + 
 		"Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void testBug117183d() throws JavaModelException {
+public void testBug117183d() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/bugs/BasicTestBugs.js", 
 			"package javadoc.bugs;\n" + 
@@ -662,7 +662,7 @@ public void testBug117183d() throws JavaModelException {
 	};
 	completeInJavadoc(sources, true, "Str");
 	assertSortedResults(
-		"String[JAVADOC_TYPE_REF]{{@link String}, java.lang, Ljava.lang.String;, null, null, "+this.positions+R_DICUNRIT+"}\n" + 
+		"String[JSDOC_TYPE_REF]{{@link String}, java.lang, Ljava.lang.String;, null, null, "+this.positions+R_DICUNRIT+"}\n" + 
 		"String[TYPE_REF]{String, java.lang, Ljava.lang.String;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
@@ -671,7 +671,7 @@ public void testBug117183d() throws JavaModelException {
  * Bug 118105: [javadoc][assist] Hang with 100% CPU during code assist on comment
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=118105"
  */
-public void testBug118105() throws JavaModelException {
+public void testBug118105() throws JavaScriptModelException {
 	String source =
 		"package bugs.b118105;\n" + 
 		"/**\n" + 
@@ -689,7 +689,7 @@ public void testBug118105() throws JavaModelException {
  * Bug 118092: [javadoc][assist] Eclipse hangs on code assist when writing \u00B8<c
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=118092"
  */
-public void testBug118092() throws JavaModelException {
+public void testBug118092() throws JavaScriptModelException {
 	String source =
 		"package bugs.b118092;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -707,7 +707,7 @@ public void testBug118092() throws JavaModelException {
  * Bug 118311: [javadoc][assist] type \@ in javadoc comment and code assist == hang
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=118311"
  */
-public void testBug118311() throws JavaModelException {
+public void testBug118311() throws JavaScriptModelException {
 	String source =
 		"package bugs.b118311;\n" + 
 		"/**\n" + 
@@ -718,10 +718,10 @@ public void testBug118311() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b118311/BasicTestBugs.js", source, true, "@");
 	assertSortedResults(
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
@@ -729,7 +729,7 @@ public void testBug118311() throws JavaModelException {
  * Bug 118397: [javadoc][assist] type \@ in javadoc comment and code assist == hang
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=118397"
  */
-public void testBug118397a() throws JavaModelException {
+public void testBug118397a() throws JavaScriptModelException {
 	String source =
 		"package bugs.b118397;\n" + 
 		"/**\n" + 
@@ -742,7 +742,7 @@ public void testBug118397a() throws JavaModelException {
 		"bugs.b118397[PACKAGE_REF]{bugs.b118397, bugs.b118397, null, null, null, "+this.positions+R_DICQNR+"}"
 	);
 }
-public void testBug118397b() throws JavaModelException {
+public void testBug118397b() throws JavaScriptModelException {
 	String source =
 		"package bugs.b118397;\n" + 
 		"/**\n" + 
@@ -758,7 +758,7 @@ public void testBug118397b() throws JavaModelException {
 		"BasicTestReferences[TYPE_REF]{org.eclipse.wst.jsdt.core.tests.BasicTestReferences, org.eclipse.wst.jsdt.core.tests, Lorg.eclipse.wst.jsdt.core.tests.BasicTestReferences;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
-public void testBug118397c() throws JavaModelException {
+public void testBug118397c() throws JavaScriptModelException {
 	String source =
 		"package bugs.b118397;\n" + 
 		"/**\n" + 
@@ -777,7 +777,7 @@ public void testBug118397c() throws JavaModelException {
 		"BasicTestBugs.Inner[TYPE_REF]{Inner, bugs.b118397, Lbugs.b118397.BasicTestBugs$Inner;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
-public void testBug118397d() throws JavaModelException {
+public void testBug118397d() throws JavaScriptModelException {
 	String source =
 		"package bugs.b118397;\n" + 
 		"/**\n" + 
@@ -802,7 +802,7 @@ public void testBug118397d() throws JavaModelException {
  * @test Ensure that completion happens in an orphan javadoc (ie. a javadoc comment not attached to a declaration
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=139621"
  */
-public void testBug139621a() throws JavaModelException {
+public void testBug139621a() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -816,7 +816,7 @@ public void testBug139621a() throws JavaModelException {
 		"Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void testBug139621b() throws JavaModelException {
+public void testBug139621b() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"/**\n" + 
@@ -834,7 +834,7 @@ public void testBug139621b() throws JavaModelException {
 		"Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void testBug139621c() throws JavaModelException {
+public void testBug139621c() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -846,27 +846,27 @@ public void testBug139621c() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b139621/BasicTestBugs.js", source, true, "@");
 	assertSortedResults(
-		"author[JAVADOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"category[JAVADOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"deprecated[JAVADOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"exception[JAVADOC_BLOCK_TAG]{@exception, null, null, exception, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"inheritDoc[JAVADOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"param[JAVADOC_BLOCK_TAG]{@param, null, null, param, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"return[JAVADOC_BLOCK_TAG]{@return, null, null, return, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"see[JAVADOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"serial[JAVADOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"serialData[JAVADOC_BLOCK_TAG]{@serialData, null, null, serialData, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"serialField[JAVADOC_BLOCK_TAG]{@serialField, null, null, serialField, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"since[JAVADOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"throws[JAVADOC_BLOCK_TAG]{@throws, null, null, throws, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"version[JAVADOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"author[JSDOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"category[JSDOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"deprecated[JSDOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"exception[JSDOC_BLOCK_TAG]{@exception, null, null, exception, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"inheritDoc[JSDOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"param[JSDOC_BLOCK_TAG]{@param, null, null, param, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"return[JSDOC_BLOCK_TAG]{@return, null, null, return, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"see[JSDOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"serial[JSDOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"serialData[JSDOC_BLOCK_TAG]{@serialData, null, null, serialData, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"serialField[JSDOC_BLOCK_TAG]{@serialField, null, null, serialField, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"since[JSDOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"throws[JSDOC_BLOCK_TAG]{@throws, null, null, throws, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"version[JSDOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
-public void testBug139621d() throws JavaModelException {
+public void testBug139621d() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -879,14 +879,14 @@ public void testBug139621d() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b139621/BasicTestBugs.js", source, true, "@", 2);
 	assertSortedResults(
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"inheritDoc[JAVADOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"inheritDoc[JSDOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
-public void testBug139621e() throws JavaModelException {
+public void testBug139621e() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"/**\n" + 
@@ -905,7 +905,7 @@ public void testBug139621e() throws JavaModelException {
 		"Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void testBug139621f() throws JavaModelException {
+public void testBug139621f() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"/**\n" + 
@@ -924,7 +924,7 @@ public void testBug139621f() throws JavaModelException {
 		"Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void testBug139621g() throws JavaModelException {
+public void testBug139621g() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"/**\n" + 
@@ -936,7 +936,7 @@ public void testBug139621g() throws JavaModelException {
 		"Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void testBug139621h() throws JavaModelException {
+public void testBug139621h() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"/**\n" + 
@@ -946,20 +946,20 @@ public void testBug139621h() throws JavaModelException {
 		" */\n";
 	completeInJavadoc("/Completion/src/bugs/b139621/BasicTestBugs.js", source, true, "@");
 	assertSortedResults(
-		"author[JAVADOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"category[JAVADOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"deprecated[JAVADOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"see[JAVADOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"serial[JAVADOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"since[JAVADOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"version[JAVADOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"author[JSDOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"category[JSDOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"deprecated[JSDOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"see[JSDOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"serial[JSDOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"since[JSDOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"version[JSDOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
-public void testBug139621i() throws JavaModelException {
+public void testBug139621i() throws JavaScriptModelException {
 	String source =
 		"package bugs.b139621;\n" + 
 		"/**\n" + 
@@ -970,10 +970,10 @@ public void testBug139621i() throws JavaModelException {
 		" */\n";
 	completeInJavadoc("/Completion/src/bugs/b139621/BasicTestBugs.js", source, true, "@", 2);
 	assertSortedResults(
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
@@ -981,7 +981,7 @@ public void testBug139621i() throws JavaModelException {
  * Bug 144866: [assist][javadoc] Wrong completion inside @value tag
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=144866"
  */
-public void testBug144866() throws JavaModelException {
+public void testBug144866() throws JavaScriptModelException {
 	String source =
 		"package bugs.b144866;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -1005,7 +1005,7 @@ public void testBug144866() throws JavaModelException {
  * @test Ensure that tag is proposed when prefix match a tag case insensitive 
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=171016"
  */
-public void testBug171016() throws JavaModelException {
+public void testBug171016() throws JavaScriptModelException {
 	String source =
 		"package bugs.b171016;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -1019,10 +1019,10 @@ public void testBug171016() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b171016/BasicTestBugs.js", source, true, "{@In", 1);
 	assertSortedResults(
-		"inheritDoc[JAVADOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"inheritDoc[JSDOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
-public void testBug171016b() throws JavaModelException {
+public void testBug171016b() throws JavaScriptModelException {
 	String source =
 		"package bugs.b171016;\n" + 
 		"public class BasicTestBugs {\n" + 
@@ -1036,7 +1036,7 @@ public void testBug171016b() throws JavaModelException {
 		"}\n";
 	completeInJavadoc("/Completion/src/bugs/b171016/BasicTestBugs.js", source, true, "@In", 1);
 	assertSortedResults(
-		"inheritDoc[JAVADOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"inheritDoc[JSDOC_INLINE_TAG]{{@inheritDoc}, null, null, inheritDoc, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
@@ -1046,7 +1046,7 @@ public void testBug171016b() throws JavaModelException {
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=171031"
  */
 // TODO (eric) enable when bug will be fixed
-public void _testBug171031() throws JavaModelException {
+public void _testBug171031() throws JavaScriptModelException {
 	String source =
 		"package bugs.b171031;\n" + 
 		"public class BasicTestBugs {\n" + 

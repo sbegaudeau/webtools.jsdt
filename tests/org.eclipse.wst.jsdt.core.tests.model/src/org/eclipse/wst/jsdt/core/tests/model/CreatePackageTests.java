@@ -39,7 +39,7 @@ public void tearDown() throws Exception {
  * Verifies that the proper change deltas are generated as a side effect
  * of running the operation.
  */
-public void testCreatePackageFragment1() throws JavaModelException {
+public void testCreatePackageFragment1() throws JavaScriptModelException {
 	IPackageFragmentRoot root= getPackageFragmentRoot("P", "");
 	IPackageFragment frag= root.createPackageFragment("one.two.three", false, null);
 	assertCreation(frag);
@@ -60,7 +60,7 @@ public void testCreatePackageFragment1() throws JavaModelException {
  * Verifies that the proper change deltas are generated as a side effect
  * of running the operation.
  */
-public void testCreatePackageFragment2() throws JavaModelException {
+public void testCreatePackageFragment2() throws JavaScriptModelException {
 	IPackageFragmentRoot root = getPackageFragmentRoot("P", "");
 	IPackageFragment frag= root.createPackageFragment("one.two.three.four", false, null);
 	assertCreation(frag);
@@ -77,7 +77,7 @@ public void testCreatePackageFragment2() throws JavaModelException {
 /**
  * Ensures that a package fragment can be created for the default package
  */
-public void testCreatePackageFragment3() throws JavaModelException {
+public void testCreatePackageFragment3() throws JavaScriptModelException {
 	IPackageFragmentRoot root= getPackageFragmentRoot("P", "");
 	IPackageFragment frag= root.createPackageFragment("", false, null);
 	assertCreation(frag);
@@ -87,7 +87,7 @@ public void testCreatePackageFragment3() throws JavaModelException {
  * Ensures that a package fragment can be created even if its name is unconventional.
  * (regression test for 9479 exception on package creation (discouraged name))
  */
-public void testCreatePackageFragment4() throws JavaModelException {
+public void testCreatePackageFragment4() throws JavaScriptModelException {
 	IPackageFragmentRoot root= getPackageFragmentRoot("P", "");
 	IPackageFragment frag= root.createPackageFragment("A", false, null);
 	assertCreation(frag);
@@ -97,7 +97,7 @@ public void testCreatePackageFragment4() throws JavaModelException {
  * Ensures that a package fragment that already exists is not duplicated in the package
  * fragment root.
  */
-public void testDuplicatePackageFragment() throws JavaModelException {
+public void testDuplicatePackageFragment() throws JavaScriptModelException {
 	IPackageFragmentRoot root= getPackageFragmentRoot("P", "");
 	IPackageFragment frag= root.createPackageFragment("p",  false, null);
 	assertCreation(frag);
@@ -114,20 +114,20 @@ public void testInvalidPackageFragment() throws CoreException {
 	IPackageFragmentRoot root = getPackageFragmentRoot("P", "");
 	try {
 		root.createPackageFragment(null,  false, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Incorrect JavaModelException thrown for creating an package fragment with invalid name", jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_NAME);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Incorrect JavaScriptModelException thrown for creating an package fragment with invalid name", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_NAME);
 		try {
 			root.createPackageFragment("java.jfg.",  false, null);
-		} catch (JavaModelException jme2) {
-			assertTrue("Incorrect JavaModelException thrown for creating a package fragment with invalid name", jme2.getStatus().getCode() == IJavaModelStatusConstants.INVALID_NAME);
+		} catch (JavaScriptModelException jme2) {
+			assertTrue("Incorrect JavaScriptModelException thrown for creating a package fragment with invalid name", jme2.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_NAME);
 			try {
 				root.createPackageFragment("p.other", false, null);
-			} catch (JavaModelException jme3) {
-				assertTrue("Incorrect JavaModelException thrown for creating a package fragment that collides with a file", jme3.getStatus().getCode() == IJavaModelStatusConstants.NAME_COLLISION);
+			} catch (JavaScriptModelException jme3) {
+				assertTrue("Incorrect JavaScriptModelException thrown for creating a package fragment that collides with a file", jme3.getStatus().getCode() == IJavaScriptModelStatusConstants.NAME_COLLISION);
 				return;
 			}
 		}
 	}
-	assertTrue("No JavaModelException thrown for creating a package fragment with an invalid parameters", false);
+	assertTrue("No JavaScriptModelException thrown for creating a package fragment with an invalid parameters", false);
 }
 }

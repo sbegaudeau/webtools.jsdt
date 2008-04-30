@@ -15,7 +15,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.*;
@@ -47,9 +47,9 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("package test0001;\n");
 		buf.append("public class X {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -73,9 +73,9 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("import java.awt.*;\n");
 		buf.append("public class X {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -107,9 +107,9 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -144,9 +144,9 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("class Z {\n");
 		buf.append("\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
@@ -187,9 +187,9 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 //		buf.append("public class X {\n");
 //		buf.append("\n");
 //		buf.append("}\n");
-//		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 //		
-//		CompilationUnit astRoot= parseCompilationUnit(cu, false);
+//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
 //		
 //		astRoot.recordModifications();
 //		
@@ -224,15 +224,15 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("        bar3();\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
 		List types = astRoot.types();
 		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-		MethodDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
+		FunctionDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
 		Block body = methodDeclaration.getBody();
 		List statements = body.statements();
 		statements.remove(1);
@@ -267,9 +267,9 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 //		buf.append("    \n");
 //		buf.append("    }\n");
 //		buf.append("}\n");
-//		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 //		
-//		CompilationUnit astRoot= parseCompilationUnit(cu, false);
+//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
 //		
 //		astRoot.recordModifications();
 //		
@@ -310,9 +310,9 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 //		buf.append("    \n");
 //		buf.append("    }\n");
 //		buf.append("}\n");
-//		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+//		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 //		
-//		CompilationUnit astRoot= parseCompilationUnit(cu, false);
+//		JavaScriptUnit astRoot= parseCompilationUnit(cu, false);
 //		
 //		astRoot.recordModifications();
 //		
@@ -354,15 +354,15 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("    void foo2() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
 		List types = astRoot.types();
 		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-		MethodDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
+		FunctionDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
 		typeDeclaration.bodyDeclarations().remove(methodDeclaration);
 		
 		String preview = evaluateRewrite(cu, astRoot);
@@ -396,15 +396,15 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("\n");
 		buf.append("    // comment5\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
 		List types = astRoot.types();
 		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-		MethodDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
+		FunctionDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
 		typeDeclaration.bodyDeclarations().remove(methodDeclaration);
 		
 		String preview = evaluateRewrite(cu, astRoot);
@@ -437,15 +437,15 @@ public class ASTRewritingModifyingRemoveTest extends ASTRewritingModifyingTest {
 		buf.append("    private void foo2(){\n");
 		buf.append("    }\n");	
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("X.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createCU(cu, false);
+		JavaScriptUnit astRoot= createCU(cu, false);
 		
 		astRoot.recordModifications();
 		
 		List types = astRoot.types();
 		TypeDeclaration typeDeclaration = (TypeDeclaration)types.get(0);
-		MethodDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
+		FunctionDeclaration methodDeclaration = typeDeclaration.getMethods()[0];
 		typeDeclaration.bodyDeclarations().remove(methodDeclaration);
 		
 		String preview = evaluateRewrite(cu, astRoot);

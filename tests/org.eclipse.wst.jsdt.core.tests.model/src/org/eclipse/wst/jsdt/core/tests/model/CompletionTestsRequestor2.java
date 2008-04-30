@@ -239,13 +239,13 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 				buffer.append("LOCAL_VARIABLE_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.METHOD_DECLARATION :
-				buffer.append("METHOD_DECLARATION"); //$NON-NLS-1$
+				buffer.append("FUNCTION_DECLARATION"); //$NON-NLS-1$
 				if(proposal.isConstructor()) {
 					buffer.append("<CONSTRUCTOR>"); //$NON-NLS-1$
 				}
 				break;
 			case CompletionProposal.METHOD_REF :
-				buffer.append("METHOD_REF"); //$NON-NLS-1$
+				buffer.append("FUNCTION_REF"); //$NON-NLS-1$
 				if(proposal.isConstructor()) {
 					buffer.append("<CONSTRUCTOR>"); //$NON-NLS-1$
 				}
@@ -268,26 +268,26 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF :
 				buffer.append("ANNOTATION_ATTRIBUTE_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_BLOCK_TAG :
-				buffer.append("JAVADOC_BLOCK_TAG"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_BLOCK_TAG :
+				buffer.append("JSDOC_BLOCK_TAG"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_INLINE_TAG :
-				buffer.append("JAVADOC_INLINE_TAG"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_INLINE_TAG :
+				buffer.append("JSDOC_INLINE_TAG"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_FIELD_REF:
-				buffer.append("JAVADOC_FIELD_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_FIELD_REF:
+				buffer.append("JSDOC_FIELD_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_METHOD_REF :
-				buffer.append("JAVADOC_METHOD_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_METHOD_REF :
+				buffer.append("JSDOC_METHOD_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_TYPE_REF :
-				buffer.append("JAVADOC_TYPE_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_TYPE_REF :
+				buffer.append("JSDOC_TYPE_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_PARAM_REF :
-				buffer.append("JAVADOC_PARAM_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_PARAM_REF :
+				buffer.append("JSDOC_PARAM_REF"); //$NON-NLS-1$
 				break;
-			case CompletionProposal.JAVADOC_VALUE_REF :
-				buffer.append("JAVADOC_VALUE_REF"); //$NON-NLS-1$
+			case CompletionProposal.JSDOC_VALUE_REF :
+				buffer.append("JSDOC_VALUE_REF"); //$NON-NLS-1$
 				break;
 			case CompletionProposal.FIELD_IMPORT :
 				buffer.append("FIELD_IMPORT"); //$NON-NLS-1$
@@ -422,7 +422,7 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 				return new String(Signature.getSignatureSimpleName(proposal.getDeclarationSignature()));
 			case CompletionProposal.TYPE_REF :
 			case CompletionProposal.TYPE_IMPORT :
-			case CompletionProposal.JAVADOC_TYPE_REF :
+			case CompletionProposal.JSDOC_TYPE_REF :
 				return new String(Signature.getSignatureSimpleName(proposal.getSignature()));
 			case CompletionProposal.FIELD_REF :
 			case CompletionProposal.KEYWORD:
@@ -434,12 +434,12 @@ public class CompletionTestsRequestor2 extends CompletionRequestor {
 			case CompletionProposal.POTENTIAL_METHOD_DECLARATION:
 			case CompletionProposal.METHOD_NAME_REFERENCE:
 			case CompletionProposal.ANNOTATION_ATTRIBUTE_REF:
-			case CompletionProposal.JAVADOC_BLOCK_TAG :
-			case CompletionProposal.JAVADOC_INLINE_TAG :
-			case CompletionProposal.JAVADOC_FIELD_REF:
-			case CompletionProposal.JAVADOC_METHOD_REF :
-			case CompletionProposal.JAVADOC_PARAM_REF :
-			case CompletionProposal.JAVADOC_VALUE_REF :
+			case CompletionProposal.JSDOC_BLOCK_TAG :
+			case CompletionProposal.JSDOC_INLINE_TAG :
+			case CompletionProposal.JSDOC_FIELD_REF:
+			case CompletionProposal.JSDOC_METHOD_REF :
+			case CompletionProposal.JSDOC_PARAM_REF :
+			case CompletionProposal.JSDOC_VALUE_REF :
 			case CompletionProposal.FIELD_IMPORT :
 			case CompletionProposal.METHOD_IMPORT :
 				return new String(proposal.getName());

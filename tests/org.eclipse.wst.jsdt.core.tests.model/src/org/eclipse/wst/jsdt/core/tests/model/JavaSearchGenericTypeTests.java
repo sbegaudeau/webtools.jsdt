@@ -13,9 +13,9 @@ package org.eclipse.wst.jsdt.core.tests.model;
 import junit.framework.Test;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.internal.core.ResolvedSourceType;
 
@@ -101,7 +101,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	 */
 	/*
 	 * Following functionalities are tested:
-	 * 	A) Search using an IJavaElement
+	 * 	A) Search using an IJavaScriptElement
 	 * 		a) single parameter generic types
 	 * 		b) multiple parameters generic types
 	 * 	B) Search using a not parameterized string pattern
@@ -121,7 +121,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	// Source type pattern on single type argument
 	public void testTypeSingleArgument01() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/s/def/Generic.js").getType("Generic");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R1.java [g1.t.s.def.Generic] EQUIVALENT_RAW_MATCH\n" + 
@@ -167,7 +167,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeSingleArgument02() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/s/def/Generic.js").getType("Generic").getType("Member");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R4.java g1.t.s.ref.R4.gen [Generic.Member] ERASURE_RAW_MATCH\n" + 
@@ -186,7 +186,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeSingleArgument03() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/s/def/Generic.js").getType("Generic").getType("MemberGeneric");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R3.java g1.t.s.ref.R3.gen [Generic.MemberGeneric] ERASURE_RAW_MATCH\n" + 
@@ -205,7 +205,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeSingleArgument04() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/s/def/NonGeneric.js").getType("NonGeneric").getType("GenericMember");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R2.java g1.t.s.ref.R2.gen [NonGeneric.GenericMember] ERASURE_RAW_MATCH\n" + 
@@ -226,7 +226,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	// Source type pattern on multiple type arguments
 	public void testTypeMultipleArguments01() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/m/def/Generic.js").getType("Generic");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java [g1.t.m.def.Generic] EQUIVALENT_RAW_MATCH\n" + 
@@ -272,7 +272,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeMultipleArguments02() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/m/def/Generic.js").getType("Generic").getType("Member");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R4.java g1.t.m.ref.R4.gen [Generic.Member] ERASURE_RAW_MATCH\n" + 
@@ -291,7 +291,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeMultipleArguments03() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/m/def/Generic.js").getType("Generic").getType("MemberGeneric");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [Generic.MemberGeneric] ERASURE_RAW_MATCH\n" + 
@@ -310,7 +310,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeMultipleArguments04() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g1/t/m/def/NonGeneric.js").getType("NonGeneric").getType("GenericMember");
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R2.java g1.t.m.ref.R2.gen [NonGeneric.GenericMember] ERASURE_RAW_MATCH\n" + 
@@ -331,8 +331,8 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	// Source type pattern on nested single type argument
 	public void testTypeNestedSingleArgument01() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/GS.js").getType("GS");
-		ICompilationUnit ref = getCompilationUnit("JavaSearch15/src/g3/t/ref/R1.js");
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new ICompilationUnit[] {ref});
+		IJavaScriptUnit ref = getCompilationUnit("JavaSearch15/src/g3/t/ref/R1.js");
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptUnit[] {ref});
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R1.java [g3.t.def.GS] EQUIVALENT_RAW_MATCH\n" + 
@@ -370,7 +370,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeNestedSingleArgument02() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/GS.js").getType("GS").getType("Member");
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R2.java g3.t.ref.R2.sgsm_wld [GS<GM<?, ?, ?>.Member>.Member] ERASURE_MATCH\n" + 
@@ -407,7 +407,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeNestedSingleArgument03() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/GS.js").getType("GS").getType("Generic");
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R3.java g3.t.ref.R3.sgsm_wld [GS<GM<?, ?, ?>.Generic<?, ?, ?>>.Generic] ERASURE_MATCH\n" + 
@@ -444,7 +444,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeNestedSingleArgument04() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/NGS.js").getType("NGS").getType("Generic");
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R4.java g3.t.ref.R4.sgsm_wld [NGS.Generic] ERASURE_MATCH\n" + 
@@ -483,8 +483,8 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	// Source type pattern on nested multiple type arguments
 	public void testTypeNestedMultipleArguments01() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/GM.js").getType("GM");
-		ICompilationUnit ref = getCompilationUnit("JavaSearch15/src/g3/t/ref/R1.js");
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new ICompilationUnit[] {ref});
+		IJavaScriptUnit ref = getCompilationUnit("JavaSearch15/src/g3/t/ref/R1.js");
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptUnit[] {ref});
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R1.java [g3.t.def.GM] EQUIVALENT_RAW_MATCH\n" + 
@@ -510,7 +510,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeNestedMultipleArguments02() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/GM.js").getType("GM").getType("Member");
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R2.java g3.t.ref.R2.sgsm_wld [GM<?, ?, ?>.Member] ERASURE_MATCH\n" + 
@@ -535,7 +535,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeNestedMultipleArguments03() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/GM.js").getType("GM").getType("Generic");
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R3.java g3.t.ref.R3.sgsm_wld [GM<?, ?, ?>.Generic] ERASURE_MATCH\n" + 
@@ -560,7 +560,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	}
 	public void testTypeNestedMultipleArguments04() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g3/t/def/NGM.js").getType("NGM").getType("Generic");
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R4.java g3.t.ref.R4.sgsm_wld [NGM.Generic] ERASURE_MATCH\n" + 
@@ -586,7 +586,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// String pattern with no type argument
 	public void testStringNoArgument01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.s.ref", false /* only this package */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.s.ref", false /* only this package */);
 		search("Generic", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R1.java [Generic] EXACT_RAW_MATCH\n" + 
@@ -631,7 +631,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNoArgument02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.m.ref", false /* only this package */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.m.ref", false /* only this package */);
 		search("Generic", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java [Generic] EXACT_RAW_MATCH\n" + 
@@ -676,7 +676,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNoArgument03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Member", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R4.java g1.t.m.ref.R4.gen [Member] EXACT_RAW_MATCH\n" + 
@@ -706,7 +706,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNoArgument04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("MemberGeneric", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [MemberGeneric] EXACT_RAW_MATCH\n" + 
@@ -736,7 +736,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNoArgument05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("GenericMember", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R2.java g1.t.m.ref.R2.gen [GenericMember] EXACT_RAW_MATCH\n" + 
@@ -766,7 +766,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNoArgument06() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic.Member", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R4.java g1.t.m.ref.R4.gen [Generic.Member] EXACT_RAW_MATCH\n" +
@@ -796,7 +796,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNoArgument07() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic.MemberGeneric", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [Generic.MemberGeneric] EXACT_RAW_MATCH\n" +
@@ -826,7 +826,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNoArgument08() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("NonGeneric.GenericMember", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R2.java g1.t.m.ref.R2.gen [NonGeneric.GenericMember] EXACT_RAW_MATCH\n" +
@@ -858,9 +858,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// Parameterized Source type pattern on single type argument
 	public void testParameterizedTypeSingleArgument01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R1.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R1.js");
 		ResolvedSourceType type = selectParameterizedType(unit, "Generic<Exception>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R1.java [g1.t.s.def.Generic] EQUIVALENT_RAW_MATCH\n" + 
@@ -905,9 +905,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedTypeSingleArgument02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R4.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R4.js");
 		ResolvedSourceType type = selectParameterizedType(unit, "g1.t.s.def.Generic<Exception>.Member"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R4.java g1.t.s.ref.R4.gen [Generic.Member] EQUIVALENT_RAW_MATCH\n" + 
@@ -925,9 +925,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedTypeSingleArgument03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R2.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R2.js");
 		ResolvedSourceType type = selectParameterizedType(unit, "NonGeneric.GenericMember<Exception>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R2.java g1.t.s.ref.R2.gen [NonGeneric.GenericMember] EQUIVALENT_RAW_MATCH\n" + 
@@ -945,9 +945,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedTypeSingleArgument04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R3.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/s/ref/R3.js");
 		ResolvedSourceType type = selectParameterizedType(unit,  "g1.t.s.def.Generic<Exception>.MemberGeneric<Exception>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R3.java g1.t.s.ref.R3.gen [Generic.MemberGeneric] EQUIVALENT_RAW_MATCH\n" + 
@@ -967,9 +967,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// Parameterized Source type pattern on multiple type arguments
 	public void testParameterizedTypeMultipleArguments01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R1.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R1.js");
 		ResolvedSourceType type = selectParameterizedType(unit, "g1.t.m.def.Generic<? extends Throwable, ? extends Exception, ? extends RuntimeException>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java [g1.t.m.def.Generic] EQUIVALENT_RAW_MATCH\n" + 
@@ -1014,9 +1014,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedTypeMultipleArguments02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R4.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R4.js");
 		ResolvedSourceType type = selectParameterizedType(unit, "Generic<? extends Throwable, ? extends Exception, ? extends RuntimeException>.Member"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R4.java g1.t.m.ref.R4.gen [Generic.Member] EQUIVALENT_RAW_MATCH\n" + 
@@ -1034,9 +1034,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedTypeMultipleArguments03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R2.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R2.js");
 		ResolvedSourceType type = selectParameterizedType(unit, "NonGeneric.GenericMember<? super RuntimeException, ? super IllegalMonitorStateException, ? super IllegalMonitorStateException>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R2.java g1.t.m.ref.R2.gen [NonGeneric.GenericMember] EQUIVALENT_RAW_MATCH\n" + 
@@ -1054,9 +1054,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedTypeMultipleArguments04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R3.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g1/t/m/ref/R3.js");
 		ResolvedSourceType type = selectParameterizedType(unit,  "g1.t.m.def.Generic<? super RuntimeException, ? super IllegalMonitorStateException, ? super IllegalMonitorStateException>.MemberGeneric<? extends Throwable, ? extends Exception, ? extends RuntimeException>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [Generic.MemberGeneric] EQUIVALENT_RAW_MATCH\n" + 
@@ -1076,7 +1076,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// String pattern with Single type argument
 	public void testStringParameterizedSingleArgument01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic<?>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java [Generic] EQUIVALENT_RAW_MATCH\n" +
@@ -1130,7 +1130,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedSingleArgument02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic<?>.Member", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R4.java g1.t.m.ref.R4.gen [Generic.Member] EQUIVALENT_RAW_MATCH\n" +
@@ -1150,7 +1150,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedSingleArgument03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("GenericMember<?>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R2.java g1.t.m.ref.R2.gen [GenericMember] EQUIVALENT_RAW_MATCH\n" +
@@ -1170,7 +1170,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedSingleArgument04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("MemberGeneric<?>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [MemberGeneric] EQUIVALENT_RAW_MATCH\n" +
@@ -1190,7 +1190,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedSingleArgument05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic<?>.MemberGeneric<?>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [Generic.MemberGeneric] EQUIVALENT_RAW_MATCH\n" +
@@ -1212,7 +1212,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// Multiple type arguments in string pattern
 	public void testStringParameterizedMultipleArguments01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic<Unresolved1, Unresolved2, Unresolved3>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java [Generic] EQUIVALENT_RAW_MATCH\n" +
@@ -1266,7 +1266,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedMultipleArguments02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic<Unresolved1, Unresolved2, Unresolved3>.Member", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R4.java g1.t.m.ref.R4.gen [Generic.Member] EQUIVALENT_RAW_MATCH\n" +
@@ -1286,7 +1286,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedMultipleArguments03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("GenericMember<Unresolved1, Unresolved2, Unresolved3>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R2.java g1.t.m.ref.R2.gen [GenericMember] EQUIVALENT_RAW_MATCH\n" +
@@ -1306,7 +1306,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedMultipleArguments04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("MemberGeneric<Unresolved1, Unresolved2, Unresolved3>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [MemberGeneric] EQUIVALENT_RAW_MATCH\n" +
@@ -1326,7 +1326,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringParameterizedMultipleArguments05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t", true /* add all subpackages */);
 		search("Generic<Unresolved1, Unresolved2, Unresolved3>.MemberGeneric<Unresolved1, Unresolved2, Unresolved3>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [Generic.MemberGeneric] EQUIVALENT_RAW_MATCH\n" +
@@ -1348,7 +1348,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// String pattern with 	any strings characters ('*' or '?')
 	public void testStringAnyStrings01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.s.ref", false /* only this package */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.s.ref", false /* only this package */);
 		search("*Generic", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R1.java [Generic] EXACT_RAW_MATCH\n" + 
@@ -1406,7 +1406,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringAnyStrings02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.m.ref", false /* only this package */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.m.ref", false /* only this package */);
 		search("G?ner?c", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R1.java [Generic] EXACT_RAW_MATCH\n" + 
@@ -1451,7 +1451,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringAnyStrings03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.s.ref", false /* only this package */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.s.ref", false /* only this package */);
 		search("*Member*", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R2.java g1.t.s.ref.R2.gen [GenericMember] EXACT_RAW_MATCH\n" + 
@@ -1493,7 +1493,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringAnyStrings04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.m.ref", false /* only this package */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.m.ref", false /* only this package */);
 		search("Member*", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/m/ref/R3.java g1.t.m.ref.R3.gen [MemberGeneric] EXACT_RAW_MATCH\n" + 
@@ -1523,7 +1523,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringAnyStrings05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.s.ref", true);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.s.ref", true);
 		search("Generic*<Object>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R1.java [Generic] EQUIVALENT_RAW_MATCH\n" + 
@@ -1580,7 +1580,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringAnyStrings06() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g1.t.s.ref", true);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g1.t.s.ref", true);
 		search("Generic<Obj*>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g1/t/s/ref/R1.java [Generic] EQUIVALENT_RAW_MATCH\n" + 
@@ -1627,7 +1627,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// String pattern with nested single type argument
 	public void testStringNestedSingleArgument01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchCUScope("JavaSearch15", "g3/t/ref", "R1.js");
+		IJavaScriptSearchScope scope = getJavaSearchCUScope("JavaSearch15", "g3/t/ref", "R1.js");
 		search("GS<Exception>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R1.java [GS] EQUIVALENT_RAW_MATCH\n" +
@@ -1664,7 +1664,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNestedSingleArgument02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search("GS<? extends Exception>.Member", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R2.java g3.t.ref.R2.sgsm_wld [GS<GM<?, ?, ?>.Member>.Member] ERASURE_MATCH\n" +
@@ -1700,7 +1700,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNestedSingleArgument03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search("GS<?>.Generic<? super RuntimeException>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R3.java g3.t.ref.R3.sgsm_wld [GS<GM<?, ?, ?>.Generic<?, ?, ?>>.Generic<?>] EQUIVALENT_MATCH\n" +
@@ -1736,7 +1736,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNestedSingleArgument04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search("NGS.Generic<? extends Throwable>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R4.java g3.t.ref.R4.sgsm_wld [NGS.Generic<NGM.Generic<?, ?, ?>>] ERASURE_MATCH\n" +
@@ -1774,7 +1774,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// String pattern with nested multiple type arguments
 	public void testStringNestedMultipleArguments01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchCUScope("JavaSearch15", "g3/t/ref", "R1.js");
+		IJavaScriptSearchScope scope = getJavaSearchCUScope("JavaSearch15", "g3/t/ref", "R1.js");
 		search("GM<Object, Exception, RuntimeException>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R1.java [GM] EQUIVALENT_RAW_MATCH\n" +
@@ -1799,7 +1799,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNestedMultipleArguments02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search("GM<java.lang.Object, ? extends java.lang.Exception, ? super java.lang.RuntimeException>.Member", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R2.java g3.t.ref.R2.sgsm_wld [GM<?, ?, ?>.Member] EQUIVALENT_MATCH\n" +
@@ -1823,7 +1823,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNestedMultipleArguments03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search("GM<Object, Exception, RuntimeException>.Generic<?, ?, ?>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R3.java g3.t.ref.R3.sgsm_wld [GM<?, ?, ?>.Generic<?, ?, ?>] EQUIVALENT_MATCH\n" +
@@ -1847,7 +1847,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNestedMultipleArguments04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search("g3.t.def.GM<?, ?, ?>.Member", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R2.java g3.t.ref.R2.sgsm_wld [GM<?, ?, ?>.Member] EXACT_MATCH\n" +
@@ -1871,7 +1871,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testStringNestedMultipleArguments05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g3.t", true /* add all subpackages */);
 		search("NGM.Generic<? extends java.lang.Object, ? extends java.lang.Object, ? extends java.lang.Object>", TYPE, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g3/t/ref/R4.java g3.t.ref.R4.sgsm_wld [NGM.Generic<?, ?, ?>] EQUIVALENT_MATCH\n" +
@@ -1897,9 +1897,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// Parameterized array type with single type argument
 	public void testParameterizedArrayTypeSingleArgument01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Single.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Single.js");
 		IType type = selectType(unit,  "List", 2 /* 2nd occurence*/); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/QualifSingle.java g6.t.ref.QualifSingle.exceptionList [g6.t.def.List] EQUIVALENT_MATCH\n" +
@@ -1915,9 +1915,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedArrayTypeSingleArgument02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Single.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Single.js");
 		IType type = selectType(unit,  "List<Exception>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/QualifSingle.java g6.t.ref.QualifSingle.exceptionList [g6.t.def.List<Exception>] EXACT_MATCH\n" +
@@ -1934,9 +1934,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedArrayTypeSingleArgument03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/QualifSingle.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/QualifSingle.js");
 		IType type = selectType(unit,  "g6.t.def.List<Exception>", 2 /* 2nd occurence*/); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/QualifSingle.java g6.t.ref.QualifSingle.exceptionList [g6.t.def.List<Exception>] EXACT_MATCH\n" +
@@ -1952,9 +1952,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedArrayTypeSingleArgument04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/QualifSingle.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/QualifSingle.js");
 		IType type = selectType(unit,  "g6.t.def.List<g6.t.def.List<Exception>[]>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/QualifSingle.java g6.t.ref.QualifSingle.exceptionList [g6.t.def.List<Exception>] ERASURE_MATCH\n" +
@@ -1972,9 +1972,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 
 	// Parameterized array type with multiple type arguments
 	public void testParameterizedArrayTypeMultipleArguments01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Multiple.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Multiple.js");
 		IType type = selectType(unit,  "Table.Entry"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/Multiple.java g6.t.ref.Multiple.entry [Table.Entry] EXACT_RAW_MATCH\n" +
@@ -1991,9 +1991,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedArrayTypeMultipleArguments02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/QualifMultiple.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/QualifMultiple.js");
 		IType type = selectType(unit,  "Table<String, Exception>.Entry<String, Exception>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/Multiple.java g6.t.ref.Multiple.entry [Table.Entry] EQUIVALENT_RAW_MATCH\n" +
@@ -2010,9 +2010,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedArrayTypeMultipleArguments03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Multiple.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Multiple.js");
 		IType type = selectType(unit,  "Table<String, Exception>.Entry<String, Exception>", 2); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/Multiple.java g6.t.ref.Multiple.entry [Table.Entry] EQUIVALENT_RAW_MATCH\n" +
@@ -2029,9 +2029,9 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			resultCollector);
 	}
 	public void testParameterizedArrayTypeMultipleArguments04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Multiple.js");
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g6/t/ref/Multiple.js");
 		IType type = selectType(unit,  "Table<String, Table<String, Exception>.Entry<String, Exception>[]>.Entry<String, Table<String, Exception>.Entry<String, Exception>[]>"); //$NON-NLS-1$
-		IJavaSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g6", true /* add all subpackages */);
 		search(type, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g6/t/ref/Multiple.java g6.t.ref.Multiple.entry [Table.Entry] EQUIVALENT_RAW_MATCH\n" +
@@ -2053,7 +2053,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=83713"
 	 */
 	public void testParameterizedType_Bug83713() throws CoreException {
-		workingCopies = new ICompilationUnit[1];
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/JavaSearch15/src/p/X.js",
 			"package p;\n" + 
 			"public class X<T> {}\n" +
@@ -2062,7 +2062,7 @@ public class JavaSearchGenericTypeTests extends AbstractJavaSearchGenericTests {
 			"	X<E> y2;\n" + 
 			"}\n"
 			);
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(workingCopies);
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(workingCopies);
 		IType type = selectParameterizedType(workingCopies[0], "X<E>", 2);
 		search(type, REFERENCES, scope);
 		assertSearchResults(

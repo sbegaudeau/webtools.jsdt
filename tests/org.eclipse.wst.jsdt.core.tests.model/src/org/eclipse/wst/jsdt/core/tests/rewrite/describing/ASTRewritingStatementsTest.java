@@ -14,7 +14,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.*;
@@ -54,13 +54,13 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);	
 		
@@ -99,18 +99,18 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        return;\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("D.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("D.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "D");
 		
-		MethodDeclaration methodDeclGoo= findMethodDeclaration(type, "goo");
+		FunctionDeclaration methodDeclGoo= findMethodDeclaration(type, "goo");
 		List bodyStatements= methodDeclGoo.getBody().statements();
 
 		ASTNode copy= rewrite.createCopyTarget((ASTNode) bodyStatements.get(0));
 		
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "hoo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "hoo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);
 		
@@ -152,22 +152,22 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        return new Integer(3);\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		AST ast= astRoot.getAST();
 	
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "goo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "goo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);
 		
-		MethodInvocation invocation1= ast.newMethodInvocation();
+		FunctionInvocation invocation1= ast.newFunctionInvocation();
 		invocation1.setName(ast.newSimpleName("foo"));
 		ExpressionStatement statement1= ast.newExpressionStatement(invocation1);
 		
-		MethodInvocation invocation2= ast.newMethodInvocation();
+		FunctionInvocation invocation2= ast.newFunctionInvocation();
 		invocation2.setName(ast.newSimpleName("foo"));
 		ExpressionStatement statement2= ast.newExpressionStatement(invocation2);
 		
@@ -208,13 +208,13 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);	
 		
@@ -248,13 +248,13 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        return;\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("D.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("D.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "D");
 	
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "goo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "goo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);
 		
@@ -295,13 +295,13 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        return new Integer(3);\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 	
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "goo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "goo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);
 		
@@ -335,13 +335,13 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "C");
 		
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);	
 		
@@ -379,13 +379,13 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        return;\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("D.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("D.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "D");
 	
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "goo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "goo");
 		Block block= methodDecl.getBody();
 		assertTrue("No block" , block != null);
 		
@@ -428,16 +428,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        break label;\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 3", statements.size() == 3);
@@ -494,16 +494,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        this(\"Hello\", true);\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration[] declarations= type.getMethods();
+		FunctionDeclaration[] declarations= type.getMethods();
 		assertTrue("Number of statements not 2", declarations.length == 2);			
 
 		{ // add parameters
@@ -563,16 +563,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        <String, String>this(\"Hello\", true);\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration[] declarations= type.getMethods();
+		FunctionDeclaration[] declarations= type.getMethods();
 		assertTrue("Number of declarations not 2", declarations.length == 2);			
 
 		{ // add type argument
@@ -624,16 +624,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        continue label;\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 3", statements.size() == 3);
@@ -690,16 +690,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        } while (i == j);\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -709,7 +709,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -760,14 +760,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        while (true);\n");	
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -794,7 +794,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -808,7 +808,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -874,15 +874,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        i= 0;\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -934,14 +934,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -981,7 +981,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			// replace body		
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -1093,14 +1093,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            foo();\n");	
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -1127,7 +1127,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -1141,7 +1141,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -1205,14 +1205,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");	
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -1285,16 +1285,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 2", statements.size() == 2);
@@ -1305,7 +1305,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			BooleanLiteral literal= ast.newBooleanLiteral(true);
 			rewrite.replace(ifStatement.getExpression(), literal, null);			
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			Block newBody= ast.newBlock();
@@ -1318,7 +1318,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		{ // add else body
 			IfStatement ifStatement= (IfStatement) statements.get(1);
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			Block newBody= ast.newBlock();
@@ -1368,14 +1368,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            hoo(11);\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 5", statements.size() == 3);
@@ -1457,15 +1457,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            hoo(11);\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 4", statements.size() == 4);
@@ -1568,15 +1568,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            hoo(11);\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 3", statements.size() == 3);
@@ -1660,15 +1660,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            hoo(11);\n");	
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 4", statements.size() == 4);
@@ -1779,15 +1779,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            hoo(11);\n");	
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 4", statements.size() == 4);
@@ -1899,15 +1899,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 2", statements.size() == 2);
@@ -1980,14 +1980,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            return;\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		TypeDeclaration typeDecl= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methDecl= findMethodDeclaration(typeDecl, "doit");
+		FunctionDeclaration methDecl= findMethodDeclaration(typeDecl, "doit");
 		IfStatement outerIf= (IfStatement) methDecl.getBody().statements().get(1);
 		ASTNode node= ((IfStatement) outerIf.getElseStatement()).getThenStatement();
 		
@@ -2049,15 +2049,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 4", statements.size() == 4);
@@ -2151,15 +2151,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 4", statements.size() == 4);
@@ -2282,15 +2282,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 4", statements.size() == 4);
@@ -2426,15 +2426,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 				
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 4", statements.size() == 4);
@@ -2561,16 +2561,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -2619,16 +2619,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        return/*com*/ 1;\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 6", statements.size() == 6);
@@ -2708,16 +2708,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        assert(true) : \"Hello\";\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 5", statements.size() == 5);
@@ -2789,16 +2789,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List blockStatements= block.statements();
 		assertTrue("Number of statements not 2", blockStatements.size() == 2);
@@ -2909,16 +2909,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -2968,9 +2968,9 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        throw new Exception('d');\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -2978,7 +2978,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		{ // replace expression
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 			Block block= methodDecl.getBody();
 			List statements= block.statements();
 			assertTrue("Number of statements not 1", statements.size() == 1);			
@@ -2993,7 +2993,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		}
 		
 		{ // modify expression
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "goo");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "goo");
 			Block block= methodDecl.getBody();
 			List statements= block.statements();
 			assertTrue("Number of statements not 1", statements.size() == 1);			
@@ -3043,16 +3043,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List blockStatements= block.statements();
 		assertTrue("Number of statements not 4", blockStatements.size() == 4);
@@ -3161,15 +3161,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -3210,9 +3210,9 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        final int i3= 1, k3= 2, n3= 3;\n");
 		buf.append("    }\n");		
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -3220,7 +3220,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "A");
 		
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -3296,16 +3296,16 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -3318,7 +3318,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -3360,14 +3360,14 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("            foo();\n");	
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		assertTrue("Parse errors", (block.getFlags() & ASTNode.MALFORMED) == 0);
 		
@@ -3394,7 +3394,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -3408,7 +3408,7 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 			
 			Block newBody= ast.newBlock();
 			
-			MethodInvocation invocation= ast.newMethodInvocation();
+			FunctionInvocation invocation= ast.newFunctionInvocation();
 			invocation.setName(ast.newSimpleName("hoo"));
 			invocation.arguments().add(ast.newNumberLiteral("11"));
 			
@@ -3474,15 +3474,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 	
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -3530,15 +3530,15 @@ public class ASTRewritingStatementsTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 
 		// Get while statement block
 		TypeDeclaration typeDecl = (TypeDeclaration) astRoot.types().get(0);
-		MethodDeclaration methodDecl= typeDecl.getMethods()[0];
+		FunctionDeclaration methodDecl= typeDecl.getMethods()[0];
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		WhileStatement whileStatement= (WhileStatement) statements.get(0);

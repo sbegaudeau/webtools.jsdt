@@ -41,8 +41,8 @@ public void tearDownSuite() throws Exception {
 public static Test suite() {
 	return buildModelTestSuite(CompletionTests_1_5.class);
 }
-private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
-	ICompilationUnit[] units = new ICompilationUnit[6];
+private IJavaScriptUnit[] getExternalQQTypes() throws JavaScriptModelException {
+	IJavaScriptUnit[] units = new IJavaScriptUnit[6];
 	
 	units[0] = getWorkingCopy(
 		"/Completion/src3/pkgstaticimport/QQType1.js",
@@ -115,9 +115,9 @@ private ICompilationUnit[] getExternalQQTypes() throws JavaModelException {
 	
 	return units;
 }
-public void test0001() throws JavaModelException {
+public void test0001() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0001", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0001", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<St";
@@ -128,9 +128,9 @@ public void test0001() throws JavaModelException {
 		"element:String    completion:String    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0002() throws JavaModelException {
+public void test0002() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0002", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0002", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<Ob";
@@ -141,9 +141,9 @@ public void test0002() throws JavaModelException {
 		"element:Object    completion:Object    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0003() throws JavaModelException {
+public void test0003() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0003", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0003", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<St";
@@ -154,9 +154,9 @@ public void test0003() throws JavaModelException {
 		"element:String    completion:String    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0004() throws JavaModelException {
+public void test0004() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0004", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0004", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "X<XZ";
@@ -168,7 +168,7 @@ public void test0004() throws JavaModelException {
 		"element:XZXSuper    completion:XZXSuper    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0005() throws JavaModelException {
+public void test0005() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0005/Test.js",
             "package test0005;\n" +
@@ -194,7 +194,7 @@ public void test0005() throws JavaModelException {
             "String[TYPE_REF]{String, java.lang, Ljava.lang.String;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
             result.proposals);
 }
-public void test0006() throws JavaModelException {
+public void test0006() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0006/Test.js",
             "package test0006;\n" +
@@ -220,7 +220,7 @@ public void test0006() throws JavaModelException {
             "Object[TYPE_REF]{Object, java.lang, Ljava.lang.Object;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0007() throws JavaModelException {
+public void test0007() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0007/Test.js",
             "package test0007;\n" +
@@ -246,7 +246,7 @@ public void test0007() throws JavaModelException {
             "String[TYPE_REF]{String, java.lang, Ljava.lang.String;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0008() throws JavaModelException {
+public void test0008() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0008/Test.js",
             "package test0008;\n" +
@@ -279,9 +279,9 @@ public void test0008() throws JavaModelException {
 			"XYXSuper[TYPE_REF]{XYXSuper, test0008, Ltest0008.XYXSuper;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED)+"}",
 			result.proposals);
 }
-public void test0009() throws JavaModelException {
+public void test0009() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0009", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0009", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "/**/T_";
@@ -293,9 +293,9 @@ public void test0009() throws JavaModelException {
 		"element:T_2    completion:T_2    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0010() throws JavaModelException {
+public void test0010() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0010", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0010", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "/**/T_";
@@ -309,7 +309,7 @@ public void test0010() throws JavaModelException {
 		"element:T_4    completion:T_4    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0011() throws JavaModelException {
+public void test0011() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0011/Test.js",
             "package test0011;\n"+
@@ -332,7 +332,7 @@ public void test0011() throws JavaModelException {
             "Z0011<java.lang.Object>.Y0011[TYPE_REF]{Y0011, test0011, Ltest0011.Z0011<Ljava.lang.Object;>.Y0011;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}",
             result.proposals);
 }
-public void test0012() throws JavaModelException {
+public void test0012() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0012/Test.js",
             "package test0012;\n"+
@@ -355,7 +355,7 @@ public void test0012() throws JavaModelException {
             "Z0012<java.lang.Object>.Y0012[TYPE_REF]{Y0012, test0012, Ltest0012.Z0012<Ljava.lang.Object;>.Y0012;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0013() throws JavaModelException {
+public void test0013() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0013/Test.js",
             "package test0013;\n"+
@@ -378,7 +378,7 @@ public void test0013() throws JavaModelException {
             "Z0013<java.lang.Object>.Y0013[TYPE_REF]{Y0013, test0013, Ltest0013.Z0013<Ljava.lang.Object;>.Y0013;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0014() throws JavaModelException {
+public void test0014() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0014/Test.js",
             "package test0014;\n" +
@@ -400,7 +400,7 @@ public void test0014() throws JavaModelException {
             "Z0014<java.lang.Object>.Y0014[TYPE_REF]{Y0014, test0014, Ltest0014.Z0014<Ljava.lang.Object;>.Y0014;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_CLASS + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0015() throws JavaModelException {
+public void test0015() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0015/Test.js",
             "package test0015;\n" +
@@ -425,7 +425,7 @@ public void test0015() throws JavaModelException {
             "Z0015<java.lang.Object>.Y0015I[TYPE_REF]{Y0015I, test0015, Ltest0015.Z0015<Ljava.lang.Object;>.Y0015I;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_INTERFACE+ R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0016() throws JavaModelException {
+public void test0016() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0016/Test.js",
             "package test0016;\n" +
@@ -450,7 +450,7 @@ public void test0016() throws JavaModelException {
             "Z0016<java.lang.Object>.Y0016[TYPE_REF]{Y0016, test0016, Ltest0016.Z0016<Ljava.lang.Object;>.Y0016;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0017() throws JavaModelException {
+public void test0017() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0017/Test.js",
             "package test0017;\n" +
@@ -475,7 +475,7 @@ public void test0017() throws JavaModelException {
             "Z0017<java.lang.Object>.Y0017[TYPE_REF]{Y0017, test0017, Ltest0017.Z0017<Ljava.lang.Object;>.Y0017;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0018() throws JavaModelException {
+public void test0018() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0018/Test.js",
             "package test0018;\n" +
@@ -500,7 +500,7 @@ public void test0018() throws JavaModelException {
             "Z0018<java.lang.Object>.Y0018[TYPE_REF]{Y0018, test0018, Ltest0018.Z0018<Ljava.lang.Object;>.Y0018;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0019() throws JavaModelException {
+public void test0019() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0019/Test.js",
             "package test0019;\n" +
@@ -523,7 +523,7 @@ public void test0019() throws JavaModelException {
             "Z0019<java.lang.Object>.Y0019[TYPE_REF]{Y0019, test0019, Ltest0019.Z0019<Ljava.lang.Object;>.Y0019;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0020() throws JavaModelException {
+public void test0020() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0020/Test.js",
             "package test0020;\n"+
@@ -548,8 +548,8 @@ public void test0020() throws JavaModelException {
             "Z0020<java.lang.Object>.Y0020[TYPE_REF]{Y0020, test0020, Ltest0020.Z0020<Ljava.lang.Object;>.Y0020;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) +"}",
             result.proposals);
 }
-public void test0021() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0021() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0021/Test.js",
 		"package test0021;\n" +
@@ -577,8 +577,8 @@ public void test0021() throws JavaModelException {
 			"Z0021ZZ[TYPE_REF]{Z0021ZZ, test0021, Ltest0021.Z0021ZZ;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0022() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0022() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0022/Test.js",
 		"package test0022;\n" +
@@ -609,9 +609,9 @@ public void test0022() throws JavaModelException {
 			"Z0022ZZ[TYPE_REF]{Z0022ZZ, test0022, Ltest0022.Z0022ZZ;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0023() throws JavaModelException {
+public void test0023() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0023", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0023", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -622,9 +622,9 @@ public void test0023() throws JavaModelException {
 		"",
 		requestor.getResults());
 }
-public void test0024() throws JavaModelException {
+public void test0024() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0024", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0024", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -635,9 +635,9 @@ public void test0024() throws JavaModelException {
 		"",
 		requestor.getResults());
 }
-public void test0025() throws JavaModelException {
+public void test0025() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0025", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0025", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -648,8 +648,8 @@ public void test0025() throws JavaModelException {
 		"element:String    completion:String    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0026() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0026() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0026/Test.js",
 		"package test0026;\n" +
@@ -675,8 +675,8 @@ public void test0026() throws JavaModelException {
 			"String[TYPE_REF]{String, java.lang, Ljava.lang.String;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0027() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0027() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0026/Test.js",
 		"package test0027;\n" +
@@ -704,9 +704,9 @@ public void test0027() throws JavaModelException {
 	
 	
 }
-public void test0028() throws JavaModelException {
+public void test0028() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0028", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0028", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "<St";
@@ -717,7 +717,7 @@ public void test0028() throws JavaModelException {
 		"element:String    completion:String    relevance:"+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED),
 		requestor.getResults());
 }
-public void test0029() throws JavaModelException {
+public void test0029() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0029/Test.js",
             "package test0029;\n"+
@@ -736,9 +736,9 @@ public void test0029() throws JavaModelException {
             "Test.Inner2<T>[TYPE_REF]{Inner2, test0029, Ltest0029.Test$Inner2<TT;>;, null, null, "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
             result.proposals);
 }
-public void test0030() throws JavaModelException {
+public void test0030() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0030", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0030", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "ZZ";
@@ -753,7 +753,7 @@ public void test0030() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=72501
  */
-public void test0031() throws JavaModelException {
+public void test0031() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0031/Test.js",
             "package test0031;\n" +
@@ -779,9 +779,9 @@ public void test0031() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0032() throws JavaModelException {
+public void test0032() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0032", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0032", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -795,9 +795,9 @@ public void test0032() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0033() throws JavaModelException {
+public void test0033() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0033", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0033", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -811,9 +811,9 @@ public void test0033() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0034() throws JavaModelException {
+public void test0034() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0034", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0034", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -827,9 +827,9 @@ public void test0034() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0035() throws JavaModelException {
+public void test0035() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0035", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0035", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -843,9 +843,9 @@ public void test0035() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0036() throws JavaModelException {
+public void test0036() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0036", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0036", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -859,9 +859,9 @@ public void test0036() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0037() throws JavaModelException {
+public void test0037() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0037", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0037", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -875,9 +875,9 @@ public void test0037() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0038() throws JavaModelException {
+public void test0038() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0038", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0038", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -891,9 +891,9 @@ public void test0038() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0039() throws JavaModelException {
+public void test0039() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0039", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0039", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Stri";
@@ -907,7 +907,7 @@ public void test0039() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0040() throws JavaModelException {
+public void test0040() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0040/Test.js",
             "package test0040;\n" +
@@ -934,7 +934,7 @@ public void test0040() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0041() throws JavaModelException {
+public void test0041() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0041/Test.js",
             "package test0041;\n" +
@@ -963,7 +963,7 @@ public void test0041() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0042() throws JavaModelException {
+public void test0042() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0042/Test.js",
             "package test0042;\n" +
@@ -991,7 +991,7 @@ public void test0042() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0043() throws JavaModelException {
+public void test0043() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0043/Test.js",
             "package test0043;\n" +
@@ -1020,7 +1020,7 @@ public void test0043() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0044() throws JavaModelException {
+public void test0044() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0044/Test.js",
             "package test0044;\n" +
@@ -1047,7 +1047,7 @@ public void test0044() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0045() throws JavaModelException {
+public void test0045() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0045/Test.js",
             "package test0045;\n" +
@@ -1076,7 +1076,7 @@ public void test0045() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0046() throws JavaModelException {
+public void test0046() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0046/Test.js",
             "package test0046;\n" +
@@ -1103,7 +1103,7 @@ public void test0046() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=59082
  */
-public void test0047() throws JavaModelException {
+public void test0047() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0047/Test.js",
             "package test0047;\n" +
@@ -1132,9 +1132,9 @@ public void test0047() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=75455
  */
-public void test0048() throws JavaModelException {
+public void test0048() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0048", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0048", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "l.ba";
@@ -1148,9 +1148,9 @@ public void test0048() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=75455
  */
-public void test0049() throws JavaModelException {
+public void test0049() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0049", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0049", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "l.ba";
@@ -1164,9 +1164,9 @@ public void test0049() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=74753
  */
-public void test0050() throws JavaModelException {
+public void test0050() throws JavaScriptModelException {
 	CompletionTestsRequestor requestor = new CompletionTestsRequestor();
-	ICompilationUnit cu = getCompilationUnit("Completion", "src3", "test0050", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("Completion", "src3", "test0050", "Test.js");
 	
 	String str = cu.getSource();
 	String completeBehind = "Test<T_0050";
@@ -1178,14 +1178,14 @@ public void test0050() throws JavaModelException {
 		requestor.getResults());
 }
 
-public void test0051() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0051() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1213,18 +1213,18 @@ public void test0051() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0052() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0052() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
-	ICompilationUnit qqType2 = null;
+	IJavaScriptUnit[] qqTypes = null;
+	IJavaScriptUnit qqType2 = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1275,17 +1275,17 @@ public void test0052() throws JavaModelException {
 			qqType2.discardWorkingCopy();
 		}
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0053() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0053() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1315,17 +1315,17 @@ public void test0053() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0054() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0054() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1353,17 +1353,17 @@ public void test0054() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0055() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0055() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1392,17 +1392,17 @@ public void test0055() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0056() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0056() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1431,17 +1431,17 @@ public void test0056() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0057() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0057() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1469,21 +1469,21 @@ public void test0057() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0058() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0058() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0058/Test.js",
 			"package test0058;\n"+
@@ -1507,18 +1507,18 @@ public void test0058() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0059() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0059() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
-	ICompilationUnit qqType5 = null;
+	IJavaScriptUnit[] qqTypes = null;
+	IJavaScriptUnit qqType5 = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1537,7 +1537,7 @@ public void test0059() throws JavaModelException {
 				"	static int zzvarzz8;\n"+
 				"}");
 	
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0059/Test.js",
 			"package test0059;\n"+
@@ -1564,22 +1564,22 @@ public void test0059() throws JavaModelException {
 		if(qqType5 != null) {
 			qqType5.discardWorkingCopy();
 		}
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0060() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0060() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0060", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0060", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzvarzz";
@@ -1595,21 +1595,21 @@ public void test0060() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0061() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0061() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0061/Test.js",
 			"package test0061;\n" +
@@ -1632,21 +1632,21 @@ public void test0061() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0062() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0062() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0062/Test.js",
 			"package test0062;\n" +
@@ -1670,21 +1670,21 @@ public void test0062() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0063() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0063() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0063/Test.js",
 			"package test0063;\n" +
@@ -1708,22 +1708,22 @@ public void test0063() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0064() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0064() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0064", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0064", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzvarzz";
@@ -1736,21 +1736,21 @@ public void test0064() throws JavaModelException {
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0065() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0065() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 	
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0065/Test.js",
 			"package test0065;\n" +
@@ -1768,23 +1768,23 @@ public void test0065() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 		
 		assertResults(
-				"zzfoozz2[METHOD_REF]{zzfoozz2(), Lpkgstaticimport.QQType7;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"zzfoozz2[FUNCTION_REF]{zzfoozz2(), Lpkgstaticimport.QQType7;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0066() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0066() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
-	ICompilationUnit qqType8 = null;
+	IJavaScriptUnit[] qqTypes = null;
+	IJavaScriptUnit qqType8 = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
@@ -1803,7 +1803,7 @@ public void test0066() throws JavaModelException {
 				"	static void zzfoozz8(){};\n"+
 				"}");
 	
-		this.workingCopies = new ICompilationUnit[1];
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0066/Test.js",
 			"package test0066;\n" +
@@ -1821,31 +1821,31 @@ public void test0066() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 		
 		assertResults(
-				"zzfoozz2[METHOD_REF]{zzfoozz2(), Ltest0066.QQType8;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"zzfoozz4[METHOD_REF]{zzfoozz4(), Ltest0066.QQType8;, ()V, zzfoozz4, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"zzfoozz8[METHOD_REF]{zzfoozz8(), Ltest0066.QQType8;, ()V, zzfoozz8, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"zzfoozz2[FUNCTION_REF]{zzfoozz2(), Ltest0066.QQType8;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"zzfoozz4[FUNCTION_REF]{zzfoozz4(), Ltest0066.QQType8;, ()V, zzfoozz4, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"zzfoozz8[FUNCTION_REF]{zzfoozz8(), Ltest0066.QQType8;, ()V, zzfoozz8, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		if(qqType8 != null) {
 			qqType8.discardWorkingCopy();
 		}
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0067() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0067() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0067", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0067", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzfoozz";
@@ -1853,30 +1853,30 @@ public void test0067() throws JavaModelException {
 		cu.codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"zzfoozz1[METHOD_REF]{zzfoozz1(), Lpkgstaticimport.QQType7;, ()V, zzfoozz1, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"zzfoozz2[METHOD_REF]{zzfoozz2(), Lpkgstaticimport.QQType7;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"zzfoozz3[METHOD_REF]{zzfoozz3(), Lpkgstaticimport.QQType7;, ()V, zzfoozz3, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"zzfoozz4[METHOD_REF]{zzfoozz4(), Lpkgstaticimport.QQType7;, ()V, zzfoozz4, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"zzfoozz1[FUNCTION_REF]{zzfoozz1(), Lpkgstaticimport.QQType7;, ()V, zzfoozz1, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"zzfoozz2[FUNCTION_REF]{zzfoozz2(), Lpkgstaticimport.QQType7;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"zzfoozz3[FUNCTION_REF]{zzfoozz3(), Lpkgstaticimport.QQType7;, ()V, zzfoozz3, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"zzfoozz4[FUNCTION_REF]{zzfoozz4(), Lpkgstaticimport.QQType7;, ()V, zzfoozz4, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
-public void test0068() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0068() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
-	ICompilationUnit[] qqTypes = null;
+	IJavaScriptUnit[] qqTypes = null;
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		qqTypes = this.getExternalQQTypes();
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2();
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0068", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0068", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "zzfoozz";
@@ -1884,20 +1884,20 @@ public void test0068() throws JavaModelException {
 		cu.codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"zzfoozz2[METHOD_REF]{zzfoozz2(), Lpkgstaticimport.QQType7;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"zzfoozz2[FUNCTION_REF]{zzfoozz2(), Lpkgstaticimport.QQType7;, ()V, zzfoozz2, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
 		this.discardWorkingCopies(qqTypes);
 		
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=74295
  */
-public void test0069() throws JavaModelException {
+public void test0069() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-	ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0069", "Test.js");
+	IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0069", "Test.js");
 
 	String str = cu.getSource();
 	String completeBehind = "icell.p";
@@ -1905,14 +1905,14 @@ public void test0069() throws JavaModelException {
 	cu.codeComplete(cursorLocation, requestor);
 
 	assertResults(
-			"putValue[METHOD_REF]{putValue(), Ltest0069.Test<Ljava.lang.String;>;, (Ljava.lang.String;)V, putValue, (value), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"putValue[FUNCTION_REF]{putValue(), Ltest0069.Test<Ljava.lang.String;>;, (Ljava.lang.String;)V, putValue, (value), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77573
  */
-public void test0070() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0070() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0070/p/ImportedClass.js",
@@ -1923,7 +1923,7 @@ public void test0070() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0070", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0070", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0070";
@@ -1944,8 +1944,8 @@ public void test0070() throws JavaModelException {
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77573
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=94303
  */
-public void test0071() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0071() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0071/p/ImportedClass.js",
@@ -1984,8 +1984,8 @@ public void test0071() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77573
  */
-public void test0072() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0072() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0072/p/ImportedClass.js",
@@ -1998,7 +1998,7 @@ public void test0072() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0072", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0072", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0072.p.ImportedClass.ZZ";
@@ -2019,8 +2019,8 @@ public void test0072() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77573
  */
-public void test0073() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0073() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0073/p/ImportedClass.js",
@@ -2035,7 +2035,7 @@ public void test0073() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0073", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0073", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0073.p.ImportedClass.Inner.ZZ";
@@ -2056,8 +2056,8 @@ public void test0073() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=77573
  */
-public void test0074() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0074() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0074/p/ImportedClass.js",
@@ -2072,7 +2072,7 @@ public void test0074() throws JavaModelException {
 				"}");
 		
 		CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true);
-		ICompilationUnit cu= getCompilationUnit("Completion", "src3", "test0074", "Test.js");
+		IJavaScriptUnit cu= getCompilationUnit("Completion", "src3", "test0074", "Test.js");
 	
 		String str = cu.getSource();
 		String completeBehind = "test0074.p.ImportedClass.Inner.ZZ";
@@ -2090,8 +2090,8 @@ public void test0074() throws JavaModelException {
 		}
 	}
 }
-public void test0075() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0075() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0075/Test.js",
 			"package test0075;\n" +
@@ -2114,8 +2114,8 @@ public void test0075() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0076() throws JavaModelException {	
-	this.workingCopies = new ICompilationUnit[2];
+public void test0076() throws JavaScriptModelException {	
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0076/Test.js",
 			"package test0076;\n" +
@@ -2138,8 +2138,8 @@ public void test0076() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0077() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0077() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0077/Test.js",
 			"package test0077;\n" +
@@ -2163,8 +2163,8 @@ public void test0077() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0078() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0078() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
@@ -2189,8 +2189,8 @@ public void test0078() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0079() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0079() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
@@ -2214,8 +2214,8 @@ public void test0079() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0080() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0080() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
@@ -2239,8 +2239,8 @@ public void test0080() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0081() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0081() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
@@ -2264,8 +2264,8 @@ public void test0081() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0082() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0082() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
@@ -2290,8 +2290,8 @@ public void test0082() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0083() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0083() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0078/Test.js",
 			"package test0078;\n" +
@@ -2316,8 +2316,8 @@ public void test0083() throws JavaModelException {
 			"QQAnnotation[TYPE_REF]{pkgannotations.QQAnnotation, pkgannotations, Lpkgannotations.QQAnnotation;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_ANNOTATION + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0084() throws JavaModelException {
-	ICompilationUnit imported = null;
+public void test0084() throws JavaScriptModelException {
+	IJavaScriptUnit imported = null;
 	try {
 		imported = getWorkingCopy(
 				"/Completion/src3/pkgstaticimport/MyClass0084.js",
@@ -2339,8 +2339,8 @@ public void test0084() throws JavaModelException {
 				"foo");
 		
 		assertResults(
-				"foo[METHOD_REF]{foo(), Lpkgstaticimport.MyClass0084;, ()I, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_REF]{foo(), Lpkgstaticimport.MyClass0084;, (I)I, foo, (i), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"foo[FUNCTION_REF]{foo(), Lpkgstaticimport.MyClass0084;, ()I, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"foo[FUNCTION_REF]{foo(), Lpkgstaticimport.MyClass0084;, (I)I, foo, (i), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_EXACT_EXPECTED_TYPE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				result.proposals);
 	} finally {
 		if(imported != null) {
@@ -2349,7 +2349,7 @@ public void test0084() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=85290
-public void test0085() throws JavaModelException {
+public void test0085() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0085/TestAnnotation.js",
 			"package test0085;\n" +
@@ -2371,7 +2371,7 @@ public void test0085() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=85290
-public void test0086() throws JavaModelException {
+public void test0086() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/TestAnnotation.js",
 			"public @interface TestAnnotation {\n" +
@@ -2392,7 +2392,7 @@ public void test0086() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=85402
-public void test0087() throws JavaModelException {
+public void test0087() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0087/TestAnnotation.js",
 			"package test0087;\n" +
@@ -2419,7 +2419,7 @@ public void test0087() throws JavaModelException {
 				requestor.getResults());
 	}
 }
-public void test0088() throws JavaModelException {
+public void test0088() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0088/TestAnnotation.js",
 			"package test0088;\n" +
@@ -2441,7 +2441,7 @@ public void test0088() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0088.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0089() throws JavaModelException {
+public void test0089() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0089/TestAnnotation.js",
 			"package test0089;\n" +
@@ -2464,7 +2464,7 @@ public void test0089() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0089.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0090() throws JavaModelException {
+public void test0090() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0090/TestAnnotation.js",
 			"package test0090;\n" +
@@ -2487,7 +2487,7 @@ public void test0090() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0090.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0091() throws JavaModelException {
+public void test0091() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0091/TestAnnotation.js",
 			"package test0091;\n" +
@@ -2512,7 +2512,7 @@ public void test0091() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0091.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0092() throws JavaModelException {
+public void test0092() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0092/TestAnnotation.js",
 			"package test0092;\n" +
@@ -2535,7 +2535,7 @@ public void test0092() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0092.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0093() throws JavaModelException {
+public void test0093() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0093/TestAnnotation.js",
 			"package test0093;\n" +
@@ -2559,7 +2559,7 @@ public void test0093() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0093.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0094() throws JavaModelException {
+public void test0094() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0094/TestAnnotation.js",
 			"package test0094;\n" +
@@ -2581,7 +2581,7 @@ public void test0094() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0094.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0095() throws JavaModelException {
+public void test0095() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0095/TestAnnotation.js",
 			"package test0095;\n" +
@@ -2604,7 +2604,7 @@ public void test0095() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0095.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0096() throws JavaModelException {
+public void test0096() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0096/TestAnnotation.js",
 			"package test0096;\n" +
@@ -2627,7 +2627,7 @@ public void test0096() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0096.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0097() throws JavaModelException {
+public void test0097() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0097/TestAnnotation.js",
 			"package test0097;\n" +
@@ -2652,7 +2652,7 @@ public void test0097() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0097.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0098() throws JavaModelException {
+public void test0098() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0098/TestAnnotation.js",
 			"package test0098;\n" +
@@ -2675,7 +2675,7 @@ public void test0098() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0098.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0099() throws JavaModelException {
+public void test0099() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0099/TestAnnotation.js",
 			"package test0099;\n" +
@@ -2699,7 +2699,7 @@ public void test0099() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0099.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0100() throws JavaModelException {
+public void test0100() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0100/TestAnnotation.js",
 			"package test0100;\n" +
@@ -2721,7 +2721,7 @@ public void test0100() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0100.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0101() throws JavaModelException {
+public void test0101() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0101/TestAnnotation.js",
 			"package test00101;\n" +
@@ -2744,7 +2744,7 @@ public void test0101() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0101.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0102() throws JavaModelException {
+public void test0102() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0102/TestAnnotation.js",
 			"package test0102;\n" +
@@ -2767,7 +2767,7 @@ public void test0102() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0102.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0103() throws JavaModelException {
+public void test0103() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0103/TestAnnotation.js",
 			"package test00103;\n" +
@@ -2792,7 +2792,7 @@ public void test0103() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0103.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0104() throws JavaModelException {
+public void test0104() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0104/TestAnnotation.js",
 			"package test0104;\n" +
@@ -2815,7 +2815,7 @@ public void test0104() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0104.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0105() throws JavaModelException {
+public void test0105() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0105/TestAnnotation.js",
 			"package test0105;\n" +
@@ -2839,7 +2839,7 @@ public void test0105() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0105.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0106() throws JavaModelException {
+public void test0106() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0106/TestAnnotation.js",
 			"package test0106;\n" +
@@ -2861,7 +2861,7 @@ public void test0106() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0106.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0107() throws JavaModelException {
+public void test0107() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0107/TestAnnotation.js",
 			"package test0107;\n" +
@@ -2884,7 +2884,7 @@ public void test0107() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0107.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0108() throws JavaModelException {
+public void test0108() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0108/TestAnnotation.js",
 			"package test0108;\n" +
@@ -2907,7 +2907,7 @@ public void test0108() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0108.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0109() throws JavaModelException {
+public void test0109() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0109/TestAnnotation.js",
 			"package test0109;\n" +
@@ -2932,7 +2932,7 @@ public void test0109() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0109.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0110() throws JavaModelException {
+public void test0110() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0110/TestAnnotation.js",
 			"package test0110;\n" +
@@ -2955,7 +2955,7 @@ public void test0110() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0110.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0111() throws JavaModelException {
+public void test0111() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0111/TestAnnotation.js",
 			"package test0111;\n" +
@@ -2979,7 +2979,7 @@ public void test0111() throws JavaModelException {
 			"foo1[ANNOTATION_ATTRIBUTE_REF]{foo1, Ltest0111.TestAnnotation;, Ljava.lang.String;, foo1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0112() throws JavaModelException {
+public void test0112() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0112/TestAnnotation.js",
 			"package test0112;\n" +
@@ -3002,7 +3002,7 @@ public void test0112() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0112.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0113() throws JavaModelException {
+public void test0113() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0113/TestAnnotation.js",
 			"package test0113;\n" +
@@ -3026,7 +3026,7 @@ public void test0113() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0113.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0114() throws JavaModelException {
+public void test0114() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0114/TestAnnotation.js",
 			"package test0114;\n" +
@@ -3050,7 +3050,7 @@ public void test0114() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0114.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0115() throws JavaModelException {
+public void test0115() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0115/TestAnnotation.js",
 			"package test0115;\n" +
@@ -3076,7 +3076,7 @@ public void test0115() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0115.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0116() throws JavaModelException {
+public void test0116() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0116/TestAnnotation.js",
 			"package test0116;\n" +
@@ -3100,7 +3100,7 @@ public void test0116() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0116.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0117() throws JavaModelException {
+public void test0117() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0117/TestAnnotation.js",
 			"package test0117;\n" +
@@ -3125,7 +3125,7 @@ public void test0117() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0117.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0118() throws JavaModelException {
+public void test0118() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0118/TestAnnotation.js",
 			"package test0118;\n" +
@@ -3148,7 +3148,7 @@ public void test0118() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0118.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0119() throws JavaModelException {
+public void test0119() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0119/TestAnnotation.js",
 			"package test0119;\n" +
@@ -3172,7 +3172,7 @@ public void test0119() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0119.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0120() throws JavaModelException {
+public void test0120() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0120/TestAnnotation.js",
 			"package test0120;\n" +
@@ -3196,7 +3196,7 @@ public void test0120() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0120.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0121() throws JavaModelException {
+public void test0121() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0121/TestAnnotation.js",
 			"package test0121;\n" +
@@ -3222,7 +3222,7 @@ public void test0121() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0121.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0122() throws JavaModelException {
+public void test0122() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0122/TestAnnotation.js",
 			"package test0122;\n" +
@@ -3246,7 +3246,7 @@ public void test0122() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0122.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0123() throws JavaModelException {
+public void test0123() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0123/TestAnnotation.js",
 			"package test0123;\n" +
@@ -3271,7 +3271,7 @@ public void test0123() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0123.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0124() throws JavaModelException {
+public void test0124() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0124/TestAnnotation.js",
 			"package test0124;\n" +
@@ -3294,7 +3294,7 @@ public void test0124() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0124.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0125() throws JavaModelException {
+public void test0125() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0125/TestAnnotation.js",
 			"package test0125;\n" +
@@ -3318,7 +3318,7 @@ public void test0125() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0125.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0126() throws JavaModelException {
+public void test0126() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0126/TestAnnotation.js",
 			"package test0126;\n" +
@@ -3342,7 +3342,7 @@ public void test0126() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0126.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0127() throws JavaModelException {
+public void test0127() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0127/TestAnnotation.js",
 			"package test0127;\n" +
@@ -3368,7 +3368,7 @@ public void test0127() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0127.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0128() throws JavaModelException {
+public void test0128() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0128/TestAnnotation.js",
 			"package test0128;\n" +
@@ -3392,7 +3392,7 @@ public void test0128() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0128.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0129() throws JavaModelException {
+public void test0129() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0129/TestAnnotation.js",
 			"package test0129;\n" +
@@ -3417,7 +3417,7 @@ public void test0129() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0129.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0130() throws JavaModelException {
+public void test0130() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0130/TestAnnotation.js",
 			"package test0130;\n" +
@@ -3440,7 +3440,7 @@ public void test0130() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0130.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0131() throws JavaModelException {
+public void test0131() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0131/TestAnnotation.js",
 			"package test0131;\n" +
@@ -3464,7 +3464,7 @@ public void test0131() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0131.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0132() throws JavaModelException {
+public void test0132() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0132/TestAnnotation.js",
 			"package test0132;\n" +
@@ -3488,7 +3488,7 @@ public void test0132() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0132.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0133() throws JavaModelException {
+public void test0133() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0133/TestAnnotation.js",
 			"package test0133;\n" +
@@ -3514,7 +3514,7 @@ public void test0133() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0133.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0134() throws JavaModelException {
+public void test0134() throws JavaScriptModelException {
 	this.wc = getWorkingCopy(
 			"/Completion/src3/test0134/TestAnnotation.js",
 			"package test0134;\n" +
@@ -3538,7 +3538,7 @@ public void test0134() throws JavaModelException {
 			"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0134.TestAnnotation;, Ljava.lang.String;, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED + R_UNQUALIFIED) + "}",
 			requestor.getResults());
 }
-public void test0135() throws JavaModelException {
+public void test0135() throws JavaScriptModelException {
 	CompletionResult result = complete(
 			"/Completion/src3/test0135/TestAnnotation.js",
 			"package test0135;\n" +
@@ -3558,8 +3558,8 @@ public void test0135() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=84554
-public void test0136() throws JavaModelException {
-	ICompilationUnit enumeration = null;
+public void test0136() throws JavaScriptModelException {
+	IJavaScriptUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0136/Colors.js",
@@ -3596,8 +3596,8 @@ public void test0136() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84554
-public void test0137() throws JavaModelException {
-	ICompilationUnit enumeration = null;
+public void test0137() throws JavaScriptModelException {
+	IJavaScriptUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0137/Colors.js",
@@ -3635,8 +3635,8 @@ public void test0137() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84554
-public void test0138() throws JavaModelException {
-	ICompilationUnit enumeration = null;
+public void test0138() throws JavaScriptModelException {
+	IJavaScriptUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0138/Colors.js",
@@ -3675,8 +3675,8 @@ public void test0138() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84554
-public void test0139() throws JavaModelException {
-	ICompilationUnit enumeration = null;
+public void test0139() throws JavaScriptModelException {
+	IJavaScriptUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0139/Colors.js",
@@ -3714,8 +3714,8 @@ public void test0139() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84554
-public void test0140() throws JavaModelException {
-	ICompilationUnit enumeration = null;
+public void test0140() throws JavaScriptModelException {
+	IJavaScriptUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0140/Colors.js",
@@ -3753,8 +3753,8 @@ public void test0140() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84554
-public void test0141() throws JavaModelException {
-	ICompilationUnit enumeration = null;
+public void test0141() throws JavaScriptModelException {
+	IJavaScriptUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0141/Colors.js",
@@ -3794,8 +3794,8 @@ public void test0141() throws JavaModelException {
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=84554
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=88295
-public void test0142() throws JavaModelException {
-	ICompilationUnit enumeration = null;
+public void test0142() throws JavaScriptModelException {
+	IJavaScriptUnit enumeration = null;
 	try {
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0142/Colors.js",
@@ -3835,13 +3835,13 @@ public void test0142() throws JavaModelException {
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=88756
-public void test0143() throws JavaModelException {
-	Hashtable oldCurrentOptions = JavaCore.getOptions();
-	ICompilationUnit enumeration = null;
+public void test0143() throws JavaScriptModelException {
+	Hashtable oldCurrentOptions = JavaScriptCore.getOptions();
+	IJavaScriptUnit enumeration = null;
 	try {
 		Hashtable options = new Hashtable(oldCurrentOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
 		enumeration = getWorkingCopy(
 				"/Completion/src3/test0143/Colors.js",
@@ -3873,17 +3873,17 @@ public void test0143() throws JavaModelException {
 		if(enumeration != null) {
 			enumeration.discardWorkingCopy();
 		}
-		JavaCore.setOptions(oldCurrentOptions);
+		JavaScriptCore.setOptions(oldCurrentOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=88845
-public void test0144() throws JavaModelException {
-	ICompilationUnit aClass = null;
-	Hashtable oldCurrentOptions = JavaCore.getOptions();
+public void test0144() throws JavaScriptModelException {
+	IJavaScriptUnit aClass = null;
+	Hashtable oldCurrentOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldCurrentOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		aClass = getWorkingCopy(
 				"/Completion/src3/test0144/X.js",
@@ -3912,13 +3912,13 @@ public void test0144() throws JavaModelException {
 		if(aClass != null) {
 			aClass.discardWorkingCopy();
 		}
-		JavaCore.setOptions(oldCurrentOptions);
+		JavaScriptCore.setOptions(oldCurrentOptions);
 	}
 }
 // complete annotation attribute value
-public void test0145() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0145() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0145/ZZAnnotation.js",
@@ -3962,9 +3962,9 @@ public void test0145() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0146() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0146() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0146/ZZAnnotation.js",
@@ -4008,9 +4008,9 @@ public void test0146() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0147() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0147() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0147/ZZAnnotation.js",
@@ -4054,9 +4054,9 @@ public void test0147() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0148() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0148() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0148/ZZAnnotation.js",
@@ -4100,9 +4100,9 @@ public void test0148() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0149() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0149() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0149/ZZAnnotation.js",
@@ -4146,9 +4146,9 @@ public void test0149() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0150() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0150() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0150/ZZAnnotation.js",
@@ -4192,9 +4192,9 @@ public void test0150() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0151() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0151() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0151/ZZAnnotation.js",
@@ -4238,9 +4238,9 @@ public void test0151() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0152() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0152() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0152/ZZAnnotation.js",
@@ -4286,9 +4286,9 @@ public void test0152() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0153() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0153() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0153/ZZAnnotation.js",
@@ -4334,9 +4334,9 @@ public void test0153() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0154() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0154() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0154/ZZAnnotation.js",
@@ -4382,9 +4382,9 @@ public void test0154() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0155() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0155() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0155/ZZAnnotation.js",
@@ -4430,9 +4430,9 @@ public void test0155() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0156() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0156() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0156/ZZAnnotation.js",
@@ -4478,9 +4478,9 @@ public void test0156() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0157() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0157() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0157/ZZAnnotation.js",
@@ -4526,9 +4526,9 @@ public void test0157() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0158() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0158() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0158/ZZAnnotation.js",
@@ -4574,9 +4574,9 @@ public void test0158() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0159() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0159() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0159/ZZAnnotation.js",
@@ -4622,9 +4622,9 @@ public void test0159() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0160() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0160() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0160/ZZAnnotation.js",
@@ -4670,9 +4670,9 @@ public void test0160() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0161() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0161() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0161/ZZAnnotation.js",
@@ -4718,9 +4718,9 @@ public void test0161() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0162() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0162() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0162/ZZAnnotation.js",
@@ -4766,9 +4766,9 @@ public void test0162() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0163() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0163() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0163/ZZAnnotation.js",
@@ -4814,9 +4814,9 @@ public void test0163() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0164() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0164() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0164/ZZAnnotation.js",
@@ -4862,9 +4862,9 @@ public void test0164() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0165() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0165() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0165/ZZAnnotation.js",
@@ -4910,9 +4910,9 @@ public void test0165() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0166() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0166() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0166/ZZAnnotation.js",
@@ -4960,9 +4960,9 @@ public void test0166() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0167() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0167() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0167/ZZAnnotation.js",
@@ -5010,9 +5010,9 @@ public void test0167() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0168() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0168() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0168/ZZAnnotation.js",
@@ -5060,9 +5060,9 @@ public void test0168() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0169() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0169() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0169/ZZAnnotation.js",
@@ -5110,9 +5110,9 @@ public void test0169() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0170() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0170() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0170/ZZAnnotation.js",
@@ -5160,9 +5160,9 @@ public void test0170() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0171() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0171() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0171/ZZAnnotation.js",
@@ -5210,9 +5210,9 @@ public void test0171() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0172() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0172() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0172/ZZAnnotation.js",
@@ -5260,9 +5260,9 @@ public void test0172() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0173() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0173() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0173/ZZAnnotation.js",
@@ -5308,9 +5308,9 @@ public void test0173() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0174() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0174() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0174/ZZAnnotation.js",
@@ -5356,9 +5356,9 @@ public void test0174() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0175() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0175() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0175/ZZAnnotation.js",
@@ -5404,9 +5404,9 @@ public void test0175() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0176() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0176() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0176/ZZAnnotation.js",
@@ -5452,9 +5452,9 @@ public void test0176() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0177() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0177() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0177/ZZAnnotation.js",
@@ -5500,9 +5500,9 @@ public void test0177() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0178() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0178() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0178/ZZAnnotation.js",
@@ -5548,9 +5548,9 @@ public void test0178() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0179() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0179() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0179/ZZAnnotation.js",
@@ -5596,9 +5596,9 @@ public void test0179() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0180() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0180() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0180/ZZAnnotation.js",
@@ -5644,9 +5644,9 @@ public void test0180() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0181() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0181() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0181/ZZAnnotation.js",
@@ -5692,9 +5692,9 @@ public void test0181() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0182() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0182() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0182/ZZAnnotation.js",
@@ -5740,9 +5740,9 @@ public void test0182() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0183() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0183() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0183/ZZAnnotation.js",
@@ -5788,9 +5788,9 @@ public void test0183() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0184() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0184() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0184/ZZAnnotation.js",
@@ -5836,9 +5836,9 @@ public void test0184() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0185() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0185() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0185/ZZAnnotation.js",
@@ -5884,9 +5884,9 @@ public void test0185() throws JavaModelException {
 	}
 }
 // complete annotation attribute value
-public void test0186() throws JavaModelException {
-	ICompilationUnit anAnnotation = null;
-	ICompilationUnit aClass = null;
+public void test0186() throws JavaScriptModelException {
+	IJavaScriptUnit anAnnotation = null;
+	IJavaScriptUnit aClass = null;
 	try {
 		anAnnotation = getWorkingCopy(
 				"/Completion/src3/test0186/ZZAnnotation.js",
@@ -5932,7 +5932,7 @@ public void test0186() throws JavaModelException {
 	}
 }
 // completion test with capture
-public void test0187() throws JavaModelException {
+public void test0187() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0187/Test.js",
             "package test0187;\n" +
@@ -5956,11 +5956,11 @@ public void test0187() throws JavaModelException {
     
     assertResults(
             "zzz1[FIELD_REF]{zzz1, Ltest0187.ZZClass1<!+TU;>;, [Ltest0187.ZZClass2<!+TU;>;, zzz1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}\n" +
-            "zzz2[METHOD_REF]{zzz2(), Ltest0187.ZZClass1<!+TU;>;, ()[Ltest0187.ZZClass2<!+TU;>;, zzz2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+            "zzz2[FUNCTION_REF]{zzz2(), Ltest0187.ZZClass1<!+TU;>;, ()[Ltest0187.ZZClass2<!+TU;>;, zzz2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + + R_NON_STATIC + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
 // completion test with capture
-public void test0188() throws JavaModelException {
+public void test0188() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0188/Test.js",
             "package test0188;\n" +
@@ -5989,7 +5989,7 @@ public void test0188() throws JavaModelException {
             result.proposals);
 }
 // completion test with capture
-public void test0189() throws JavaModelException {
+public void test0189() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0189/Test.js",
             "package test0189;\n" +
@@ -6015,7 +6015,7 @@ public void test0189() throws JavaModelException {
             result.proposals);
 }
 // completion test with capture
-public void test0190() throws JavaModelException {
+public void test0190() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0190/Test.js",
             "package test0190;\n" +
@@ -6045,11 +6045,11 @@ public void test0190() throws JavaModelException {
     
     assertResults(
             "zzz1[FIELD_REF]{zzz1, Ltest0190.ZZClass1<!+Ljava.lang.Object;>;, [Ltest0190.ZZClass2<!+Ljava.lang.Object;>;, zzz1, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC+ R_NON_RESTRICTED) + "}\n" +
-            "zzz2[METHOD_REF]{zzz2(), Ltest0190.ZZClass1<!+Ljava.lang.Object;>;, ()[Ltest0190.ZZClass2<!+Ljava.lang.Object;>;, zzz2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+            "zzz2[FUNCTION_REF]{zzz2(), Ltest0190.ZZClass1<!+Ljava.lang.Object;>;, ()[Ltest0190.ZZClass2<!+Ljava.lang.Object;>;, zzz2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + + R_NON_STATIC + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
 // completion test with capture
-public void test0191() throws JavaModelException {
+public void test0191() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0191/Test.js",
             "package test0191;\n" +
@@ -6077,7 +6077,7 @@ public void test0191() throws JavaModelException {
             "var2[LOCAL_VARIABLE_REF]{var2, null, Ltest0191.ZZClass1<+TU;>;, var2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + + R_UNQUALIFIED + R_EXACT_EXPECTED_TYPE + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0192() throws JavaModelException {
+public void test0192() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0192/Test.js",
             "package test0192;\n" +     
@@ -6097,7 +6097,7 @@ public void test0192() throws JavaModelException {
             "ZZClass1<X,Y>[TYPE_REF]{, test0192, Ltest0192.ZZClass1<TX;TY;>;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_EXACT_NAME+ R_UNQUALIFIED + + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0193() throws JavaModelException {
+public void test0193() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0193/Test.js",
             "package test0193;\n" +
@@ -6119,7 +6119,7 @@ public void test0193() throws JavaModelException {
             "ZZClass1<X,Y>[TYPE_REF]{, test0193, Ltest0193.ZZClass1<TX;TY;>;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_EXACT_NAME + R_UNQUALIFIED + + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0194() throws JavaModelException {
+public void test0194() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0194/Test.js",
             "package test0194;\n" +     
@@ -6139,7 +6139,7 @@ public void test0194() throws JavaModelException {
             "ZZClass1<X,Y>[TYPE_REF]{, test0194, Ltest0194.ZZClass1<TX;TY;>;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_EXACT_NAME+ R_UNQUALIFIED + + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0195() throws JavaModelException {
+public void test0195() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0195/Test.js",
             "package test0195;\n" +
@@ -6161,7 +6161,7 @@ public void test0195() throws JavaModelException {
             "ZZClass1<X,Y>[TYPE_REF]{, test0195, Ltest0195.ZZClass1<TX;TY;>;, null, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXPECTED_TYPE + R_EXACT_NAME + R_UNQUALIFIED + + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0196() throws JavaModelException {
+public void test0196() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0196/Test.js",
             "package test0196;\n" +
@@ -6183,7 +6183,7 @@ public void test0196() throws JavaModelException {
             "",
             result.proposals);
 }
-public void test0196b() throws JavaModelException {
+public void test0196b() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0196/Test.js",
             "package test0196;\n" +
@@ -6206,7 +6206,7 @@ public void test0196b() throws JavaModelException {
             "foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0196.ZZAnnot;, I, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0197() throws JavaModelException {
+public void test0197() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0197/Test.js",
             "package test0197;\n" +
@@ -6229,7 +6229,7 @@ public void test0197() throws JavaModelException {
             "",
             result.proposals);
 }
-public void test0197b() throws JavaModelException {
+public void test0197b() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0197/Test.js",
             "package test0197;\n" +
@@ -6253,7 +6253,7 @@ public void test0197b() throws JavaModelException {
             "foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0197.ZZAnnot;, I, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0198() throws JavaModelException {
+public void test0198() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0198/Test.js",
             "package test0198;\n" +
@@ -6276,7 +6276,7 @@ public void test0198() throws JavaModelException {
             "",
             result.proposals);
 }
-public void test0198b() throws JavaModelException {
+public void test0198b() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0198/Test.js",
             "package test0198;\n" +
@@ -6300,7 +6300,7 @@ public void test0198b() throws JavaModelException {
             "foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0198.ZZAnnot;, I, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0199() throws JavaModelException {
+public void test0199() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0199/Test.js",
             "package test0199;\n" +
@@ -6322,7 +6322,7 @@ public void test0199() throws JavaModelException {
             "",
             result.proposals);
 }
-public void test0199b() throws JavaModelException {
+public void test0199b() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0199/Test.js",
             "package test0199;\n" +
@@ -6344,7 +6344,7 @@ public void test0199b() throws JavaModelException {
     		"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0199.ZZAnnot;, I, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0200() throws JavaModelException {
+public void test0200() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0200/Test.js",
             "package test0200;\n" +
@@ -6367,7 +6367,7 @@ public void test0200() throws JavaModelException {
             "",
             result.proposals);
 }
-public void test0200b() throws JavaModelException {
+public void test0200b() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0200/Test.js",
             "package test0200;\n" +
@@ -6390,7 +6390,7 @@ public void test0200b() throws JavaModelException {
     		"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0200.ZZAnnot;, I, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0201() throws JavaModelException {
+public void test0201() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0201/Test.js",
             "package test0201;\n" +
@@ -6413,7 +6413,7 @@ public void test0201() throws JavaModelException {
             "",
             result.proposals);
 }
-public void test0201b() throws JavaModelException {
+public void test0201b() throws JavaScriptModelException {
     CompletionResult result = complete(
             "/Completion/src3/test0201/Test.js",
             "package test0201;\n" +
@@ -6436,8 +6436,8 @@ public void test0201b() throws JavaModelException {
     		"foo2[ANNOTATION_ATTRIBUTE_REF]{foo2, Ltest0201.ZZAnnot;, I, foo2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
             result.proposals);
 }
-public void test0202() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void test0202() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src3/p/ZZType.js",
@@ -6482,8 +6482,8 @@ public void test0202() throws JavaModelException {
 		}
 	}
 }
-public void test0203() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void test0203() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src3/p/ZZType.js",
@@ -6522,8 +6522,8 @@ public void test0203() throws JavaModelException {
 		}
 	}
 }
-public void test0204() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void test0204() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src3/p/ZZType.js",
@@ -6562,8 +6562,8 @@ public void test0204() throws JavaModelException {
 		}
 	}
 }
-public void test0205() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void test0205() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src3/p/ZZType.js",
@@ -6602,8 +6602,8 @@ public void test0205() throws JavaModelException {
 		}
 	}
 }
-public void test0206() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void test0206() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src3/p/ZZType.js",
@@ -6643,8 +6643,8 @@ public void test0206() throws JavaModelException {
 	}
 }
 // bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=93254
-public void test0207() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void test0207() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src3/p/Annot.js",
@@ -6673,8 +6673,8 @@ public void test0207() throws JavaModelException {
 		}
 	}
 }
-public void test0208() throws JavaModelException {
-	ICompilationUnit aType = null;
+public void test0208() throws JavaScriptModelException {
+	IJavaScriptUnit aType = null;
 	try {
 		aType = getWorkingCopy(
 	            "/Completion/src3/p/Colors.js",
@@ -6716,8 +6716,8 @@ public void test0208() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=94303
  */
-public void test0209() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0209() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0209/p/ImportedClass.js",
@@ -6758,8 +6758,8 @@ public void test0209() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=94303
  */
-public void test0210() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0210() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0210/p/ImportedClass.js",
@@ -6799,8 +6799,8 @@ public void test0210() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=94303
  */
-public void test0211() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0211() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0211/p/ImportedClass.js",
@@ -6840,8 +6840,8 @@ public void test0211() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=94303
  */
-public void test0212() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0212() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0212/p/ImportedClass.js",
@@ -6881,8 +6881,8 @@ public void test0212() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=94303
  */
-public void test0213() throws JavaModelException {
-	ICompilationUnit importedClass = null;
+public void test0213() throws JavaScriptModelException {
+	IJavaScriptUnit importedClass = null;
 	try {
 		importedClass = getWorkingCopy(
 				"/Completion/src3/test0213/p/ImportedClass.js",
@@ -6920,10 +6920,10 @@ public void test0213() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93249
  */
-public void test0214() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
-	ICompilationUnit paramClass2 = null;
-	ICompilationUnit superClass = null;
+public void test0214() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
+	IJavaScriptUnit paramClass2 = null;
+	IJavaScriptUnit superClass = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0214/AClass1.js",
@@ -6967,8 +6967,8 @@ public void test0214() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest0214.Test<TZ;>;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_DECLARATION]{public <M extends AClass1> void foo(M p1), Ltest0214.SuperClass<TZ;>;, <M:Ltest0214.AClass1;>(TM;)V, foo, (p1), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_DECLARATION]{public <M extends AClass2> void foo(M p2), Ltest0214.SuperClass<TZ;>;, <M:Ltest0214.AClass2;>(TM;)V, foo, (p2), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo[FUNCTION_DECLARATION]{public <M extends AClass1> void foo(M p1), Ltest0214.SuperClass<TZ;>;, <M:Ltest0214.AClass1;>(TM;)V, foo, (p1), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}\n" +
+				"foo[FUNCTION_DECLARATION]{public <M extends AClass2> void foo(M p2), Ltest0214.SuperClass<TZ;>;, <M:Ltest0214.AClass2;>(TM;)V, foo, (p2), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				result.proposals);
 	} finally {
 		if(paramClass1 != null) {
@@ -6985,9 +6985,9 @@ public void test0214() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93249
  */
-public void test0215() throws JavaModelException {
-	ICompilationUnit paramClass = null;
-	ICompilationUnit superClass = null;
+public void test0215() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass = null;
+	IJavaScriptUnit superClass = null;
 	try {
 		paramClass = getWorkingCopy(
 				"/Completion/src3/test0215/p/ParamClass.js",
@@ -7025,7 +7025,7 @@ public void test0215() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest0215.Test<TZ;>;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_DECLARATION]{public <M extends test0215.SuperClass<Z>> test0215.SuperClass<?> foo(test0215.p.ParamClass.MemberParamClass<? super Z> p1, int p2) throws Exception, Ltest0215.SuperClass<TZ;>;, <M:Ltest0215.SuperClass<TZ;>;>(Ltest0215.p.ParamClass$MemberParamClass<-TZ;>;I)Ltest0215.SuperClass<*>;, foo, (p1, p2), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo[FUNCTION_DECLARATION]{public <M extends test0215.SuperClass<Z>> test0215.SuperClass<?> foo(test0215.p.ParamClass.MemberParamClass<? super Z> p1, int p2) throws Exception, Ltest0215.SuperClass<TZ;>;, <M:Ltest0215.SuperClass<TZ;>;>(Ltest0215.p.ParamClass$MemberParamClass<-TZ;>;I)Ltest0215.SuperClass<*>;, foo, (p1, p2), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				result.proposals);
 	} finally {
 		if(paramClass != null) {
@@ -7039,10 +7039,10 @@ public void test0215() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93249
  */
-public void test0216() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
-	ICompilationUnit paramClass2 = null;
-	ICompilationUnit superClass = null;
+public void test0216() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
+	IJavaScriptUnit paramClass2 = null;
+	IJavaScriptUnit superClass = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0216/p/ParamClass.js",
@@ -7086,8 +7086,8 @@ public void test0216() throws JavaModelException {
 	
 		assertResults(
 				"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest0216.Test<TZ;>;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_DECLARATION]{public void foo(test0216.p.ParamClass p1), Ltest0216.SuperClass<TZ;>;, (Ltest0216.p.ParamClass;)V, foo, (p1), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}\n" +
-				"foo[METHOD_DECLARATION]{public void foo(test0216.q.ParamClass p2), Ltest0216.SuperClass<TZ;>;, (Ltest0216.q.ParamClass;)V, foo, (p2), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+				"foo[FUNCTION_DECLARATION]{public void foo(test0216.p.ParamClass p1), Ltest0216.SuperClass<TZ;>;, (Ltest0216.p.ParamClass;)V, foo, (p1), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}\n" +
+				"foo[FUNCTION_DECLARATION]{public void foo(test0216.q.ParamClass p2), Ltest0216.SuperClass<TZ;>;, (Ltest0216.q.ParamClass;)V, foo, (p2), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 				result.proposals);
 	} finally {
 		if(paramClass1 != null) {
@@ -7104,8 +7104,8 @@ public void test0216() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93119
  */
-public void test0217() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
+public void test0217() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0217/AType.js",
@@ -7143,8 +7143,8 @@ public void test0217() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93119
  */
-public void test0218() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
+public void test0218() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0218/AType.js",
@@ -7182,8 +7182,8 @@ public void test0218() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93119
  */
-public void test0219() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
+public void test0219() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0219/AType.js",
@@ -7223,8 +7223,8 @@ public void test0219() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=93119
  */
-public void test0220() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
+public void test0220() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0220/AType.js",
@@ -7261,8 +7261,8 @@ public void test0220() throws JavaModelException {
 		}
 	}
 }
-public void test0221() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
+public void test0221() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0221/AType.js",
@@ -7300,8 +7300,8 @@ public void test0221() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=96918
  */
-public void test0222() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
+public void test0222() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0222/AType.js",
@@ -7342,8 +7342,8 @@ public void test0222() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=97307
  */
-public void test0223() throws JavaModelException {
-	ICompilationUnit paramClass1 = null;
+public void test0223() throws JavaScriptModelException {
+	IJavaScriptUnit paramClass1 = null;
 	try {
 		paramClass1 = getWorkingCopy(
 				"/Completion/src3/test0223/AType.js",
@@ -7387,7 +7387,7 @@ public void test0223() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=85384
  */
-public void test0224() throws JavaModelException {
+public void test0224() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0224/Test.js",
             "package test0224;\n" +
@@ -7409,7 +7409,7 @@ public void test0224() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=85384
  */
-public void test0225() throws JavaModelException {
+public void test0225() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0225/Test.js",
             "package test0225;\n" +
@@ -7431,7 +7431,7 @@ public void test0225() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=85384
  */
-public void test0226() throws JavaModelException {
+public void test0226() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0226/Test.js",
             "package test0226;\n" +
@@ -7454,7 +7454,7 @@ public void test0226() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=85384
  */
-public void test0227() throws JavaModelException {
+public void test0227() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0227/Test.js",
             "package test0227;\n" +
@@ -7477,7 +7477,7 @@ public void test0227() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=97801
  */
-public void test0228() throws JavaModelException {
+public void test0228() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0228/Test.js",
             "package test0228;\n" +
@@ -7502,7 +7502,7 @@ public void test0228() throws JavaModelException {
 /*
  * https://bugs.eclipse.org/bugs/show_bug.cgi?id=97801
  */
-public void test0229() throws JavaModelException {
+public void test0229() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0229/Test.js",
             "package test0229;\n" +
@@ -7525,7 +7525,7 @@ public void test0229() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96944
-public void test0230() throws JavaModelException {
+public void test0230() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0230/Test.js",
             "package test0230;\n" +
@@ -7548,7 +7548,7 @@ public void test0230() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96944
-public void test0231() throws JavaModelException {
+public void test0231() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0231/Test.js",
             "package test0231;\n" +
@@ -7571,7 +7571,7 @@ public void test0231() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=96944
-public void test0232() throws JavaModelException {
+public void test0232() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0232/Test.js",
             "package test0232;\n" +
@@ -7600,7 +7600,7 @@ public void test0232() throws JavaModelException {
     }
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=82560
-public void test0233() throws JavaModelException {
+public void test0233() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0233/Test0233Z.js",
             "package test0233;\n" +
@@ -7625,7 +7625,7 @@ public void test0233() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=97860
-public void test0234() throws JavaModelException {
+public void test0234() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0234/Test.js",
             "package test0234;\n" +
@@ -7648,7 +7648,7 @@ public void test0234() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=97860
-public void test0235() throws JavaModelException {
+public void test0235() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0235/Test.js",
             "package test0235;\n" +
@@ -7670,7 +7670,7 @@ public void test0235() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94641
-public void test0236() throws JavaModelException {
+public void test0236() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0236/Test.js",
             "package test0236;\n" +
@@ -7689,12 +7689,12 @@ public void test0236() throws JavaModelException {
             result.context);
 
 	assertResults(
-			"Test[METHOD_REF<CONSTRUCTOR>]{, Ltest0236.Test<Ljava.lang.String;>;, ()V, Test, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
+			"Test[FUNCTION_REF<CONSTRUCTOR>]{, Ltest0236.Test<Ljava.lang.String;>;, ()V, Test, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
 			"Test<java.lang.String>[ANONYMOUS_CLASS_DECLARATION]{, Ltest0236.Test<Ljava.lang.String;>;, ()V, null, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
-public void test0237() throws JavaModelException {
+public void test0237() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0237/Test.js",
             "package test0237;\n" +
@@ -7714,7 +7714,7 @@ public void test0237() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
-public void test0238() throws JavaModelException {
+public void test0238() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0238/Test.js",
             "package test0238;\n" +
@@ -7734,7 +7734,7 @@ public void test0238() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
-public void test0239() throws JavaModelException {
+public void test0239() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0239/Test.js",
             "package test0239;\n" +
@@ -7754,7 +7754,7 @@ public void test0239() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
-public void test0240() throws JavaModelException {
+public void test0240() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0204/Test.js",
             "package test0240;\n" +
@@ -7774,7 +7774,7 @@ public void test0240() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
-public void test0241() throws JavaModelException {
+public void test0241() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0241/Test.js",
             "package test0241;\n" +
@@ -7794,7 +7794,7 @@ public void test0241() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=94907
-public void test0242() throws JavaModelException {
+public void test0242() throws JavaScriptModelException {
 	CompletionResult result = complete(
             "/Completion/src3/test0242/Test.js",
             "package test0242;\n" +
@@ -7814,7 +7814,7 @@ public void test0242() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=99686
-	public void test0243() throws JavaModelException {
+	public void test0243() throws JavaScriptModelException {
 		CompletionResult result = complete(
 			"/Completion/src3/test0243/X.js",
 			"package test0243;\n" + 
@@ -7834,11 +7834,11 @@ public void test0242() throws JavaModelException {
 			"foo(new Object() {}).b");
 
 		assertResults(
-			"bar[METHOD_REF]{bar(), Ltest0243.Y<LObject;>;, ()LObject;, bar, null, 29}", 
+			"bar[FUNCTION_REF]{bar(), Ltest0243.Y<LObject;>;, ()LObject;, bar, null, 29}", 
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=100009
-public void test0244() throws JavaModelException {
+public void test0244() throws JavaScriptModelException {
 		CompletionResult result = complete(
 			"/Completion/src3/test0244/X.js",
 			"package test0244;\n" + 
@@ -7850,12 +7850,12 @@ public void test0244() throws JavaModelException {
 
 		assertResults(
 			"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest0244.X;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_DECLARATION]{public Object foo(Object t), Lgenerics.ZAGenericType;, (Ljava.lang.Object;)Ljava.lang.Object;, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_DECLARATION]{public Object foo(ZAGenericType var), Lgenerics.ZAGenericType;, (Lgenerics.ZAGenericType;)Ljava.lang.Object;, foo, (var), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_DECLARATION]{public Object foo(Object t), Lgenerics.ZAGenericType;, (Ljava.lang.Object;)Ljava.lang.Object;, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}\n" +
+			"foo[FUNCTION_DECLARATION]{public Object foo(ZAGenericType var), Lgenerics.ZAGenericType;, (Lgenerics.ZAGenericType;)Ljava.lang.Object;, foo, (var), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=101456
-public void test0245() throws JavaModelException {
+public void test0245() throws JavaScriptModelException {
     this.wc = getWorkingCopy(
             "/Completion/src/test/SnapshotImpl.js",
             "class SnapshotImpl extends AbstractSnapshot<SnapshotImpl, ProviderImpl> {}");
@@ -7881,7 +7881,7 @@ public void test0245() throws JavaModelException {
 	assertResults("", requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=83005
-public void test0246() throws JavaModelException {
+public void test0246() throws JavaScriptModelException {
 		CompletionResult result = complete(
 			"/Completion/src3/test0245/X.js",
 			"package test0245;\n" + 
@@ -7895,7 +7895,7 @@ public void test0246() throws JavaModelException {
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102284
-public void test0247() throws JavaModelException {
+public void test0247() throws JavaScriptModelException {
 		CompletionResult result = complete(
 			"/Completion/src3/test0245/X.js",
 			"package test0245;\n" + 
@@ -7909,19 +7909,19 @@ public void test0247() throws JavaModelException {
 			"Type<String, String> (");
 
 		assertResults(
-			"Type[METHOD_REF<CONSTRUCTOR>]{, LType<Ljava.lang.String;Ljava.lang.String;>;, ()V, Type, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
+			"Type[FUNCTION_REF<CONSTRUCTOR>]{, LType<Ljava.lang.String;Ljava.lang.String;>;, ()V, Type, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
 			"Type<java.lang.String,java.lang.String>[ANONYMOUS_CLASS_DECLARATION]{, LType<Ljava.lang.String;Ljava.lang.String;>;, ()V, null, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}",
 			result.proposals);
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void test0248() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0248() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -7947,22 +7947,22 @@ public void test0248() throws JavaModelException {
 		this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 	
 		assertResults(
-				"oneTwoThree[METHOD_REF]{oneTwoThree(), Lcamelcase.ImportedType;, ()V, oneTwoThree, null, " + (R_DEFAULT + R_INTERESTING + R_CAMEL_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-				"oTTMethod[METHOD_REF]{oTTMethod(), Lcamelcase.ImportedType;, ()V, oTTMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+				"oneTwoThree[FUNCTION_REF]{oneTwoThree(), Lcamelcase.ImportedType;, ()V, oneTwoThree, null, " + (R_DEFAULT + R_INTERESTING + R_CAMEL_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+				"oTTMethod[FUNCTION_REF]{oTTMethod(), Lcamelcase.ImportedType;, ()V, oTTMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void test0249() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0249() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -7992,18 +7992,18 @@ public void test0249() throws JavaModelException {
 				"oTTField[FIELD_REF]{oTTField, Lcamelcase.ImportedType;, I, oTTField, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void test0250() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0250() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 	
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -8030,18 +8030,18 @@ public void test0250() throws JavaModelException {
 				"oTTMethod[METHOD_IMPORT]{camelcase.ImportedType.oTTMethod;, Lcamelcase.ImportedType;, ()V, oTTMethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=102572
-public void test0260() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0260() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/camelcase/Test.js",
 			"package camelcase;"+
@@ -8068,12 +8068,12 @@ public void test0260() throws JavaModelException {
 				"oTTAttribute[ANNOTATION_ATTRIBUTE_REF]{oTTAttribute, Lcamelcase.Annot;, Ljava.lang.String;, oTTAttribute, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=113945
-public void test0261() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0261() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8099,12 +8099,12 @@ public void test0261() throws JavaModelException {
 
 	assertResults(
 			"zzfield[FIELD_REF]{zzfield, Ltest.SuperClass;, I, zzfield, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}\n" +
-			"zzmethod[METHOD_REF]{zzmethod(), Ltest.SuperClass;, ()V, zzmethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"zzmethod[FUNCTION_REF]{zzmethod(), Ltest.SuperClass;, ()V, zzmethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=113945
-public void test0262() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0262() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8130,13 +8130,13 @@ public void test0262() throws JavaModelException {
 
 	assertResults(
 			"zzfield[FIELD_REF]{zzfield, Ltest.SuperInterface;, I, zzfield, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
-			"zzmethod[METHOD_REF]{zzmethod(), Ltest.SuperInterface;, ()V, zzmethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"zzmethod[FUNCTION_REF]{zzmethod(), Ltest.SuperInterface;, ()V, zzmethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=113945
-public void test0263() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0263() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8171,13 +8171,13 @@ public void test0263() throws JavaModelException {
 	assertResults(
 			"zzfield2[FIELD_REF]{zzfield2, Ltest.SuperInterface;, I, zzfield2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
 			"zzfield[FIELD_REF]{zzfield, Ltest.SuperClass;, I, zzfield, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}\n" +
-			"zzmethod[METHOD_REF]{zzmethod(), Ltest.SuperClass;, ()V, zzmethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}\n" +
-			"zzmethod2[METHOD_REF]{zzmethod2(), Ltest.SuperInterface;, ()V, zzmethod2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"zzmethod[FUNCTION_REF]{zzmethod(), Ltest.SuperClass;, ()V, zzmethod, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}\n" +
+			"zzmethod2[FUNCTION_REF]{zzmethod2(), Ltest.SuperInterface;, ()V, zzmethod2, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=120522
-public void test0264() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0264() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8212,8 +8212,8 @@ public void test0264() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=127323
-public void test0265() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0265() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/enumbug/EnumBug.js",
 		"package enumbug;\n"+
@@ -8241,8 +8241,8 @@ public void test0265() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=128169
-public void test0266() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0266() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8266,7 +8266,7 @@ public void test0266() throws JavaModelException {
 
 	assertResults(
 			"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest.Test<TT;TU;TTU;>;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_DECLARATION]{public <V, W, TU2> V foo(test.SuperTest<V> t, test.SuperTest<W> u, test.SuperTest<TU2> tu, test.SuperTest<T> e), " +
+			"foo[FUNCTION_DECLARATION]{public <V, W, TU2> V foo(test.SuperTest<V> t, test.SuperTest<W> u, test.SuperTest<TU2> tu, test.SuperTest<T> e), " +
 				"Ltest.SuperTest<TT;>;, <V:Ljava.lang.Object;W:Ljava.lang.Object;TU2:Ljava.lang.Object;>(Ltest.SuperTest<TV;>;Ltest.SuperTest<TW;>;" +
 				"Ltest.SuperTest<TTU2;>;Ltest.SuperTest<TT;>;)TV;, foo, (t, u, tu, e), " +
 				(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
@@ -8274,8 +8274,8 @@ public void test0266() throws JavaModelException {
 }
 
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=128169
-public void test0267() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0267() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8299,14 +8299,14 @@ public void test0267() throws JavaModelException {
 
 	assertResults(
 			"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest.Test<TT;TU;TTU;>;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_DECLARATION]{public Object foo(SuperTest t, SuperTest u, SuperTest tu, SuperTest e), Ltest.SuperTest;, (Ltest.SuperTest;" +
+			"foo[FUNCTION_DECLARATION]{public Object foo(SuperTest t, SuperTest u, SuperTest tu, SuperTest e), Ltest.SuperTest;, (Ltest.SuperTest;" +
 				"Ltest.SuperTest;Ltest.SuperTest;Ltest.SuperTest;)Ljava.lang.Object;, foo, (t, u, tu, e), " +
 				(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=128169
-public void test0268() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0268() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8330,13 +8330,13 @@ public void test0268() throws JavaModelException {
 
 	assertResults(
 			"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest.Test<TT;TU;TTU;>;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_DECLARATION]{public <V, W, TU2> V foo(V t, W u, TU2 tu), Ltest.SuperTest;, <V:Ljava.lang.Object;W:Ljava.lang.Object;TU2:Ljava.lang.Object;>(TV;TW;TTU2;)TV;, foo, (t, u, tu), " +
+			"foo[FUNCTION_DECLARATION]{public <V, W, TU2> V foo(V t, W u, TU2 tu), Ltest.SuperTest;, <V:Ljava.lang.Object;W:Ljava.lang.Object;TU2:Ljava.lang.Object;>(TV;TW;TTU2;)TV;, foo, (t, u, tu), " +
 				(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=131681
-public void test0269() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0269() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8360,11 +8360,11 @@ public void test0269() throws JavaModelException {
 
 	assertResults(
 			"foo[POTENTIAL_METHOD_DECLARATION]{foo, Ltest.Test;, ()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_DECLARATION]{public <T> void foo(), Ltest.SuperTest;, <T:Ljava.lang.Object;>()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_DECLARATION]{public <T> void foo(), Ltest.SuperTest;, <T:Ljava.lang.Object;>()V, foo, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_METHOD_OVERIDE + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
-public void test0270() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0270() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test270_2.js",
 		"package test;\n"+
@@ -8396,8 +8396,8 @@ public void test0270() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0271() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0271() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8423,12 +8423,12 @@ public void test0271() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zzz2[METHOD_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
+			"zzz2[FUNCTION_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0272() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0272() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8454,13 +8454,13 @@ public void test0272() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zzz2[METHOD_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
-			"zzz1[METHOD_REF]{zzz1(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz1, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"zzz2[FUNCTION_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
+			"zzz1[FUNCTION_REF]{zzz1(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz1, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0273() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0273() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8489,13 +8489,13 @@ public void test0273() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zzz2[METHOD_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
-			"zzz1[METHOD_REF]{zzz1(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz1, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"zzz2[FUNCTION_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED) + "}\n" +
+			"zzz1[FUNCTION_REF]{zzz1(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz1, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0274() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0274() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8525,8 +8525,8 @@ public void test0274() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0275() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0275() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8556,8 +8556,8 @@ public void test0275() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0276() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0276() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8590,8 +8590,8 @@ public void test0276() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0277() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0277() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8621,8 +8621,8 @@ public void test0277() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0278() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0278() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8642,12 +8642,12 @@ public void test0278() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zzz2[METHOD_REF]{zzz2(), Ltest.Test;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
+			"zzz2[FUNCTION_REF]{zzz2(), Ltest.Test;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0279() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0279() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8673,12 +8673,12 @@ public void test0279() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zzz2[METHOD_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
+			"zzz2[FUNCTION_REF]{zzz2(), Ltest.TestCollections;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0280() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0280() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8708,8 +8708,8 @@ public void test0280() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0281() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0281() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8735,12 +8735,12 @@ public void test0281() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zzz2[METHOD_REF]{zzz2(), Ltest.TestCollections;, <T:Ljava.lang.Object;>(TT;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
+			"zzz2[FUNCTION_REF]{zzz2(), Ltest.TestCollections;, <T:Ljava.lang.Object;>(TT;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0282() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0282() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8764,8 +8764,8 @@ public void test0282() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0283() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0283() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8789,8 +8789,8 @@ public void test0283() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=106450
-public void test0284() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0284() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8816,12 +8816,12 @@ public void test0284() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"zzz2[METHOD_REF]{zzz2(), Ltest.Test;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
+			"zzz2[FUNCTION_REF]{zzz2(), Ltest.Test;, (Ljava.lang.Object;)V, zzz2, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_INHERITED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=133491
-public void test0285() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0285() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/other/Test.js",
 		"package other;\n"+
@@ -8859,8 +8859,8 @@ public void test0285() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=95829
-public void test0286() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0286() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8892,12 +8892,12 @@ public void test0286() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.Test2<Ljava.lang.Object;>;, <T:Ljava.lang.Object;>([TT;)[TT;, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{foo(), Ltest.Test2<Ljava.lang.Object;>;, <T:Ljava.lang.Object;>([TT;)[TT;, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=95829
-public void test0287() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0287() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;\n"+
@@ -8928,12 +8928,12 @@ public void test0287() throws JavaModelException {
 
 	assertResults(
 			"fo[POTENTIAL_METHOD_DECLARATION]{fo, Ltest.Test;, ()V, fo, null, " + (R_DEFAULT + R_INTERESTING + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_DECLARATION]{public <T> T[] foo(T[] t), Ltest.Test2<Ljava.lang.Object;>;, <T:Ljava.lang.Object;>([TT;)[TT;, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_ABSTRACT_METHOD + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_DECLARATION]{public <T> T[] foo(T[] t), Ltest.Test2<Ljava.lang.Object;>;, <T:Ljava.lang.Object;>([TT;)[TT;, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_METHOD_OVERIDE + R_ABSTRACT_METHOD + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=97085
-public void test0288() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0288() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -8958,8 +8958,8 @@ public void test0288() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=97085
-public void test0289() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0289() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -8984,8 +8984,8 @@ public void test0289() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=129983
-public void test0290() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0290() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test0290/Test.js",
 			"package test0290;\n" +
@@ -9011,8 +9011,8 @@ public void test0290() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=123225
-public void test0291() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[5];
+public void test0291() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9055,12 +9055,12 @@ public void test0291() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.Test2<Ltest.Test4;>;, (Ltest.Test3;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{foo(), Ltest.Test2<Ltest.Test4;>;, (Ltest.Test3;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=123225
-public void test0292() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[6];
+public void test0292() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[6];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9110,13 +9110,13 @@ public void test0292() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.Test2<Ltest.Test4;>;, (Ltest.Test3;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_REF]{foo(), Ltest.Test5;, (Ltest.Test4;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{foo(), Ltest.Test2<Ltest.Test4;>;, (Ltest.Test3;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.Test5;, (Ltest.Test4;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=123225
-public void test0293() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[5];
+public void test0293() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9160,13 +9160,13 @@ public void test0293() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.Test2<Ltest.Test4;>;, (Ltest.Test3;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
-			"foo[METHOD_REF]{foo(), Ltest.Test;, (Ltest.Test4;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{foo(), Ltest.Test2<Ltest.Test4;>;, (Ltest.Test3;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED) + "}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.Test;, (Ltest.Test4;)V, foo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=161557
-public void test0294() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0294() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9197,8 +9197,8 @@ public void test0294() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99928
-public void test0295() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[5];
+public void test0295() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9250,12 +9250,12 @@ public void test0295() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"compareTo[METHOD_REF]{compareTo, Ltest.ComparableTest<!*>;, (!*)I, compareTo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"compareTo[FUNCTION_REF]{compareTo, Ltest.ComparableTest<!*>;, (!*)I, compareTo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=99928
-public void test0296() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[5];
+public void test0296() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[5];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9305,12 +9305,12 @@ public void test0296() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"compareTo[METHOD_REF]{compareTo(), Ltest.ComparableTest<!*>;, (!*)I, compareTo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"compareTo[FUNCTION_REF]{compareTo(), Ltest.ComparableTest<!*>;, (!*)I, compareTo, (t), " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=154993
-public void test0297() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0297() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9338,8 +9338,8 @@ public void test0297() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=164792
-public void test0298() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0298() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9362,12 +9362,12 @@ public void test0298() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"clone[METHOD_REF]{clone(), [Ltest.ZZZ;, ()[Ltest.ZZZ;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"clone[FUNCTION_REF]{clone(), [Ltest.ZZZ;, ()[Ltest.ZZZ;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=164792
-public void test0299() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0299() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9390,12 +9390,12 @@ public void test0299() throws JavaModelException {
 	this.workingCopies[0].codeComplete(cursorLocation, requestor, this.wcOwner);
 
 	assertResults(
-			"clone[METHOD_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
+			"clone[FUNCTION_REF]{clone(), Ljava.lang.Object;, ()Ljava.lang.Object;, clone, null, " + (R_DEFAULT + R_INTERESTING + R_CASE + R_NON_STATIC + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=157584
-public void test0300() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0300() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -9438,8 +9438,8 @@ public void test0300() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=153130
-public void testEC001() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void testEC001() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -9447,7 +9447,7 @@ public void testEC001() throws JavaModelException {
 		"}");
 	
 	String start = "new test.Test<";
-	IJavaProject javaProject = getJavaProject("Completion");
+	IJavaScriptProject javaProject = getJavaProject("Completion");
 	IEvaluationContext context = javaProject.newEvaluationContext();
 	
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, true, false);
@@ -9470,8 +9470,8 @@ public void testEC001() throws JavaModelException {
 			requestor.getResults());
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports001() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports001() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9508,8 +9508,8 @@ public void testFavoriteImports001() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports002() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports002() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9541,13 +9541,13 @@ public void testFavoriteImports002() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports003() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports003() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9578,8 +9578,8 @@ public void testFavoriteImports003() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports004() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports004() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9610,8 +9610,8 @@ public void testFavoriteImports004() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports005() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports005() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9648,8 +9648,8 @@ public void testFavoriteImports005() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports006() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports006() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9681,13 +9681,13 @@ public void testFavoriteImports006() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports007() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports007() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9720,13 +9720,13 @@ public void testFavoriteImports007() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports008() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports008() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9756,12 +9756,12 @@ public void testFavoriteImports008() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports009() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports009() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9794,13 +9794,13 @@ public void testFavoriteImports009() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports010() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports010() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9830,12 +9830,12 @@ public void testFavoriteImports010() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports011() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports011() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9868,13 +9868,13 @@ public void testFavoriteImports011() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports012() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports012() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9904,12 +9904,12 @@ public void testFavoriteImports012() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports013() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports013() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9942,13 +9942,13 @@ public void testFavoriteImports013() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports014() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports014() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -9978,12 +9978,12 @@ public void testFavoriteImports014() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED +R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports015() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void testFavoriteImports015() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10020,12 +10020,12 @@ public void testFavoriteImports015() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports016() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports016() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10059,14 +10059,14 @@ public void testFavoriteImports016() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class Test");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n" +
 			"Test.foo[TYPE_REF]{foo, test, Ltest.Test$foo;, null, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports017() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports017() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10095,12 +10095,12 @@ public void testFavoriteImports017() throws JavaModelException {
 	int start1 = str.lastIndexOf("foo") + "".length();
 	int end1 = start1 + "foo".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.Test;, ()V, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
+			"foo[FUNCTION_REF]{foo(), Ltest.Test;, ()V, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports018() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports018() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10133,14 +10133,14 @@ public void testFavoriteImports018() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n"+
 			"foo[FIELD_REF]{foo, Ltest.Test;, I, foo, null, ["+start1+", "+end1+"], " + (R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports019() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports019() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10173,14 +10173,14 @@ public void testFavoriteImports019() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n"+
 			"foo[LOCAL_VARIABLE_REF]{foo, null, I, foo, null, ["+start1+", "+end1+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_EXACT_NAME + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports020() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports020() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10213,15 +10213,15 @@ public void testFavoriteImports020() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n"+
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, (I)I, foo, (i), ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, (I)I, foo, (i), ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, (I)I, foo, (i), ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports021() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports021() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10253,13 +10253,13 @@ public void testFavoriteImports021() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, <T:Ljava.lang.Object;>()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, <T:Ljava.lang.Object;>()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, <T:Ljava.lang.Object;>()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports022() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports022() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10290,8 +10290,8 @@ public void testFavoriteImports022() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports023() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports023() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10329,8 +10329,8 @@ public void testFavoriteImports023() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports024() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports024() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10361,8 +10361,8 @@ public void testFavoriteImports024() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports025() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports025() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10393,8 +10393,8 @@ public void testFavoriteImports025() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports026() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports026() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10425,8 +10425,8 @@ public void testFavoriteImports026() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports027() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports027() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10457,8 +10457,8 @@ public void testFavoriteImports027() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports029() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void testFavoriteImports029() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src3/test/Test.js",
 			"package test;\n" +
@@ -10491,20 +10491,20 @@ public void testFavoriteImports029() throws JavaModelException {
 	int start2 = str.lastIndexOf("public class");
 	int end2 = start2 + "".length();
 	assertResults(
-			"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+			"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 			"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports030() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testFavoriteImports030() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 				"/Completion/src3/test/Test.js",
 				"package test;\n" +
@@ -10536,23 +10536,23 @@ public void testFavoriteImports030() throws JavaModelException {
 		int start2 = str.lastIndexOf("public class");
 		int end2 = start2 + "".length();
 		assertResults(
-				"foo[METHOD_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+				"foo[FUNCTION_REF]{ZZZ.foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 				"   ZZZ[TYPE_IMPORT]{import test.p.ZZZ;\n, test.p, Ltest.p.ZZZ;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152123
-public void testFavoriteImports031() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void testFavoriteImports031() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_SUGGEST_STATIC_IMPORTS, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 				"/Completion/src3/test/Test.js",
 				"package test;\n" +
@@ -10584,11 +10584,11 @@ public void testFavoriteImports031() throws JavaModelException {
 		int start2 = str.lastIndexOf("public class");
 		int end2 = start2 + "".length();
 		assertResults(
-				"foo[METHOD_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
+				"foo[FUNCTION_REF]{foo(), Ltest.p.ZZZ;, ()I, foo, null, ["+start1+", "+end1+"], "+(relevance1)+"}\n" +
 				"   foo[METHOD_IMPORT]{import static test.p.ZZZ.foo;\n, Ltest.p.ZZZ;, ()I, foo, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 }

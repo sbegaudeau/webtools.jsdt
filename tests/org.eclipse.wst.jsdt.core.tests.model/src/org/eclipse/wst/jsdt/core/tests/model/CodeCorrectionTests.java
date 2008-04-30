@@ -26,15 +26,15 @@ public class CodeCorrectionTests extends AbstractJavaModelTests {
 public CodeCorrectionTests(String name) {
 	super(name);
 }
-private IMarker[] getMarkers(ICompilationUnit unit){
+private IMarker[] getMarkers(IJavaScriptUnit unit){
 	try {
 		IResource resource = unit.getCorrespondingResource();
-		return resource.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
+		return resource.findMarkers(IJavaScriptModelMarker.JAVASCRIPT_MODEL_PROBLEM_MARKER, true, IResource.DEPTH_INFINITE);
 	} catch (CoreException e) {
 	}
 	return new IMarker[0];
 }
-private IMarker getMarker(ICompilationUnit unit, String message) throws CoreException {
+private IMarker getMarker(IJavaScriptUnit unit, String message) throws CoreException {
 	IMarker[] markers = getMarkers(unit);
 	for (int i = 0; i < markers.length; i++) {
 		IMarker marker = markers[i];
@@ -54,18 +54,18 @@ public static String[] getProjectNames() {
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	
-	IJavaProject project = setUpJavaProject("CodeCorrection");
+	IJavaScriptProject project = setUpJavaProject("CodeCorrection");
 	
 	// dummy query for waiting until the indexes are ready
 	SearchEngine engine = new SearchEngine();
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {project});
 	try {
 		engine.searchAllTypeNames(
 			null,
 			SearchPattern.R_EXACT_MATCH,
 			"!@$#!@".toCharArray(),
 			SearchPattern.R_PATTERN_MATCH | SearchPattern.R_CASE_SENSITIVE,
-			IJavaSearchConstants.CLASS,
+			IJavaScriptSearchConstants.CLASS,
 			scope, 
 			new TypeNameRequestor() {
 				public void acceptType(
@@ -75,12 +75,12 @@ public void setUpSuite() throws Exception {
 					char[][] enclosingTypeNames,
 					String path) {}
 			},
-			IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+			IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 			null);
 	} catch (CoreException e) {
 	}
 	//	do a full build to create markers
-	JavaCore.setOptions(JavaCore.getDefaultOptions());
+	JavaScriptCore.setOptions(JavaScriptCore.getDefaultOptions());
 	try {
 		getWorkspace().getRoot().getProject("CodeCorrection").build(IncrementalProjectBuilder.FULL_BUILD,null);
 		waitForAutoBuild();
@@ -129,10 +129,10 @@ public static Test suite() {
 	return suite;
 	*/
 }
-public void testCorrectFieldType1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectFieldType1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectFieldType1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectFieldType1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -158,10 +158,10 @@ public void testCorrectFieldType1() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectFieldType2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectFieldType2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectFieldType2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectFieldType2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -188,9 +188,9 @@ public void testCorrectFieldType2() throws JavaModelException {
 		requestor.getEnds());
 }
 public void testCorrectFieldType3() throws CoreException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectFieldType3.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectFieldType3.js");
 	IMarker marker = getMarker(cu, "AClassz cannot be resolved to a type");
 	assertTrue("Marker not found", marker != null);
 	try {
@@ -219,10 +219,10 @@ public void testCorrectFieldType3() throws CoreException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectLocalVariableType1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectLocalVariableType1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectLocalVariableType1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectLocalVariableType1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -248,10 +248,10 @@ public void testCorrectLocalVariableType1() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectLocalVariableType2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectLocalVariableType2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectLocalVariableType2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectLocalVariableType2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -277,10 +277,10 @@ public void testCorrectLocalVariableType2() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectImport1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectImport1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectImport1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectImport1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -306,10 +306,10 @@ public void testCorrectImport1() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectImport2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectImport2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectImport2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectImport2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -335,10 +335,10 @@ public void testCorrectImport2() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectImport3() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectImport3() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectImport3.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectImport3.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -364,10 +364,10 @@ public void testCorrectImport3() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectSuperClass1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectSuperClass1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperClass1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperClass1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -393,10 +393,10 @@ public void testCorrectSuperClass1() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectSuperClass2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectSuperClass2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperClass2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperClass2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -422,10 +422,10 @@ public void testCorrectSuperClass2() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectSuperInterface1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectSuperInterface1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperInterface1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperInterface1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -451,10 +451,10 @@ public void testCorrectSuperInterface1() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectSuperInterface2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectSuperInterface2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperInterface2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectSuperInterface2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -477,10 +477,10 @@ public void testCorrectSuperInterface2() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectException1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectException1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectException1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectException1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -506,10 +506,10 @@ public void testCorrectException1() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectException2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectException2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectException2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectException2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -532,10 +532,10 @@ public void testCorrectException2() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectMethod1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectMethod1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectMethod1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectMethod1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -558,10 +558,10 @@ public void testCorrectMethod1() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectMethod2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectMethod2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectMethod2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectMethod2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -584,10 +584,10 @@ public void testCorrectMethod2() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectField1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectField1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectField1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectField1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -610,10 +610,10 @@ public void testCorrectField1() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectField2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectField2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectField2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectField2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -636,10 +636,10 @@ public void testCorrectField2() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectLocalVariable1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectLocalVariable1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectLocalVariable1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectLocalVariable1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -662,10 +662,10 @@ public void testCorrectLocalVariable1() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectArgument1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectArgument1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectArgument1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectArgument1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -688,10 +688,10 @@ public void testCorrectArgument1() throws JavaModelException {
 		""+end,
 		requestor.getEnds());
 }
-public void testCorrectReturnType1() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectReturnType1() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectReturnType1.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectReturnType1.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);
@@ -717,10 +717,10 @@ public void testCorrectReturnType1() throws JavaModelException {
 		end,
 		requestor.getEnds());
 }
-public void testCorrectReturnType2() throws JavaModelException {
-	CorrectionEngine engine = new CorrectionEngine(JavaCore.getOptions());
+public void testCorrectReturnType2() throws JavaScriptModelException {
+	CorrectionEngine engine = new CorrectionEngine(JavaScriptCore.getOptions());
 	CodeCorrectionTestsRequestor requestor = new CodeCorrectionTestsRequestor();
-	ICompilationUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectReturnType2.js");
+	IJavaScriptUnit cu= getCompilationUnit("CodeCorrection", "src", "", "CorrectReturnType2.js");
 	IMarker[] markers = getMarkers(cu);
 	assertTrue("should have one problem",markers.length == 1);
 	engine.computeCorrections(markers[0], null, 0, requestor);

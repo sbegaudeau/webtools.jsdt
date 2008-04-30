@@ -19,8 +19,8 @@ import junit.framework.Test;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
 import org.eclipse.wst.jsdt.internal.compiler.parser.JavadocTagConstants;
 
@@ -196,7 +196,7 @@ public abstract class AbstractJavadocCompletionModelTest extends AbstractJavaMod
 	public static Test suite() {
 		return buildModelTestSuite(AbstractJavadocCompletionModelTest.class);
 	}
-	protected void assertResults(String expected) throws JavaModelException {
+	protected void assertResults(String expected) throws JavaScriptModelException {
 		int length = this.workingCopies.length;
 		String[] sources = new String[length*2];
 		for (int i=0; i<length; i++) {
@@ -205,7 +205,7 @@ public abstract class AbstractJavadocCompletionModelTest extends AbstractJavaMod
 		}
 		assertResults(sources, expected, this.requestor.getResultsWithoutSorting());
 	}
-	protected void assertSortedResults(String expected) throws JavaModelException {
+	protected void assertSortedResults(String expected) throws JavaScriptModelException {
 		int length = this.workingCopies.length;
 		String[] sources = new String[length*2];
 		for (int i=0; i<length; i++) {
@@ -261,7 +261,7 @@ public abstract class AbstractJavadocCompletionModelTest extends AbstractJavaMod
 			System.out.println(this.workingCopies[0].getPath().toString()+'\n');
 			try {
 				System.out.println(this.workingCopies[0].getSource());
-			} catch (JavaModelException e) {
+			} catch (JavaScriptModelException e) {
 				// forget it
 			}
 			assertEquals(
@@ -272,36 +272,36 @@ public abstract class AbstractJavadocCompletionModelTest extends AbstractJavaMod
 		}
 	}
 
-	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind) throws JavaModelException {
+	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind) throws JavaScriptModelException {
 		completeInJavadoc(path, source, showPositions, completeBehind, 1 /* first index */);
 	}
 
-	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind, boolean last) throws JavaModelException {
+	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind, boolean last) throws JavaScriptModelException {
 		completeInJavadoc(path, source, showPositions, completeBehind, last ? -1 : 1);
 	}
 
-	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind, int occurencePosition) throws JavaModelException {
+	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind, int occurencePosition) throws JavaScriptModelException {
 		completeInJavadoc(new String[] { path, source }, showPositions, completeBehind, occurencePosition, null);
 	}
 
-	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind, int occurencePosition, int[] ignoreList) throws JavaModelException {
+	protected void completeInJavadoc(String path, String source, boolean showPositions, String completeBehind, int occurencePosition, int[] ignoreList) throws JavaScriptModelException {
 		completeInJavadoc(new String[] { path, source }, showPositions, completeBehind, occurencePosition, ignoreList);
 	}
-	protected void completeInJavadoc(String[] sources, boolean showPositions, String completeBehind) throws JavaModelException {
+	protected void completeInJavadoc(String[] sources, boolean showPositions, String completeBehind) throws JavaScriptModelException {
 		completeInJavadoc(sources, showPositions, completeBehind, 1, null);
 	}
 	
-	protected void completeInJavadoc(String[] sources, boolean showPositions, String completeBehind, int occurencePosition) throws JavaModelException {
+	protected void completeInJavadoc(String[] sources, boolean showPositions, String completeBehind, int occurencePosition) throws JavaScriptModelException {
 		completeInJavadoc(sources, showPositions, completeBehind, occurencePosition, null);
 	}
 
-	protected void completeInJavadoc(String[] sources, boolean showPositions, String completeBehind, int occurencePosition, int[] ignoreList) throws JavaModelException {
+	protected void completeInJavadoc(String[] sources, boolean showPositions, String completeBehind, int occurencePosition, int[] ignoreList) throws JavaScriptModelException {
 		assertNotNull("We should have sources!!!", sources);
 		assertTrue("Invalid number of sources!!!",  sources.length%2==0);
 
 		// Build working copy(ies)
 		int length = sources.length / 2;
-		this.workingCopies = new ICompilationUnit[length];
+		this.workingCopies = new IJavaScriptUnit[length];
 		for (int i=0; i<length; i++) {
 			this.workingCopies[i] = getWorkingCopy(sources[i*2], sources[i*2+1]);
 			if (WRITE_DIR != null) 	writeFiles(sources);
@@ -403,7 +403,7 @@ public abstract class AbstractJavadocCompletionModelTest extends AbstractJavaMod
 		return toDisplay.replaceAll(", 8}", ", \"+JAVADOC_RELEVANCE+\"}");
 	}
 
-	protected void setUpProjectOptions(String compliance) throws JavaModelException {
+	protected void setUpProjectOptions(String compliance) throws JavaScriptModelException {
 		try {
 			setUpProjectCompliance(COMPLETION_PROJECT, compliance);
 		} catch (IOException e) {

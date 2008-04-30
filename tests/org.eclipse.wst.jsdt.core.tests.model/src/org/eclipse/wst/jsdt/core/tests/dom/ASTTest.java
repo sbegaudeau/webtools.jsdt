@@ -188,9 +188,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(CompilationUnit, Object)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(JavaScriptUnit, Object)
 		 */
-		public boolean match(CompilationUnit node, Object other) {
+		public boolean match(JavaScriptUnit node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
@@ -326,9 +326,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(Javadoc, Object)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(JSdoc, Object)
 		 */
-		public boolean match(Javadoc node, Object other) {
+		public boolean match(JSdoc node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
@@ -378,35 +378,35 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(MethodDeclaration, Object)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(FunctionDeclaration, Object)
 		 */
-		public boolean match(MethodDeclaration node, Object other) {
+		public boolean match(FunctionDeclaration node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(MethodInvocation, Object)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(FunctionInvocation, Object)
 		 */
-		public boolean match(MethodInvocation node, Object other) {
+		public boolean match(FunctionInvocation node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(MethodRef, Object)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(FunctionRef, Object)
          * @since 3.0
 		 */
-		public boolean match(MethodRef node, Object other) {
+		public boolean match(FunctionRef node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
 	
 		/**
-		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(MethodRefParameter, Object)
+		 * @see org.eclipse.wst.jsdt.core.dom.ASTMatcher#match(FunctionRefParameter, Object)
          * @since 3.0
 		 */
-		public boolean match(MethodRefParameter node, Object other) {
+		public boolean match(FunctionRefParameter node, Object other) {
 			checkPositions(node, other);
 			return super.match(node, other);
 		}
@@ -776,7 +776,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	public void testExampleSnippets() {
 		{
 			AST localAst = AST.newAST(ast.apiLevel());
-			CompilationUnit cu = localAst.newCompilationUnit();
+			JavaScriptUnit cu = localAst.newJavaScriptUnit();
 
 			// package com.example;
 			PackageDeclaration pd = localAst.newPackageDeclaration();
@@ -808,7 +808,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			td.setInterface(false); 
 			td.setName(localAst.newSimpleName("MyClass")); //$NON-NLS-1$
 			{ 
-				Javadoc jd = localAst.newJavadoc();
+				JSdoc jd = localAst.newJSdoc();
 				TagElement tg0 = localAst.newTagElement();
 				jd.tags().add(tg0);
 				TextElement tx1 = localAst.newTextElement();
@@ -823,7 +823,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				TagElement tg2 = localAst.newTagElement();
 				tg2.setTagName(TagElement.TAG_LINK);
 				tg1.fragments().add(tg2);
-				MethodRef mr1 = localAst.newMethodRef();
+				FunctionRef mr1 = localAst.newFunctionRef();
 				mr1.setName(localAst.newSimpleName("foo"));
 				tg2.fragments().add(mr1);
 				TextElement tx3 = localAst.newTextElement();
@@ -853,7 +853,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			assertTrue(fd.getRoot() == cu);
 			
 			// public static void main();
-			MethodDeclaration md = localAst.newMethodDeclaration();
+			FunctionDeclaration md = localAst.newFunctionDeclaration();
 			if (ast.apiLevel() == AST.JLS2) {
 				md.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
 				md.setReturnType(localAst.newPrimitiveType(PrimitiveType.VOID));
@@ -881,7 +881,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			assertTrue(b.getRoot() == cu);
 
 			// System.out.println("hello world");		
-			MethodInvocation e = localAst.newMethodInvocation();
+			FunctionInvocation e = localAst.newFunctionInvocation();
 			e.setExpression(localAst.newName(new String[] {"System", "out"})); //$NON-NLS-1$ //$NON-NLS-2$
 			e.setName(localAst.newSimpleName("println")); //$NON-NLS-1$
 			StringLiteral h = localAst.newStringLiteral();
@@ -944,7 +944,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			} else {
 				cr2.setType(localAst.newSimpleType(localAst.newSimpleName("Listener"))); //$NON-NLS-1$
 			}
-			MethodDeclaration md0 = localAst.newMethodDeclaration();
+			FunctionDeclaration md0 = localAst.newFunctionDeclaration();
 			if (ast.apiLevel() == AST.JLS2) {
 				md0.setModifiers(Modifier.PUBLIC);
 			} else {
@@ -1459,7 +1459,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		td.setName(ast.newSimpleName("b")); //$NON-NLS-1$
 		assertTrue(x.isDeclaration() == false);
 		
-		MethodDeclaration md = ast.newMethodDeclaration();
+		FunctionDeclaration md = ast.newFunctionDeclaration();
 		md.setName(x);
 		assertTrue(x.isDeclaration() == true);
 		md.setName(ast.newSimpleName("b")); //$NON-NLS-1$
@@ -2308,9 +2308,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ast.modificationCount() == previousCount);
 
 		if (ast.apiLevel() >= AST.JLS3) {
-			genericPropertyTest(x, new Property("Javadoc", false, Javadoc.class) { //$NON-NLS-1$
+			genericPropertyTest(x, new Property("Javadoc", false, JSdoc.class) { //$NON-NLS-1$
 				public ASTNode sample(AST targetAst, boolean parented) {
-					Javadoc result = targetAst.newJavadoc();
+					JSdoc result = targetAst.newJSdoc();
 					if (parented) {
 						targetAst.newInitializer().setJavadoc(result);
 					}
@@ -2320,7 +2320,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 					return x.getJavadoc();
 				}
 				public void set(ASTNode value) {
-					x.setJavadoc((Javadoc) value);
+					x.setJavadoc((JSdoc) value);
 				}
 			});
 			
@@ -2404,7 +2404,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	
 	public void testCompilationUnit() {
 		long previousCount = ast.modificationCount();
-		final CompilationUnit x = ast.newCompilationUnit();
+		final JavaScriptUnit x = ast.newJavaScriptUnit();
 		assertTrue(ast.modificationCount() > previousCount);
 		previousCount = ast.modificationCount();
 		assertTrue(x.getAST() == ast);
@@ -2412,8 +2412,8 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(x.getPackage() == null);
 		assertTrue(x.imports().size() == 0);
 		assertTrue(x.types().size() == 0);
-		assertTrue(x.getNodeType() == ASTNode.COMPILATION_UNIT);
-		assertTrue(x.structuralPropertiesForType() == CompilationUnit.propertyDescriptors(ast.apiLevel()));
+		assertTrue(x.getNodeType() == ASTNode.JAVASCRIPT_UNIT);
+		assertTrue(x.structuralPropertiesForType() == JavaScriptUnit.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
 		assertTrue(ast.modificationCount() == previousCount);
 
@@ -2423,7 +2423,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				PackageDeclaration result = targetAst.newPackageDeclaration();
 				if (parented) {
-					CompilationUnit cu = targetAst.newCompilationUnit();
+					JavaScriptUnit cu = targetAst.newJavaScriptUnit();
 					cu.setPackage(result);
 				}
 				return result;
@@ -2440,7 +2440,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				ImportDeclaration result = targetAst.newImportDeclaration();
 				if (parented) {
-					CompilationUnit cu = targetAst.newCompilationUnit();
+					JavaScriptUnit cu = targetAst.newJavaScriptUnit();
 					cu.imports().add(result);
 				}
 				return result;
@@ -2451,7 +2451,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				TypeDeclaration result = targetAst.newTypeDeclaration();
 				if (parented) {
-					CompilationUnit cu = targetAst.newCompilationUnit();
+					JavaScriptUnit cu = targetAst.newJavaScriptUnit();
 					cu.types().add(result);
 				}
 				return result;
@@ -2469,9 +2469,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	
 	public void testCompilationUnitLineNumberTable() {
 //		TO RUN THIS TEST YOU MUST TEMPORARILY MAKE PUBLIC
-//		THE METHOD CompilationUnit.setLineEndTable
+//		THE METHOD JavaScriptUnit.setLineEndTable
 		
-//		final CompilationUnit x = ast.newCompilationUnit();
+//		final JavaScriptUnit x = ast.newCompilationUnit();
 //		
 //		// table starts off empty
 //		for (int i= -10; i < 10; i++) {
@@ -2597,7 +2597,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				public ASTNode sample(AST targetAst, boolean parented) {
 					TypeParameter result = targetAst.newTypeParameter();
 					if (parented) {
-						targetAst.newMethodDeclaration().typeParameters().add(result);
+						targetAst.newFunctionDeclaration().typeParameters().add(result);
 					}
 					return result;
 				}
@@ -2672,7 +2672,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				TypeDeclaration result = targetAst.newTypeDeclaration();
 				if (parented) {
-					CompilationUnit cu = targetAst.newCompilationUnit();
+					JavaScriptUnit cu = targetAst.newJavaScriptUnit();
 					cu.types().add(result);
 				}
 				return result;
@@ -2692,8 +2692,8 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		x.bodyDeclarations().clear();
 		FieldDeclaration f1 = ast.newFieldDeclaration(ast.newVariableDeclarationFragment());
 		FieldDeclaration f2 = ast.newFieldDeclaration(ast.newVariableDeclarationFragment());
-		MethodDeclaration m1 = ast.newMethodDeclaration();
-		MethodDeclaration m2 = ast.newMethodDeclaration();
+		FunctionDeclaration m1 = ast.newFunctionDeclaration();
+		FunctionDeclaration m2 = ast.newFunctionDeclaration();
 		TypeDeclaration t1 = ast.newTypeDeclaration();
 		TypeDeclaration t2 = ast.newTypeDeclaration();
 		
@@ -2835,7 +2835,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				TypeDeclaration result = targetAst.newTypeDeclaration();
 				if (parented) {
-					CompilationUnit cu = targetAst.newCompilationUnit();
+					JavaScriptUnit cu = targetAst.newJavaScriptUnit();
 					cu.types().add(result);
 				}
 				return result;
@@ -2857,8 +2857,8 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		EnumConstantDeclaration c2 = ast.newEnumConstantDeclaration();
 		FieldDeclaration f1 = ast.newFieldDeclaration(ast.newVariableDeclarationFragment());
 		FieldDeclaration f2 = ast.newFieldDeclaration(ast.newVariableDeclarationFragment());
-		MethodDeclaration m1 = ast.newMethodDeclaration();
-		MethodDeclaration m2 = ast.newMethodDeclaration();
+		FunctionDeclaration m1 = ast.newFunctionDeclaration();
+		FunctionDeclaration m2 = ast.newFunctionDeclaration();
 		TypeDeclaration t1 = ast.newTypeDeclaration();
 		TypeDeclaration t2 = ast.newTypeDeclaration();
 
@@ -3114,7 +3114,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 					SingleMemberAnnotation s1 = x.getAST().newSingleMemberAnnotation();
 					ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
 					AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-					MethodDeclaration s4 = x.getAST().newMethodDeclaration();
+					FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
 					SingleVariableDeclaration s5 = x.getAST().newSingleVariableDeclaration();
 					s1.setValue(s2);
 					s2.setAnonymousClassDeclaration(s3);
@@ -3292,7 +3292,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	/** @deprecated using deprecated code */
 	public void testMethodDeclaration() {
 		long previousCount = ast.modificationCount();
-		final MethodDeclaration x = ast.newMethodDeclaration();
+		final FunctionDeclaration x = ast.newFunctionDeclaration();
 		assertTrue(ast.modificationCount() > previousCount);
 		previousCount = ast.modificationCount();
 		assertTrue(x.getAST() == ast);
@@ -3317,9 +3317,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(x.parameters().size() == 0);
 		assertTrue(x.thrownExceptions().size() == 0);
 		assertTrue(x.getBody() == null);
-		assertTrue(x.getNodeType() == ASTNode.METHOD_DECLARATION);
+		assertTrue(x.getNodeType() == ASTNode.FUNCTION_DECLARATION);
 		assertTrue(x.structuralPropertiesForType() == 
-			MethodDeclaration.propertyDescriptors(ast.apiLevel()));
+			FunctionDeclaration.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
 		assertTrue(ast.modificationCount() == previousCount);
 	
@@ -3369,7 +3369,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				public ASTNode sample(AST targetAst, boolean parented) {
 					TypeParameter result = targetAst.newTypeParameter();
 					if (parented) {
-						targetAst.newMethodDeclaration().typeParameters().add(result);
+						targetAst.newFunctionDeclaration().typeParameters().add(result);
 					}
 					return result;
 				}
@@ -3585,7 +3585,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	 */
 	public void testJavadoc() {
 		long previousCount = ast.modificationCount();
-		final Javadoc x = ast.newJavadoc();
+		final JSdoc x = ast.newJSdoc();
 		assertTrue(ast.modificationCount() > previousCount);
 		previousCount = ast.modificationCount();
 		assertTrue(x.getAST() == ast);
@@ -3594,14 +3594,14 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			assertTrue(x.getComment().startsWith("/**")); //$NON-NLS-1$
 			assertTrue(x.getComment().endsWith("*/")); //$NON-NLS-1$
 		}
-		assertTrue(x.getNodeType() == ASTNode.JAVADOC);
+		assertTrue(x.getNodeType() == ASTNode.JSDOC);
 		assertTrue(!x.isBlockComment());
 		assertTrue(!x.isLineComment());
 		assertTrue(x.isDocComment());
 		assertTrue(x.tags().isEmpty());
 		assertTrue(x.getAlternateRoot() == null);
 		assertTrue(x.structuralPropertiesForType() == 
-			Javadoc.propertyDescriptors(ast.apiLevel()));
+			JSdoc.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
 		assertTrue(ast.modificationCount() == previousCount);
 		
@@ -3665,7 +3665,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				TagElement result = targetAst.newTagElement();
 				if (parented) {
-					Javadoc parent = targetAst.newJavadoc();
+					JSdoc parent = targetAst.newJSdoc();
 					parent.tags().add(result);
 				}
 				return result;
@@ -3673,11 +3673,11 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode[] counterExamples(AST targetAst) {
 				return new ASTNode[] {
 					targetAst.newEmptyStatement(),
-					targetAst.newCompilationUnit(),
+					targetAst.newJavaScriptUnit(),
 					targetAst.newTypeDeclaration(),
-					targetAst.newJavadoc(),
+					targetAst.newJSdoc(),
 					targetAst.newTextElement(),
-					targetAst.newMethodRef()
+					targetAst.newFunctionRef()
 				};
 			}
 		});
@@ -3759,7 +3759,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				TagElement result = targetAst.newTagElement();
 				if (parented) {
-					Javadoc parent = targetAst.newJavadoc();
+					JSdoc parent = targetAst.newJSdoc();
 					parent.tags().add(result);
 				}
 				return result;
@@ -3777,9 +3777,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode[] counterExamples(AST targetAst) {
 				return new ASTNode[] {
 					targetAst.newEmptyStatement(),
-					targetAst.newCompilationUnit(),
+					targetAst.newJavaScriptUnit(),
 					targetAst.newTypeDeclaration(),
-					targetAst.newJavadoc(),
+					targetAst.newJSdoc(),
 				};
 			}
 		});
@@ -3806,11 +3806,11 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				return result;
 			}
 		});
-		// check that fragments() can handle MethodRef
+		// check that fragments() can handle FunctionRef
 		genericPropertyListTest(x, x.fragments(),
-		  new Property("Fragments", true, MethodRef.class) { //$NON-NLS-1$
+		  new Property("Fragments", true, FunctionRef.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
-				MethodRef result = targetAst.newMethodRef();
+				FunctionRef result = targetAst.newFunctionRef();
 				if (parented) {
 					TagElement parent = targetAst.newTagElement();
 					parent.fragments().add(result);
@@ -3929,17 +3929,17 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	
 	public void testMethodRef() {
 		long previousCount = ast.modificationCount();
-		final MethodRef x = ast.newMethodRef();
+		final FunctionRef x = ast.newFunctionRef();
 		assertTrue(ast.modificationCount() > previousCount);
 		previousCount = ast.modificationCount();
 		assertTrue(x.getAST() == ast);
 		assertTrue(x.getParent() == null);
-		assertTrue(x.getNodeType() == ASTNode.METHOD_REF);
+		assertTrue(x.getNodeType() == ASTNode.FUNCTION_REF);
 		assertTrue(x.getQualifier() == null);
 		assertTrue(x.getName().getParent() == x);
 		assertTrue(x.parameters().isEmpty());
 		assertTrue(x.structuralPropertiesForType() == 
-			MethodRef.propertyDescriptors(ast.apiLevel()));
+			FunctionRef.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
 		assertTrue(ast.modificationCount() == previousCount);
 		
@@ -3978,11 +3978,11 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		});
 
 		genericPropertyListTest(x, x.parameters(),
-		  new Property("Parameters", true, MethodRefParameter.class) { //$NON-NLS-1$
+		  new Property("Parameters", true, FunctionRefParameter.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
-				MethodRefParameter result = targetAst.newMethodRefParameter();
+				FunctionRefParameter result = targetAst.newFunctionRefParameter();
 				if (parented) {
-					MethodRef parent = targetAst.newMethodRef();
+					FunctionRef parent = targetAst.newFunctionRef();
 					parent.parameters().add(result);
 				}
 				return result;
@@ -3992,19 +3992,19 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	
 	public void testMethodRefParameter() {
 		long previousCount = ast.modificationCount();
-		final MethodRefParameter x = ast.newMethodRefParameter();
+		final FunctionRefParameter x = ast.newFunctionRefParameter();
 		assertTrue(ast.modificationCount() > previousCount);
 		previousCount = ast.modificationCount();
 		assertTrue(x.getAST() == ast);
 		assertTrue(x.getParent() == null);
-		assertTrue(x.getNodeType() == ASTNode.METHOD_REF_PARAMETER);
+		assertTrue(x.getNodeType() == ASTNode.FUNCTION_REF_PARAMETER);
 		assertTrue(x.getType().getParent() == x);
 		if (ast.apiLevel() >= AST.JLS3) {
 			assertTrue(x.isVarargs() == false);
 		}
 		assertTrue(x.getName() == null);
 		assertTrue(x.structuralPropertiesForType() == 
-			MethodRefParameter.propertyDescriptors(ast.apiLevel()));
+			FunctionRefParameter.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
 		assertTrue(ast.modificationCount() == previousCount);
 		
@@ -4095,7 +4095,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	
 	public void testMethodInvocation() {
 		long previousCount = ast.modificationCount();
-		final MethodInvocation x = ast.newMethodInvocation();
+		final FunctionInvocation x = ast.newFunctionInvocation();
 		assertTrue(ast.modificationCount() > previousCount);
 		previousCount = ast.modificationCount();
 		assertTrue(x.getAST() == ast);
@@ -4106,9 +4106,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(x.getName().getParent() == x);
 		assertTrue(x.getExpression() == null);
 		assertTrue(x.arguments().size() == 0);
-		assertTrue(x.getNodeType() == ASTNode.METHOD_INVOCATION);
+		assertTrue(x.getNodeType() == ASTNode.FUNCTION_INVOCATION);
 		assertTrue(x.structuralPropertiesForType() == 
-			MethodInvocation.propertyDescriptors(ast.apiLevel()));
+			FunctionInvocation.propertyDescriptors(ast.apiLevel()));
 		// make sure that reading did not change modification count
 		assertTrue(ast.modificationCount() == previousCount);
 	
@@ -4220,7 +4220,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -4296,7 +4296,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 					SingleMemberAnnotation s1 = x.getAST().newSingleMemberAnnotation();
 					ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
 					AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-					MethodDeclaration s4 = x.getAST().newMethodDeclaration();
+					FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
 					Block s5 = x.getAST().newBlock();
 					VariableDeclarationFragment s6 = x.getAST().newVariableDeclarationFragment();
 					VariableDeclarationStatement s7 = x.getAST().newVariableDeclarationStatement(s6);
@@ -4421,7 +4421,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				public ASTNode wrap() {
 					// return TypeDeclaration that embeds x
 					TypeDeclaration s1 = ast.newTypeDeclaration();
-					MethodDeclaration s2 = ast.newMethodDeclaration();
+					FunctionDeclaration s2 = ast.newFunctionDeclaration();
 					s1.bodyDeclarations().add(s2);
 					Block s3 = ast.newBlock();
 					s2.setBody(s3);
@@ -4453,7 +4453,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				public ASTNode wrap() {
 					// return TypeDeclaration that embeds x
 					TypeDeclaration s1 = ast.newTypeDeclaration();
-					MethodDeclaration s2 = ast.newMethodDeclaration();
+					FunctionDeclaration s2 = ast.newFunctionDeclaration();
 					s1.bodyDeclarations().add(s2);
 					Block s3 = ast.newBlock();
 					s2.setBody(s3);
@@ -4935,7 +4935,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5045,7 +5045,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5128,7 +5128,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5309,7 +5309,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s2.setAnonymousClassDeclaration(a1);
 				s1.setInitializer(s2);
-				MethodDeclaration s3 = ast.newMethodDeclaration();
+				FunctionDeclaration s3 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s3);
 				Block s4 = ast.newBlock();
 				s3.setBody(s4);
@@ -5435,9 +5435,9 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 	 * @param x the body declaration to test
 	 */
 	void tJavadocComment(final BodyDeclaration x) {
-		genericPropertyTest(x, new Property("Javadoc", false, Javadoc.class) { //$NON-NLS-1$
+		genericPropertyTest(x, new Property("Javadoc", false, JSdoc.class) { //$NON-NLS-1$
 			public ASTNode sample(AST targetAst, boolean parented) {
-				Javadoc result = targetAst.newJavadoc();
+				JSdoc result = targetAst.newJSdoc();
 				if (parented) {
 					targetAst.newInitializer().setJavadoc(result);
 				}
@@ -5447,7 +5447,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				return x.getJavadoc();
 			}
 			public void set(ASTNode value) {
-				x.setJavadoc((Javadoc) value);
+				x.setJavadoc((JSdoc) value);
 			}
 		});
 	}
@@ -5495,7 +5495,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				SingleMemberAnnotation s1 = x.getAST().newSingleMemberAnnotation();
 				ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
 				AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-				MethodDeclaration s4 = x.getAST().newMethodDeclaration();
+				FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
 				s1.setValue(s2);
 				s2.setAnonymousClassDeclaration(s3);
 				s3.bodyDeclarations().add(s4);
@@ -5503,7 +5503,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				return s1;
 			}
 			public void unwrap() {
-				MethodDeclaration s4 = (MethodDeclaration) x.getParent();
+				FunctionDeclaration s4 = (FunctionDeclaration) x.getParent();
 				s4.modifiers().remove(x);
 			}
 		});
@@ -5536,7 +5536,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
      * @since 3.0
 	 */
 	void tAlternateRoot(final Comment x) {
-		CompilationUnit cu = ast.newCompilationUnit();
+		JavaScriptUnit cu = ast.newJavaScriptUnit();
 		long previousCount = ast.modificationCount();
 		x.setAlternateRoot(cu);
 		assertTrue(ast.modificationCount() > previousCount);
@@ -5658,7 +5658,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5711,7 +5711,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5765,7 +5765,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5797,7 +5797,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5851,7 +5851,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -5925,7 +5925,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -6134,7 +6134,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				assertTrue(node.resolveBinding() == null);
 				return true;
 			}
-			public boolean visit(MethodDeclaration node) {
+			public boolean visit(FunctionDeclaration node) {
 				assertTrue(node.resolveBinding() == null);
 				return true;
 			}
@@ -6202,7 +6202,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -6228,7 +6228,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -6261,7 +6261,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -6368,7 +6368,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -6432,7 +6432,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -6477,7 +6477,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -6523,7 +6523,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				ClassInstanceCreation s1 = ast.newClassInstanceCreation();
 				AnonymousClassDeclaration a1 = ast.newAnonymousClassDeclaration();
 				s1.setAnonymousClassDeclaration(a1);
-				MethodDeclaration s2 = ast.newMethodDeclaration();
+				FunctionDeclaration s2 = ast.newFunctionDeclaration();
 				a1.bodyDeclarations().add(s2);
 				Block s3 = ast.newBlock();
 				s2.setBody(s3);
@@ -7615,7 +7615,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 			public ASTNode sample(AST targetAst, boolean parented) {
 				TypeDeclaration result = targetAst.newTypeDeclaration();
 				if (parented) {
-					CompilationUnit compilationUnit = targetAst.newCompilationUnit();
+					JavaScriptUnit compilationUnit = targetAst.newJavaScriptUnit();
 					compilationUnit.types().add(result);
 				}
 				return result;
@@ -7853,7 +7853,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(t1.isMemberTypeDeclaration() == true);
 		assertTrue(t1.isPackageMemberTypeDeclaration() == false);
 		
-		CompilationUnit t2 = ast.newCompilationUnit();
+		JavaScriptUnit t2 = ast.newJavaScriptUnit();
 		AnnotationTypeDeclaration t3 = ast.newAnnotationTypeDeclaration();
 		t2.types().add(t3);
 		assertTrue(t3.isLocalTypeDeclaration() == false);
@@ -8003,7 +8003,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				MemberValuePair s1 = x.getAST().newMemberValuePair();
 				ClassInstanceCreation s2 = x.getAST().newClassInstanceCreation();
 				AnonymousClassDeclaration s3 = x.getAST().newAnonymousClassDeclaration();
-				MethodDeclaration s4 = x.getAST().newMethodDeclaration();
+				FunctionDeclaration s4 = x.getAST().newFunctionDeclaration();
 				s1.setValue(s2);
 				s2.setAnonymousClassDeclaration(s3);
 				s3.bodyDeclarations().add(s4);
@@ -8011,7 +8011,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				return s1;
 			}
 			public void unwrap() {
-				MethodDeclaration s4 = (MethodDeclaration) x.getParent();
+				FunctionDeclaration s4 = (FunctionDeclaration) x.getParent();
 				s4.modifiers().remove(x);
 			}
 		});
@@ -8092,14 +8092,14 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				// return Expression that embeds x
 				ClassInstanceCreation s1 = x.getAST().newClassInstanceCreation();
 				AnonymousClassDeclaration s2 = x.getAST().newAnonymousClassDeclaration();
-				MethodDeclaration s3 = x.getAST().newMethodDeclaration();
+				FunctionDeclaration s3 = x.getAST().newFunctionDeclaration();
 				s1.setAnonymousClassDeclaration(s2);
 				s2.bodyDeclarations().add(s3);
 				s3.modifiers().add(x);
 				return s1;
 			}
 			public void unwrap() {
-				MethodDeclaration s3 = (MethodDeclaration) x.getParent();
+				FunctionDeclaration s3 = (FunctionDeclaration) x.getParent();
 				s3.modifiers().remove(x);
 			}
 			public ASTNode get() {
@@ -8165,7 +8165,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 				// return Expression that embeds x
 				ClassInstanceCreation s1 = x.getAST().newClassInstanceCreation();
 				AnonymousClassDeclaration s2 = x.getAST().newAnonymousClassDeclaration();
-				MethodDeclaration s3 = x.getAST().newMethodDeclaration();
+				FunctionDeclaration s3 = x.getAST().newFunctionDeclaration();
 				NormalAnnotation s4 = x.getAST().newNormalAnnotation();
 				s1.setAnonymousClassDeclaration(s2);
 				s2.bodyDeclarations().add(s3);
@@ -8428,7 +8428,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ASTNode.CATCH_CLAUSE == 12);
 		assertTrue(ASTNode.CHARACTER_LITERAL == 13);
 		assertTrue(ASTNode.CLASS_INSTANCE_CREATION == 14);
-		assertTrue(ASTNode.COMPILATION_UNIT == 15);
+		assertTrue(ASTNode.JAVASCRIPT_UNIT == 15);
 		assertTrue(ASTNode.CONDITIONAL_EXPRESSION == 16);
 		assertTrue(ASTNode.CONSTRUCTOR_INVOCATION == 17);
 		assertTrue(ASTNode.CONTINUE_STATEMENT == 18);
@@ -8442,10 +8442,10 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ASTNode.IMPORT_DECLARATION == 26);
 		assertTrue(ASTNode.INFIX_EXPRESSION == 27);
 		assertTrue(ASTNode.INITIALIZER == 28);
-		assertTrue(ASTNode.JAVADOC == 29);
+		assertTrue(ASTNode.JSDOC == 29);
 		assertTrue(ASTNode.LABELED_STATEMENT == 30);
-		assertTrue(ASTNode.METHOD_DECLARATION == 31);
-		assertTrue(ASTNode.METHOD_INVOCATION == 32);
+		assertTrue(ASTNode.FUNCTION_DECLARATION == 31);
+		assertTrue(ASTNode.FUNCTION_INVOCATION == 32);
 		assertTrue(ASTNode.NULL_LITERAL == 33);
 		assertTrue(ASTNode.NUMBER_LITERAL == 34);
 		assertTrue(ASTNode.PACKAGE_DECLARATION == 35);
@@ -8480,8 +8480,8 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
 		assertTrue(ASTNode.TAG_ELEMENT == 65);
 		assertTrue(ASTNode.TEXT_ELEMENT == 66);
 		assertTrue(ASTNode.MEMBER_REF == 67);
-		assertTrue(ASTNode.METHOD_REF == 68);
-		assertTrue(ASTNode.METHOD_REF_PARAMETER == 69);
+		assertTrue(ASTNode.FUNCTION_REF == 68);
+		assertTrue(ASTNode.FUNCTION_REF_PARAMETER == 69);
 		assertTrue(ASTNode.ENHANCED_FOR_STATEMENT == 70);
 		assertTrue(ASTNode.ENUM_DECLARATION == 71);
 		assertTrue(ASTNode.ENUM_CONSTANT_DECLARATION == 72);
@@ -8517,7 +8517,7 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
               ASTNode.CATCH_CLAUSE,
               ASTNode.CHARACTER_LITERAL,
               ASTNode.CLASS_INSTANCE_CREATION,
-              ASTNode.COMPILATION_UNIT,
+              ASTNode.JAVASCRIPT_UNIT,
               ASTNode.CONDITIONAL_EXPRESSION,
               ASTNode.CONSTRUCTOR_INVOCATION,
               ASTNode.CONTINUE_STATEMENT,
@@ -8535,16 +8535,16 @@ public class ASTTest extends org.eclipse.wst.jsdt.core.tests.junit.extension.Tes
               ASTNode.INFIX_EXPRESSION,
               ASTNode.INSTANCEOF_EXPRESSION,
               ASTNode.INITIALIZER,
-              ASTNode.JAVADOC,
+              ASTNode.JSDOC,
               ASTNode.LABELED_STATEMENT,
         	  ASTNode.LINE_COMMENT,
       		  ASTNode.MARKER_ANNOTATION,
         	  ASTNode.MEMBER_REF,
       		  ASTNode.MEMBER_VALUE_PAIR,
-              ASTNode.METHOD_DECLARATION,
-              ASTNode.METHOD_INVOCATION,
-        	  ASTNode.METHOD_REF,
-        	  ASTNode.METHOD_REF_PARAMETER,
+              ASTNode.FUNCTION_DECLARATION,
+              ASTNode.FUNCTION_INVOCATION,
+        	  ASTNode.FUNCTION_REF,
+        	  ASTNode.FUNCTION_REF_PARAMETER,
       		  ASTNode.MODIFIER,              
 			  ASTNode.NORMAL_ANNOTATION,
               ASTNode.NULL_LITERAL,

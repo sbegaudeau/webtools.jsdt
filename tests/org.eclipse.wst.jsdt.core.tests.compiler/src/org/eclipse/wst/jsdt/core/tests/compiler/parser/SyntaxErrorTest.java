@@ -388,7 +388,7 @@ public void test11() {
 		"1. ERROR in <test> (at line 3)\n"+
 		"	public void myMethod()						\n"+
 		"	                     ^\n"+
-		"Syntax error, insert \";\" to complete MethodDeclaration\n"+
+		"Syntax error, insert \";\" to complete FunctionDeclaration\n"+
 		"----------\n";
 
 	String testName = "<test>";

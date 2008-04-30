@@ -15,8 +15,8 @@ import java.util.Hashtable;
 import junit.framework.Test;
 
 import org.eclipse.wst.jsdt.core.CompletionProposal;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 
 /**
@@ -47,7 +47,7 @@ protected void setUp() throws Exception {
 /**
  * @category Tests for tag names completion
  */
-public void test001() throws JavaModelException {
+public void test001() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" +
@@ -57,21 +57,21 @@ public void test001() throws JavaModelException {
 		"public class Test {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/Test.js", source, true, "@");
 	assertResults(
-		"author[JAVADOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"deprecated[JAVADOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"see[JAVADOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"version[JAVADOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"category[JAVADOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"since[JAVADOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"serial[JAVADOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"author[JSDOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"deprecated[JSDOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"see[JSDOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"version[JSDOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"category[JSDOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"since[JSDOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"serial[JSDOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test002() throws JavaModelException {
+public void test002() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" +
@@ -83,7 +83,7 @@ public void test002() throws JavaModelException {
 	assertResults("");
 }
 
-public void test003() throws JavaModelException {
+public void test003() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" +
@@ -93,12 +93,12 @@ public void test003() throws JavaModelException {
 		"public class Test {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/Test.js", source, true, "@v");
 	assertResults(
-		"version[JAVADOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"version[JSDOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test004() throws JavaModelException {
+public void test004() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" +
@@ -108,11 +108,11 @@ public void test004() throws JavaModelException {
 		"public class Test {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/Test.js", source, true, "@deprec");
 	assertResults(
-		"deprecated[JAVADOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"deprecated[JSDOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test005() throws JavaModelException {
+public void test005() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" +
@@ -122,12 +122,12 @@ public void test005() throws JavaModelException {
 		"public class Test {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/Test.js", source, true, "@link");
 	assertResults(
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test006() throws JavaModelException {
+public void test006() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" +
@@ -137,12 +137,12 @@ public void test006() throws JavaModelException {
 		"public class Test {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/Test.js", source, true, "@li");
 	assertResults(
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test007() throws JavaModelException {
+public void test007() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_3);
 	String source =
 		"package javadoc.types;\n" + 
@@ -154,19 +154,19 @@ public void test007() throws JavaModelException {
 		"public class Test {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/Test.js", source, true, "@");
 	assertResults(
-		"author[JAVADOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"deprecated[JAVADOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"see[JAVADOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"version[JAVADOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"category[JAVADOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"since[JAVADOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"serial[JAVADOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"author[JSDOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"deprecated[JSDOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"see[JSDOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"version[JSDOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"category[JSDOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"since[JSDOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"serial[JSDOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test008() throws JavaModelException {
+public void test008() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types;\n" + 
@@ -178,27 +178,27 @@ public void test008() throws JavaModelException {
 		"public class Test<T> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/Test.js", source, true, "@");
 	assertResults(
-		"author[JAVADOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"deprecated[JAVADOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"param[JAVADOC_BLOCK_TAG]{@param, null, null, param, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"see[JAVADOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"version[JAVADOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"category[JAVADOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"since[JAVADOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"serial[JAVADOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"link[JAVADOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"docRoot[JAVADOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"linkplain[JAVADOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"value[JAVADOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"code[JAVADOC_INLINE_TAG]{{@code}, null, null, code, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
-		"literal[JAVADOC_INLINE_TAG]{{@literal}, null, null, literal, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"author[JSDOC_BLOCK_TAG]{@author, null, null, author, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"deprecated[JSDOC_BLOCK_TAG]{@deprecated, null, null, deprecated, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"param[JSDOC_BLOCK_TAG]{@param, null, null, param, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"see[JSDOC_BLOCK_TAG]{@see, null, null, see, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"version[JSDOC_BLOCK_TAG]{@version, null, null, version, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"category[JSDOC_BLOCK_TAG]{@category, null, null, category, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"since[JSDOC_BLOCK_TAG]{@since, null, null, since, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"serial[JSDOC_BLOCK_TAG]{@serial, null, null, serial, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"link[JSDOC_INLINE_TAG]{{@link}, null, null, link, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"docRoot[JSDOC_INLINE_TAG]{{@docRoot}, null, null, docRoot, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"linkplain[JSDOC_INLINE_TAG]{{@linkplain}, null, null, linkplain, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"value[JSDOC_INLINE_TAG]{{@value}, null, null, value, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"code[JSDOC_INLINE_TAG]{{@code}, null, null, code, null, "+this.positions+JAVADOC_RELEVANCE+"}\n" + 
+		"literal[JSDOC_INLINE_TAG]{{@literal}, null, null, literal, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
 /**
  * @category Tests for types completion
  */
-public void test010() throws JavaModelException {
+public void test010() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -213,7 +213,7 @@ public void test010() throws JavaModelException {
 	);
 }
 
-public void test011() throws JavaModelException {
+public void test011() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -229,7 +229,7 @@ public void test011() throws JavaModelException {
 	);
 }
 
-public void test012() throws JavaModelException {
+public void test012() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -245,7 +245,7 @@ public void test012() throws JavaModelException {
 	);
 }
 
-public void test013() throws JavaModelException {
+public void test013() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -262,7 +262,7 @@ public void test013() throws JavaModelException {
 	);
 }
 
-public void test014() throws JavaModelException {
+public void test014() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -278,7 +278,7 @@ public void test014() throws JavaModelException {
 	);
 }
 
-public void test015() throws JavaModelException {
+public void test015() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -295,7 +295,7 @@ public void test015() throws JavaModelException {
 	);
 }
 
-public void test016() throws JavaModelException {
+public void test016() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -311,7 +311,7 @@ public void test016() throws JavaModelException {
 	);
 }
 
-public void test017() throws JavaModelException {
+public void test017() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -327,7 +327,7 @@ public void test017() throws JavaModelException {
 	);
 }
 
-public void test018() throws JavaModelException {
+public void test018() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -344,7 +344,7 @@ public void test018() throws JavaModelException {
 	);
 }
 
-public void test019() throws JavaModelException {
+public void test019() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -361,7 +361,7 @@ public void test019() throws JavaModelException {
 	);
 }
 
-public void test020() throws JavaModelException {
+public void test020() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -376,7 +376,7 @@ public void test020() throws JavaModelException {
 	);
 }
 
-public void test021() throws JavaModelException {
+public void test021() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -393,7 +393,7 @@ public void test021() throws JavaModelException {
 	);
 }
 
-public void test022() throws JavaModelException {
+public void test022() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -422,7 +422,7 @@ public void test022() throws JavaModelException {
 	);
 }
 
-public void test023() throws JavaModelException {
+public void test023() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -438,7 +438,7 @@ public void test023() throws JavaModelException {
 	);
 }
 
-public void test024() throws JavaModelException {
+public void test024() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -456,7 +456,7 @@ public void test024() throws JavaModelException {
 	);
 }
 
-public void test025() throws JavaModelException {
+public void test025() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -480,7 +480,7 @@ public void test025() throws JavaModelException {
 	);
 }
 
-public void test026() throws JavaModelException {
+public void test026() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -498,7 +498,7 @@ public void test026() throws JavaModelException {
 /**
  * @category Tests for member types completion
  */
-public void test030() throws JavaModelException {
+public void test030() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -515,7 +515,7 @@ public void test030() throws JavaModelException {
 	);
 }
 
-public void test031() throws JavaModelException {
+public void test031() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -532,7 +532,7 @@ public void test031() throws JavaModelException {
 	);
 }
 
-public void test032() throws JavaModelException {
+public void test032() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -549,7 +549,7 @@ public void test032() throws JavaModelException {
 	);
 }
 
-public void test033() throws JavaModelException {
+public void test033() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -566,7 +566,7 @@ public void test033() throws JavaModelException {
 	);
 }
 
-public void test034() throws JavaModelException {
+public void test034() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -582,7 +582,7 @@ public void test034() throws JavaModelException {
 	);
 }
 
-public void test035() throws JavaModelException {
+public void test035() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -598,7 +598,7 @@ public void test035() throws JavaModelException {
 	);
 }
 
-public void test036() throws JavaModelException {
+public void test036() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -614,7 +614,7 @@ public void test036() throws JavaModelException {
 	);
 }
 
-public void test037() throws JavaModelException {
+public void test037() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -632,7 +632,7 @@ public void test037() throws JavaModelException {
 /**
  * @category Tests for fields completion
  */
-public void test040() throws JavaModelException {
+public void test040() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -646,7 +646,7 @@ public void test040() throws JavaModelException {
 	assertResults("");
 }
 
-public void test041() throws JavaModelException {
+public void test041() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -661,7 +661,7 @@ public void test041() throws JavaModelException {
 	);
 }
 
-public void test042() throws JavaModelException {
+public void test042() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -676,7 +676,7 @@ public void test042() throws JavaModelException {
 	);
 }
 
-public void test043() throws JavaModelException {
+public void test043() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -692,7 +692,7 @@ public void test043() throws JavaModelException {
 	);
 }
 
-public void test044() throws JavaModelException {
+public void test044() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -708,7 +708,7 @@ public void test044() throws JavaModelException {
 	);
 }
 
-public void test045() throws JavaModelException {
+public void test045() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/types/tags/BasicTestTypes.js",
 			"package javadoc.types.tags;\n" + 
@@ -734,7 +734,7 @@ public void test045() throws JavaModelException {
 /**
  * @category Tests for methods completion
  */
-public void test050() throws JavaModelException {
+public void test050() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -750,7 +750,7 @@ public void test050() throws JavaModelException {
 	assertResults("");
 }
 
-public void test051() throws JavaModelException {
+public void test051() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types.tags;\n" + 
 		"/**\n" + 
@@ -766,7 +766,7 @@ public void test051() throws JavaModelException {
 	assertResults("");
 }
 
-public void test052() throws JavaModelException {
+public void test052() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/types/tags/BasicTestTypes.js",
 			"package javadoc.types.tags;\n" + 
@@ -784,11 +784,11 @@ public void test052() throws JavaModelException {
 	};
 	completeInJavadoc(sources, true, "meth");
 	assertResults(
-		"method[METHOD_REF]{method(), Ljavadoc.types.tags.OtherTypes;, ()V, method, null, "+this.positions+R_DICNRNS+"}"
+		"method[FUNCTION_REF]{method(), Ljavadoc.types.tags.OtherTypes;, ()V, method, null, "+this.positions+R_DICNRNS+"}"
 	);
 }
 
-public void test053() throws JavaModelException {
+public void test053() throws JavaScriptModelException {
 	String[] sources = {
 		"/Completion/src/javadoc/types/tags/BasicTestTypes.js",
 			"package javadoc.types.tags;\n" + 
@@ -806,14 +806,14 @@ public void test053() throws JavaModelException {
 	};
 	completeInJavadoc(sources, true, "meth");
 	assertResults(
-		"method[METHOD_REF]{method(), Ljavadoc.types.tags.OtherTypes;, ()V, method, null, "+this.positions+R_DICNRNS+"}"
+		"method[FUNCTION_REF]{method(), Ljavadoc.types.tags.OtherTypes;, ()V, method, null, "+this.positions+R_DICNRNS+"}"
 	);
 }
 
 /**
  * @category Tests for type parameters completion
  */
-public void test060() throws JavaModelException {
+public void test060() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -824,11 +824,11 @@ public void test060() throws JavaModelException {
 		"public class BasicTestTypes<TPARAM> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "@param ", 0); // empty token
 	assertResults(
-		"TPARAM[JAVADOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"TPARAM[JSDOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test061() throws JavaModelException {
+public void test061() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -841,11 +841,11 @@ public void test061() throws JavaModelException {
 		"public class BasicTestTypes<TPARAM> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "<");
 	assertResults(
-		"TPARAM[JAVADOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"TPARAM[JSDOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test062() throws JavaModelException {
+public void test062() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -858,11 +858,11 @@ public void test062() throws JavaModelException {
 		"public class BasicTestTypes<TPARAM> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "<TPA");
 	assertResults(
-		"TPARAM[JAVADOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"TPARAM[JSDOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test063() throws JavaModelException {
+public void test063() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -875,11 +875,11 @@ public void test063() throws JavaModelException {
 		"public class BasicTestTypes<TPARAM> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "<TPA");
 	assertResults(
-		"TPARAM[JAVADOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"TPARAM[JSDOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test064() throws JavaModelException {
+public void test064() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -892,11 +892,11 @@ public void test064() throws JavaModelException {
 		"public class BasicTestTypes<TPARAM> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "<TPARAM");
 	assertResults(
-		"TPARAM[JAVADOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"TPARAM[JSDOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test065() throws JavaModelException {
+public void test065() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -909,11 +909,11 @@ public void test065() throws JavaModelException {
 		"public class BasicTestTypes<TPARAM> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "<TPARAM");
 	assertResults(
-		"TPARAM[JAVADOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"TPARAM[JSDOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test066() throws JavaModelException {
+public void test066() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -926,11 +926,11 @@ public void test066() throws JavaModelException {
 		"public class BasicTestTypes<TPARAM> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "<TPARAM>");
 	assertResults(
-		"TPARAM[JAVADOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"TPARAM[JSDOC_PARAM_REF]{<TPARAM>, null, null, TPARAM, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test067() throws JavaModelException {
+public void test067() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -944,7 +944,7 @@ public void test067() throws JavaModelException {
 	assertResults("");
 }
 
-public void test068() throws JavaModelException {
+public void test068() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -958,7 +958,7 @@ public void test068() throws JavaModelException {
 	assertResults("");
 }
 
-public void test069() throws JavaModelException {
+public void test069() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -971,11 +971,11 @@ public void test069() throws JavaModelException {
 		"public class BasicTestTypes<T1, T2, T3> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "** 	@param ", 0); // empty token
 	assertResults(
-		"T2[JAVADOC_PARAM_REF]{<T2>, null, null, T2, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"T2[JSDOC_PARAM_REF]{<T2>, null, null, T2, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test070() throws JavaModelException {
+public void test070() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -988,11 +988,11 @@ public void test070() throws JavaModelException {
 		"public class BasicTestTypes<T1, T2, T3> {}\n";
 	completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "<T", 3); // 3rd position
 	assertResults(
-		"T3[JAVADOC_PARAM_REF]{<T3>, null, null, T3, null, "+this.positions+JAVADOC_RELEVANCE+"}"
+		"T3[JSDOC_PARAM_REF]{<T3>, null, null, T3, null, "+this.positions+JAVADOC_RELEVANCE+"}"
 	);
 }
 
-public void test071() throws JavaModelException {
+public void test071() throws JavaScriptModelException {
 	setUpProjectOptions(CompilerOptions.VERSION_1_5);
 	String source =
 		"package javadoc.types.tags;\n" + 
@@ -1011,12 +1011,12 @@ public void test071() throws JavaModelException {
 /**
  * @tests Tests for camel case completion
  */
-public void test080() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test080() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	try {
 		Hashtable options = new Hashtable(oldOptions);
-		options.put(JavaCore.CODEASSIST_CAMEL_CASE_MATCH, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_CAMEL_CASE_MATCH, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
 		String source =
 			"package javadoc.types.tags;\n" + 
@@ -1028,13 +1028,13 @@ public void test080() throws JavaModelException {
 		completeInJavadoc("/Completion/src/javadoc/types/tags/BasicTestTypes.js", source, true, "BTT");
 		assertResults("BasicTestTypes[TYPE_REF]{BasicTestTypes, javadoc.types.tags, Ljavadoc.types.tags.BasicTestTypes;, null, null, "+this.positions+"16}");
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 /**
  * @category Tests for filtered completion
  */
-public void test100() throws JavaModelException {
+public void test100() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1051,10 +1051,10 @@ public void test100() throws JavaModelException {
 			new int[]{});
 	assertResults(
 			"ZBasicTestTypes[TYPE_REF]{ZBasicTestTypes, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICUNR+"}\n" + 
-			"ZBasicTestTypes[JAVADOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICUNRIT+"}"
+			"ZBasicTestTypes[JSDOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICUNRIT+"}"
 	);
 }
-public void test101() throws JavaModelException {
+public void test101() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1068,12 +1068,12 @@ public void test101() throws JavaModelException {
 			true,
 			"ZBasi",
 			1,
-			new int[]{CompletionProposal.JAVADOC_TYPE_REF});
+			new int[]{CompletionProposal.JSDOC_TYPE_REF});
 	assertResults(
 			"ZBasicTestTypes[TYPE_REF]{ZBasicTestTypes, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICUNR+"}"
 	);
 }
-public void test102() throws JavaModelException {
+public void test102() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1089,10 +1089,10 @@ public void test102() throws JavaModelException {
 			1,
 			new int[]{CompletionProposal.TYPE_REF});
 	assertResults(
-			"ZBasicTestTypes[JAVADOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICUNRIT+"}"
+			"ZBasicTestTypes[JSDOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICUNRIT+"}"
 	);
 }
-public void test103() throws JavaModelException {
+public void test103() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1110,10 +1110,10 @@ public void test103() throws JavaModelException {
 			1,
 			new int[]{});
 	assertResults(
-			"foo[JAVADOC_METHOD_REF]{{@link ZBasicTestTypes#foo()}, Ljavadoc.types.ZBasicTestTypes;, ()V, foo, null, "+this.positions+R_DICNRNSIT+"}"
+			"foo[JSDOC_METHOD_REF]{{@link ZBasicTestTypes#foo()}, Ljavadoc.types.ZBasicTestTypes;, ()V, foo, null, "+this.positions+R_DICNRNSIT+"}"
 	);
 }
-public void test104() throws JavaModelException {
+public void test104() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1129,12 +1129,12 @@ public void test104() throws JavaModelException {
 			true,
 			"ZBasicTestTypes#fo",
 			1,
-			new int[]{CompletionProposal.JAVADOC_METHOD_REF});
+			new int[]{CompletionProposal.JSDOC_METHOD_REF});
 	assertResults(
 			""
 	);
 }
-public void test105() throws JavaModelException {
+public void test105() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1152,10 +1152,10 @@ public void test105() throws JavaModelException {
 			1,
 			new int[]{CompletionProposal.METHOD_REF});
 	assertResults(
-			"foo[JAVADOC_METHOD_REF]{{@link ZBasicTestTypes#foo()}, Ljavadoc.types.ZBasicTestTypes;, ()V, foo, null, "+this.positions+R_DICNRNSIT+"}"
+			"foo[JSDOC_METHOD_REF]{{@link ZBasicTestTypes#foo()}, Ljavadoc.types.ZBasicTestTypes;, ()V, foo, null, "+this.positions+R_DICNRNSIT+"}"
 	);
 }
-public void test106() throws JavaModelException {
+public void test106() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1173,10 +1173,10 @@ public void test106() throws JavaModelException {
 			1,
 			new int[]{});
 	assertResults(
-			"foo[JAVADOC_FIELD_REF]{{@link ZBasicTestTypes#foo}, Ljavadoc.types.ZBasicTestTypes;, I, foo, null, "+this.positions+R_DICNRNSIT+"}"
+			"foo[JSDOC_FIELD_REF]{{@link ZBasicTestTypes#foo}, Ljavadoc.types.ZBasicTestTypes;, I, foo, null, "+this.positions+R_DICNRNSIT+"}"
 	);
 }
-public void test107() throws JavaModelException {
+public void test107() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1192,12 +1192,12 @@ public void test107() throws JavaModelException {
 			true,
 			"ZBasicTestTypes#fo",
 			1,
-			new int[]{CompletionProposal.JAVADOC_FIELD_REF});
+			new int[]{CompletionProposal.JSDOC_FIELD_REF});
 	assertResults(
 			""
 	);
 }
-public void test108() throws JavaModelException {
+public void test108() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1215,10 +1215,10 @@ public void test108() throws JavaModelException {
 			1,
 			new int[]{CompletionProposal.FIELD_REF});
 	assertResults(
-			"foo[JAVADOC_FIELD_REF]{{@link ZBasicTestTypes#foo}, Ljavadoc.types.ZBasicTestTypes;, I, foo, null, "+this.positions+R_DICNRNSIT+"}"
+			"foo[JSDOC_FIELD_REF]{{@link ZBasicTestTypes#foo}, Ljavadoc.types.ZBasicTestTypes;, I, foo, null, "+this.positions+R_DICNRNSIT+"}"
 	);
 }
-public void test109() throws JavaModelException {
+public void test109() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1235,10 +1235,10 @@ public void test109() throws JavaModelException {
 			new int[]{});
 	assertResults(
 			"ZBasicTestTypes[TYPE_REF]{ZBasicTestTypes, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICNR+"}\n" + 
-			"ZBasicTestTypes[JAVADOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICNRIT+"}"
+			"ZBasicTestTypes[JSDOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICNRIT+"}"
 	);
 }
-public void test110() throws JavaModelException {
+public void test110() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1252,12 +1252,12 @@ public void test110() throws JavaModelException {
 			true,
 			"javadoc.types.ZBasi",
 			1,
-			new int[]{CompletionProposal.JAVADOC_TYPE_REF});
+			new int[]{CompletionProposal.JSDOC_TYPE_REF});
 	assertResults(
 			"ZBasicTestTypes[TYPE_REF]{ZBasicTestTypes, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
-public void test111() throws JavaModelException {
+public void test111() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1273,10 +1273,10 @@ public void test111() throws JavaModelException {
 			1,
 			new int[]{CompletionProposal.TYPE_REF});
 	assertResults(
-			"ZBasicTestTypes[JAVADOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICNRIT+"}"
+			"ZBasicTestTypes[JSDOC_TYPE_REF]{{@link ZBasicTestTypes}, javadoc.types, Ljavadoc.types.ZBasicTestTypes;, null, null, "+this.positions+R_DICNRIT+"}"
 	);
 }
-public void test112() throws JavaModelException {
+public void test112() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1295,10 +1295,10 @@ public void test112() throws JavaModelException {
 			new int[]{});
 	assertResults(
 			"ZBasicTestTypes.Inner[TYPE_REF]{Inner, javadoc.types, Ljavadoc.types.ZBasicTestTypes$Inner;, null, null, "+this.positions+R_DICNR+"}\n" + 
-			"ZBasicTestTypes.Inner[JAVADOC_TYPE_REF]{{@link Inner}, javadoc.types, Ljavadoc.types.ZBasicTestTypes$Inner;, null, null, "+this.positions+R_DICNRIT+"}"
+			"ZBasicTestTypes.Inner[JSDOC_TYPE_REF]{{@link Inner}, javadoc.types, Ljavadoc.types.ZBasicTestTypes$Inner;, null, null, "+this.positions+R_DICNRIT+"}"
 	);
 }
-public void test113() throws JavaModelException {
+public void test113() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1314,12 +1314,12 @@ public void test113() throws JavaModelException {
 			true,
 			"javadoc.types.ZBasicTestTypes.Inn",
 			1,
-			new int[]{CompletionProposal.JAVADOC_TYPE_REF});
+			new int[]{CompletionProposal.JSDOC_TYPE_REF});
 	assertResults(
 			"ZBasicTestTypes.Inner[TYPE_REF]{Inner, javadoc.types, Ljavadoc.types.ZBasicTestTypes$Inner;, null, null, "+this.positions+R_DICNR+"}"
 	);
 }
-public void test114() throws JavaModelException {
+public void test114() throws JavaScriptModelException {
 	String source =
 		"package javadoc.types;\n" + 
 		"/**\n" + 
@@ -1337,7 +1337,7 @@ public void test114() throws JavaModelException {
 			1,
 			new int[]{CompletionProposal.TYPE_REF});
 	assertResults(
-			"ZBasicTestTypes.Inner[JAVADOC_TYPE_REF]{{@link Inner}, javadoc.types, Ljavadoc.types.ZBasicTestTypes$Inner;, null, null, "+this.positions+R_DICNRIT+"}"
+			"ZBasicTestTypes.Inner[JSDOC_TYPE_REF]{{@link Inner}, javadoc.types, Ljavadoc.types.ZBasicTestTypes$Inner;, null, null, "+this.positions+R_DICNRIT+"}"
 	);
 }
 }

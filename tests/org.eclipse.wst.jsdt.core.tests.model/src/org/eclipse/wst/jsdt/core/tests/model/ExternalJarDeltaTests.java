@@ -20,11 +20,11 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 /**
  * These test ensure that modifications in external jar are correctly reported as
  * IJavaEllementDeltas after a JavaModel#refreshExternalArchives().
@@ -55,9 +55,9 @@ private void touch(File f) {
 public void testExternalJar0() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -86,10 +86,10 @@ public void testExternalJar0() throws CoreException, IOException {
 public void testExternalJarChanged1() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -119,10 +119,10 @@ public void testExternalJarChanged1() throws CoreException, IOException {
 public void testExternalJarChanged2() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -131,7 +131,7 @@ public void testExternalJarChanged2() throws CoreException, IOException {
 		startDeltas();
 		
 		touch(f);
-		getJavaModel().refreshExternalArchives(new IJavaElement[]{project},null);
+		getJavaModel().refreshExternalArchives(new IJavaScriptElement[]{project},null);
 		
 		assertDeltas(
 			"Unexpected delta", 
@@ -152,10 +152,10 @@ public void testExternalJarChanged2() throws CoreException, IOException {
 public void testExternalJarChanged3() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -165,7 +165,7 @@ public void testExternalJarChanged3() throws CoreException, IOException {
 
 		touch(f);
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(pPath);
-		getJavaModel().refreshExternalArchives(new IJavaElement[]{root},null);
+		getJavaModel().refreshExternalArchives(new IJavaScriptElement[]{root},null);
 		
 		assertDeltas(
 			"Unexpected delta", 
@@ -187,10 +187,10 @@ public void testExternalJarChanged3() throws CoreException, IOException {
 public void testExternalJarChanged4() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -219,16 +219,16 @@ public void testExternalJarChanged4() throws CoreException, IOException {
 	}
 }
 /**
- * Ensure that the external jars are refreshed by a call to JavaCore#initializeAfterLoad()
+ * Ensure that the external jars are refreshed by a call to JavaScriptCore#initializeAfterLoad()
  * (regression test for bug 93668 Search indexes not rebuild)
  */
 public void testExternalJarChanged5() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -241,7 +241,7 @@ public void testExternalJarChanged5() throws CoreException, IOException {
 		simulateRestart();
 
 		startDeltas();
-		JavaCore.initializeAfterLoad(null);
+		JavaScriptCore.initializeAfterLoad(null);
 		
 		assertDeltas(
 			"Unexpected delta", 
@@ -299,10 +299,10 @@ public void testExternalJarChanged6() throws CoreException, IOException {
 public void testExternalJarAdded1() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "pAdded1.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		getJavaModel().refreshExternalArchives(null,null);
 		waitUntilIndexesReady();
@@ -331,10 +331,10 @@ public void testExternalJarAdded1() throws CoreException, IOException {
 public void testExternalJarAdded2() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "pAdded2.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		getJavaModel().refreshExternalArchives(null,null);
 		waitUntilIndexesReady();
@@ -342,7 +342,7 @@ public void testExternalJarAdded2() throws CoreException, IOException {
 		
 		f = new File(pPath);
 		f.createNewFile();
-		getJavaModel().refreshExternalArchives(new IJavaElement[]{project},null);
+		getJavaModel().refreshExternalArchives(new IJavaScriptElement[]{project},null);
 		
 		assertDeltas(
 			"Unexpected delta", 
@@ -363,10 +363,10 @@ public void testExternalJarAdded2() throws CoreException, IOException {
 public void testExternalJarAdded3() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "pAdded3.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		getJavaModel().refreshExternalArchives(null,null);
 		waitUntilIndexesReady();
@@ -375,7 +375,7 @@ public void testExternalJarAdded3() throws CoreException, IOException {
 		f = new File(pPath);
 		f.createNewFile();
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(pPath);
-		getJavaModel().refreshExternalArchives(new IJavaElement[]{root},null);
+		getJavaModel().refreshExternalArchives(new IJavaScriptElement[]{root},null);
 		
 		assertDeltas(
 			"Unexpected delta", 
@@ -396,10 +396,10 @@ public void testExternalJarAdded3() throws CoreException, IOException {
 public void testExternalJarRemoved1() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -429,10 +429,10 @@ public void testExternalJarRemoved1() throws CoreException, IOException {
 public void testExternalJarRemoved2() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -441,7 +441,7 @@ public void testExternalJarRemoved2() throws CoreException, IOException {
 		startDeltas();
 		
 		deleteFile(f);
-		getJavaModel().refreshExternalArchives(new IJavaElement[]{project},null);
+		getJavaModel().refreshExternalArchives(new IJavaScriptElement[]{project},null);
 		
 		assertDeltas(
 			"Unexpected delta", 
@@ -462,10 +462,10 @@ public void testExternalJarRemoved2() throws CoreException, IOException {
 public void testExternalJarRemoved3() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String pPath = getExternalPath() + "p.jar";
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(pPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(pPath), null, null)});
 		
 		f = new File(pPath);
 		f.createNewFile();
@@ -475,7 +475,7 @@ public void testExternalJarRemoved3() throws CoreException, IOException {
 		
 		deleteFile(f);
 		IPackageFragmentRoot root = project.getPackageFragmentRoot(pPath);
-		getJavaModel().refreshExternalArchives(new IJavaElement[]{root},null);
+		getJavaModel().refreshExternalArchives(new IJavaScriptElement[]{root},null);
 		
 		assertDeltas(
 			"Unexpected delta", 
@@ -498,19 +498,19 @@ public void testExternalJarRemoved3() throws CoreException, IOException {
 public void testExternalJarInternalExternalJar() throws CoreException, IOException {
 	File f = null;
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 		
 		String internalFooPath = "/P/foo.jar";
 		IFile fooIFile = this.createFile(internalFooPath, new byte[0]);
 		
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(new Path(internalFooPath), null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(new Path(internalFooPath), null, null)});
 		getJavaModel().refreshExternalArchives(null,null);
 		waitUntilIndexesReady();
 		startDeltas();
 		
 		// canonicalize the external path as this is not done on case sensitive platforms when creating a new lib entry
 		IPath externalFooPath = new Path(fooIFile.getLocation().toFile().getCanonicalPath());
-		setClasspath(project, new IClasspathEntry[]{JavaCore.newLibraryEntry(externalFooPath, null, null)});
+		setClasspath(project, new IIncludePathEntry[]{JavaScriptCore.newLibraryEntry(externalFooPath, null, null)});
 		
 		f = new File(externalFooPath.toOSString());
 		f.createNewFile();

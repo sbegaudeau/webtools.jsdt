@@ -15,7 +15,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.*;
@@ -72,9 +72,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -117,7 +117,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", members.size() == 1);
 
-			MethodDeclaration methodDecl= createNewMethod(ast, "newFoo", true);
+			FunctionDeclaration methodDecl= createNewMethod(ast, "newFoo", true);
 
 			rewrite.replace((ASTNode) members.get(0), methodDecl, null);
 		}
@@ -186,9 +186,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -229,7 +229,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", members.size() == 1);
 
-			MethodDeclaration methodDecl= createNewMethod(ast, "newFoo", true);
+			FunctionDeclaration methodDecl= createNewMethod(ast, "newFoo", true);
 
 			rewrite.replace((ASTNode) members.get(0), methodDecl, null);
 		}
@@ -297,9 +297,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		{ // change to interface, remove supertype, remove first interface, remove field
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
@@ -326,7 +326,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 					
 			rewrite.remove((ASTNode) members.get(1), null);
 			
-			MethodDeclaration meth= findMethodDeclaration(type, "hee");
+			FunctionDeclaration meth= findMethodDeclaration(type, "hee");
 			rewrite.remove(meth, null);
 		}
 		{ // remove superinterface & method, change to interface & final
@@ -398,9 +398,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("interface G {\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		assertTrue("Errors in AST", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		AST ast= astRoot.getAST();
@@ -431,7 +431,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			
 			rewrite.getListRewrite(innerType, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertFirst(newField, null);
 			
-			MethodDeclaration newMethodDecl= createNewMethod(ast, "newMethod", false);
+			FunctionDeclaration newMethodDecl= createNewMethod(ast, "newMethod", false);
 			rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertAt(newMethodDecl, 4, null);
 		}
 		{ // add exception, add method
@@ -440,7 +440,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			SimpleName newSuperclass= ast.newSimpleName("Exception");
 			rewrite.set(type, TypeDeclaration.SUPERCLASS_PROPERTY, newSuperclass, null);
 					
-			MethodDeclaration newMethodDecl= createNewMethod(ast, "newMethod", false);
+			FunctionDeclaration newMethodDecl= createNewMethod(ast, "newMethod", false);
 			rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertLast(newMethodDecl, null);
 		}			
 		{ // insert interface
@@ -449,7 +449,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			SimpleName newInterface= ast.newSimpleName("Runnable");
 			rewrite.getListRewrite(type, TypeDeclaration.SUPER_INTERFACES_PROPERTY).insertLast(newInterface, null);
 			
-			MethodDeclaration newMethodDecl= createNewMethod(ast, "newMethod", true);
+			FunctionDeclaration newMethodDecl= createNewMethod(ast, "newMethod", true);
 			rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertLast(newMethodDecl,  null);
 		}			
 
@@ -498,9 +498,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("}\n");
 		buf.append("class F {\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		assertTrue("Errors in AST", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		AST ast= astRoot.getAST();
@@ -564,9 +564,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("class H <T> {}\n");
 		buf.append("class I<T> extends A {}\n");
 		buf.append("class J<T>extends A {}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		List types= astRoot.types();
@@ -610,9 +610,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("        }\n");		
 		buf.append("    }\n");		
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("T.js", buf.toString(), false, null);				
+		IJavaScriptUnit cu= pack1.createCompilationUnit("T.js", buf.toString(), false, null);				
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		assertTrue("Errors in AST", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		
 		TypeDeclaration type= findTypeDeclaration(astRoot, "T");
@@ -644,16 +644,16 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("        };\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E2.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E2.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E2");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 3", statements.size() == 3);
@@ -666,7 +666,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			List decls= anonym.bodyDeclarations();
 			assertTrue("Number of bodyDeclarations not 0", decls.size() == 0);
 			
-			MethodDeclaration newMethod= createNewMethod(ast, "newMethod", false);
+			FunctionDeclaration newMethod= createNewMethod(ast, "newMethod", false);
 			rewrite.getListRewrite(anonym, AnonymousClassDeclaration.BODY_DECLARATIONS_PROPERTY).insertFirst(newMethod, null);
 		}
 		{	// remove body decl in AnonymousClassDeclaration
@@ -689,7 +689,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			List decls= anonym.bodyDeclarations();
 			assertTrue("Number of bodyDeclarations not 1", decls.size() == 1);
 			
-			MethodDeclaration newMethod= createNewMethod(ast, "newMethod", false);
+			FunctionDeclaration newMethod= createNewMethod(ast, "newMethod", false);
 
 			rewrite.replace((ASTNode) decls.get(0), newMethod, null);
 		}	
@@ -728,9 +728,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("import java.text.*;\n");					
 		buf.append("public class Z {\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -786,9 +786,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("package test1;\n");
 		buf.append("public class Z {\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -818,9 +818,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("package test1;\n");
 		buf.append("public class Z {\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
@@ -845,9 +845,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		StringBuffer buf= new StringBuffer();
 		buf.append("public class Z {\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("Z.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -858,7 +858,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			Name name= ast.newName(new String[] { "org", "eclipse" });
 			packageDeclaration.setName(name);
 			
-			rewrite.set(astRoot, CompilationUnit.PACKAGE_PROPERTY, packageDeclaration, null);
+			rewrite.set(astRoot, JavaScriptUnit.PACKAGE_PROPERTY, packageDeclaration, null);
 		}
 				
 		String preview= evaluateRewrite(cu, rewrite);
@@ -879,9 +879,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("    public void foo(int i, final int[] k, int[] x[]) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -889,7 +889,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		List arguments= methodDecl.parameters();
 		{ // add modifier, change type, change name, add extra dimension
 			SingleVariableDeclaration decl= (SingleVariableDeclaration) arguments.get(0);
@@ -941,9 +941,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("        int i, j, k= 0, x[][], y[]= {0, 1};\n");		
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -951,7 +951,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		assertTrue("Parse errors", (astRoot.getFlags() & ASTNode.MALFORMED) == 0);
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block block= methodDecl.getBody();
 		List statements= block.statements();
 		assertTrue("Number of statements not 1", statements.size() == 1);
@@ -1024,9 +1024,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("    public void hee() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1035,7 +1035,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", !members.isEmpty());
 			
-			MethodDeclaration newMethodDecl= createNewMethod(ast, "foo", false);
+			FunctionDeclaration newMethodDecl= createNewMethod(ast, "foo", false);
 			rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertLast(newMethodDecl, null);
 			
 		}
@@ -1069,9 +1069,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("    public void hee() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1080,7 +1080,7 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 			List members= type.bodyDeclarations();
 			assertTrue("Has declarations", !members.isEmpty());
 			
-			MethodDeclaration newMethodDecl= createNewMethod(ast, "foo", false);
+			FunctionDeclaration newMethodDecl= createNewMethod(ast, "foo", false);
 			rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertFirst(newMethodDecl, null);
 		}
 		
@@ -1119,9 +1119,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("    public void hee() {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1162,9 +1162,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("package test1;\n");
 		buf.append("public class E {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1216,9 +1216,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("package test1;\n");
 		buf.append("public enum E {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1253,9 +1253,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("public enum E {\n");
 		buf.append("    A, B, C\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1297,9 +1297,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("public enum E {\n");
 		buf.append("    A, B, C;\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1343,9 +1343,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo(String str) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		EnumDeclaration declaration= (EnumDeclaration) findAbstractTypeDeclaration(astRoot, "E");
@@ -1377,9 +1377,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo2(String str) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		EnumDeclaration declaration= (EnumDeclaration) findAbstractTypeDeclaration(astRoot, "E");
@@ -1415,9 +1415,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("public enum E {\n");
 		buf.append("    A\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		EnumDeclaration declaration= (EnumDeclaration) findAbstractTypeDeclaration(astRoot, "E");
 
@@ -1442,9 +1442,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("package test1;\n");
 		buf.append("public enum E {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		EnumDeclaration declaration= (EnumDeclaration) findAbstractTypeDeclaration(astRoot, "E");
 		
@@ -1476,9 +1476,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append(" */\n");
 		buf.append("public @interface E {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
@@ -1523,9 +1523,9 @@ public class ASTRewritingTypeDeclTest extends ASTRewritingTest {
 		buf.append("public class E {\n");
 		buf.append("    X<?, ?, ? extends A, ? super B, ? extends A, ? super B> x;\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		

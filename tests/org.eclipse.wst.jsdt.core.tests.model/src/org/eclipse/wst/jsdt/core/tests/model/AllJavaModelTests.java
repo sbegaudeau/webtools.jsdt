@@ -63,7 +63,7 @@ private static Class[] getAllTestClasses() {
 //		WorkingCopyNotInClasspathTests.class,
 //		HierarchyOnWorkingCopiesTests.class,
 //		
-//		// test IJavaModel
+//		// test IJavaScriptModel
 //		JavaModelTests.class,
 //	
 //		// tests to check the encoding

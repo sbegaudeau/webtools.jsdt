@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.*;
@@ -61,9 +61,9 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");		
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		
@@ -77,7 +77,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		List decls= typeC.bodyDeclarations();
 		
-		MethodDeclaration method= (MethodDeclaration) decls.get(1);
+		FunctionDeclaration method= (FunctionDeclaration) decls.get(1);
 		ITrackedNodePosition position2= rewrite.track(method.getName());
 		names.add("foo");
 		positions.add(position2);
@@ -128,9 +128,9 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(ast);
@@ -145,7 +145,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		List decls= typeC.bodyDeclarations();
 		
-		MethodDeclaration method= (MethodDeclaration) decls.get(1);
+		FunctionDeclaration method= (FunctionDeclaration) decls.get(1);
 		position= rewrite.track(method.getName());
 		names.add("foo");
 		positions.add(position);
@@ -200,9 +200,9 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(ast);
@@ -220,7 +220,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		List decls= typeC.bodyDeclarations();
 		
-		MethodDeclaration method= (MethodDeclaration) decls.get(1);
+		FunctionDeclaration method= (FunctionDeclaration) decls.get(1);
 		position= rewrite.track(method.getName());
 		names.add("foo");
 		positions.add(position);
@@ -277,9 +277,9 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		
@@ -294,7 +294,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		List decls= typeC.bodyDeclarations();
 		
-		MethodDeclaration method= (MethodDeclaration) decls.get(1);
+		FunctionDeclaration method= (FunctionDeclaration) decls.get(1);
 		position= rewrite.track(method.getName());
 		names.add("foo");
 		positions.add(position);
@@ -349,9 +349,9 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		
@@ -366,7 +366,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		List decls= typeC.bodyDeclarations();
 		
-		MethodDeclaration method= (MethodDeclaration) decls.get(0);
+		FunctionDeclaration method= (FunctionDeclaration) decls.get(0);
 		position= rewrite.track(method.getName());
 		names.add("foo");
 		positions.add(position);
@@ -417,9 +417,9 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("    public void foo(String s, int i) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		
@@ -434,7 +434,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		List decls= typeC.bodyDeclarations();
 		
-		MethodDeclaration method= (MethodDeclaration) decls.get(1);
+		FunctionDeclaration method= (FunctionDeclaration) decls.get(1);
 		position=  rewrite.track(method.getName());
 		names.add("foo");
 		positions.add(position);
@@ -471,9 +471,9 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		buf.append("        return s;\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("C.js", buf.toString(), false, null);
 	
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(ast);
 		
@@ -488,7 +488,7 @@ public class ASTRewritingTrackingTest extends ASTRewritingTest {
 		
 		List decls= typeC.bodyDeclarations();
 		
-		MethodDeclaration method= (MethodDeclaration) decls.get(0);
+		FunctionDeclaration method= (FunctionDeclaration) decls.get(0);
 		position= rewrite.track(method.getName());
 		names.add("foo");
 		positions.add(position);

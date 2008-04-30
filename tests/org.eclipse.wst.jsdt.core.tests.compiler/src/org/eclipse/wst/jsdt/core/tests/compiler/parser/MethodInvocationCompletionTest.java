@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core.tests.compiler.parser;
 import junit.framework.Test;
 
 /**
- * Completion is expected to be a MethodInvocation.
+ * Completion is expected to be a FunctionInvocation.
  */
 public class MethodInvocationCompletionTest extends AbstractCompletionTest {
 public MethodInvocationCompletionTest(String testName) {
@@ -604,7 +604,7 @@ public void testLabeledWithoutReceiver() {
 	);
 }
 /*
- * MethodInvocation ::= Name '(' ArgumentListopt ')'
+ * FunctionInvocation ::= Name '(' ArgumentListopt ')'
  */
 public void testNoReceiver() {
 	this.runTestCheckMethodParse(
@@ -666,7 +666,7 @@ public void testSpaceThenFirstParameter() {
 	);
 }
 /*
- * MethodInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
+ * FunctionInvocation ::= 'super' '.' 'Identifier' '(' ArgumentListopt ')'
  */
 public void testSuper() {
 	this.runTestCheckMethodParse(

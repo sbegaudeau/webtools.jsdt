@@ -2654,7 +2654,7 @@ public void test079() {
 		"8. ERROR in Hello.java (at line 23)\n" + 
 		"	}\n" + 
 		"	^\n" + 
-		"Syntax error, insert \"EnumBody\" to complete CompilationUnit\n" + 
+		"Syntax error, insert \"EnumBody\" to complete JavaScriptUnit\n" + 
 		"----------\n"
 	);
 }

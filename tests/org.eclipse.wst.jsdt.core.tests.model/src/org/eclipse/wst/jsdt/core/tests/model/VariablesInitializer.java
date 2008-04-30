@@ -12,23 +12,23 @@ package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeVariableInitializer;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 
 public class VariablesInitializer extends JsGlobalScopeVariableInitializer {
 
 	public static ITestInitializer initializer;
 	
 	public static interface ITestInitializer {
-		public void initialize(String variable) throws JavaModelException;
+		public void initialize(String variable) throws JavaScriptModelException;
 	}
 	
 	public static void reset() {
 		initializer = null;
-		String[] varNames = JavaCore.getClasspathVariableNames();
+		String[] varNames = JavaScriptCore.getIncludepathVariableNames();
 		try {
-			JavaCore.setClasspathVariables(varNames, new IPath[varNames.length], null);
-		} catch (JavaModelException e) {
+			JavaScriptCore.setIncludepathVariables(varNames, new IPath[varNames.length], null);
+		} catch (JavaScriptModelException e) {
 			e.printStackTrace();
 		}
 	}
@@ -41,7 +41,7 @@ public class VariablesInitializer extends JsGlobalScopeVariableInitializer {
 		if (initializer == null) return;
 		try {
 			initializer.initialize(variable);
-		} catch (JavaModelException e) {
+		} catch (JavaScriptModelException e) {
 			e.printStackTrace();
 		}
 	}

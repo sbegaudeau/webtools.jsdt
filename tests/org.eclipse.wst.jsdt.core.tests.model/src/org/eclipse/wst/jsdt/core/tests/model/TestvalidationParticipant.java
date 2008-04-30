@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.wst.jsdt.core.tests.model;
 
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.compiler.ValidationParticipant;
 import org.eclipse.wst.jsdt.core.compiler.ReconcileContext;
 
@@ -18,7 +18,7 @@ public class TestvalidationParticipant extends ValidationParticipant {
 	
 	public static ValidationParticipant PARTICIPANT;
 
-	public boolean isActive(IJavaProject project) {
+	public boolean isActive(IJavaScriptProject project) {
 		return PARTICIPANT != null && PARTICIPANT.isActive(project);
 	}
 	

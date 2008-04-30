@@ -17,7 +17,7 @@ import org.eclipse.wst.jsdt.core.*;
 
 import junit.framework.Test;
 /**
- * Tests IJavaModel API.
+ * Tests IJavaScriptModel API.
  */
 public class JavaModelTests extends ModifyingResourceTests {
 
@@ -37,7 +37,7 @@ static {
 public JavaModelTests(String name) {
 	super(name);
 }
-protected int indexOf(String projectName, IJavaProject[] projects) {
+protected int indexOf(String projectName, IJavaScriptProject[] projects) {
 	for (int i = 0, length = projects.length; i < length; i++) {
 		if (projects[i].getElementName().equals(projectName)) {
 			return i;
@@ -51,8 +51,8 @@ protected int indexOf(String projectName, IJavaProject[] projects) {
  * (regression test for bug 18698 Seeing non-java projects in package view)
  */
 public void testAddFileToNonJavaProject() throws CoreException {
-	IJavaModel model = this.getJavaModel();
-	IJavaProject[] projects = model.getJavaProjects();
+	IJavaScriptModel model = this.getJavaModel();
+	IJavaScriptProject[] projects = model.getJavaScriptProjects();
 	assertTrue(
 		"Project P should not be present already",
 		this.indexOf("P", projects) == -1
@@ -60,7 +60,7 @@ public void testAddFileToNonJavaProject() throws CoreException {
 	try {
 		this.createProject("P");
 		this.createFile("/P/toto.txt", "");
-		projects = model.getJavaProjects();
+		projects = model.getJavaScriptProjects();
 		assertTrue(
 			"Project P should not be present",
 			this.indexOf("P", projects) == -1
@@ -89,7 +89,7 @@ public void testCreateNonJavaProject() throws CoreException {
  */
 public void testContains1() throws CoreException {
 	try {
-		IJavaProject project = this.createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject project = this.createJavaProject("P", new String[] {""}, "");
 
 		// .java file
 		IFile file = this.getFile("/P/X.js");
@@ -285,7 +285,7 @@ public void testContains6() throws CoreException {
 }
 
 /*
- * Ensure that using JavaCore.create(IResource) for a package that is defined in a different project
+ * Ensure that using JavaScriptCore.create(IResource) for a package that is defined in a different project
  * returns a non-null value
  * (regression test for bug 97487 [call hierarchy] Call Hierarchy Fails in mounted classes with attached src files)
  */
@@ -294,7 +294,7 @@ public void testCreatePkgHandleInDifferentProject() throws CoreException {
 		createJavaProject("P1", new String[] {}, "bin");
 		IFolder folder = createFolder("/P1/lib/x/y");
 		createJavaProject("P2", new String[] {}, new String[] {"/P1/lib"}, "");
-		IJavaElement element = JavaCore.create(folder);
+		IJavaScriptElement element = JavaScriptCore.create(folder);
 		assertElementEquals(
 			"Unexpected element",
 			"x.y [in /P1/lib [in P2]]",
@@ -316,7 +316,7 @@ public void testFindLineSeparator01() throws CoreException {
 			"public class X {\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 		assertEquals("\n", cu.findRecommendedLineSeparator());
 	} finally {
 		deleteProject("P");
@@ -334,7 +334,7 @@ public void testFindLineSeparator02() throws CoreException {
 			"public class X {\r\n" +
 			"}"
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 		assertEquals("\r\n", cu.findRecommendedLineSeparator());
 	} finally {
 		deleteProject("P");
@@ -351,7 +351,7 @@ public void testFindLineSeparator03() throws CoreException {
 			"/P/X.js", 
 			""
 		);
-		ICompilationUnit cu = getCompilationUnit("/P/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P/X.js");
 		assertEquals(System.getProperty("line.separator"), cu.findRecommendedLineSeparator());
 	} finally {
 		deleteProject("P");
@@ -376,29 +376,29 @@ public void testFindLineSeparator04() throws CoreException {
  * Test that a model has no project.
  */
 public void testGetJavaProject() {
-	IJavaModel model= getJavaModel();
-	assertTrue("project should be null", model.getJavaProject() == null);
+	IJavaScriptModel model= getJavaModel();
+	assertTrue("project should be null", model.getJavaScriptProject() == null);
 }
 /*
  * Ensure that a java project that is added appears in the list of known java project,
  * and that it is removed from this list when deleted.
  */
 public void testGetJavaProjects1() throws CoreException {
-	IJavaModel model = this.getJavaModel();
-	IJavaProject[] projects = model.getJavaProjects();
+	IJavaScriptModel model = this.getJavaModel();
+	IJavaScriptProject[] projects = model.getJavaScriptProjects();
 	assertTrue(
 		"Project P should not be present already",
 		this.indexOf("P", projects) == -1
 	);
 	try {
 		this.createJavaProject("P", new String[] {}, "");
-		projects = model.getJavaProjects();
+		projects = model.getJavaScriptProjects();
 		assertTrue(
 			"Project P should be present",
 			this.indexOf("P", projects) != -1
 		);
 		this.deleteProject("P");
-		projects = model.getJavaProjects();
+		projects = model.getJavaScriptProjects();
 		assertTrue(
 			"Project P should not be present any longer",
 			this.indexOf("P", projects) == -1
@@ -411,15 +411,15 @@ public void testGetJavaProjects1() throws CoreException {
  * Ensure that a non-java project that is added does not appears in the list of known java project.
  */
 public void testGetJavaProjects2() throws CoreException {
-	IJavaModel model = this.getJavaModel();
-	IJavaProject[] projects = model.getJavaProjects();
+	IJavaScriptModel model = this.getJavaModel();
+	IJavaScriptProject[] projects = model.getJavaScriptProjects();
 	assertTrue(
 		"Project P should not be present already",
 		this.indexOf("P", projects) == -1
 	);
 	try {
 		this.createProject("P");
-		projects = model.getJavaProjects();
+		projects = model.getJavaScriptProjects();
 		assertTrue(
 			"Project P should not be present",
 			this.indexOf("P", projects) == -1
@@ -433,32 +433,32 @@ public void testGetJavaProjects2() throws CoreException {
  */
 public void testGetNonJavaResources() throws CoreException {
 	try {
-		IJavaModel model = this.getJavaModel();
+		IJavaScriptModel model = this.getJavaModel();
 
 		this.createJavaProject("JP", new String[]{}, "");
 		assertResourceNamesEqual(
 			"Unexpected non-Java resources",
 			"",
-			model.getNonJavaResources());
+			model.getNonJavaScriptResources());
 
 		this.createProject("SP1");
 		assertResourceNamesEqual(
 			"Unexpected non-Java resources after creation of SP1",
 			"SP1",
-			model.getNonJavaResources());
+			model.getNonJavaScriptResources());
 		
 		this.createProject("SP2");
 		assertResourceNamesEqual(
 			"Unexpected non-Java resources after creation of SP2",
 			"SP1\n" +
 			"SP2",
-			model.getNonJavaResources());
+			model.getNonJavaScriptResources());
 
 		this.deleteProject("SP1");
 		assertResourceNamesEqual(
 			"Unexpected non-Java resources after deletion of SP1",
 			"SP2",
-			model.getNonJavaResources());
+			model.getNonJavaScriptResources());
 	} finally {
 		this.deleteProject("SP1");
 		this.deleteProject("SP2");
@@ -469,7 +469,7 @@ public void testGetNonJavaResources() throws CoreException {
  * Ensures that the right scheduling rule is returned for a Java project
  */
 public void testGetSchedulingRule1() {
-	IJavaProject project = getJavaProject("P");
+	IJavaScriptProject project = getJavaProject("P");
 	assertEquals(
 		"Unexpected scheduling rule",
 		project.getResource(),
@@ -511,11 +511,11 @@ public void testGetSchedulingRule4() {
 		pkg.getSchedulingRule());
 }
 /*
- * Ensures that JavaCore#initializeAfterLoad() can be called on startup
+ * Ensures that JavaScriptCore#initializeAfterLoad() can be called on startup
  */
 public void testInitializeAfterLoad() throws CoreException {
 	simulateExitRestart();
-	JavaCore.initializeAfterLoad(null);
+	JavaScriptCore.initializeAfterLoad(null);
 }
 
 /**
@@ -530,11 +530,11 @@ public void testPreProcessingResourceChangedListener01() throws CoreException {
 		}
 	};
 	try {
-		JavaCore.addPreProcessingResourceChangedListener(listener);
+		JavaScriptCore.addPreProcessingResourceChangedListener(listener);
 		createProject("Test");
 		assertEquals("Unexpected event type", IResourceChangeEvent.POST_CHANGE, eventType[0]);
 	} finally {
-		JavaCore.removePreProcessingResourceChangedListener(listener);
+		JavaScriptCore.removePreProcessingResourceChangedListener(listener);
 		deleteProject("Test");
 	}
 }
@@ -550,12 +550,12 @@ public void testPreProcessingResourceChangedListener02() throws CoreException {
 		}
 	};
 	try {
-		JavaCore.addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.PRE_BUILD);
+		JavaScriptCore.addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.PRE_BUILD);
 		createProject("Test");
 		waitForAutoBuild();
 		assertEquals("Unexpected event type", IResourceChangeEvent.PRE_BUILD, eventType[0]);
 	} finally {
-		JavaCore.removePreProcessingResourceChangedListener(listener);
+		JavaScriptCore.removePreProcessingResourceChangedListener(listener);
 		deleteProject("Test");
 	}
 }
@@ -571,12 +571,12 @@ public void testPreProcessingResourceChangedListener03() throws CoreException {
 		}
 	};
 	try {
-		JavaCore.addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_BUILD);
+		JavaScriptCore.addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_BUILD);
 		createProject("Test");
 		waitForAutoBuild();
 		assertEquals("Unexpected event type", IResourceChangeEvent.POST_BUILD, eventType[0]);
 	} finally {
-		JavaCore.removePreProcessingResourceChangedListener(listener);
+		JavaScriptCore.removePreProcessingResourceChangedListener(listener);
 		deleteProject("Test");
 	}
 }
@@ -592,12 +592,12 @@ public void testPreProcessingResourceChangedListener04() throws CoreException {
 		}
 	};
 	try {
-		JavaCore.addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.POST_BUILD);
+		JavaScriptCore.addPreProcessingResourceChangedListener(listener, IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.POST_BUILD);
 		createProject("Test");
 		waitForAutoBuild();
 		assertEquals("Unexpected event type", IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.POST_BUILD, eventType[0]);
 	} finally {
-		JavaCore.removePreProcessingResourceChangedListener(listener);
+		JavaScriptCore.removePreProcessingResourceChangedListener(listener);
 		deleteProject("Test");
 	}
 }

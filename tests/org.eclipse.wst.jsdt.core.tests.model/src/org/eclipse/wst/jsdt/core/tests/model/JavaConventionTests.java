@@ -96,7 +96,7 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 
 	/*
 	 * Return the status for a string regarding a given kind of validation.
-	 * Use JavaConventions default source and compliance levels.
+	 * Use JavaScriptConventions default source and compliance levels.
 	 */
 	int validate(String string, int kind) {
 		return validate(string, kind, CompilerOptions.VERSION_1_3, CompilerOptions.VERSION_1_3);
@@ -108,29 +108,29 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 	int validate(String string, int kind, String sourceLevel, String complianceLevel) {
 		switch (kind) {
 			case COMPILATION_UNIT_NAME:
-				return JavaConventions.validateCompilationUnitName(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateCompilationUnitName(string, sourceLevel, complianceLevel).getSeverity();
 			case CLASS_FILE_NAME:
-				return JavaConventions.validateClassFileName(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateClassFileName(string, sourceLevel, complianceLevel).getSeverity();
 			case FIELD_NAME:
-				return JavaConventions.validateFieldName(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateFieldName(string, sourceLevel, complianceLevel).getSeverity();
 			case IDENTIFIER:
-				return JavaConventions.validateIdentifier(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateIdentifier(string, sourceLevel, complianceLevel).getSeverity();
 			case IMPORT_DECLARATION:
-				return JavaConventions.validateImportDeclaration(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateImportDeclaration(string, sourceLevel, complianceLevel).getSeverity();
 			case JAVA_TYPE_NAME:
-				return JavaConventions.validateJavaTypeName(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateJavaScriptTypeName(string, sourceLevel, complianceLevel).getSeverity();
 			case METHOD_NAME:
-				return JavaConventions.validateMethodName(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateFunctionName(string, sourceLevel, complianceLevel).getSeverity();
 			case PACKAGE_NAME:
-				return JavaConventions.validatePackageName(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validatePackageName(string, sourceLevel, complianceLevel).getSeverity();
 			case TYPE_VARIABLE_NAME:
-				return JavaConventions.validateTypeVariableName(string, sourceLevel, complianceLevel).getSeverity();
+				return JavaScriptConventions.validateTypeVariableName(string, sourceLevel, complianceLevel).getSeverity();
 		}
 		return -1;
 	}
 
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testInvalidIdentifier() {
 		String[] invalidIds = new String[] {" s\\u0069ze", " s\\u0069ze ", "", "1java", "Foo Bar", "#@$!", "Foo-Bar", "if", "InvalidEscapeSequence\\g", "true", "false", "null", null, " untrimmmed "};
@@ -139,19 +139,19 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 		}
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testInvalidImportDeclaration1() {
 		assertEquals("import not reconized as invalid; java.math.", IStatus.ERROR, validate("java.math.", IMPORT_DECLARATION));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testInvalidImportDeclaration2() {
 		assertEquals("import not reconized as invalid; java.math*", IStatus.ERROR, validate("java.math*", IMPORT_DECLARATION));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testInvalidImportDeclaration3() {
 		assertEquals("import not reconized as invalid; empty string", IStatus.ERROR, validate("", IMPORT_DECLARATION));
@@ -162,7 +162,7 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 	 */
 	public void testPackageFragmentRootOverlap() throws Exception {
 		try {
-			IJavaProject project = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/jclMin.jar"}, "bin");
+			IJavaScriptProject project = this.createJavaProject("P1", new String[] {"src"}, new String[] {"/P1/jclMin.jar"}, "bin");
 			
 			// ensure the external JCL is copied
 			setupExternalJCL("jclMin");
@@ -174,25 +174,25 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 			IPackageFragmentRoot p1Src= getPackageFragmentRoot("P1", "src");
 		
 			assertTrue("zip should not overlap source root",
-					!JavaConventions.isOverlappingRoots(p1Zip.getUnderlyingResource().getFullPath(), p1Src.getUnderlyingResource().getFullPath()));
+					!JavaScriptConventions.isOverlappingRoots(p1Zip.getUnderlyingResource().getFullPath(), p1Src.getUnderlyingResource().getFullPath()));
 		
 			this.createJavaProject("P2", new String[] {"src"}, "bin");
 		
 			IPackageFragmentRoot p2Src= getPackageFragmentRoot("P2", "src");
 			assertTrue("source roots in different projects should not overlap ",
-					!JavaConventions.isOverlappingRoots(p1Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
+					!JavaScriptConventions.isOverlappingRoots(p1Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
 		
-			assertTrue("The same root should overlap", JavaConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
+			assertTrue("The same root should overlap", JavaScriptConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), p2Src.getUnderlyingResource().getFullPath()));
 		
-			assertTrue("isOverLappingRoot does not handle null arguments", !JavaConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), null));
-			assertTrue("isOverLappingRoot does not handle null arguments", !JavaConventions.isOverlappingRoots(null, null));
+			assertTrue("isOverLappingRoot does not handle null arguments", !JavaScriptConventions.isOverlappingRoots(p2Src.getUnderlyingResource().getFullPath(), null));
+			assertTrue("isOverLappingRoot does not handle null arguments", !JavaScriptConventions.isOverlappingRoots(null, null));
 		} finally {
 			this.deleteProject("P1");
 			this.deleteProject("P2");
 		}
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidCompilationUnitName() {
 		String[] invalidNames = new String[] {"java/lang/Object.js", "Object.class", ".js", "Object.javaaa", "A.B.js"};
@@ -205,13 +205,13 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 		}
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidFieldName() {
 		assertEquals("unicode field name not handled", IStatus.OK, validate("s\\u0069ze", FIELD_NAME));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidIdentifier() {
 		String[] validIds = new String[] {"s\\u0069ze", "Object", "An_Extremly_Long_Class_Name_With_Words_Separated_By_Undescores"};
@@ -220,19 +220,19 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 		}
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidImportDeclaration() {
 		assertEquals("import not reconized as valid", IStatus.OK, validate("java.math.*", IMPORT_DECLARATION));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidMethodName() {
 		assertEquals("unicode method name not handled", IStatus.OK, validate("getSiz\\u0065", METHOD_NAME));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidPackageName() {
 		
@@ -250,7 +250,7 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 		assertEquals("package name not recognized as unconventional2", IStatus.WARNING, validate("Test.sample", PACKAGE_NAME));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidTypeName() {
 		// regression tests for 1G5HVPB: ITPJCORE:WINNT - validateJavaTypeName accepts type names ending with \
@@ -271,13 +271,13 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 		assertEquals("invalid type name not recognized", IStatus.ERROR, validate("==?==", JAVA_TYPE_NAME));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidTypeVariableName() {
 		assertEquals("E sould be a valid variable name", IStatus.OK, validate("E", TYPE_VARIABLE_NAME));
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidUnicodeImportDeclaration() {
 		
@@ -286,7 +286,7 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 	
 	}
 	/**
-	 * @see JavaConventions
+	 * @see JavaScriptConventions
 	 */
 	public void testValidUnicodePackageName() {
 		
@@ -297,70 +297,70 @@ public class JavaConventionTests extends AbstractJavaModelTests {
 	}
 
 	/**
-	 * Test fix for bug 79392: [prefs] JavaConventions should offer compiler options validation API
+	 * Test fix for bug 79392: [prefs] JavaScriptConventions should offer compiler options validation API
 	 * @see <a href="http://bugs.eclipse.org/bugs/show_bug.cgi?id=79392">79392</a>
 	 * TODO (frederic) activate all following tests when bug 79392 will be finalized
 	 */
 	/*
 	public void testInvalidCompilerOptions01() throws CoreException, BackingStoreException {
 		// Set options
-		Map options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
+		Map options = JavaScriptCore.getOptions();
+		options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+		options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+		options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_4);
 
 		// Validate options
 		String[] expectedMessages = {
 			"Target level '1.4' is incompatible with source level '1.5'. A target level '1.5' or better is required"
 		};
-		verifyStatus(JavaConventions.validateCompilerOptions(options), expectedMessages);
+		verifyStatus(JavaScriptConventions.validateCompilerOptions(options), expectedMessages);
 	}
 	public void testInvalidCompilerOptions02() throws CoreException, BackingStoreException {
-		Map options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+		Map options = JavaScriptCore.getOptions();
+		options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
 
 		// Validate options
 		String[] expectedMessages = {
 			"Target level '1.2' is incompatible with source level '1.5'. A target level '1.5' or better is required",
 			"Compliance level '1.4' is incompatible with source level '1.5'. A compliance level '1.5' or better is required"
 		};
-		verifyStatus(JavaConventions.validateCompilerOptions(options), expectedMessages);
+		verifyStatus(JavaScriptConventions.validateCompilerOptions(options), expectedMessages);
 	}
 	public void testInvalidCompilerOptions04() throws CoreException, BackingStoreException {
 		// Set options
-		Map options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_3);
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_4);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
+		Map options = JavaScriptCore.getOptions();
+		options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_3);
+		options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4);
+		options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
 
 		// Validate options
 		String[] expectedMessages = {
 			"Compliance level '1.3' is incompatible with target level '1.4'. A compliance level '1.4' or better is required",
 			"Compliance level '1.3' is incompatible with source level '1.4'. A compliance level '1.4' or better is required"
 		};
-		verifyStatus(JavaConventions.validateCompilerOptions(options), expectedMessages);
+		verifyStatus(JavaScriptConventions.validateCompilerOptions(options), expectedMessages);
 	}
 	public void testValidCompilerOptions01() throws CoreException, BackingStoreException {
 		// Set options
-		Map options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_4);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
+		Map options = JavaScriptCore.getOptions();
+		options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+		options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_4);
+		options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_4);
 
 		// Validate options
 		String[] expectedMessages = {};
-		verifyStatus(JavaConventions.validateCompilerOptions(options), expectedMessages);
+		verifyStatus(JavaScriptConventions.validateCompilerOptions(options), expectedMessages);
 	}
 	public void testValidCompilerOptions02() throws CoreException, BackingStoreException {
 		// Set options
-		Map options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_4);
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_3);
-		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_4);
+		Map options = JavaScriptCore.getOptions();
+		options.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_4);
+		options.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_3);
+		options.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_4);
 
 		// Validate options
 		String[] expectedMessages = {};
-		verifyStatus(JavaConventions.validateCompilerOptions(options), expectedMessages);
+		verifyStatus(JavaScriptConventions.validateCompilerOptions(options), expectedMessages);
 	}
 	*/
 

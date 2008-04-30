@@ -13,16 +13,16 @@ package org.eclipse.wst.jsdt.core.tests.rewrite.describing;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.Block;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ExpressionStatement;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
 import org.eclipse.wst.jsdt.core.dom.ReturnStatement;
 import org.eclipse.wst.jsdt.core.dom.Statement;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
@@ -56,23 +56,23 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		buf.append("    function foo(o) {\n");
 		buf.append("        return;\n");
 		buf.append("    }\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(astRoot, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(astRoot, "foo");
 		
 		ReturnStatement returnStatement= (ReturnStatement) methodDecl.getBody().statements().get(0);
 		
-		MethodInvocation newMethodInv1= ast.newMethodInvocation();
+		FunctionInvocation newMethodInv1= ast.newFunctionInvocation();
 		newMethodInv1.setName(ast.newSimpleName("foo1"));
 		ExpressionStatement st1= ast.newExpressionStatement(newMethodInv1);
 		
-		MethodInvocation newMethodInv2= ast.newMethodInvocation();
+		FunctionInvocation newMethodInv2= ast.newFunctionInvocation();
 		newMethodInv2.setName(ast.newSimpleName("foo2"));
 		ExpressionStatement st2= ast.newExpressionStatement(newMethodInv2);
 		
@@ -100,23 +100,23 @@ public class ASTRewritingGroupNodeTest extends ASTRewritingTest {
 		buf.append("            return;\n");
 		buf.append("        }\n");
 		buf.append("    }\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
 		
 //		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-		MethodDeclaration methodDecl= findMethodDeclaration(astRoot, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(astRoot, "foo");
 		
 		Statement statement= (Statement) methodDecl.getBody().statements().get(0);
 		
-		MethodInvocation newMethodInv1= ast.newMethodInvocation();
+		FunctionInvocation newMethodInv1= ast.newFunctionInvocation();
 		newMethodInv1.setName(ast.newSimpleName("foo1"));
 		ExpressionStatement st1= ast.newExpressionStatement(newMethodInv1);
 		
-		MethodInvocation newMethodInv2= ast.newMethodInvocation();
+		FunctionInvocation newMethodInv2= ast.newFunctionInvocation();
 		newMethodInv2.setName(ast.newSimpleName("foo2"));
 		ExpressionStatement st2= ast.newExpressionStatement(newMethodInv2);
 		

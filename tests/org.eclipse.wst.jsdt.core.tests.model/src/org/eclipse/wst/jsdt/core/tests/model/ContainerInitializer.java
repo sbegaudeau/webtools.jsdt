@@ -14,14 +14,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.wst.jsdt.core.JsGlobalScopeContainerInitializer;
 import org.eclipse.wst.jsdt.core.IJsGlobalScopeContainer;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.compiler.libraries.LibraryLocation;
 
 public class ContainerInitializer extends JsGlobalScopeContainerInitializer {
 	public static ITestInitializer initializer;
 	
 	public static interface ITestInitializer {
-		public void initialize(IPath containerPath, IJavaProject project) throws CoreException;
+		public void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException;
 		public boolean allowFailureContainer();
 	}
 	
@@ -29,12 +29,12 @@ public class ContainerInitializer extends JsGlobalScopeContainerInitializer {
 		ContainerInitializer.initializer = initializer;
 	}
 	
-	public IJsGlobalScopeContainer getFailureContainer(IPath containerPath, IJavaProject project) {
+	public IJsGlobalScopeContainer getFailureContainer(IPath containerPath, IJavaScriptProject project) {
 		if (initializer == null || !initializer.allowFailureContainer()) return null;
 		return super.getFailureContainer(containerPath, project);
 	}
 	
-	public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
+	public void initialize(IPath containerPath, IJavaScriptProject project) throws CoreException {
 		if (initializer == null) return;
 		initializer.initialize(containerPath, project);
 	}

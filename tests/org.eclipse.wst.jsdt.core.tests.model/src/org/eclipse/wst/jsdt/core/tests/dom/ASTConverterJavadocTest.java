@@ -22,10 +22,10 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.*;
 import org.eclipse.wst.jsdt.internal.compiler.parser.ScannerHelper;
@@ -55,7 +55,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	// List of tags contained in each comment read from test source.
 	List allTags = new ArrayList();
 	// Current compilation unit
-	protected ICompilationUnit sourceUnit;
+	protected IJavaScriptUnit sourceUnit;
 	// Test package binding
 	protected boolean resolveBinding = true;
 	protected boolean packageBinding = true;
@@ -67,11 +67,11 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	protected String prefix = "";
 	protected boolean debug = false;
 	protected StringBuffer problems;
-	protected String compilerOption = JavaCore.IGNORE;
+	protected String compilerOption = JavaScriptCore.IGNORE;
 	protected List failures;
 	protected boolean stopOnFailure = true;
 	// Project
-	protected IJavaProject currentProject;
+	protected IJavaScriptProject currentProject;
 	Map savedOptions = null;
 
 	/**
@@ -87,7 +87,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * @param name
 	 */
 	public ASTConverterJavadocTest(String name) {
-		this(name, JavaCore.ENABLED, UNIX_SUPPORT);
+		this(name, JavaScriptCore.ENABLED, UNIX_SUPPORT);
 	}
 
 	public static Test suite() {
@@ -102,10 +102,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 //		}
 		if (true) {
 			if (DOC_COMMENT_SUPPORT == null) {
-				buildSuite(suite, JavaCore.ENABLED);
-				buildSuite(suite, JavaCore.DISABLED);
+				buildSuite(suite, JavaScriptCore.ENABLED);
+				buildSuite(suite, JavaScriptCore.DISABLED);
 			} else {
-				String support = DOC_COMMENT_SUPPORT==null ? JavaCore.DISABLED : (DOC_COMMENT_SUPPORT.equals(JavaCore.DISABLED)?JavaCore.DISABLED:JavaCore.ENABLED);
+				String support = DOC_COMMENT_SUPPORT==null ? JavaScriptCore.DISABLED : (DOC_COMMENT_SUPPORT.equals(JavaScriptCore.DISABLED)?JavaScriptCore.DISABLED:JavaScriptCore.ENABLED);
 				buildSuite(suite, support);
 			}
 			return suite;
@@ -127,7 +127,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			}
 		}
 		// when unix support not specified, also run using unix format
-		if (UNIX_SUPPORT == null && JavaCore.ENABLED.equals(support)) {
+		if (UNIX_SUPPORT == null && JavaScriptCore.ENABLED.equals(support)) {
 			for (int i = 0, max = methods.length; i < max; i++) {
 				if (methods[i].getName().startsWith("test")) { //$NON-NLS-1$
 					suite.addTest(new ASTConverterJavadocTest(methods[i].getName(), support, "true"));
@@ -223,7 +223,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		}
 	}
 
-	public ASTNode runConversion(char[] source, String unitName, IJavaProject project) {
+	public ASTNode runConversion(char[] source, String unitName, IJavaScriptProject project) {
 		ASTParser parser = ASTParser.newParser(astLevel);
 		parser.setSource(source);
 		parser.setUnitName(unitName);
@@ -232,7 +232,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		return parser.createAST(null);
 	}
 
-	public ASTNode runConversion(char[] source, String unitName, IJavaProject project, Map options) {
+	public ASTNode runConversion(char[] source, String unitName, IJavaScriptProject project, Map options) {
 		if (project == null) {
 			ASTParser parser = ASTParser.newParser(astLevel);
 			parser.setSource(source);
@@ -344,10 +344,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 //		}
 //		
 //		/*
-//		 * @see ASTVisitor#visit(MethodRef)
+//		 * @see ASTVisitor#visit(FunctionRef)
 //		 * @since 3.0
 //		 */
-//		public boolean visit(MethodRef node) {
+//		public boolean visit(FunctionRef node) {
 //			if (node.getQualifier() != null) {
 //				node.getQualifier().accept(this);
 //			}
@@ -355,7 +355,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 //			node.getName().accept(this);
 //			buffer.append("(");//$NON-NLS-1$
 //			for (Iterator it = node.parameters().iterator(); it.hasNext(); ) {
-//				MethodRefParameter e = (MethodRefParameter) it.next();
+//				FunctionRefParameter e = (FunctionRefParameter) it.next();
 //				e.accept(this);
 //				if (it.hasNext()) {
 //					buffer.append(",");//$NON-NLS-1$
@@ -366,10 +366,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 //		}
 //		
 //		/*
-//		 * @see ASTVisitor#visit(MethodRefParameter)
+//		 * @see ASTVisitor#visit(FunctionRefParameter)
 //		 * @since 3.0
 //		 */
-//		public boolean visit(MethodRefParameter node) {
+//		public boolean visit(FunctionRefParameter node) {
 //			node.getType().accept(this);
 //			if (node.getName() != null) {
 //				buffer.append(" ");//$NON-NLS-1$
@@ -725,7 +725,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/*
 	 * Return all tags number for a given Javadoc
 	 */
-	int allTags(Javadoc docComment) {
+	int allTags(JSdoc docComment) {
 		int all = 0;
 		// Count main tags
 		Iterator tags = docComment.tags().listIterator();
@@ -818,7 +818,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/*
 	 * Verify positions of tags in source
 	 */
-	private void verifyPositions(Javadoc docComment, char[] source) {
+	private void verifyPositions(JSdoc docComment, char[] source) {
 		boolean stop = stopOnFailure;
 //		stopOnFailure = false;
 		// Verify javadoc start and end position
@@ -968,8 +968,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 					text = new String(source, start, name.getLength());
 					assumeEquals(prefix+"Misplaced member ref at <"+start+">: ", text, name.toString());
 					verifyNamePositions(start, name, source);
-				} else if (fragment.getNodeType() == ASTNode.METHOD_REF) {
-					MethodRef methodRef = (MethodRef) fragment;
+				} else if (fragment.getNodeType() == ASTNode.FUNCTION_REF) {
+					FunctionRef methodRef = (FunctionRef) fragment;
 					// Store start position
 					int start = tagStart;
 					// Verify qualifier position
@@ -1020,7 +1020,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 						// Verify parameters
 						Iterator parameters = methodRef.parameters().listIterator();
 						while (parameters.hasNext()) {
-							MethodRefParameter param = (MethodRefParameter) parameters.next();
+							FunctionRefParameter param = (FunctionRefParameter) parameters.next();
 							boolean lastParam = !parameters.hasNext();
 							// Verify parameter type positions
 							while (source[start] == '*' || Character.isWhitespace(source[start])) {
@@ -1105,7 +1105,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Verify that bindings of Javadoc comment structure are resolved or not.
 	 * For expected unresolved binding, verify that following text starts with 'Unknown'
 	 */
-	private void verifyBindings(Javadoc docComment) {
+	private void verifyBindings(JSdoc docComment) {
 		boolean stop = stopOnFailure;
 //		stopOnFailure = false;
 		// Verify tags
@@ -1160,8 +1160,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 						assumeNotNull(prefix+""+name+" binding was not foundfound in "+fragment, name.resolveBinding());
 						verifyNameBindings(memberRef.getQualifier());
 					}
-				} else if (fragment.getNodeType() == ASTNode.METHOD_REF) {
-					MethodRef methodRef = (MethodRef) fragment;
+				} else if (fragment.getNodeType() == ASTNode.FUNCTION_REF) {
+					FunctionRef methodRef = (FunctionRef) fragment;
 					previousBinding = methodRef.resolveBinding();
 					if (previousBinding != null) {
 						SimpleName methodName = methodRef.getName();
@@ -1202,7 +1202,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 						*/
 						Iterator parameters = methodRef.parameters().listIterator();
 						while (parameters.hasNext()) {
-							MethodRefParameter param = (MethodRefParameter) parameters.next();
+							FunctionRefParameter param = (FunctionRefParameter) parameters.next();
 							Type type = param.getType();
 							assumeNotNull(prefix+""+type+" binding was not found in "+fragment, type.resolveBinding());
 							if (type.isSimpleType()) {
@@ -1266,8 +1266,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
 	 */
-	protected void verifyComments(String test) throws JavaModelException {
-		ICompilationUnit[] units = getCompilationUnits("Converter" , "src", "javadoc."+test); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	protected void verifyComments(String test) throws JavaScriptModelException {
+		IJavaScriptUnit[] units = getCompilationUnits("Converter" , "src", "javadoc."+test); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		for (int i=0; i<units.length; i++) {
 			verifyComments(units[i]);
 		}
@@ -1276,7 +1276,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/*
 	 * Verify the comments of a compilation unit.
 	 */
-	protected void verifyWorkingCopiesComments() throws JavaModelException {
+	protected void verifyWorkingCopiesComments() throws JavaScriptModelException {
 		assumeNotNull("No working copies to verify!", workingCopies);
 		int length = workingCopies.length;
 		assumeTrue("We need to have at least one working copy to verify!", length>0);
@@ -1288,26 +1288,26 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/*
 	 * Verify the comments of a compilation unit.
 	 */
-	protected CompilationUnit verifyComments(ICompilationUnit unit) throws JavaModelException {
+	protected JavaScriptUnit verifyComments(IJavaScriptUnit unit) throws JavaScriptModelException {
 		// Get test file
 		sourceUnit = unit;
 		prefix = unit.getElementName()+": ";
 
 		// Get current project
 		String sourceStr = sourceUnit.getSource();
-		if (savedOptions != null && !sourceUnit.getJavaProject().getElementName().equals(currentProject.getElementName())) {
+		if (savedOptions != null && !sourceUnit.getJavaScriptProject().getElementName().equals(currentProject.getElementName())) {
 			currentProject.setOptions(savedOptions);
 			savedOptions = null;
 		}
-		currentProject = sourceUnit.getJavaProject();
+		currentProject = sourceUnit.getJavaScriptProject();
 		if (savedOptions == null) savedOptions = currentProject.getOptions(false);
 
 		// set up java project options
-		currentProject.setOption(JavaCore.COMPILER_PB_INVALID_JAVADOC, compilerOption);
-		currentProject.setOption(JavaCore.COMPILER_PB_MISSING_JAVADOC_TAGS, compilerOption);
-		currentProject.setOption(JavaCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS, compilerOption);
-		currentProject.setOption(JavaCore.COMPILER_PB_METHOD_WITH_CONSTRUCTOR_NAME, JavaCore.IGNORE);
-		currentProject.setOption(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, docCommentSupport);
+		currentProject.setOption(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC, compilerOption);
+		currentProject.setOption(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_TAGS, compilerOption);
+		currentProject.setOption(JavaScriptCore.COMPILER_PB_MISSING_JAVADOC_COMMENTS, compilerOption);
+		currentProject.setOption(JavaScriptCore.COMPILER_PB_METHOD_WITH_CONSTRUCTOR_NAME, JavaScriptCore.IGNORE);
+		currentProject.setOption(JavaScriptCore.COMPILER_DOC_COMMENT_SUPPORT, docCommentSupport);
 
 		// Verify source regardings converted comments
 		char[] source = sourceStr.toCharArray();
@@ -1321,11 +1321,11 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		}
 	}
 
-	protected CompilationUnit verifyComments(String fileName, char[] source) {
+	protected JavaScriptUnit verifyComments(String fileName, char[] source) {
 		return verifyComments(fileName, source, null);
 	}
 
-	protected CompilationUnit verifyComments(String fileName, char[] source, Map options) {
+	protected JavaScriptUnit verifyComments(String fileName, char[] source, Map options) {
 
 		// Verify comments either in unicode or not
 		char[] testedSource = source;
@@ -1347,16 +1347,16 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		String complianceLevel = null;
 		if (currentProject != null) {
 			if (astLevel == AST.JLS3) {
-				complianceLevel = currentProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-				sourceLevel = currentProject.getOption(JavaCore.COMPILER_SOURCE, true);
-				currentProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
-				currentProject.setOption(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
+				complianceLevel = currentProject.getOption(JavaScriptCore.COMPILER_COMPLIANCE, true);
+				sourceLevel = currentProject.getOption(JavaScriptCore.COMPILER_SOURCE, true);
+				currentProject.setOption(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
+				currentProject.setOption(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
 			}
 		}
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(testedSource, fileName, currentProject, options);
-		if (compilerOption.equals(JavaCore.ERROR)) {
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(testedSource, fileName, currentProject, options);
+		if (compilerOption.equals(JavaScriptCore.ERROR)) {
 			assumeEquals(prefix+"Unexpected problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
-		} else if (compilerOption.equals(JavaCore.WARNING)) {
+		} else if (compilerOption.equals(JavaScriptCore.WARNING)) {
 			IProblem[] problemsList = compilUnit.getProblems();
 			int length = problemsList.length;
 			if (length > 0) {
@@ -1387,8 +1387,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assumeEquals(prefix+"Flattened comment does NOT match source!", stringComment, text);
 			// Verify javdoc tags positions and bindings
 			if (comment.isDocComment()) {
-				Javadoc docComment = (Javadoc)comment;
-				if (docCommentSupport.equals(JavaCore.ENABLED)) {
+				JSdoc docComment = (JSdoc)comment;
+				if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 					assumeEquals(prefix+"Invalid tags number in javadoc:\n"+docComment+"\n", tags.size(), allTags(docComment));
 					verifyPositions(docComment, testedSource);
 					if (resolveBinding) {
@@ -1409,8 +1409,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		*/
 
 		if (sourceLevel != null) {
-			currentProject.setOption(JavaCore.COMPILER_COMPLIANCE, complianceLevel);
-			currentProject.setOption(JavaCore.COMPILER_SOURCE, sourceLevel);
+			currentProject.setOption(JavaScriptCore.COMPILER_COMPLIANCE, complianceLevel);
+			currentProject.setOption(JavaScriptCore.COMPILER_SOURCE, sourceLevel);
 		}
 		// Return compilation unit for possible further verifications
 		return compilUnit;
@@ -1424,86 +1424,86 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	*/
 
 	/**
-	 * Check javadoc for MethodDeclaration
+	 * Check javadoc for FunctionDeclaration
 	 */
-	public void test000() throws JavaModelException {
+	public void test000() throws JavaScriptModelException {
 		verifyComments("test000");
 	}
 
 	/**
 	 * Check javadoc for invalid syntax
 	 */
-	public void test001() throws JavaModelException {
+	public void test001() throws JavaScriptModelException {
 		verifyComments("test001");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50781"
 	 */
-	public void test002() throws JavaModelException {
+	public void test002() throws JavaScriptModelException {
 		verifyComments("test002");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50784"
 	 */
-	public void test003() throws JavaModelException {
+	public void test003() throws JavaScriptModelException {
 		verifyComments("test003");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50785"
 	 */
-	public void test004() throws JavaModelException {
+	public void test004() throws JavaScriptModelException {
 		verifyComments("test004");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50838"
 	 */
-	public void test005() throws JavaModelException {
+	public void test005() throws JavaScriptModelException {
 		verifyComments("test005");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50877"
 	 */
-	public void test006() throws JavaModelException {
+	public void test006() throws JavaScriptModelException {
 		verifyComments("test006");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50877"
 	 */
-	public void test007() throws JavaModelException {
+	public void test007() throws JavaScriptModelException {
 		verifyComments("test007");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50877"
 	 */
-	public void test008() throws JavaModelException {
+	public void test008() throws JavaScriptModelException {
 		verifyComments("test008");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50877"
 	 */
-	public void test009() throws JavaModelException {
+	public void test009() throws JavaScriptModelException {
 		verifyComments("test009");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50880"
 	 */
-	public void test010() throws JavaModelException {
+	public void test010() throws JavaScriptModelException {
 		verifyComments("test010");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=47396"
 	 */
-	public void test011() throws JavaModelException {
+	public void test011() throws JavaScriptModelException {
 		problems = new StringBuffer();
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.test011", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, true);
@@ -1513,14 +1513,14 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50938"
 	 */
-	public void test012() throws JavaModelException {
+	public void test012() throws JavaScriptModelException {
 		verifyComments("test012");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51104"
 	 */
-	public void test013() throws JavaModelException {
+	public void test013() throws JavaScriptModelException {
 		verifyComments("test013");
 	}
 
@@ -1528,7 +1528,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Verify that text on next line following empty tag element
 	 * is well positionned.
 	 */
-	public void test014() throws JavaModelException {
+	public void test014() throws JavaScriptModelException {
 		verifyComments("test014");
 	}
 
@@ -1536,26 +1536,26 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Verify that we do not report failure when types are written on several lines
 	 * in Javadoc comments.
 	 */
-	public void test015() throws JavaModelException {
+	public void test015() throws JavaScriptModelException {
 		verifyComments("test015");
 	}
 
 	/**
 	 * Verify DefaultCommentMapper heuristic to get leading and trailing comments
 	 */
-	protected void verifyMapper(String folder, int count, int[] indexes) throws JavaModelException {
-		ICompilationUnit[] units = getCompilationUnits("Converter" , "src", "javadoc."+folder); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	protected void verifyMapper(String folder, int count, int[] indexes) throws JavaScriptModelException {
+		IJavaScriptUnit[] units = getCompilationUnits("Converter" , "src", "javadoc."+folder); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		for (int i=0; i<units.length; i++) {
 			sourceUnit = units[i];
 			ASTNode result = runConversion(sourceUnit, false);
-			final CompilationUnit compilUnit = (CompilationUnit) result;
+			final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 			assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 			assumeEquals(prefix+"Wrong number of comments", count, compilUnit.getCommentList().size());
 			// Verify first method existence
-			ASTNode node = getASTNode((CompilationUnit) result, 0, 0);
+			ASTNode node = getASTNode((JavaScriptUnit) result, 0, 0);
 			assumeNotNull("We should get a non-null ast node", node);
-			assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-			MethodDeclaration method = (MethodDeclaration) node;
+			assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+			FunctionDeclaration method = (FunctionDeclaration) node;
 			// Verify first method extended positions
 			int commentStart = method.getStartPosition();
 			if (indexes[0]>=0) {
@@ -1572,10 +1572,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			}
 			assumeEquals("Method "+node+" does not have the correct length", commentEnd, methodEnd);
 			// Verify second method existence
-			node = getASTNode((CompilationUnit) result, 0, 1);
+			node = getASTNode((JavaScriptUnit) result, 0, 1);
 			assumeNotNull("We should get a non-null ast node", node);
-			assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-			method = (MethodDeclaration) node;
+			assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+			method = (FunctionDeclaration) node;
 			// Verify second method extended positions
 			commentStart = method.getStartPosition();
 			if (indexes[2]>=0) {
@@ -1598,41 +1598,41 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Verify DefaultCommentMapper heuristic to get leading and trailing comments
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=53445"
 	 */
-	public void test100() throws JavaModelException {
+	public void test100() throws JavaScriptModelException {
 		verifyMapper("test100", 16, new int[] {2,7,8,15});
 	}
-	public void test101() throws JavaModelException {
+	public void test101() throws JavaScriptModelException {
 		verifyMapper("test101", 8, new int[] {1,3,4,7});
 	}
-	public void test102() throws JavaModelException {
+	public void test102() throws JavaScriptModelException {
 		verifyMapper("test102", 16, new int[] {4,9,10,13});
 	}
-	public void test103() throws JavaModelException {
+	public void test103() throws JavaScriptModelException {
 		verifyMapper("test103", 8, new int[] {2,4,5,6});
 	}
-	public void test104() throws JavaModelException {
+	public void test104() throws JavaScriptModelException {
 		verifyMapper("test104", 16, new int[] {2,7,8,15});
 	}
-	public void test105() throws JavaModelException {
+	public void test105() throws JavaScriptModelException {
 		verifyMapper("test105", 16, new int[] {-1,11,-1,15});
 	}
-	public void test106() throws JavaModelException {
+	public void test106() throws JavaScriptModelException {
 		verifyMapper("test106", 8, new int[] {-1,5,-1,7});
 	}
-	public void test107() throws JavaModelException {
+	public void test107() throws JavaScriptModelException {
 		verifyMapper("test107", 16, new int[] {2,7,8,-1});
 	}
-	public void test108() throws JavaModelException {
+	public void test108() throws JavaScriptModelException {
 		verifyMapper("test108", 8, new int[] {1,3,4,-1});
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=54776"
 	 */
-	public void testBug54776() throws JavaModelException {
+	public void testBug54776() throws JavaScriptModelException {
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug54776", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit compilUnit = (CompilationUnit) result;
+		final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 2, compilUnit.getCommentList().size());
 		// get comments range
@@ -1640,7 +1640,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		int commentStart = comment.getStartPosition();
 		int extendedLength = ((Comment) compilUnit.getCommentList().get(1)).getStartPosition()-commentStart+comment.getLength();
 		// get method invocation in field initializer
-		ASTNode node = getASTNode((CompilationUnit) result, 0);
+		ASTNode node = getASTNode((JavaScriptUnit) result, 0);
 		assumeNotNull("We should get a non-null ast node", node);
 		assumeTrue("Not a type declaration", node.getNodeType() == ASTNode.TYPE_DECLARATION); //$NON-NLS-1$
 		TypeDeclaration typeDecl = (TypeDeclaration) node;
@@ -1650,8 +1650,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		assumeEquals("We should have a variable fragment", 1, fragments.size());
 		VariableDeclarationFragment fragment = (VariableDeclarationFragment) fragments.get(0);
 		Expression expression = fragment.getInitializer();
-		assumeTrue("We should get an expression", expression instanceof MethodInvocation);
-		MethodInvocation methodInvocation = (MethodInvocation) expression;
+		assumeTrue("We should get an expression", expression instanceof FunctionInvocation);
+		FunctionInvocation methodInvocation = (FunctionInvocation) expression;
 		// verify  that methodinvocation extended range includes leading and trailing comment
 		int methodStart = compilUnit.getExtendedStartPosition(methodInvocation);
 		assumeEquals("Method invocation "+methodInvocation+" does not start at the right position", commentStart, methodStart);
@@ -1662,10 +1662,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=55221"
 	 */
-	public void testBug55221a() throws JavaModelException {
+	public void testBug55221a() throws JavaScriptModelException {
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug55221.a", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit compilUnit = (CompilationUnit) result;
+		final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 1, compilUnit.getCommentList().size());
 		// Get comment range
@@ -1674,8 +1674,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		// get first method
 		ASTNode node = getASTNode(compilUnit, 0, 0);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-		MethodDeclaration method = (MethodDeclaration) node;
+		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+		FunctionDeclaration method = (FunctionDeclaration) node;
 		// verify that first method does not include comment
 		int methodStart = compilUnit.getExtendedStartPosition(method);
 		assumeEquals("Method "+method+" does not start at the right position", method.getStartPosition(), methodStart);
@@ -1694,15 +1694,15 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		// get second method
 		node = getASTNode(compilUnit, 0, 1);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-		method = (MethodDeclaration) node;
+		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+		method = (FunctionDeclaration) node;
 		// verify that second method start includes comment
 		assumeEquals("Method declaration "+method+" does not start at the right position", commentStart, method.getStartPosition());
 	}
-	public void testBug55221b() throws JavaModelException {
+	public void testBug55221b() throws JavaScriptModelException {
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug55221.b", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit compilUnit = (CompilationUnit) result;
+		final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 1, compilUnit.getCommentList().size());
 		// Get comment range
@@ -1711,8 +1711,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		// get first method
 		ASTNode node = getASTNode(compilUnit, 0, 0);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-		MethodDeclaration method = (MethodDeclaration) node;
+		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+		FunctionDeclaration method = (FunctionDeclaration) node;
 		// verify that first method does not include comment
 		int methodStart = compilUnit.getExtendedStartPosition(method);
 		assumeEquals("Method "+method+" does not start at the right position", method.getStartPosition(), methodStart);
@@ -1731,15 +1731,15 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		// get second method
 		node = getASTNode(compilUnit, 0, 1);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-		method = (MethodDeclaration) node;
+		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+		method = (FunctionDeclaration) node;
 		// verify that second method start includes comment
 		assumeEquals("Method declaration "+method+" does not start at the right position", commentStart, method.getStartPosition());
 	}
-	public void testBug55221c() throws JavaModelException {
+	public void testBug55221c() throws JavaScriptModelException {
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug55221.c", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit compilUnit = (CompilationUnit) result;
+		final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 1, compilUnit.getCommentList().size());
 		// Get comment range
@@ -1749,8 +1749,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		// get first method
 		ASTNode node = getASTNode(compilUnit, 0, 0);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-		MethodDeclaration method = (MethodDeclaration) node;
+		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+		FunctionDeclaration method = (FunctionDeclaration) node;
 		// verify that first method includes comment
 		int methodStart = compilUnit.getExtendedStartPosition(method);
 		assumeEquals("Method "+method+" does not start at the right position", method.getStartPosition(), methodStart);
@@ -1769,8 +1769,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		// get second method
 		node = getASTNode(compilUnit, 0, 1);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-		method = (MethodDeclaration) node;
+		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+		method = (FunctionDeclaration) node;
 		// verify that second method does not include comment
 		methodStart = compilUnit.getExtendedStartPosition(method);
 		assumeEquals("Method "+method+" does not start at the right position", method.getStartPosition(), methodStart);
@@ -1778,17 +1778,17 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		assumeEquals("Method declaration "+method+" does not end at the right position",method.getLength(), methodLength);
 	}
 	/** @deprecated using deprecated code */
-	public void testBug55221d() throws JavaModelException {
+	public void testBug55221d() throws JavaScriptModelException {
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug55221.d", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit compilUnit = (CompilationUnit) result;
+		final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 2, compilUnit.getCommentList().size());
 		// get first method
 		ASTNode node = getASTNode(compilUnit, 0, 0);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.METHOD_DECLARATION); //$NON-NLS-1$
-		MethodDeclaration method = (MethodDeclaration) node;
+		assumeTrue("Not a method declaration", node.getNodeType() == ASTNode.FUNCTION_DECLARATION); //$NON-NLS-1$
+		FunctionDeclaration method = (FunctionDeclaration) node;
 		// verify that first method includes comment
 		int methodStart = compilUnit.getExtendedStartPosition(method);
 		assumeEquals("Method "+method+" does not start at the right position", method.getStartPosition(), methodStart);
@@ -1805,18 +1805,18 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		int returnLength = compilUnit.getExtendedLength(returnType);
 		assumeEquals("Return type "+returnType+" does not have the right length", returnType.getLength(), returnLength);
 	}
-	public void testBug55223a() throws JavaModelException {
+	public void testBug55223a() throws JavaScriptModelException {
 //		stopOnFailure = false;
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug55223", "TestA.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit compilUnit = (CompilationUnit) result;
+		final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 2, compilUnit.getCommentList().size());
 		// get method
 		ASTNode node = getASTNode(compilUnit, 0, 0);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeEquals("Not a method declaration", ASTNode.METHOD_DECLARATION, node.getNodeType()); //$NON-NLS-1$
-		MethodDeclaration method = (MethodDeclaration) node;
+		assumeEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType()); //$NON-NLS-1$
+		FunctionDeclaration method = (FunctionDeclaration) node;
 		// get method body
 		node = method.getBody();
 		assumeNotNull("We should get a non-null ast node", node);
@@ -1845,10 +1845,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		}
 	}
 	/** @deprecated using deprecated code */
-	public void testBug55223b() throws JavaModelException {
+	public void testBug55223b() throws JavaScriptModelException {
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug55223", "TestB.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit compilUnit = (CompilationUnit) result;
+		final JavaScriptUnit compilUnit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, compilUnit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 2, compilUnit.getCommentList().size());
 		// Get comment range
@@ -1857,8 +1857,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		// get method
 		ASTNode node = getASTNode(compilUnit, 0, 0);
 		assumeNotNull("We should get a non-null ast node", node);
-		assumeEquals("Not a method declaration", ASTNode.METHOD_DECLARATION, node.getNodeType()); //$NON-NLS-1$
-		MethodDeclaration method = (MethodDeclaration) node;
+		assumeEquals("Not a method declaration", ASTNode.FUNCTION_DECLARATION, node.getNodeType()); //$NON-NLS-1$
+		FunctionDeclaration method = (FunctionDeclaration) node;
 		// get return type
 		node = method.getReturnType();
 		assumeNotNull("We should get a non-null ast node", node);
@@ -1877,15 +1877,15 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=48489"
 	 */
-	public void testBug48489() throws JavaModelException {
+	public void testBug48489() throws JavaScriptModelException {
 		verifyComments("testBug48489");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=50898"
 	 */
-	public void testBug50898() throws JavaModelException {
-		ICompilationUnit unit = getCompilationUnit("Converter" , "src", "javadoc.testBug50898", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	public void testBug50898() throws JavaScriptModelException {
+		IJavaScriptUnit unit = getCompilationUnit("Converter" , "src", "javadoc.testBug50898", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		packageBinding = false;
 		verifyComments(unit);
 	}
@@ -1893,17 +1893,17 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51226"
 	 */
-	public void testBug51226() throws JavaModelException {
-		ICompilationUnit[] units = getCompilationUnits("Converter" , "src", "javadoc.testBug51226"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+	public void testBug51226() throws JavaScriptModelException {
+		IJavaScriptUnit[] units = getCompilationUnits("Converter" , "src", "javadoc.testBug51226"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		for (int i=0; i<units.length; i++) {
 			ASTNode result = runConversion(units[i], false);
-			final CompilationUnit unit = (CompilationUnit) result;
+			final JavaScriptUnit unit = (JavaScriptUnit) result;
 			assumeEquals(prefix+"Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$
 			assumeEquals(prefix+"Wrong number of comments", 1, unit.getCommentList().size());
 			Comment comment = (Comment) unit.getCommentList().get(0);
 			assumeTrue(prefix+"Comment should be a Javadoc one", comment.isDocComment());
-			if (docCommentSupport.equals(JavaCore.ENABLED)) {
-				Javadoc docComment = (Javadoc) comment;
+			if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
+				JSdoc docComment = (JSdoc) comment;
 				assumeEquals(prefix+"Wrong number of tags", 1, docComment.tags().size());
 				TagElement tagElement = (TagElement) docComment.tags().get(0);
 				assumeNull(prefix+"Wrong type of tag ["+tagElement+"]", tagElement.getTagName());
@@ -1920,17 +1920,17 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51241"
 	 */
-	public void testBug51241() throws JavaModelException {
+	public void testBug51241() throws JavaScriptModelException {
 		verifyComments("testBug51241");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51363"
 	 */
-	public void testBug51363() throws JavaModelException {
+	public void testBug51363() throws JavaScriptModelException {
 		sourceUnit = getCompilationUnit("Converter" , "src", "javadoc.testBug51363", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		ASTNode result = runConversion(sourceUnit, false);
-		final CompilationUnit unit = (CompilationUnit) result;
+		final JavaScriptUnit unit = (JavaScriptUnit) result;
 		assumeEquals(prefix+"Wrong number of problems", 0, unit.getProblems().length); //$NON-NLS-1$
 		assumeEquals(prefix+"Wrong number of comments", 2, unit.getCommentList().size());
 		// verify first comment
@@ -1953,70 +1953,70 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51476"
 	 */
-	public void testBug51476() throws JavaModelException {
+	public void testBug51476() throws JavaScriptModelException {
 		verifyComments("testBug51476");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51478"
 	 */
-	public void testBug51478() throws JavaModelException {
+	public void testBug51478() throws JavaScriptModelException {
 		verifyComments("testBug51478");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51508"
 	 */
-	public void testBug51508() throws JavaModelException {
+	public void testBug51508() throws JavaScriptModelException {
 		verifyComments("testBug51508");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51650"
 	 */
-	public void testBug51650() throws JavaModelException {
+	public void testBug51650() throws JavaScriptModelException {
 		verifyComments("testBug51650");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51770"
 	 */
-	public void testBug51770() throws JavaModelException {
+	public void testBug51770() throws JavaScriptModelException {
 		verifyComments("testBug51770");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=52908"
 	 */
-	public void testBug52908() throws JavaModelException {
+	public void testBug52908() throws JavaScriptModelException {
 		verifyComments("testBug52908");
 	}
-	public void testBug52908a() throws JavaModelException {
+	public void testBug52908a() throws JavaScriptModelException {
 		verifyComments("testBug52908a");
 	}
-	public void testBug52908unicode() throws JavaModelException {
+	public void testBug52908unicode() throws JavaScriptModelException {
 		verifyComments("testBug52908unicode");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=53276"
 	 */
-	public void testBug53276() throws JavaModelException {
+	public void testBug53276() throws JavaScriptModelException {
 		verifyComments("testBug53276");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=53075"
 	 */
-	public void testBug53075() throws JavaModelException {
-		ICompilationUnit unit = getCompilationUnit("Converter" , "src", "javadoc.testBug53075", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+	public void testBug53075() throws JavaScriptModelException {
+		IJavaScriptUnit unit = getCompilationUnit("Converter" , "src", "javadoc.testBug53075", "X.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		boolean pb = packageBinding;
 		packageBinding = false;
-		CompilationUnit compilUnit = verifyComments(unit);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(unit);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			Comment comment = (Comment) compilUnit.getCommentList().get(0);
 			assumeTrue(prefix+"Comment should be a javadoc comment ", comment.isDocComment());
-			Javadoc docComment = (Javadoc) comment;
+			JSdoc docComment = (JSdoc) comment;
 			TagElement tagElement = (TagElement) docComment.tags().get(0);
 			assumeEquals("Wrong tag type!", TagElement.TAG_LINK, tagElement.getTagName());
 			tagElement = (TagElement) docComment.tags().get(1);
@@ -2028,21 +2028,21 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=53757"
 	 */
-	public void testBug53757() throws JavaModelException {
+	public void testBug53757() throws JavaScriptModelException {
 		verifyComments("testBug53757");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51600"
 	 */
-	public void testBug51600() throws JavaModelException {
+	public void testBug51600() throws JavaScriptModelException {
 		verifyComments("testBug51600");
 	}
-	public void testBug51617() throws JavaModelException {
+	public void testBug51617() throws JavaScriptModelException {
 		stopOnFailure = false;
 		String [] unbound = { "e" };
 		verifyComments("testBug51617");
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			int size = unbound.length;
 			for (int i=0, f=0; i<size; i++) {
 				assertTrue("Invalid number of failures!", failures.size()>f);
@@ -2058,7 +2058,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		}
 		stopOnFailure = true;
 	}
-	public void testBug54424() throws JavaModelException {
+	public void testBug54424() throws JavaScriptModelException {
 		stopOnFailure = false;
 		String [] unbound = { "tho",
 				"from",
@@ -2069,7 +2069,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 				"to"
 		};
 		verifyComments("testBug54424");
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			int size = unbound.length;
 			for (int i=0, f=0; i<size; i++) {
 				assertTrue("Invalid number of failures!", failures.size()>f);
@@ -2089,18 +2089,18 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=63044"
 	 */
-	public void testBug63044() throws JavaModelException {
+	public void testBug63044() throws JavaScriptModelException {
 		verifyComments("testBug63044");
 	}
 
 	/**
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=51660"
 	 */
-	public void testBug51660() throws JavaModelException {
+	public void testBug51660() throws JavaScriptModelException {
 		stopOnFailure = false;
-		ICompilationUnit unit = getCompilationUnit("Converter" , "src", "javadoc.testBug51660", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-		CompilationUnit compilUnit = verifyComments(unit);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		IJavaScriptUnit unit = getCompilationUnit("Converter" , "src", "javadoc.testBug51660", "Test.js"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		JavaScriptUnit compilUnit = verifyComments(unit);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			String[] tagNames = {
 				"@ejb",
 				"@ejb",
@@ -2169,7 +2169,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			};
 			Comment comment = (Comment) compilUnit.getCommentList().get(0);
 			assumeTrue(prefix+"Comment should be a javadoc comment ", comment.isDocComment());
-			Javadoc docComment = (Javadoc) comment;
+			JSdoc docComment = (JSdoc) comment;
 			int size = docComment.tags().size();
 			for (int i=0; i<size; i++) {
 				TagElement tagElement = (TagElement) docComment.tags().get(i);
@@ -2188,7 +2188,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 65174: Spurious "Javadoc: Missing reference" error
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=65174"
 	 */
-	public void testBug65174() throws JavaModelException {
+	public void testBug65174() throws JavaScriptModelException {
 		verifyComments("testBug65174");
 	}
 
@@ -2196,7 +2196,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 65253: [Javadoc] @@tag is wrongly parsed as @tag
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=65253"
 	 */
-	public void testBug65253() throws JavaModelException {
+	public void testBug65253() throws JavaScriptModelException {
 		verifyComments("testBug65253");
 	}
 
@@ -2204,7 +2204,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 65288: Javadoc: tag gets mangled when javadoc closing on same line without whitespace
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=65288"
 	 */
-	public void testBug65288() throws JavaModelException {
+	public void testBug65288() throws JavaScriptModelException {
 		verifyComments("testBug65288");
 	}
 
@@ -2212,7 +2212,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 68017: Javadoc processing does not detect missing argument to @return
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=68017"
 	 */
-	public void testBug68017() throws JavaModelException {
+	public void testBug68017() throws JavaScriptModelException {
 		verifyComments("testBug68017");
 	}
 
@@ -2220,7 +2220,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 68025: Javadoc processing does not detect some wrong links
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=68025"
 	 */
-	public void testBug68025() throws JavaModelException {
+	public void testBug68025() throws JavaScriptModelException {
 		verifyComments("testBug68025");
 	}
 
@@ -2228,7 +2228,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 69272: [Javadoc] Invalid malformed reference (missing separator)
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=69272"
 	 */
-	public void testBug69272() throws JavaModelException {
+	public void testBug69272() throws JavaScriptModelException {
 		verifyComments("testBug69272");
 	}
 
@@ -2236,7 +2236,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 69275: [Javadoc] Invalid warning on @see link
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=69275"
 	 */
-	public void testBug69275() throws JavaModelException {
+	public void testBug69275() throws JavaScriptModelException {
 		verifyComments("testBug69275");
 	}
 
@@ -2244,7 +2244,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 69302: [Javadoc] Invalid reference warning inconsistent with javadoc tool
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=69302"
 	 */
-	public void testBug69302() throws JavaModelException {
+	public void testBug69302() throws JavaScriptModelException {
 		verifyComments("testBug69302");
 	}
 
@@ -2252,7 +2252,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 68726: [Javadoc] Target attribute in @see link triggers warning
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=68726"
 	 */
-	public void testBug68726() throws JavaModelException {
+	public void testBug68726() throws JavaScriptModelException {
 		verifyComments("testBug68726");
 	}
 
@@ -2261,13 +2261,13 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=70892"
 	 * @deprecated using deprecated code
 	 */
-	public void testBug70892_JLS2() throws JavaModelException {
+	public void testBug70892_JLS2() throws JavaScriptModelException {
 		int level = astLevel;
 		astLevel = AST.JLS2;
 		verifyComments("testBug70892");
 		astLevel = level;
 	}
-	public void testBug70892_JLS3() throws JavaModelException {
+	public void testBug70892_JLS3() throws JavaScriptModelException {
 		int level = astLevel;
 		astLevel = AST.JLS3;
 		verifyComments("testBug70892");
@@ -2278,7 +2278,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 51911: [Javadoc] @see method w/out ()
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=51911"
 	 */
-	public void testBug51911() throws JavaModelException {
+	public void testBug51911() throws JavaScriptModelException {
 		verifyComments("testBug51911");
 	}
 
@@ -2286,7 +2286,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 73348: [Javadoc] Missing description for return tag is not always warned
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=73348"
 	 */
-	public void testBug73348() throws JavaModelException {
+	public void testBug73348() throws JavaScriptModelException {
 		verifyComments("testBug73348");
 	}
 
@@ -2294,7 +2294,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 77644: [dom] AST node extended positions may be wrong while moving
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=77644"
 	 */
-	public void testBug77644() throws JavaModelException {
+	public void testBug77644() throws JavaScriptModelException {
 		verifyComments("testBug77644");
 	}
 
@@ -2302,8 +2302,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 79809: [1.5][dom][javadoc] Need better support for type parameter Javadoc tags
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=79809"
 	 */
-	public void testBug79809() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug79809() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter/src/javadoc/b79809/Test.js",
 			"package javadoc.b79809;\n" +
@@ -2320,8 +2320,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"}\n");
 		verifyWorkingCopiesComments();
 	}
-	public void testBug79809b() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug79809b() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter/src/javadoc/b79809/Test.js",
 			"package javadoc.b79809;\n" + 
@@ -2342,8 +2342,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 79904: [1.5][dom][javadoc] TagElement range not complete for type parameter tags
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=79904"
 	 */
-	public void testBug79904() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug79904() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter/src/javadoc/b79904/Test.js",
 			"package javadoc.b79904;\n" +
@@ -2365,8 +2365,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 80221: [1.5][dom][javadoc] Need better support for type parameter Javadoc tags
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=80221"
 	 */
-	public void testBug80221() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug80221() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter/src/javadoc/b80221/Test.js",
 			"package javadoc.b80221;\n" +
@@ -2386,8 +2386,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 80257: [1.5][javadoc][dom] Type references in javadocs should have generic binding, not raw
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=80257"
 	 */
-	public void testBug80257() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug80257() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b80257/Test.js",
 			"package javadoc.b80257;\n" + 
@@ -2402,10 +2402,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	}\n" + 
 			"}\n"
 			);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Do not need to verify following statement as we know it's ok as verifyComments did not fail
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // get javadoc comment
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // get javadoc comment
 			TagElement firstTag = (TagElement) docComment.tags().get(0); // get first tag
 			TagElement secondTag = (TagElement) docComment.tags().get(1); // get second tag
 			TagElement inlineTag = (TagElement) secondTag.fragments().get(1); // get inline tag
@@ -2440,16 +2440,16 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 83804: [1.5][javadoc] Missing Javadoc node for package declaration
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=83804"
 	 */
-	public void testBug83804() throws CoreException, JavaModelException {
+	public void testBug83804() throws CoreException, JavaScriptModelException {
 		astLevel = AST.JLS3;
-		workingCopies = new ICompilationUnit[2];
+		workingCopies = new IJavaScriptUnit[2];
 		workingCopies[0] = getCompilationUnit("Converter15", "src", "javadoc.b83804", "package-info.js");
 		workingCopies[1] = getCompilationUnit("Converter15", "src", "javadoc.b83804", "Test.js");
 		verifyWorkingCopiesComments();
 	}
-	public void testBug83804a() throws CoreException, JavaModelException {
+	public void testBug83804a() throws CoreException, JavaScriptModelException {
 		astLevel = AST.JLS3;
-		workingCopies = new ICompilationUnit[2];
+		workingCopies = new IJavaScriptUnit[2];
 		workingCopies[0] = getCompilationUnit("Converter15", "src", "javadoc.b83804a", "package-info.js");
 		workingCopies[1] = getCompilationUnit("Converter15", "src", "javadoc.b83804a", "Test.js");
 		verifyWorkingCopiesComments();
@@ -2459,8 +2459,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 84049: [javadoc][dom] Extended ranges wrong for method name without return type
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=84049"
 	 */
-	public void testBug84049() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug84049() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b84049/Test.js",
 			"package javadoc.b84049;\n" + 
@@ -2472,13 +2472,13 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	}\n" + 
 			"}\n"
 			);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			ASTNode node = getASTNode(compilUnit, 0, 0);
-			assertEquals("Invalid type for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			MethodDeclaration methodDeclaration = (MethodDeclaration) node;
-			Javadoc methodJavadoc = methodDeclaration.getJavadoc();
-			assertNotNull("MethodDeclaration have a javadoc comment", methodJavadoc);
+			assertEquals("Invalid type for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
+			JSdoc methodJavadoc = methodDeclaration.getJavadoc();
+			assertNotNull("FunctionDeclaration have a javadoc comment", methodJavadoc);
 			int javadocStart = methodJavadoc.getStartPosition();
 			assertEquals("Method declaration should include javadoc comment", methodDeclaration.getStartPosition(), javadocStart);
 			SimpleName methodName = methodDeclaration.getName();
@@ -2495,8 +2495,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 87845: [1.5][javadoc][dom] Type references in javadocs should have generic binding, not raw
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=87845"
 	 */
-	public void testBug87845() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug87845() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b87845/Test.js",
 			"package javadoc.b87845;\n" + 
@@ -2528,10 +2528,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	public void invalid() {}\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Do not need to verify following statement as we know it's ok as verifyComments did not fail
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // get first javadoc comment
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // get first javadoc comment
 			// Verify last parameter for all methods reference in javadoc comment
 			List tags = docComment.tags();
 			int size = tags.size();
@@ -2539,14 +2539,14 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 				TagElement tag = (TagElement) docComment.tags().get(i);				
 				assertEquals("Invalid number of fragment for see reference: "+tag, 1, tag.fragments().size());
 				ASTNode node = (ASTNode) tag.fragments().get(0);
-				assertEquals("Invalid kind of name reference for tag element: "+tag, ASTNode.METHOD_REF, node.getNodeType());
-				MethodRef methodRef = (MethodRef) node;
+				assertEquals("Invalid kind of name reference for tag element: "+tag, ASTNode.FUNCTION_REF, node.getNodeType());
+				FunctionRef methodRef = (FunctionRef) node;
 				List parameters = methodRef.parameters();
 				int paramSize = parameters.size();
 				for (int j=0; j<paramSize; j++) {
 					node = (ASTNode) parameters.get(j);
-					assertEquals("Invalid kind of method parameter: "+node, ASTNode.METHOD_REF_PARAMETER, node.getNodeType());
-					MethodRefParameter parameter = (MethodRefParameter) node;
+					assertEquals("Invalid kind of method parameter: "+node, ASTNode.FUNCTION_REF_PARAMETER, node.getNodeType());
+					FunctionRefParameter parameter = (FunctionRefParameter) node;
 					if (j==(paramSize-1)) {
 						switch (i) {
 							case 2:
@@ -2570,8 +2570,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 93880: [1.5][javadoc] Source range of PackageDeclaration does not include Javadoc child
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=93880"
 	 */
-	public void testBug93880_15a() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_15a() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/Test.js",
 			"/**\n" + 
@@ -2581,11 +2581,11 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"public class Test {\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration javadoc
 			assertTrue("Javadoc should be set on package declaration", docComment == packDecl.getJavadoc());
@@ -2594,8 +2594,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_15b() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_15b() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/**\n" + 
@@ -2603,11 +2603,11 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			" */\n" + 
 			"package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration javadoc
 			assertTrue("Javadoc should be set on package declaration", docComment == packDecl.getJavadoc());
@@ -2616,8 +2616,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_15c() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_15c() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/**\n" + 
@@ -2625,11 +2625,11 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			" */\n" + 
 			"private package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration javadoc
 			assertTrue("Javadoc should be set on package declaration", docComment == packDecl.getJavadoc());
@@ -2638,8 +2638,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_15d() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_15d() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/**\n" + 
@@ -2648,12 +2648,12 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"@Deprecated\n" + 
 			"package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
 			assertNotNull("Compilation unit should have a package declaration", packDecl);
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration javadoc
 			assertTrue("Javadoc should be set on package declaration", docComment == packDecl.getJavadoc());
@@ -2662,8 +2662,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_15e() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_15e() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/* (non-javadoc)\n" + 
@@ -2671,8 +2671,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			" */\n" + 
 			"package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
 			List unitComments = compilUnit.getCommentList();
@@ -2686,8 +2686,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertTrue("Source range of PackageDeclaration should NOT include Javadoc child", packDecl.getStartPosition() > comment.getStartPosition()+comment.getLength());
 		}
 	}
-	public void testBug93880_14a() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_14a() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/Test.js",
 			"/**\n" + 
@@ -2697,18 +2697,18 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"public class Test {\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration declaration source start
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_14b() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_14b() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/**\n" + 
@@ -2716,18 +2716,18 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			" */\n" + 
 			"package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration declaration source start
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_14c() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_14c() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/**\n" + 
@@ -2735,18 +2735,18 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			" */\n" + 
 			"private package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration declaration source start
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_14d() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_14d() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/**\n" + 
@@ -2755,19 +2755,19 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"@Deprecated\n" + 
 			"package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
 			assertNotNull("Compilation unit should have a package declaration", packDecl);
-			Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+			JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(0); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 
 			// Verify package declaration declaration source start
 			assertEquals("Source range of PackageDeclaration should include Javadoc child", docComment.getStartPosition(), packDecl.getStartPosition());
 		}
 	}
-	public void testBug93880_14e() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug93880_14e() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b93880/package-info.js",
 			"/* (non-javadoc)\n" + 
@@ -2775,8 +2775,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			" */\n" + 
 			"package javadoc.b93880;"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get package declaration declaration and javadoc
 			PackageDeclaration packDecl = compilUnit.getPackage();
 			List unitComments = compilUnit.getCommentList();
@@ -2792,8 +2792,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 94150: [javadoc][dom] Extended ranges wrong for method name without return type
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=94150"
 	 */
-	public void testBug94150() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug94150() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b94150/Category.js",
 			"package javadoc.b94150;\n" + 
@@ -2810,8 +2810,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"     WAR;\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get enum declaration
 			ASTNode node = getASTNode(compilUnit, 0);
 			assertEquals("Expected enum declaration.", ASTNode.ENUM_DECLARATION, node.getNodeType());
@@ -2823,7 +2823,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Wrong number of constants", 2, size);
 			for (int i=0; i<size; i++) {
 				EnumConstantDeclaration constant  = (EnumConstantDeclaration) constants.get(i);
-				Javadoc docComment = (Javadoc) compilUnit.getCommentList().get(i); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
+				JSdoc docComment = (JSdoc) compilUnit.getCommentList().get(i); // Do not need to verify following statement as we know it's ok as verifyComments did not fail
 				assertTrue("Javadoc should be set on first enum constant", docComment == constant.getJavadoc());
 			}
 		}
@@ -2833,8 +2833,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 99507: [javadoc] Infinit loop in DocCommentParser
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=99507"
 	 */
-	public void testBug99507() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug99507() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b99507/X.js",
 			"package javadoc.b99507;\n" + 
 			"public class X {\n" + 
@@ -2843,7 +2843,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 		);
 		verifyComments(workingCopies[0]);
 	}
-	public void testBug99507b() throws JavaModelException {
+	public void testBug99507b() throws JavaScriptModelException {
         String source = "/**\n@param country*/";
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -2855,8 +2855,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 100041: [javadoc] Infinit loop in DocCommentParser
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=100041"
 	 */
-	public void testBug100041() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug100041() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b100041/X.js",
 			"package javadoc.b100041;\n" + 
 			"class X {\n" +
@@ -2871,8 +2871,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	}\n" +
 			"}"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get comment
 			List unitComments = compilUnit.getCommentList();
 			assertEquals("Wrong number of comments", 1, unitComments.size());
@@ -2897,8 +2897,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertTrue("Invalid start position for : VariableDeclarationStatement"+varDecl, varDecl.getStartPosition() > commentEnd);
 		}
 	}
-	public void testBug100041b() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug100041b() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b100041/X.js",
 			"package javadoc.b100041;\n" + 
 			"class X {\n" +
@@ -2912,8 +2912,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	}\n" +
 			"}"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get comment
 			List unitComments = compilUnit.getCommentList();
 			assertEquals("Wrong number of comments", 1, unitComments.size());
@@ -2932,8 +2932,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertTrue("Invalid start position for Block: "+returnStatement, returnStatement.getStartPosition() > commentEnd);
 		}
 	}
-	public void testBug100041c() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug100041c() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b100041/Z.js",
 			"package javadoc.b100041;\n" + 
 			"public class Z {\n" + 
@@ -2953,18 +2953,18 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	}\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get comments
 			List unitComments = compilUnit.getCommentList();
 			int size = unitComments.size();
 			assertEquals("Wrong number of comments", 6, size);
-			Javadoc[] javadocs = new Javadoc[size];
+			JSdoc[] javadocs = new JSdoc[size];
 			Iterator iterator = unitComments.iterator();
 			for (int i=0; i<size; i++) {
 				Comment comment = (Comment) iterator.next();
-				assertEquals("Expect javadoc for comment: "+comment, ASTNode.JAVADOC, comment.getNodeType());
-				javadocs[i] = (Javadoc) comment;
+				assertEquals("Expect javadoc for comment: "+comment, ASTNode.JSDOC, comment.getNodeType());
+				javadocs[i] = (JSdoc) comment;
 			}
 
 			// Verify member type declaration start
@@ -2983,10 +2983,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 
 			// Verify method declaration start
 			node = getASTNode(compilUnit, 0, 2);
-			assertEquals("Expected method declaration for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+			assertEquals("Expected method declaration for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 			javadocStart = javadocs[2].getStartPosition();
-			assertEquals("Invalid start position for MethodDeclaration: "+methodDeclaration, methodDeclaration.getStartPosition(), javadocStart);
+			assertEquals("Invalid start position for FunctionDeclaration: "+methodDeclaration, methodDeclaration.getStartPosition(), javadocStart);
 
 			// Verify local type declaration start
 			node = getASTNode(compilUnit, 0, 2, 0);
@@ -3005,10 +3005,10 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 
 			// Verify method declaration start
 			node = (ASTNode) bodyDeclarations.get(1);
-			assertEquals("Expected method declaration for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			methodDeclaration = (MethodDeclaration) node;
+			assertEquals("Expected method declaration for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			methodDeclaration = (FunctionDeclaration) node;
 			javadocStart = javadocs[5].getStartPosition();
-			assertEquals("Invalid start position for MethodDeclaration: "+methodDeclaration, methodDeclaration.getStartPosition(), javadocStart);
+			assertEquals("Invalid start position for FunctionDeclaration: "+methodDeclaration, methodDeclaration.getStartPosition(), javadocStart);
 		}
 	}
 
@@ -3016,9 +3016,9 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * @bug 103304: [Javadoc] Wrong reference proposal for inner classes.
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=103304"
 	 */
-	public void testBug103304() throws JavaModelException {
+	public void testBug103304() throws JavaScriptModelException {
 		this.packageBinding = false; // do NOT verify that qualification only can be package name
-		workingCopies = new ICompilationUnit[1];
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b103304/Test.js",
 			"package javadoc.b103304;\n" + 
 			"interface IAFAState {\n" + 
@@ -3035,15 +3035,15 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	IAFAState.ValidationException valid;\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify comment type
 			Iterator unitComments = compilUnit.getCommentList().iterator();
 			while (unitComments.hasNext()) {
 				Comment comment = (Comment) unitComments.next();
-				assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.JAVADOC);
-				Javadoc javadoc = (Javadoc) comment;
+				assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.JSDOC);
+				JSdoc javadoc = (JSdoc) comment;
 
 				// Verify that there's always a method reference in tags
 				List tags = javadoc.tags();
@@ -3052,7 +3052,7 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 					TagElement tag = (TagElement) javadoc.tags().get(i);				
 					assertEquals("Invalid number of fragment for see reference: "+tag, 1, tag.fragments().size());
 					ASTNode node = (ASTNode) tag.fragments().get(0);
-					assertEquals("Invalid kind of name reference for tag element: "+tag, ASTNode.METHOD_REF, node.getNodeType());
+					assertEquals("Invalid kind of name reference for tag element: "+tag, ASTNode.FUNCTION_REF, node.getNodeType());
 				}
 			}
 		}
@@ -3062,8 +3062,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 106581: [javadoc] null type binding for parameter in javadoc
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=106581"
 	 */
-	public void testBug106581() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug106581() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b106581/A.js",
 			"package javadoc.b106581;\n" + 
@@ -3074,16 +3074,16 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"     public void foo(int x) {},\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = verifyComments(workingCopies[0]);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = verifyComments(workingCopies[0]);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Get comment
 			List unitComments = compilUnit.getCommentList();
 			assertEquals("Wrong number of comments", 1, unitComments.size());
 			Comment comment = (Comment) unitComments.get(0);
-			assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.JAVADOC);
+			assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.JSDOC);
 
 			// Get local variable declaration
-			Javadoc docComment = (Javadoc) comment;
+			JSdoc docComment = (JSdoc) comment;
 			TagElement tag = (TagElement) docComment.tags().get(0);
 			assertEquals("Invalid number of fragment for tag: "+tag, 1, tag.fragments().size());
 			ASTNode node = (ASTNode) tag.fragments().get(0);
@@ -3097,8 +3097,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * Bug 108622: [javadoc][dom] ASTNode not including javadoc
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=108622"
 	 */
-	public void testBug108622() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug108622() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b108622/Test.js",
 			"package javadoc.b108622;\n" + 
@@ -3119,35 +3119,35 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"\n" + 
 			"}"
 			);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify first method
 			ASTNode node = getASTNode(compilUnit, 0, 0);
-			assertEquals("Invalid type for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+			assertEquals("Invalid type for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 			assertEquals("Invalid method name", "getFoo", methodDeclaration.getName().toString());
-			Javadoc methodJavadoc = methodDeclaration.getJavadoc();
-			assertNotNull("MethodDeclaration have a javadoc comment", methodJavadoc);
+			JSdoc methodJavadoc = methodDeclaration.getJavadoc();
+			assertNotNull("FunctionDeclaration have a javadoc comment", methodJavadoc);
 			int javadocStart = methodJavadoc.getStartPosition();
 			assertEquals("Method declaration should include javadoc comment", methodDeclaration.getStartPosition(), javadocStart);
 			// Verify second method
 			node = getASTNode(compilUnit, 0, 1);
-			assertEquals("Invalid type for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			methodDeclaration = (MethodDeclaration) node;
+			assertEquals("Invalid type for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			methodDeclaration = (FunctionDeclaration) node;
 			assertEquals("Invalid method name", "setFoo", methodDeclaration.getName().toString());
 			methodJavadoc = methodDeclaration.getJavadoc();
-			assertNotNull("MethodDeclaration have a javadoc comment", methodJavadoc);
+			assertNotNull("FunctionDeclaration have a javadoc comment", methodJavadoc);
 			javadocStart = methodJavadoc.getStartPosition();
 			assertEquals("Method declaration should include javadoc comment", methodDeclaration.getStartPosition(), javadocStart);
 		}
 	}
 
 	/**
-	 * Bug 113108: [API][comments] CompilationUnit.getNodeComments(ASTNode)
+	 * Bug 113108: [API][comments] JavaScriptUnit.getNodeComments(ASTNode)
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=113108"
 	 */
-	public void testBug113108a() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug113108a() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b113108/Test.js",
 			"package javadoc.b113108;\n" + 
@@ -3164,16 +3164,16 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	// C7\n" + 
 			"}"
 			);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify  method javadoc
 			ASTNode node = getASTNode(compilUnit, 0, 0);
-			assertEquals("Invalid type for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+			assertEquals("Invalid type for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 			assertEquals("Invalid method name", "foo", methodDeclaration.getName().toString());
-			Javadoc methodJavadoc = methodDeclaration.getJavadoc();
-			assertNotNull("MethodDeclaration have a javadoc comment", methodJavadoc);
+			JSdoc methodJavadoc = methodDeclaration.getJavadoc();
+			assertNotNull("FunctionDeclaration have a javadoc comment", methodJavadoc);
 			int javadocStart = methodJavadoc.getStartPosition();
 			assertEquals("Method declaration should include javadoc comment", methodDeclaration.getStartPosition(), javadocStart);
 			// Verify method first leading and last trailing comment
@@ -3183,8 +3183,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Invalid last trailing comment for "+methodDeclaration, 7, index);
 		}
 	}
-	public void testBug113108b() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug113108b() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b113108/Test.js",
 			"package javadoc.b113108;\n" + 
@@ -3201,16 +3201,16 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	/* C7 */\n" + 
 			"}"
 			);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify  method javadoc
 			ASTNode node = getASTNode(compilUnit, 0, 0);
-			assertEquals("Invalid type for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+			assertEquals("Invalid type for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 			assertEquals("Invalid method name", "foo", methodDeclaration.getName().toString());
-			Javadoc methodJavadoc = methodDeclaration.getJavadoc();
-			assertNotNull("MethodDeclaration have a javadoc comment", methodJavadoc);
+			JSdoc methodJavadoc = methodDeclaration.getJavadoc();
+			assertNotNull("FunctionDeclaration have a javadoc comment", methodJavadoc);
 			int javadocStart = methodJavadoc.getStartPosition();
 			assertEquals("Method declaration should include javadoc comment", methodDeclaration.getStartPosition(), javadocStart);
 			// Verify method first leading and last trailing comment
@@ -3220,8 +3220,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Invalid last trailing comment for "+methodDeclaration, 7, index);
 		}
 	}
-	public void testBug113108c() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug113108c() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b113108/Test.js",
 			"package javadoc.b113108;\n" + 
@@ -3238,16 +3238,16 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	/** C7 */\n" + 
 			"}"
 			);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify  method javadoc
 			ASTNode node = getASTNode(compilUnit, 0, 0);
-			assertEquals("Invalid type for node: "+node, ASTNode.METHOD_DECLARATION, node.getNodeType());
-			MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+			assertEquals("Invalid type for node: "+node, ASTNode.FUNCTION_DECLARATION, node.getNodeType());
+			FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 			assertEquals("Invalid method name", "foo", methodDeclaration.getName().toString());
-			Javadoc methodJavadoc = methodDeclaration.getJavadoc();
-			assertNotNull("MethodDeclaration have a javadoc comment", methodJavadoc);
+			JSdoc methodJavadoc = methodDeclaration.getJavadoc();
+			assertNotNull("FunctionDeclaration have a javadoc comment", methodJavadoc);
 			int javadocStart = methodJavadoc.getStartPosition();
 			assertEquals("Method declaration should include javadoc comment", methodDeclaration.getStartPosition(), javadocStart);
 			// Verify method first leading and last trailing comment
@@ -3262,8 +3262,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * @bug 125676: [javadoc] @category should not read beyond end of line
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=125676"
 	 */
-	public void testBug125676() throws JavaModelException {
-		workingCopies = new ICompilationUnit[3];
+	public void testBug125676() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[3];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b125676/A.js",
 			"package javadoc.b125676;\n" + 
@@ -3325,8 +3325,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * @bug 125903: [javadoc] Treat whitespace in javadoc tags as invalid tags
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=125903"
 	 */
-	public void testBug125903() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug125903() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		astLevel = AST.JLS3;
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b125903/Test.js",
 			"package javadoc.b125903;\n" + 
@@ -3338,14 +3338,14 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify  method javadoc
 			ASTNode node = getASTNode(compilUnit, 0);
 			assertEquals("Invalid type for node: "+node, ASTNode.TYPE_DECLARATION, node.getNodeType());
 			TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-			Javadoc javadoc = typeDeclaration.getJavadoc();
+			JSdoc javadoc = typeDeclaration.getJavadoc();
 			assertNotNull("TypeDeclaration should have a javadoc comment", javadoc);
 			List tags = javadoc.tags();
 			TagElement tag = (TagElement) tags.get(0);
@@ -3360,8 +3360,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * @bug 130752: [comments] first BlockComment parsed as LineComment
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=130752"
 	 */
-	public void testBug130752() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug130752() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b130752/Test.js",
 			"/* Ceci n'est pas\n" + 
 			" * une ligne. */\n" + 
@@ -3369,9 +3369,9 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"public class Test {\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify comment type
 			List unitComments = compilUnit.getCommentList();
 			assertEquals("Wrong number of comments", 1, unitComments.size());
@@ -3379,17 +3379,17 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.BLOCK_COMMENT);
 		}
 	}
-	public void testBug130752b() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug130752b() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b130752/Test.js",
 			"// Line comment\n" + 
 			"package javadoc.b130752;\n" + 
 			"public class Test {\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify comment type
 			List unitComments = compilUnit.getCommentList();
 			assertEquals("Wrong number of comments", 1, unitComments.size());
@@ -3397,22 +3397,22 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.LINE_COMMENT);
 		}
 	}
-	public void testBug130752c() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug130752c() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b130752/Test.js",
 			"/** Javadoc comment */\n" + 
 			"package javadoc.b130752;\n" + 
 			"public class Test {\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify comment type
 			List unitComments = compilUnit.getCommentList();
 			assertEquals("Wrong number of comments", 1, unitComments.size());
 			Comment comment = (Comment) unitComments.get(0);
-			assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.JAVADOC);
+			assertEquals("Comment should be javadoc", comment.getNodeType(), ASTNode.JSDOC);
 		}
 	}
 
@@ -3421,8 +3421,8 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 	 * @test Ensure that extended ranges are correct for enum constants and last comments of enum declaration
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=165525"
 	 */
-	public void testBug165525() throws JavaModelException {
-		workingCopies = new ICompilationUnit[1];
+	public void testBug165525() throws JavaScriptModelException {
+		workingCopies = new IJavaScriptUnit[1];
 		workingCopies[0] = getWorkingCopy("/Converter15/src/javadoc/b165525/Test.js",
 			"package javadoc.b165525;\n" + 
 			"public enum Test {\n" + 
@@ -3435,9 +3435,9 @@ public class ASTConverterJavadocTest extends ConverterTestSetup {
 			"	String b = \"b\"; //$NON-NLS-1$\n" + 
 			"}\n"
 		);
-		CompilationUnit compilUnit = (CompilationUnit) runConversion(AST.JLS3, workingCopies[0], true);
+		JavaScriptUnit compilUnit = (JavaScriptUnit) runConversion(AST.JLS3, workingCopies[0], true);
 		verifyWorkingCopiesComments();
-		if (docCommentSupport.equals(JavaCore.ENABLED)) {
+		if (docCommentSupport.equals(JavaScriptCore.ENABLED)) {
 			// Verify comment type
 			List unitComments = compilUnit.getCommentList();
 			assertEquals("Wrong number of comments", 4, unitComments.size());

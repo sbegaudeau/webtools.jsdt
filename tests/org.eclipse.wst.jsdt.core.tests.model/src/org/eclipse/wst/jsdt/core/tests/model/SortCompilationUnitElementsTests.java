@@ -16,15 +16,15 @@ import java.util.Comparator;
 import junit.framework.Test;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
-import org.eclipse.wst.jsdt.core.util.CompilationUnitSorter;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
+import org.eclipse.wst.jsdt.core.util.JavaScriptUnitSorter;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -49,22 +49,22 @@ public void setUpSuite() throws Exception {
 	this.createFolder("/P/src/p"); //$NON-NLS-1$
 }
 /** @deprecated */
-private void sortUnit(ICompilationUnit unit, String expectedResult) throws CoreException {
+private void sortUnit(IJavaScriptUnit unit, String expectedResult) throws CoreException {
 	this.sortUnit(AST.JLS2, unit, expectedResult, true);
 }
 
-private void sortUnit(int apiLevel, ICompilationUnit unit, String expectedResult) throws CoreException {
+private void sortUnit(int apiLevel, IJavaScriptUnit unit, String expectedResult) throws CoreException {
 	this.sortUnit(apiLevel, unit, expectedResult, true);
 }
 /** @deprecated */
-private void sortUnit(ICompilationUnit unit, String expectedResult, boolean testPositions) throws CoreException {
+private void sortUnit(IJavaScriptUnit unit, String expectedResult, boolean testPositions) throws CoreException {
 	this.sortUnit(AST.JLS2, unit, expectedResult, testPositions);
 }
-private void sortUnit(int apiLevel, ICompilationUnit unit, String expectedResult, boolean testPositions) throws CoreException {
+private void sortUnit(int apiLevel, IJavaScriptUnit unit, String expectedResult, boolean testPositions) throws CoreException {
 	this.sortUnit(apiLevel, unit, expectedResult, testPositions, new DefaultJavaElementComparator(1,2,3,4,5,6,7,8,9));
 }
 /** @deprecated */
-private void oldAPISortUnit(ICompilationUnit unit, String expectedResult, boolean testPositions, Comparator comparator) throws CoreException {
+private void oldAPISortUnit(IJavaScriptUnit unit, String expectedResult, boolean testPositions, Comparator comparator) throws CoreException {
 	String initialSource = unit.getSource();
 	int[] positions = null;
 	int[] initialPositions = null;
@@ -83,8 +83,8 @@ private void oldAPISortUnit(ICompilationUnit unit, String expectedResult, boolea
 		initialPositions = new int[length];
 		System.arraycopy(positions, 0, initialPositions, 0, length);
 	}
-	ICompilationUnit copy = unit.getWorkingCopy(null);
-	CompilationUnitSorter.sort(copy , positions, comparator, 0, new NullProgressMonitor());
+	IJavaScriptUnit copy = unit.getWorkingCopy(null);
+	JavaScriptUnitSorter.sort(copy , positions, comparator, 0, new NullProgressMonitor());
 	String sortedSource = copy.getBuffer().getContents();
 	assertEquals("Different output", expectedResult, sortedSource); //$NON-NLS-1$
 	final int expectedResultLength = expectedResult.length();
@@ -104,7 +104,7 @@ private void oldAPISortUnit(ICompilationUnit unit, String expectedResult, boolea
 		}
 	}
 }
-private void sortUnit(int apiLevel, ICompilationUnit unit, String expectedResult, boolean testPositions, Comparator comparator) throws CoreException {
+private void sortUnit(int apiLevel, IJavaScriptUnit unit, String expectedResult, boolean testPositions, Comparator comparator) throws CoreException {
 
 	String initialSource = unit.getSource();
 	int[] positions = null;
@@ -124,8 +124,8 @@ private void sortUnit(int apiLevel, ICompilationUnit unit, String expectedResult
 		initialPositions = new int[length];
 		System.arraycopy(positions, 0, initialPositions, 0, length);
 	}
-	ICompilationUnit copy = unit.getWorkingCopy(null);
-	CompilationUnitSorter.sort(apiLevel, copy , positions, comparator, 0, new NullProgressMonitor());
+	IJavaScriptUnit copy = unit.getWorkingCopy(null);
+	JavaScriptUnitSorter.sort(apiLevel, copy , positions, comparator, 0, new NullProgressMonitor());
 	String sortedSource = copy.getBuffer().getContents();
 	assertEquals("Different output", expectedResult, sortedSource); //$NON-NLS-1$
 	final int expectedResultLength = expectedResult.length();
@@ -145,7 +145,7 @@ private void sortUnit(int apiLevel, ICompilationUnit unit, String expectedResult
 		}
 	}
 }
-void debug(ICompilationUnit unit, String id) throws JavaModelException {
+void debug(IJavaScriptUnit unit, String id) throws JavaScriptModelException {
 	String source = unit.getBuffer().getContents();
 	if (DEBUG) {
 		System.out.println("========================== " + id + " =============================="); //$NON-NLS-1$ //$NON-NLS-2$
@@ -727,7 +727,7 @@ public void test009() throws CoreException {
 			"	void bar(int i) {\n" + //$NON-NLS-1$
 			"	}\n" + //$NON-NLS-1$
 			"}\n"; //$NON-NLS-1$
-		ICompilationUnit unit = this.getCompilationUnit("/P/src/p/X.js"); //$NON-NLS-1$
+		IJavaScriptUnit unit = this.getCompilationUnit("/P/src/p/X.js"); //$NON-NLS-1$
 		sortUnit(unit, expectedResult, false);
 	} finally {
 		this.deleteFile("/P/src/p/X.js"); //$NON-NLS-1$
@@ -1867,13 +1867,13 @@ public void test028() throws CoreException {
 			public int compare(Object o1, Object o2) {
 				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
 				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
-				Javadoc javadoc1 = bodyDeclaration1.getJavadoc();
-				Javadoc javadoc2 = bodyDeclaration2.getJavadoc();
+				JSdoc javadoc1 = bodyDeclaration1.getJavadoc();
+				JSdoc javadoc2 = bodyDeclaration2.getJavadoc();
 				if (javadoc1 != null && javadoc2 != null) {
 					return javadoc1.getComment().compareTo(javadoc2.getComment());
 				}
-				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
-				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
 				return sourceStart1 - sourceStart2;
 			}
 		});
@@ -1898,8 +1898,8 @@ public void test029() throws CoreException {
 			public int compare(Object o1, Object o2) {
 				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
 				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
-				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
-				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
 				return sourceStart1 - sourceStart2;
 			}
 		});
@@ -1991,7 +1991,7 @@ public void test032() throws CoreException {
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=171066
 public void test033() throws CoreException {
-	ICompilationUnit unit = null;
+	IJavaScriptUnit unit = null;
 	
 	try {
 		this.createFile(
@@ -2008,13 +2008,13 @@ public void test033() throws CoreException {
 		unit.becomeWorkingCopy(null, null);
 		String source = unit.getSource();
 		Document document = new Document(source);
-		CompilerOptions options = new CompilerOptions(unit.getJavaProject().getOptions(true));
+		CompilerOptions options = new CompilerOptions(unit.getJavaScriptProject().getOptions(true));
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setCompilerOptions(options.getMap());
 		parser.setSource(unit);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(true);
-		org.eclipse.wst.jsdt.core.dom.CompilationUnit ast = (org.eclipse.wst.jsdt.core.dom.CompilationUnit) parser.createAST(null);
+		org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast = (org.eclipse.wst.jsdt.core.dom.JavaScriptUnit) parser.createAST(null);
 
 		Comparator comparator = new Comparator() {
 			public int compare(Object o1, Object o2) {
@@ -2026,12 +2026,12 @@ public void test033() throws CoreException {
 				}
 				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
 				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
-				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
-				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
 				return sourceStart1 - sourceStart2;
 			}
 		};
-		TextEdit edit = CompilationUnitSorter.sort(ast , comparator, 0, null, new NullProgressMonitor());
+		TextEdit edit = JavaScriptUnitSorter.sort(ast , comparator, 0, null, new NullProgressMonitor());
 		try {
 			edit.apply(document);
 		} catch (MalformedTreeException e) {
@@ -2049,7 +2049,7 @@ public void test033() throws CoreException {
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=171066
 public void test034() throws CoreException {
-	ICompilationUnit unit = null;
+	IJavaScriptUnit unit = null;
 	try {
 		this.createFile(
 			"/P/src/X.js",
@@ -2059,24 +2059,24 @@ public void test034() throws CoreException {
 		);
 		unit = this.getCompilationUnit("/P/src/X.js");
 		unit.becomeWorkingCopy(null, null);
-		CompilerOptions options = new CompilerOptions(unit.getJavaProject().getOptions(true));
+		CompilerOptions options = new CompilerOptions(unit.getJavaScriptProject().getOptions(true));
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setCompilerOptions(options.getMap());
 		parser.setSource(unit);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setResolveBindings(false);
-		org.eclipse.wst.jsdt.core.dom.CompilationUnit ast = (org.eclipse.wst.jsdt.core.dom.CompilationUnit) parser.createAST(null);
+		org.eclipse.wst.jsdt.core.dom.JavaScriptUnit ast = (org.eclipse.wst.jsdt.core.dom.JavaScriptUnit) parser.createAST(null);
 
 		Comparator comparator = new Comparator() {
 			public int compare(Object o1, Object o2) {
 				BodyDeclaration bodyDeclaration1 = (BodyDeclaration) o1;
 				BodyDeclaration bodyDeclaration2 = (BodyDeclaration) o2;
-				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
-				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart1 = ((Integer) bodyDeclaration1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+				final int sourceStart2 = ((Integer) bodyDeclaration2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
 				return sourceStart1 - sourceStart2;
 			}
 		};
-		TextEdit edit = CompilationUnitSorter.sort(ast , comparator, 0, null, new NullProgressMonitor());
+		TextEdit edit = JavaScriptUnitSorter.sort(ast , comparator, 0, null, new NullProgressMonitor());
 		assertNull("Should be null", edit);
 	} finally {
 		this.deleteFile("/P/src/X.js");

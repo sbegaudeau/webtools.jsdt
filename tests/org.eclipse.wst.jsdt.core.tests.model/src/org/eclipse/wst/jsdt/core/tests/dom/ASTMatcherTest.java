@@ -66,8 +66,8 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	TypeDeclaration TD1;
 	TypeDeclaration TD2;
 	AnonymousClassDeclaration ACD1;
-	Javadoc JD1;
-	Javadoc JD2;
+	JSdoc JD1;
+	JSdoc JD2;
 	String JD2S;
 	TypeParameter TP1;
 	String TP1S;
@@ -77,8 +77,8 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	TagElement TAG2;
 	TextElement TEXT1;
 	MemberRef MBREF1;
-	MethodRef MTHREF1;
-	MethodRefParameter MPARM1;
+	FunctionRef MTHREF1;
+	FunctionRefParameter MPARM1;
 	LineComment LC1;
 	BlockComment BC1;
 	MemberValuePair MVP1;
@@ -156,8 +156,8 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		
 		ACD1 = ast.newAnonymousClassDeclaration();
 		
-		JD1 = ast.newJavadoc();
-		JD2 = ast.newJavadoc();
+		JD1 = ast.newJSdoc();
+		JD2 = ast.newJSdoc();
 		if (ast.apiLevel() == AST.JLS2) {
 			JD1.setComment("/**X*/"); //$NON-NLS-1$
 			JD2.setComment("/**Y*/"); //$NON-NLS-1$
@@ -177,10 +177,10 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		MBREF1 = ast.newMemberRef();
 		MBREF1.setName(ast.newSimpleName("p")); //$NON-NLS-1$
 
-		MTHREF1 = ast.newMethodRef();
+		MTHREF1 = ast.newFunctionRef();
 		MTHREF1.setName(ast.newSimpleName("p")); //$NON-NLS-1$
 
-		MPARM1 = ast.newMethodRefParameter();
+		MPARM1 = ast.newFunctionRefParameter();
 		MPARM1.setType(ast.newPrimitiveType(PrimitiveType.CHAR));
 
 		if (ast.apiLevel() >= AST.JLS3) {
@@ -325,7 +325,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		public boolean match(ClassInstanceCreation node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(CompilationUnit node, Object other) {
+		public boolean match(JavaScriptUnit node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
 		public boolean match(ConditionalExpression node, Object other) {
@@ -376,7 +376,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		public boolean match(Initializer node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(Javadoc node, Object other) {
+		public boolean match(JSdoc node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
 		public boolean match(LabeledStatement node, Object other) {
@@ -394,16 +394,16 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		public boolean match(MemberValuePair node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(MethodDeclaration node, Object other) {
+		public boolean match(FunctionDeclaration node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(MethodInvocation node, Object other) {
+		public boolean match(FunctionInvocation node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(MethodRef node, Object other) {
+		public boolean match(FunctionRef node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
-		public boolean match(MethodRefParameter node, Object other) {
+		public boolean match(FunctionRefParameter node, Object other) {
 			return standardBody(node, other, superMatch ? super.match(node, other) : false);
 		}
 		public boolean match(Modifier node, Object other) {
@@ -774,7 +774,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		basicMatch(x1);
 	}
 	public void testCompilationUnit() {
-		CompilationUnit x1 = ast.newCompilationUnit();
+		JavaScriptUnit x1 = ast.newJavaScriptUnit();
 		x1.setPackage(PD1);
 		x1.imports().add(ID1);
 		x1.imports().add(ID2);
@@ -926,7 +926,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	 *
 	 */
 	public void testJavadoc() {
-		Javadoc x1 = ast.newJavadoc();
+		JSdoc x1 = ast.newJSdoc();
 		if (ast.apiLevel() == AST.JLS2) {
 			x1.setComment("/**?*/"); //$NON-NLS-1$
 		}
@@ -956,7 +956,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 
 	/** @deprecated using deprecated code */
 	public void testMethodDeclaration() {
-		MethodDeclaration x1 = ast.newMethodDeclaration();
+		FunctionDeclaration x1 = ast.newFunctionDeclaration();
 		x1.setJavadoc(JD1);
 		if (ast.apiLevel() == AST.JLS2) {
 			x1.setReturnType(T1);
@@ -976,7 +976,7 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		basicMatch(x1);
 	}
 	public void testMethodInvocation() {
-		MethodInvocation x1 = ast.newMethodInvocation();
+		FunctionInvocation x1 = ast.newFunctionInvocation();
 		x1.setExpression(N1);
 		if (ast.apiLevel() >= AST.JLS3) {
 			x1.typeArguments().add(PT1);
@@ -988,14 +988,14 @@ public class ASTMatcherTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	}
 	
 	public void testMethodRef() {
-		MethodRef x1 = ast.newMethodRef();
+		FunctionRef x1 = ast.newFunctionRef();
 		basicMatch(x1);
 		x1.setQualifier(N1);
 		x1.setName(N2);
 		x1.parameters().add(MPARM1);
 	}
 	public void testMethodRefParameter() {
-		MethodRefParameter x1 = ast.newMethodRefParameter();
+		FunctionRefParameter x1 = ast.newFunctionRefParameter();
 		x1.setType(T1);
 		x1.setName(N1);
 		basicMatch(x1);

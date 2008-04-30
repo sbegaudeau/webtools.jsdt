@@ -30,7 +30,7 @@ import org.eclipse.wst.jsdt.core.dom.CastExpression;
 import org.eclipse.wst.jsdt.core.dom.CatchClause;
 import org.eclipse.wst.jsdt.core.dom.CharacterLiteral;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.ConditionalExpression;
 import org.eclipse.wst.jsdt.core.dom.ConstructorInvocation;
 import org.eclipse.wst.jsdt.core.dom.ContinueStatement;
@@ -48,11 +48,11 @@ import org.eclipse.wst.jsdt.core.dom.ImportDeclaration;
 import org.eclipse.wst.jsdt.core.dom.InfixExpression;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
 import org.eclipse.wst.jsdt.core.dom.InstanceofExpression;
-import org.eclipse.wst.jsdt.core.dom.Javadoc;
+import org.eclipse.wst.jsdt.core.dom.JSdoc;
 import org.eclipse.wst.jsdt.core.dom.LabeledStatement;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
-import org.eclipse.wst.jsdt.core.dom.MethodInvocation;
-import org.eclipse.wst.jsdt.core.dom.MethodRef;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionInvocation;
+import org.eclipse.wst.jsdt.core.dom.FunctionRef;
 import org.eclipse.wst.jsdt.core.dom.Modifier;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.NormalAnnotation;
@@ -93,11 +93,11 @@ public class SampleASTs {
 	/**
 	 * Returns a subtree of sample of AST nodes. The sample includes
 	 * one of each kind (except for BlockComment and LineComment,
-     * which cannot be connected directly to a CompilationUnit),
+     * which cannot be connected directly to a JavaScriptUnit),
      * but otherwise does not make sense.
 	 */
 	public static ASTNode oneOfEach(AST target) {
-		CompilationUnit cu = target.newCompilationUnit();
+		JavaScriptUnit cu = target.newJavaScriptUnit();
 		PackageDeclaration pd = target.newPackageDeclaration();
 		cu.setPackage(pd);
 		
@@ -106,15 +106,15 @@ public class SampleASTs {
 		
 		TypeDeclaration td = target.newTypeDeclaration();
 		cu.types().add(td);
-		Javadoc javadoc = target.newJavadoc();
+		JSdoc javadoc = target.newJSdoc();
 		td.setJavadoc(javadoc);
 		TagElement tg = target.newTagElement();
 		javadoc.tags().add(tg);
 		tg.fragments().add(target.newTextElement());
 		tg.fragments().add(target.newMemberRef());
-		MethodRef mr = target.newMethodRef();
+		FunctionRef mr = target.newFunctionRef();
 		tg.fragments().add(mr);
-		mr.parameters().add(target.newMethodRefParameter());
+		mr.parameters().add(target.newFunctionRefParameter());
 				
 		VariableDeclarationFragment variableDeclarationFragment = target.newVariableDeclarationFragment();
 		FieldDeclaration fd = 
@@ -131,7 +131,7 @@ public class SampleASTs {
 			ed.enumConstants().add(ec);	
 		}
 		
-		MethodDeclaration md = target.newMethodDeclaration();
+		FunctionDeclaration md = target.newFunctionDeclaration();
 		SingleVariableDeclaration singleVariableDeclaration = target.newSingleVariableDeclaration();
 		md.parameters().add(singleVariableDeclaration);
 		td.bodyDeclarations().add(md);
@@ -214,7 +214,7 @@ public class SampleASTs {
 		b.statements().add(whileStatement);
 
 		// all expressions (in alphabetic order of expressions type)
-		MethodInvocation inv = target.newMethodInvocation();
+		FunctionInvocation inv = target.newFunctionInvocation();
 		ExpressionStatement expressionStatement2 = target.newExpressionStatement(inv);
 		b.statements().add(expressionStatement2);
 		List z = inv.arguments();
@@ -244,7 +244,7 @@ public class SampleASTs {
 		z.add(infixExpression);
 		InstanceofExpression instanceofExpression = target.newInstanceofExpression();
 		z.add(instanceofExpression);
-		MethodInvocation methodInvocation = target.newMethodInvocation();
+		FunctionInvocation methodInvocation = target.newFunctionInvocation();
 		z.add(methodInvocation);
 		Name name = target.newName(new String[]{"a", "b"}); //$NON-NLS-1$ //$NON-NLS-2$
 		z.add(name);

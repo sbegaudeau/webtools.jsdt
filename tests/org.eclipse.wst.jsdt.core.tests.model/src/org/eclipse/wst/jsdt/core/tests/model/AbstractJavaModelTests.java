@@ -25,7 +25,7 @@ import org.eclipse.wst.jsdt.core.compiler.CharOperation;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.compiler.libraries.SystemLibraryLocation;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.search.*;
 import org.eclipse.wst.jsdt.core.tests.junit.extension.TestCase;
 import org.eclipse.wst.jsdt.internal.compiler.impl.CompilerOptions;
@@ -47,10 +47,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	protected static String EXTERNAL_JAR_DIR_PATH;
 
 	// used java project
-	protected IJavaProject currentProject;
+	protected IJavaScriptProject currentProject;
 
 	// working copies usage
-	protected ICompilationUnit[] workingCopies;
+	protected IJavaScriptUnit[] workingCopies;
 	protected WorkingCopyOwner wcOwner;
 	
 	// infos for invalid results
@@ -95,43 +95,43 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		 * <code>#startDeltas</code> and
 		 * <code>#stopDeltas</code>.
 		 */
-		public IJavaElementDelta[] deltas;
+		public IJavaScriptElementDelta[] deltas;
 		
 		public ByteArrayOutputStream stackTraces;
 	
 		public void elementChanged(ElementChangedEvent ev) {
-			IJavaElementDelta[] copy= new IJavaElementDelta[deltas.length + 1];
+			IJavaScriptElementDelta[] copy= new IJavaScriptElementDelta[deltas.length + 1];
 			System.arraycopy(deltas, 0, copy, 0, deltas.length);
 			copy[deltas.length]= ev.getDelta();
 			deltas= copy;
 			
 //			new Throwable("Caller of IElementChangedListener#elementChanged").printStackTrace(new PrintStream(this.stackTraces));
 		}
-		public CompilationUnit getCompilationUnitAST(ICompilationUnit workingCopy) {
+		public JavaScriptUnit getCompilationUnitAST(IJavaScriptUnit workingCopy) {
 			for (int i=0, length= this.deltas.length; i<length; i++) {
-				CompilationUnit result = getCompilationUnitAST(workingCopy, this.deltas[i]);
+				JavaScriptUnit result = getCompilationUnitAST(workingCopy, this.deltas[i]);
 				if (result != null)
 					return result;
 			}
 			return null;
 		}
-		private CompilationUnit getCompilationUnitAST(ICompilationUnit workingCopy, IJavaElementDelta delta) {
-			if ((delta.getFlags() & IJavaElementDelta.F_AST_AFFECTED) != 0 && workingCopy.equals(delta.getElement()))
-				return delta.getCompilationUnitAST();
+		private JavaScriptUnit getCompilationUnitAST(IJavaScriptUnit workingCopy, IJavaScriptElementDelta delta) {
+			if ((delta.getFlags() & IJavaScriptElementDelta.F_AST_AFFECTED) != 0 && workingCopy.equals(delta.getElement()))
+				return delta.getJavaScriptUnitAST();
 			return null;
 		}
-		protected void sortDeltas(IJavaElementDelta[] elementDeltas) {
+		protected void sortDeltas(IJavaScriptElementDelta[] elementDeltas) {
 			org.eclipse.wst.jsdt.internal.core.util.Util.Comparer comparer = new org.eclipse.wst.jsdt.internal.core.util.Util.Comparer() {
 				public int compare(Object a, Object b) {
-					IJavaElementDelta deltaA = (IJavaElementDelta)a;
-					IJavaElementDelta deltaB = (IJavaElementDelta)b;
+					IJavaScriptElementDelta deltaA = (IJavaScriptElementDelta)a;
+					IJavaScriptElementDelta deltaB = (IJavaScriptElementDelta)b;
 					return deltaA.getElement().getElementName().compareTo(deltaB.getElement().getElementName());
 				}
 			};
 			org.eclipse.wst.jsdt.internal.core.util.Util.sort(elementDeltas, comparer);
 			for (int i = 0, max = elementDeltas.length; i < max; i++) {
-				IJavaElementDelta delta = elementDeltas[i];
-				IJavaElementDelta[] children = delta.getAffectedChildren();
+				IJavaScriptElementDelta delta = elementDeltas[i];
+				IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 				if (children != null) {
 					sortDeltas(children);
 				}
@@ -140,8 +140,8 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		public String toString() {
 			StringBuffer buffer = new StringBuffer();
 			for (int i=0, length= this.deltas.length; i<length; i++) {
-				IJavaElementDelta delta = this.deltas[i];
-				IJavaElementDelta[] children = delta.getAffectedChildren();
+				IJavaScriptElementDelta delta = this.deltas[i];
+				IJavaScriptElementDelta[] children = delta.getAffectedChildren();
 				int childrenLength=children.length;
 				IResourceDelta[] resourceDeltas = delta.getResourceDeltas();
 				int resourceDeltasLength = resourceDeltas == null ? 0 : resourceDeltas.length;
@@ -227,7 +227,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	protected void addJavaNature(String projectName) throws CoreException {
 		IProject project = getWorkspaceRoot().getProject(projectName);
 		IProjectDescription description = project.getDescription();
-		description.setNatureIds(new String[] {JavaCore.NATURE_ID});
+		description.setNatureIds(new String[] {JavaScriptCore.NATURE_ID});
 		project.setDescription(description, null);
 	}
 	protected void assertSearchResults(String expected, Object collector) {
@@ -249,10 +249,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	protected void addLibrary(String jarName, String sourceZipName, String[] pathAndContents, String compliance) throws CoreException, IOException {
 		addLibrary(this.currentProject, jarName, sourceZipName, pathAndContents, null, null, compliance);
 	}
-	protected void addLibrary(IJavaProject javaProject, String jarName, String sourceZipName, String[] pathAndContents, String compliance) throws CoreException, IOException {
+	protected void addLibrary(IJavaScriptProject javaProject, String jarName, String sourceZipName, String[] pathAndContents, String compliance) throws CoreException, IOException {
 		addLibrary(javaProject, jarName, sourceZipName, pathAndContents, null, null, compliance);
 	}
-	protected void addLibrary(IJavaProject javaProject, String libraryPath, String sourceZipName, String[] pathAndContents, String[] librariesInclusionPatterns, String[] librariesExclusionPatterns, String compliance) throws CoreException, IOException {
+	protected void addLibrary(IJavaScriptProject javaProject, String libraryPath, String sourceZipName, String[] pathAndContents, String[] librariesInclusionPatterns, String[] librariesExclusionPatterns, String compliance) throws CoreException, IOException {
 		IProject project = javaProject.getProject();
 		String projectLocation = project.getLocation().toOSString();
 	    boolean projectbased=libraryPath==null;
@@ -282,13 +282,13 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 
 	}
-	protected void addLibraryEntry(String path, boolean exported) throws JavaModelException {
+	protected void addLibraryEntry(String path, boolean exported) throws JavaScriptModelException {
 		addLibraryEntry(this.currentProject, new Path(path), null, null, null, null, exported);
 	} 
-	protected void addLibraryEntry(IJavaProject project, String path, boolean exported) throws JavaModelException {
+	protected void addLibraryEntry(IJavaScriptProject project, String path, boolean exported) throws JavaScriptModelException {
 		addLibraryEntry(project, new Path(path), null, null, null, null, exported);
 	} 
-	protected void addLibraryEntry(IJavaProject project, String path, String srcAttachmentPath, String srcAttachmentPathRoot, boolean exported) throws JavaModelException{
+	protected void addLibraryEntry(IJavaScriptProject project, String path, String srcAttachmentPath, String srcAttachmentPathRoot, boolean exported) throws JavaScriptModelException{
 		addLibraryEntry(
 			project,
 			new Path(path),
@@ -296,11 +296,11 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			srcAttachmentPathRoot == null ? null : new Path(srcAttachmentPathRoot),
 			null,
 			null,
-			new IClasspathAttribute[0],
+			new IIncludePathAttribute[0],
 			exported
 		);
 	}
-	protected void addLibraryEntry(IJavaProject project, IPath path, IPath srcAttachmentPath, IPath srcAttachmentPathRoot, IPath[] accessibleFiles, IPath[] nonAccessibleFiles, boolean exported) throws JavaModelException{
+	protected void addLibraryEntry(IJavaScriptProject project, IPath path, IPath srcAttachmentPath, IPath srcAttachmentPathRoot, IPath[] accessibleFiles, IPath[] nonAccessibleFiles, boolean exported) throws JavaScriptModelException{
 		addLibraryEntry(
 			project,
 			path,
@@ -308,24 +308,24 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			srcAttachmentPathRoot,
 			accessibleFiles,
 			nonAccessibleFiles,
-			new IClasspathAttribute[0],
+			new IIncludePathAttribute[0],
 			exported
 		);
 	}
-	protected void addLibraryEntry(IJavaProject project, IPath path, IPath srcAttachmentPath, IPath srcAttachmentPathRoot, IPath[] accessibleFiles, IPath[] nonAccessibleFiles, IClasspathAttribute[] extraAttributes, boolean exported) throws JavaModelException{
-		IClasspathEntry[] entries = project.getRawClasspath();
+	protected void addLibraryEntry(IJavaScriptProject project, IPath path, IPath srcAttachmentPath, IPath srcAttachmentPathRoot, IPath[] accessibleFiles, IPath[] nonAccessibleFiles, IIncludePathAttribute[] extraAttributes, boolean exported) throws JavaScriptModelException{
+		IIncludePathEntry[] entries = project.getRawIncludepath();
 		int length = entries.length;
-		System.arraycopy(entries, 0, entries = new IClasspathEntry[length + 1], 0, length);
-		entries[length] = JavaCore.newLibraryEntry(
+		System.arraycopy(entries, 0, entries = new IIncludePathEntry[length + 1], 0, length);
+		entries[length] = JavaScriptCore.newLibraryEntry(
 			path, 
 			srcAttachmentPath, 
 			srcAttachmentPathRoot, 
 			ClasspathEntry.getAccessRules(accessibleFiles, nonAccessibleFiles), 
 			extraAttributes, 
 			exported);
-		project.setRawClasspath(entries, null);
+		project.setRawIncludepath(entries, null);
 	}
-	protected void assertSortedElementsEqual(String message, String expected, IJavaElement[] elements) {
+	protected void assertSortedElementsEqual(String message, String expected, IJavaScriptElement[] elements) {
 		sortElements(elements);
 		assertElementsEqual(message, expected, elements);
 	}
@@ -377,7 +377,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			buffer.toString()
 		);
 	}
-	protected void assertElementEquals(String message, String expected, IJavaElement element) {
+	protected void assertElementEquals(String message, String expected, IJavaScriptElement element) {
 		String actual = element == null ? "<null>" : ((JavaElement) element).toStringWithAncestors(false/*don't show key*/);
 		if (!expected.equals(actual)) {
 			if (this.displayName) System.out.println(getName()+" actual result is:");
@@ -385,10 +385,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 		assertEquals(message, expected, actual);
 	}
-	protected void assertElementsEqual(String message, String expected, IJavaElement[] elements) {
+	protected void assertElementsEqual(String message, String expected, IJavaScriptElement[] elements) {
 		assertElementsEqual(message, expected, elements, false/*don't show key*/);
 	}
-	protected void assertElementsEqual(String message, String expected, IJavaElement[] elements, boolean showResolvedInfo) {
+	protected void assertElementsEqual(String message, String expected, IJavaScriptElement[] elements, boolean showResolvedInfo) {
 		StringBuffer buffer = new StringBuffer();
 		if (elements != null) {
 			for (int i = 0, length = elements.length; i < length; i++){
@@ -410,7 +410,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 		assertEquals(message, expected, actual);
 	}
-	protected void assertExceptionEquals(String message, String expected, JavaModelException exception) {
+	protected void assertExceptionEquals(String message, String expected, JavaScriptModelException exception) {
 		String actual = exception == null ? "<null>" : exception.getStatus().getMessage();
 		if (!expected.equals(actual)) {
 			if (this.displayName) System.out.println(getName()+" actual result is:");
@@ -426,9 +426,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 		assertEquals("Unexpected type hierarchy", expected, actual);
 	}
-	protected void assertMarkers(String message, String expectedMarkers, IJavaProject project) throws CoreException {
+	protected void assertMarkers(String message, String expectedMarkers, IJavaScriptProject project) throws CoreException {
 		waitForAutoBuild();
-		IMarker[] markers = project.getProject().findMarkers(IJavaModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
+		IMarker[] markers = project.getProject().findMarkers(IJavaScriptModelMarker.BUILDPATH_PROBLEM_MARKER, false, IResource.DEPTH_ZERO);
 		sortMarkers(markers);
 		assertMarkers(message, expectedMarkers, markers);
 	}
@@ -498,13 +498,13 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/**
 	 * Ensures the elements are present after creation.
 	 */
-	public void assertCreation(IJavaElement[] newElements) {
+	public void assertCreation(IJavaScriptElement[] newElements) {
 		for (int i = 0; i < newElements.length; i++) {
-			IJavaElement newElement = newElements[i];
+			IJavaScriptElement newElement = newElements[i];
 			assertTrue("Element should be present after creation", newElement.exists());
 		}
 	}
-	protected void assertClasspathEquals(IClasspathEntry[] classpath, String expected) {
+	protected void assertClasspathEquals(IIncludePathEntry[] classpath, String expected) {
 		String actual;
 		if (classpath == null) {
 			actual = "<null>";
@@ -526,16 +526,16 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/**
 	 * Ensures the element is present after creation.
 	 */
-	public void assertCreation(IJavaElement newElement) {
-		assertCreation(new IJavaElement[] {newElement});
+	public void assertCreation(IJavaScriptElement newElement) {
+		assertCreation(new IJavaScriptElement[] {newElement});
 	}
 	/**
 	 * Creates an operation to delete the given elements, asserts
 	 * the operation is successful, and ensures the elements are no
 	 * longer present in the model.
 	 */
-	public void assertDeletion(IJavaElement[] elementsToDelete) throws JavaModelException {
-		IJavaElement elementToDelete = null;
+	public void assertDeletion(IJavaScriptElement[] elementsToDelete) throws JavaScriptModelException {
+		IJavaScriptElement elementToDelete = null;
 		for (int i = 0; i < elementsToDelete.length; i++) {
 			elementToDelete = elementsToDelete[i];
 			assertTrue("Element must be present to be deleted", elementToDelete.exists());
@@ -559,7 +559,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			expected,
 			actual);
 	}
-	protected void assertDeltas(String message, String expected, IJavaElementDelta delta) {
+	protected void assertDeltas(String message, String expected, IJavaScriptElementDelta delta) {
 		String actual = delta == null ? "<null>" : delta.toString();
 		if (!expected.equals(actual)) {
 			System.out.println(displayString(actual, 2));
@@ -589,7 +589,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 		assertEquals(message, expected, actual);
 	}
-	protected void assertTypeParametersEqual(String expected, ITypeParameter[] typeParameters) throws JavaModelException {
+	protected void assertTypeParametersEqual(String expected, ITypeParameter[] typeParameters) throws JavaScriptModelException {
 		StringBuffer buffer = new StringBuffer();
 		for (int i = 0; i < typeParameters.length; i++) {
 			ITypeParameter typeParameter = typeParameters[i];
@@ -634,13 +634,13 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/**
 	 * Attaches a source zip to the given jar package fragment root.
 	 */
-	protected void attachSource(IPackageFragmentRoot root, String sourcePath, String sourceRoot) throws JavaModelException {
-		IJavaProject javaProject = root.getJavaProject();
-		IClasspathEntry[] entries = (IClasspathEntry[])javaProject.getRawClasspath().clone();
+	protected void attachSource(IPackageFragmentRoot root, String sourcePath, String sourceRoot) throws JavaScriptModelException {
+		IJavaScriptProject javaProject = root.getJavaScriptProject();
+		IIncludePathEntry[] entries = (IIncludePathEntry[])javaProject.getRawIncludepath().clone();
 		for (int i = 0; i < entries.length; i++){
-			IClasspathEntry entry = entries[i];
+			IIncludePathEntry entry = entries[i];
 			if (entry.getPath().toOSString().toLowerCase().equals(root.getPath().toOSString().toLowerCase())) {
-				entries[i] = JavaCore.newLibraryEntry(
+				entries[i] = JavaScriptCore.newLibraryEntry(
 					root.getPath(),
 					sourcePath == null ? null : new Path(sourcePath),
 					sourceRoot == null ? null : new Path(sourceRoot),
@@ -648,30 +648,30 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				break;
 			}
 		}
-		javaProject.setRawClasspath(entries, null);
+		javaProject.setRawIncludepath(entries, null);
 	}
 	/**
 	 * Creates an operation to delete the given element, asserts
 	 * the operation is successfull, and ensures the element is no
 	 * longer present in the model.
 	 */
-	public void assertDeletion(IJavaElement elementToDelete) throws JavaModelException {
-		assertDeletion(new IJavaElement[] {elementToDelete});
+	public void assertDeletion(IJavaScriptElement elementToDelete) throws JavaScriptModelException {
+		assertDeletion(new IJavaScriptElement[] {elementToDelete});
 	}
 	/**
 	 * Empties the current deltas.
 	 */
 	public void clearDeltas() {
-		this.deltaListener.deltas = new IJavaElementDelta[0];
+		this.deltaListener.deltas = new IJavaScriptElementDelta[0];
 		this.deltaListener.stackTraces = new ByteArrayOutputStream();
 	}
-	protected IJavaElement[] codeSelect(ISourceReference sourceReference, String selectAt, String selection) throws JavaModelException {
+	protected IJavaScriptElement[] codeSelect(ISourceReference sourceReference, String selectAt, String selection) throws JavaScriptModelException {
 		String str = sourceReference.getSource();
 		int start = str.indexOf(selectAt);
 		int length = selection.length();
 		return ((ICodeAssist)sourceReference).codeSelect(start, length);
 	}
-	protected IJavaElement[] codeSelectAt(ISourceReference sourceReference, String selectAt) throws JavaModelException {
+	protected IJavaScriptElement[] codeSelectAt(ISourceReference sourceReference, String selectAt) throws JavaScriptModelException {
 		String str = sourceReference.getSource();
 		int start = str.indexOf(selectAt) + selectAt.length();
 		int length = 0;
@@ -739,14 +739,14 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/*
 	 * Creates a Java project where prj=src=bin and with JCL_LIB on its classpath.
 	 */
-	protected IJavaProject createJavaProject(String projectName) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName) throws CoreException {
 		return this.createJavaProject(projectName, new String[] {""}, new String[] {"JCL_LIB"}, "");
 	}
 	/*
 	 * Creates a Java project with the given source folders an output location. 
 	 * Add those on the project's classpath.
 	 */
-	protected IJavaProject createJavaProject(String projectName, String[] sourceFolders, String output) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String output) throws CoreException {
 		return 
 			this.createJavaProject(
 				projectName, 
@@ -769,7 +769,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * Creates a Java project with the given source folders an output location. 
 	 * Add those on the project's classpath.
 	 */
-	protected IJavaProject createJavaProject(String projectName, String[] sourceFolders, String output, String[] sourceOutputs) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String output, String[] sourceOutputs) throws CoreException {
 		return 
 			this.createJavaProject(
 				projectName, 
@@ -788,7 +788,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				"1.4"
 			);
 	}
-	protected IJavaProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String output) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String output) throws CoreException {
 		return 
 			this.createJavaProject(
 				projectName, 
@@ -807,7 +807,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				"1.4"
 			);
 	}
-	protected IJavaProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String output, String compliance) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String output, String compliance) throws CoreException {
 		return 
 			this.createJavaProject(
 				projectName, 
@@ -826,7 +826,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				compliance
 			);
 	}
-	protected IJavaProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects, String projectOutput) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects, String projectOutput) throws CoreException {
 		return
 			this.createJavaProject(
 				projectName,
@@ -845,7 +845,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				"1.4"
 			);
 	}
-	protected SearchPattern createPattern(IJavaElement element, int limitTo) {
+	protected SearchPattern createPattern(IJavaScriptElement element, int limitTo) {
 		return SearchPattern.createPattern(element, limitTo);
 	}
 	protected SearchPattern createPattern(String stringPattern, int searchFor, int limitTo, boolean isCaseSensitive) {
@@ -855,7 +855,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		int matchRule = isCaseSensitive ? matchMode | SearchPattern.R_CASE_SENSITIVE : matchMode;
 		return SearchPattern.createPattern(stringPattern, searchFor, limitTo, matchRule);
 	}
-	protected IJavaProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects, boolean[] exportedProject, String projectOutput) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects, boolean[] exportedProject, String projectOutput) throws CoreException {
 		return
 			this.createJavaProject(
 				projectName,
@@ -874,7 +874,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				"1.4"
 			);
 	}
-	protected IJavaProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects, String projectOutput, String compliance) throws CoreException {
+	protected IJavaScriptProject createJavaProject(String projectName, String[] sourceFolders, String[] libraries, String[] projects, String projectOutput, String compliance) throws CoreException {
 		return 
 			createJavaProject(
 				projectName, 
@@ -893,7 +893,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				compliance
 			);
 		}
-	protected IJavaProject createJavaProject(final String projectName, final String[] sourceFolders, final String[] libraries, final String[] projects, final boolean[] exportedProjects, final String projectOutput, final String[] sourceOutputs, final String[][] inclusionPatterns, final String[][] exclusionPatterns, final String compliance) throws CoreException {
+	protected IJavaScriptProject createJavaProject(final String projectName, final String[] sourceFolders, final String[] libraries, final String[] projects, final boolean[] exportedProjects, final String projectOutput, final String[] sourceOutputs, final String[][] inclusionPatterns, final String[][] exclusionPatterns, final String compliance) throws CoreException {
 		return
 		this.createJavaProject(
 			projectName,
@@ -912,7 +912,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			compliance
 		);
 	}
-	protected IJavaProject createJavaProject(
+	protected IJavaScriptProject createJavaProject(
 			final String projectName,
 			final String[] sourceFolders,
 			final String[] libraries,
@@ -944,7 +944,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			exclusionPatterns,
 			compliance);
 	}
-	protected IJavaProject createJavaProject(
+	protected IJavaScriptProject createJavaProject(
 			final String projectName,
 			final String[] sourceFolders,
 			final String[] libraries,
@@ -960,7 +960,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			final String[][] inclusionPatterns,
 			final String[][] exclusionPatterns,
 			final String compliance) throws CoreException {
-		final IJavaProject[] result = new IJavaProject[1];
+		final IJavaScriptProject[] result = new IJavaScriptProject[1];
 		IWorkspaceRunnable create = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				// create project
@@ -983,7 +983,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				
 				
 				
-				IClasspathEntry[] entries = new IClasspathEntry[sourceLength+libLength+projectLength+1];
+				IIncludePathEntry[] entries = new IIncludePathEntry[sourceLength+libLength+projectLength+1];
 				for (int i= 0; i < sourceLength; i++) {
 					IPath sourcePath = new Path(sourceFolders[i]);
 					int segmentCount = sourcePath.segmentCount();
@@ -1037,7 +1037,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 					}
 					// create source entry
 					entries[i] = 
-						JavaCore.newSourceEntry(
+						JavaScriptCore.newSourceEntry(
 							projectPath.append(sourcePath), 
 							inclusionPaths,
 							exclusionPaths, 
@@ -1086,15 +1086,15 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 					}
 					if (lib.indexOf(File.separatorChar) == -1 && lib.charAt(0) != '/' && lib.equals(lib.toUpperCase())) { // all upper case is a var 
 						char[][] vars = CharOperation.splitOn(',', lib.toCharArray());
-						entries[sourceLength+i] = JavaCore.newVariableEntry(
+						entries[sourceLength+i] = JavaScriptCore.newVariableEntry(
 							new Path(new String(vars[0])), 
 							vars.length > 1 ? new Path(new String(vars[1])) : null, 
 							vars.length > 2 ? new Path(new String(vars[2])) : null);
 					} else if (lib.startsWith("org.eclipse.wst.jsdt.core.tests.model.")) { // container
-						entries[sourceLength+i] = JavaCore.newContainerEntry(
+						entries[sourceLength+i] = JavaScriptCore.newContainerEntry(
 								new Path(lib),
 								ClasspathEntry.getAccessRules(accessibleFiles, nonAccessibleFiles),
-								new IClasspathAttribute[0],
+								new IIncludePathAttribute[0],
 								false);
 					} else {
 						IPath libPath = new Path(lib);
@@ -1102,12 +1102,12 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 							project.getFolder(libPath).create(true, true, null);
 							libPath = projectPath.append(libPath);
 						}
-						entries[sourceLength+i] = JavaCore.newLibraryEntry(
+						entries[sourceLength+i] = JavaScriptCore.newLibraryEntry(
 								libPath,
 								null,
 								null,
 								ClasspathEntry.getAccessRules(accessibleFiles, nonAccessibleFiles),
-								new IClasspathAttribute[0], 
+								new IIncludePathAttribute[0], 
 								false);
 					}
 				}
@@ -1142,11 +1142,11 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 					}
 					
 					entries[sourceLength+libLength+i] =
-						JavaCore.newProjectEntry(
+						JavaScriptCore.newProjectEntry(
 								new Path(projects[i]),
 								ClasspathEntry.getAccessRules(accessibleFiles, nonAccessibleFiles),
 								combineAccessRestrictions,
-								new IClasspathAttribute[0], 
+								new IIncludePathAttribute[0], 
 								isExported);
 				}
 				
@@ -1160,17 +1160,17 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 				}
 				
 				// set classpath and output location
-				IJavaProject javaProject = JavaCore.create(project);
+				IJavaScriptProject javaProject = JavaScriptCore.create(project);
 				
 				
 				
 				
 				/* ensure system.js entry */
-				IClasspathEntry jreEntry = JavaCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.launching.JRE_CONTAINER"));
+				IIncludePathEntry jreEntry = JavaScriptCore.newContainerEntry(new Path("org.eclipse.wst.jsdt.launching.JRE_CONTAINER"));
 				entries[entries.length-1] = jreEntry;
 				
 				
-				javaProject.setRawClasspath(entries, projectPath.append(outputPath), null);
+				javaProject.setRawIncludepath(entries, projectPath.append(outputPath), null);
 				
 				// set compliance level options
 				if ("1.5".equals(compliance)) {
@@ -1222,7 +1222,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		}
 		deleteResource(project);
 	}
-	protected void deleteProject(IJavaProject project) throws CoreException {
+	protected void deleteProject(IJavaScriptProject project) throws CoreException {
 		if (project.exists() && !project.isOpen()) { // force opening so that project can be deleted without logging (see bug 23629)
 			project.open(null);
 		}
@@ -1259,36 +1259,36 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/**
 	 * Returns true if this delta is flagged as having changed children.
 	 */
-	protected boolean deltaChildrenChanged(IJavaElementDelta delta) {
-		return delta.getKind() == IJavaElementDelta.CHANGED &&
-			(delta.getFlags() & IJavaElementDelta.F_CHILDREN) != 0;
+	protected boolean deltaChildrenChanged(IJavaScriptElementDelta delta) {
+		return delta.getKind() == IJavaScriptElementDelta.CHANGED &&
+			(delta.getFlags() & IJavaScriptElementDelta.F_CHILDREN) != 0;
 	}
 	/**
 	 * Returns true if this delta is flagged as having had a content change
 	 */
-	protected boolean deltaContentChanged(IJavaElementDelta delta) {
-		return delta.getKind() == IJavaElementDelta.CHANGED &&
-			(delta.getFlags() & IJavaElementDelta.F_CONTENT) != 0;
+	protected boolean deltaContentChanged(IJavaScriptElementDelta delta) {
+		return delta.getKind() == IJavaScriptElementDelta.CHANGED &&
+			(delta.getFlags() & IJavaScriptElementDelta.F_CONTENT) != 0;
 	}
 	/**
 	 * Returns true if this delta is flagged as having moved from a location
 	 */
-	protected boolean deltaMovedFrom(IJavaElementDelta delta) {
-		return delta.getKind() == IJavaElementDelta.ADDED &&
-			(delta.getFlags() & IJavaElementDelta.F_MOVED_FROM) != 0;
+	protected boolean deltaMovedFrom(IJavaScriptElementDelta delta) {
+		return delta.getKind() == IJavaScriptElementDelta.ADDED &&
+			(delta.getFlags() & IJavaScriptElementDelta.F_MOVED_FROM) != 0;
 	}
 	/**
 	 * Returns true if this delta is flagged as having moved to a location
 	 */
-	protected boolean deltaMovedTo(IJavaElementDelta delta) {
-		return delta.getKind() == IJavaElementDelta.REMOVED &&
-			(delta.getFlags() & IJavaElementDelta.F_MOVED_TO) != 0;
+	protected boolean deltaMovedTo(IJavaScriptElementDelta delta) {
+		return delta.getKind() == IJavaScriptElementDelta.REMOVED &&
+			(delta.getFlags() & IJavaScriptElementDelta.F_MOVED_TO) != 0;
 	}
 	/**
 	 * Ensure that the positioned element is in the correct position within the parent.
 	 */
-	public void ensureCorrectPositioning(IParent container, IJavaElement sibling, IJavaElement positioned) throws JavaModelException {
-		IJavaElement[] children = container.getChildren();
+	public void ensureCorrectPositioning(IParent container, IJavaScriptElement sibling, IJavaScriptElement positioned) throws JavaScriptModelException {
+		IJavaScriptElement[] children = container.getChildren();
 		if (sibling != null) {
 			// find the sibling
 			boolean found = false;
@@ -1306,51 +1306,51 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * Returns the specified compilation unit in the given project, root, and
 	 * package fragment or <code>null</code> if it does not exist.
 	 */
-	public IClassFile getClassFile(String projectName, String rootPath, String packageName, String className) throws JavaModelException {
+	public IClassFile getClassFile(String projectName, String rootPath, String packageName, String className) throws JavaScriptModelException {
 		IPackageFragment pkg= getPackageFragment(projectName, rootPath, packageName);
 		if (pkg == null) {
 			return null;
 		}
 		return pkg.getClassFile(className);
 	}
-	protected ICompilationUnit getCompilationUnit(String path) {
-		return (ICompilationUnit)JavaCore.create(getFile(path));
+	protected IJavaScriptUnit getCompilationUnit(String path) {
+		return (IJavaScriptUnit)JavaScriptCore.create(getFile(path));
 	}
 	/**
 	 * Returns the specified compilation unit in the given project, root, and
 	 * package fragment or <code>null</code> if it does not exist.
 	 */
-	public ICompilationUnit getCompilationUnit(String projectName, String rootPath, String packageName, String cuName) throws JavaModelException {
+	public IJavaScriptUnit getCompilationUnit(String projectName, String rootPath, String packageName, String cuName) throws JavaScriptModelException {
 		IPackageFragment pkg= getPackageFragment(projectName, rootPath, packageName);
 		if (pkg == null) {
 			return null;
 		}
-		return pkg.getCompilationUnit(cuName);
+		return pkg.getJavaScriptUnit(cuName);
 	}
 	/**
 	 * Returns the specified compilation unit in the given project, root, and
 	 * package fragment or <code>null</code> if it does not exist.
 	 */
-	public ICompilationUnit[] getCompilationUnits(String projectName, String rootPath, String packageName) throws JavaModelException {
+	public IJavaScriptUnit[] getCompilationUnits(String projectName, String rootPath, String packageName) throws JavaScriptModelException {
 		IPackageFragment pkg= getPackageFragment(projectName, rootPath, packageName);
 		if (pkg == null) {
 			return null;
 		}
-		return pkg.getCompilationUnits();
+		return pkg.getJavaScriptUnits();
 	}
-	protected ICompilationUnit getCompilationUnitFor(IJavaElement element) {
+	protected IJavaScriptUnit getCompilationUnitFor(IJavaScriptElement element) {
 	
-		if (element instanceof ICompilationUnit) {
-			return (ICompilationUnit)element;
+		if (element instanceof IJavaScriptUnit) {
+			return (IJavaScriptUnit)element;
 		}
 	
 		if (element instanceof IMember) {
-			return ((IMember)element).getCompilationUnit();
+			return ((IMember)element).getJavaScriptUnit();
 		}
 	
 		if (element instanceof IPackageDeclaration ||
 			element instanceof IImportDeclaration) {
-				return (ICompilationUnit)element.getParent();
+				return (IJavaScriptUnit)element.getParent();
 			}
 	
 		return null;
@@ -1359,19 +1359,19 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/**
 	 * Returns the last delta for the given element from the cached delta.
 	 */
-	protected IJavaElementDelta getDeltaFor(IJavaElement element) {
+	protected IJavaScriptElementDelta getDeltaFor(IJavaScriptElement element) {
 		return getDeltaFor(element, false);
 	}
 	/**
 	 * Returns the delta for the given element from the cached delta.
 	 * If the boolean is true returns the first delta found.
 	 */
-	protected IJavaElementDelta getDeltaFor(IJavaElement element, boolean returnFirst) {
-		IJavaElementDelta[] deltas = this.deltaListener.deltas;
+	protected IJavaScriptElementDelta getDeltaFor(IJavaScriptElement element, boolean returnFirst) {
+		IJavaScriptElementDelta[] deltas = this.deltaListener.deltas;
 		if (deltas == null) return null;
-		IJavaElementDelta result = null;
+		IJavaScriptElementDelta result = null;
 		for (int i = 0; i < deltas.length; i++) {
-			IJavaElementDelta delta = searchForDelta(element, this.deltaListener.deltas[i]);
+			IJavaScriptElementDelta delta = searchForDelta(element, this.deltaListener.deltas[i]);
 			if (delta != null) {
 				if (returnFirst) {
 					return delta;
@@ -1475,30 +1475,30 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/**
 	 * Returns the Java Model this test suite is running on.
 	 */
-	public IJavaModel getJavaModel() {
-		return JavaCore.create(getWorkspaceRoot());
+	public IJavaScriptModel getJavaModel() {
+		return JavaScriptCore.create(getWorkspaceRoot());
 	}
 	/**
 	 * Returns the Java Project with the given name in this test
 	 * suite's model. This is a convenience method.
 	 */
-	public IJavaProject getJavaProject(String name) {
+	public IJavaScriptProject getJavaProject(String name) {
 		IProject project = getProject(name);
-		return JavaCore.create(project);
+		return JavaScriptCore.create(project);
 	}
-	protected ILocalVariable getLocalVariable(ISourceReference cu, String selectAt, String selection) throws JavaModelException {
-		IJavaElement[] elements = codeSelect(cu, selectAt, selection);
+	protected ILocalVariable getLocalVariable(ISourceReference cu, String selectAt, String selection) throws JavaScriptModelException {
+		IJavaScriptElement[] elements = codeSelect(cu, selectAt, selection);
 		if (elements.length == 0) return null;
 		if (elements[0] instanceof ILocalVariable) {
 			return (ILocalVariable)elements[0];
 		}
 		return null;
 	}
-	protected ILocalVariable getLocalVariable(String cuPath, String selectAt, String selection) throws JavaModelException {
+	protected ILocalVariable getLocalVariable(String cuPath, String selectAt, String selection) throws JavaScriptModelException {
 		ISourceReference cu = getCompilationUnit(cuPath);
 		return getLocalVariable(cu, selectAt, selection);
 	}
-	protected String getNameSource(String cuSource, IJavaElement element) throws JavaModelException {
+	protected String getNameSource(String cuSource, IJavaScriptElement element) throws JavaScriptModelException {
 		ISourceRange nameRange = element instanceof ITypeParameter ? ((ITypeParameter) element).getNameRange() : ((IMember) element).getNameRange();
 		int start = nameRange.getOffset();
 		int end = start+nameRange.getLength();
@@ -1511,7 +1511,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * The rootPath must be specified as a project relative path. The empty
 	 * path refers to the default package fragment.
 	 */
-	public IPackageFragment getPackageFragment(String projectName, String rootPath, String packageName) throws JavaModelException {
+	public IPackageFragment getPackageFragment(String projectName, String rootPath, String packageName) throws JavaScriptModelException {
 		IPackageFragmentRoot root= getPackageFragmentRoot(projectName, rootPath);
 		if (root == null) {
 			return null;
@@ -1530,9 +1530,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	public IPackageFragmentRoot getPackageFragmentRoot(
 		String projectName, 
 		String rootPath)
-		throws JavaModelException {
+		throws JavaScriptModelException {
 			
-		IJavaProject project = getJavaProject(projectName);
+		IJavaScriptProject project = getJavaProject(projectName);
 		if (project == null) {
 			return null;
 		}
@@ -1582,17 +1582,17 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	public String getSourceWorkspacePath() {
 		return getPluginDirectoryPath() +  java.io.File.separator + "workspace";
 	}
-	public ICompilationUnit getWorkingCopy(String path, boolean computeProblems) throws JavaModelException {
+	public IJavaScriptUnit getWorkingCopy(String path, boolean computeProblems) throws JavaScriptModelException {
 		return getWorkingCopy(path, "", computeProblems);
 	}	
-	public ICompilationUnit getWorkingCopy(String path, String source) throws JavaModelException {
+	public IJavaScriptUnit getWorkingCopy(String path, String source) throws JavaScriptModelException {
 		return getWorkingCopy(path, source, false);
 	}	
-	public ICompilationUnit getWorkingCopy(String path, String source, boolean computeProblems) throws JavaModelException {
+	public IJavaScriptUnit getWorkingCopy(String path, String source, boolean computeProblems) throws JavaScriptModelException {
 		if (this.wcOwner == null) this.wcOwner = new WorkingCopyOwner() {};
 		return getWorkingCopy(path, source, this.wcOwner, computeProblems);
 	}
-	public ICompilationUnit getWorkingCopy(String path, String source, WorkingCopyOwner owner, boolean computeProblems) throws JavaModelException {
+	public IJavaScriptUnit getWorkingCopy(String path, String source, WorkingCopyOwner owner, boolean computeProblems) throws JavaScriptModelException {
 		IProblemRequestor problemRequestor = computeProblems
 			? new IProblemRequestor() {
 				public void acceptProblem(IProblem problem) {}
@@ -1605,8 +1605,8 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			: null;
 		return getWorkingCopy(path, source, owner, problemRequestor);
 	}
-	public ICompilationUnit getWorkingCopy(String path, String source, WorkingCopyOwner owner, IProblemRequestor problemRequestor) throws JavaModelException {
-		ICompilationUnit workingCopy = getCompilationUnit(path);
+	public IJavaScriptUnit getWorkingCopy(String path, String source, WorkingCopyOwner owner, IProblemRequestor problemRequestor) throws JavaScriptModelException {
+		IJavaScriptUnit workingCopy = getCompilationUnit(path);
 		if (owner != null)
 			workingCopy = workingCopy.getWorkingCopy(owner, problemRequestor, null/*no progress monitor*/);
 		else
@@ -1626,7 +1626,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	public IWorkspaceRoot getWorkspaceRoot() {
 		return getWorkspace().getRoot();
 	}
-	protected void discardWorkingCopies(ICompilationUnit[] units) throws JavaModelException {
+	protected void discardWorkingCopies(IJavaScriptUnit[] units) throws JavaScriptModelException {
 		if (units == null) return;
 		for (int i = 0, length = units.length; i < length; i++)
 			if (units[i] != null)
@@ -1678,12 +1678,12 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
     	return new String(toDisplay);
     }
 	
-	protected ICompilationUnit newExternalWorkingCopy(String name, final String contents) throws JavaModelException {
+	protected IJavaScriptUnit newExternalWorkingCopy(String name, final String contents) throws JavaScriptModelException {
 		return newExternalWorkingCopy(name, null/*no classpath*/, null/*no problem requestor*/, contents);
 	}
-	protected ICompilationUnit newExternalWorkingCopy(String name, IClasspathEntry[] classpath, IProblemRequestor problemRequestor, final String contents) throws JavaModelException {
+	protected IJavaScriptUnit newExternalWorkingCopy(String name, IIncludePathEntry[] classpath, IProblemRequestor problemRequestor, final String contents) throws JavaScriptModelException {
 		WorkingCopyOwner owner = new WorkingCopyOwner() {
-			public IBuffer createBuffer(ICompilationUnit wc) {
+			public IBuffer createBuffer(IJavaScriptUnit wc) {
 				IBuffer buffer = super.createBuffer(wc);
 				buffer.setContents(contents);
 				return buffer;
@@ -1711,7 +1711,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		description.setNatureIds(new String[] {});
 		project.setDescription(description, null);
 	}
-	protected void removeLibrary(IJavaProject javaProject, String jarName, String sourceZipName) throws CoreException, IOException {
+	protected void removeLibrary(IJavaScriptProject javaProject, String jarName, String sourceZipName) throws CoreException, IOException {
 		IProject project = javaProject.getProject();
 		String projectPath = '/' + project.getName() + '/';
 		removeLibraryEntry(javaProject, new Path(projectPath + jarName));
@@ -1720,17 +1720,17 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			org.eclipse.wst.jsdt.core.tests.util.Util.delete(project.getFile(sourceZipName));
 		}
 	}
-	protected void removeLibraryEntry(Path path) throws JavaModelException {
+	protected void removeLibraryEntry(Path path) throws JavaScriptModelException {
 		removeLibraryEntry(this.currentProject, path);
 	}
-	protected void removeLibraryEntry(IJavaProject project, Path path) throws JavaModelException {
-		IClasspathEntry[] entries = project.getRawClasspath();
+	protected void removeLibraryEntry(IJavaScriptProject project, Path path) throws JavaScriptModelException {
+		IIncludePathEntry[] entries = project.getRawIncludepath();
 		int length = entries.length;
-		IClasspathEntry[] newEntries = null;
+		IIncludePathEntry[] newEntries = null;
 		for (int i = 0; i < length; i++) {
-			IClasspathEntry entry = entries[i];
+			IIncludePathEntry entry = entries[i];
 			if (entry.getPath().equals(path)) {
-				newEntries = new IClasspathEntry[length-1];
+				newEntries = new IIncludePathEntry[length-1];
 				if (i > 0)
 					System.arraycopy(entries, 0, newEntries, 0, i);
 				if (i < length-1)
@@ -1739,13 +1739,13 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			}	
 		}
 		if (newEntries != null)
-			project.setRawClasspath(newEntries, null);
+			project.setRawIncludepath(newEntries, null);
 	}
 
 	/**
 	 * Returns a delta for the given element in the delta tree
 	 */
-	protected IJavaElementDelta searchForDelta(IJavaElement element, IJavaElementDelta delta) {
+	protected IJavaScriptElementDelta searchForDelta(IJavaScriptElement element, IJavaScriptElementDelta delta) {
 	
 		if (delta == null) {
 			return null;
@@ -1754,17 +1754,17 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			return delta;
 		}
 		for (int i= 0; i < delta.getAffectedChildren().length; i++) {
-			IJavaElementDelta child= searchForDelta(element, delta.getAffectedChildren()[i]);
+			IJavaScriptElementDelta child= searchForDelta(element, delta.getAffectedChildren()[i]);
 			if (child != null) {
 				return child;
 			}
 		}
 		return null;
 	}
-	protected void search(IJavaElement element, int limitTo, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		search(element, limitTo, SearchPattern.R_EXACT_MATCH|SearchPattern.R_CASE_SENSITIVE, scope, requestor);
 	}
-	protected void search(IJavaElement element, int limitTo, int matchRule, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(IJavaScriptElement element, int limitTo, int matchRule, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		SearchPattern pattern = SearchPattern.createPattern(element, limitTo, matchRule);
 		assertNotNull("Pattern should not be null", pattern);
 		new SearchEngine().search(
@@ -1775,10 +1775,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			null
 		);
 	}
-	protected void search(String patternString, int searchFor, int limitTo, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(String patternString, int searchFor, int limitTo, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		search(patternString, searchFor, limitTo, SearchPattern.R_EXACT_MATCH|SearchPattern.R_CASE_SENSITIVE, scope, requestor);
 	}
-	protected void search(String patternString, int searchFor, int limitTo, int matchRule, IJavaSearchScope scope, SearchRequestor requestor) throws CoreException {
+	protected void search(String patternString, int searchFor, int limitTo, int matchRule, IJavaScriptSearchScope scope, SearchRequestor requestor) throws CoreException {
 		if (patternString.indexOf('*') != -1 || patternString.indexOf('?') != -1)
 			matchRule |= SearchPattern.R_PATTERN_MATCH;
 		SearchPattern pattern = SearchPattern.createPattern(
@@ -1804,7 +1804,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * If occurence is negative, then perform a backward search from the end of file.
 	 * If selection starts or ends with a comment (to help identification in source), it is removed from returned selection info.
 	 */
-	int[] selectionInfo(ICompilationUnit cu, String selection, int occurences) throws JavaModelException {
+	int[] selectionInfo(IJavaScriptUnit cu, String selection, int occurences) throws JavaScriptModelException {
 		String source = cu.getSource();
 		int index = occurences < 0 ? source.lastIndexOf(selection) : source.indexOf(selection);
 		int max = Math.abs(occurences)-1;
@@ -1846,9 +1846,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param unit
 	 * @param selection
 	 * @return IField
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected IField selectField(ICompilationUnit unit, String selection) throws JavaModelException {
+	protected IField selectField(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		return selectField(unit, selection, 1);
 	}
 
@@ -1858,10 +1858,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param selection
 	 * @param occurences
 	 * @return IField
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected IField selectField(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
-		return (IField) selectJavaElement(unit, selection, occurences, IJavaElement.FIELD);
+	protected IField selectField(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
+		return (IField) selectJavaElement(unit, selection, occurences, IJavaScriptElement.FIELD);
 	}
 
 	/**
@@ -1869,9 +1869,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param unit
 	 * @param selection
 	 * @return IType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ILocalVariable selectLocalVariable(ICompilationUnit unit, String selection) throws JavaModelException {
+	protected ILocalVariable selectLocalVariable(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		return selectLocalVariable(unit, selection, 1);
 	}
 
@@ -1881,20 +1881,20 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param selection
 	 * @param occurences
 	 * @return IType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ILocalVariable selectLocalVariable(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
-		return (ILocalVariable) selectJavaElement(unit, selection, occurences, IJavaElement.LOCAL_VARIABLE);
+	protected ILocalVariable selectLocalVariable(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
+		return (ILocalVariable) selectJavaElement(unit, selection, occurences, IJavaScriptElement.LOCAL_VARIABLE);
 	}
 
 	/**
 	 * Select a method in a compilation unit identified with the first occurence in the source of a given selection.
 	 * @param unit
 	 * @param selection
-	 * @return IMethod
-	 * @throws JavaModelException
+	 * @return IFunction
+	 * @throws JavaScriptModelException
 	 */
-	protected IMethod selectMethod(ICompilationUnit unit, String selection) throws JavaModelException {
+	protected IFunction selectMethod(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		return selectMethod(unit, selection, 1);
 	}
 
@@ -1903,11 +1903,11 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param unit
 	 * @param selection
 	 * @param occurences
-	 * @return IMethod
-	 * @throws JavaModelException
+	 * @return IFunction
+	 * @throws JavaScriptModelException
 	 */
-	protected IMethod selectMethod(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
-		return (IMethod) selectJavaElement(unit, selection, occurences, IJavaElement.METHOD);
+	protected IFunction selectMethod(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
+		return (IFunction) selectJavaElement(unit, selection, occurences, IJavaScriptElement.METHOD);
 	}
 
 	/**
@@ -1915,9 +1915,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param unit
 	 * @param selection
 	 * @return ParameterizedSourceMethod
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ResolvedSourceMethod selectParameterizedMethod(ICompilationUnit unit, String selection) throws JavaModelException {
+	protected ResolvedSourceMethod selectParameterizedMethod(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		return selectParameterizedMethod(unit, selection, 1);
 	}
 	
@@ -1927,10 +1927,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param selection
 	 * @param occurences
 	 * @return ParameterizedSourceMethod
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ResolvedSourceMethod selectParameterizedMethod(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
-		IMethod type = selectMethod(unit, selection, occurences);
+	protected ResolvedSourceMethod selectParameterizedMethod(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
+		IFunction type = selectMethod(unit, selection, occurences);
 		assertTrue("Not a parameterized source type: "+type.getElementName(), type instanceof ResolvedSourceMethod);
 		return (ResolvedSourceMethod) type;
 	}
@@ -1940,9 +1940,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param unit
 	 * @param selection
 	 * @return ParameterizedSourceType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ResolvedSourceType selectParameterizedType(ICompilationUnit unit, String selection) throws JavaModelException {
+	protected ResolvedSourceType selectParameterizedType(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		return selectParameterizedType(unit, selection, 1);
 	}
 	
@@ -1952,9 +1952,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param selection
 	 * @param occurences
 	 * @return ParameterizedSourceType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ResolvedSourceType selectParameterizedType(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
+	protected ResolvedSourceType selectParameterizedType(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
 		IType type = selectType(unit, selection, occurences);
 		assertTrue("Not a parameterized source type: "+type.getElementName(), type instanceof ResolvedSourceType);
 		return (ResolvedSourceType) type;
@@ -1965,9 +1965,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param unit
 	 * @param selection
 	 * @return IType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected IType selectType(ICompilationUnit unit, String selection) throws JavaModelException {
+	protected IType selectType(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		return selectType(unit, selection, 1);
 	}
 
@@ -1977,10 +1977,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param selection
 	 * @param occurences
 	 * @return IType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected IType selectType(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
-		return (IType) selectJavaElement(unit, selection, occurences, IJavaElement.TYPE);
+	protected IType selectType(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
+		return (IType) selectJavaElement(unit, selection, occurences, IJavaScriptElement.TYPE);
 	}
 
 	/**
@@ -1988,9 +1988,9 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param unit
 	 * @param selection
 	 * @return IType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ITypeParameter selectTypeParameter(ICompilationUnit unit, String selection) throws JavaModelException {
+	protected ITypeParameter selectTypeParameter(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		return selectTypeParameter(unit, selection, 1);
 	}
 
@@ -2000,19 +2000,19 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 * @param selection
 	 * @param occurences
 	 * @return IType
-	 * @throws JavaModelException
+	 * @throws JavaScriptModelException
 	 */
-	protected ITypeParameter selectTypeParameter(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
-		return (ITypeParameter) selectJavaElement(unit, selection, occurences, IJavaElement.TYPE_PARAMETER);
+	protected ITypeParameter selectTypeParameter(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
+		return (ITypeParameter) selectJavaElement(unit, selection, occurences, IJavaScriptElement.TYPE_PARAMETER);
 	}
 
 	/**
 	 * Select a java element in a compilation unit identified with the nth occurence in the source of a given selection.
-	 * Do not allow subclasses to call this method as we want to verify IJavaElement kind.
+	 * Do not allow subclasses to call this method as we want to verify IJavaScriptElement kind.
 	 */
-	IJavaElement selectJavaElement(ICompilationUnit unit, String selection, int occurences, int elementType) throws JavaModelException {
+	IJavaScriptElement selectJavaElement(IJavaScriptUnit unit, String selection, int occurences, int elementType) throws JavaScriptModelException {
 		int[] selectionPositions = selectionInfo(unit, selection, occurences);
-		IJavaElement[] elements = null;
+		IJavaScriptElement[] elements = null;
 		if (wcOwner == null) {
 			elements = unit.codeSelect(selectionPositions[0], selectionPositions[1]);
 		} else {
@@ -2029,10 +2029,10 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	/**
 	 * Sets the class path of the Java project.
 	 */
-	public void setClasspath(IJavaProject javaProject, IClasspathEntry[] classpath) {
+	public void setClasspath(IJavaScriptProject javaProject, IIncludePathEntry[] classpath) {
 		try {
-			javaProject.setRawClasspath(classpath, null);
-		} catch (JavaModelException e) {
+			javaProject.setRawIncludepath(classpath, null);
+		} catch (JavaScriptModelException e) {
 			assertTrue("failed to set classpath", false);
 		}
 	}
@@ -2077,11 +2077,11 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			}
 		}
 	}
-	protected IJavaProject setUpJavaProject(final String projectName) throws CoreException, IOException {
+	protected IJavaScriptProject setUpJavaProject(final String projectName) throws CoreException, IOException {
 		this.currentProject = setUpJavaProject(projectName, "1.4");
 		return this.currentProject;
 	}
-	protected IJavaProject setUpJavaProject(final String projectName, String compliance) throws CoreException, IOException {
+	protected IJavaScriptProject setUpJavaProject(final String projectName, String compliance) throws CoreException, IOException {
 		// copy files in project from source workspace to target workspace
 		String sourceWorkspacePath = getSourceWorkspacePath();
 		String targetWorkspacePath = getWorkspaceRoot().getLocation().toFile().getCanonicalPath();
@@ -2099,17 +2099,17 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			}
 		};
 		getWorkspace().run(populate, null);
-		IJavaProject javaProject = JavaCore.create(project);
+		IJavaScriptProject javaProject = JavaScriptCore.create(project);
 		setUpProjectCompliance(javaProject, compliance);
-		javaProject.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.IGNORE);
-		javaProject.setOption(JavaCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER, JavaCore.IGNORE);
-		javaProject.setOption(JavaCore.COMPILER_PB_FIELD_HIDING, JavaCore.IGNORE);
-		javaProject.setOption(JavaCore.COMPILER_PB_LOCAL_VARIABLE_HIDING, JavaCore.IGNORE);
-		javaProject.setOption(JavaCore.COMPILER_PB_TYPE_PARAMETER_HIDING, JavaCore.IGNORE);
+		javaProject.setOption(JavaScriptCore.COMPILER_PB_UNUSED_LOCAL, JavaScriptCore.IGNORE);
+		javaProject.setOption(JavaScriptCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER, JavaScriptCore.IGNORE);
+		javaProject.setOption(JavaScriptCore.COMPILER_PB_FIELD_HIDING, JavaScriptCore.IGNORE);
+		javaProject.setOption(JavaScriptCore.COMPILER_PB_LOCAL_VARIABLE_HIDING, JavaScriptCore.IGNORE);
+		javaProject.setOption(JavaScriptCore.COMPILER_PB_TYPE_PARAMETER_HIDING, JavaScriptCore.IGNORE);
 		return javaProject;
 	}
 
-	protected void setUpProjectCompliance(IJavaProject javaProject, String compliance) throws JavaModelException, IOException {
+	protected void setUpProjectCompliance(IJavaScriptProject javaProject, String compliance) throws JavaScriptModelException, IOException {
 		// Look for version to set and return if that's already done
 		String version = CompilerOptions.VERSION_1_4;
 		String jclLibString = null;
@@ -2148,36 +2148,36 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 		javaProject.setOptions(options);
 		
 		// replace JCL_LIB with JCL15_LIB, and JCL_SRC with JCL15_SRC
-		IClasspathEntry[] classpath = javaProject.getRawClasspath();
+		IIncludePathEntry[] classpath = javaProject.getRawIncludepath();
 		IPath jclLib = new Path(jclLibString);
 		for (int i = 0, length = classpath.length; i < length; i++) {
-			IClasspathEntry entry = classpath[i];
+			IIncludePathEntry entry = classpath[i];
 			if (entry.getPath().equals(jclLib)) {
-				classpath[i] = JavaCore.newVariableEntry(
+				classpath[i] = JavaScriptCore.newVariableEntry(
 						new Path(newJclLibString), 
 						new Path(newJclSrcString), 
 						entry.getSourceAttachmentRootPath(), 
 						entry.getAccessRules(), 
-						new IClasspathAttribute[0], 
+						new IIncludePathAttribute[0], 
 						entry.isExported());
 				break;
 			}
 		}
-		javaProject.setRawClasspath(classpath, null);
+		javaProject.setRawIncludepath(classpath, null);
 	}
-	public void setUpJCLClasspathVariables(String compliance) throws JavaModelException, IOException {
+	public void setUpJCLClasspathVariables(String compliance) throws JavaScriptModelException, IOException {
 		if ("1.5".equals(compliance)) {
-			if (JavaCore.getClasspathVariable("JCL15_LIB") == null) {
+			if (JavaScriptCore.getIncludepathVariable("JCL15_LIB") == null) {
 //				setupExternalJCL("jclMin1.5");
-				JavaCore.setClasspathVariables(
+				JavaScriptCore.setIncludepathVariables(
 					new String[] {"JCL15_LIB", "JCL15_SRC", "JCL_SRCROOT"},
 					new IPath[] {getExternalJCLPath(compliance), getExternalJCLSourcePath(compliance), getExternalJCLRootSourcePath()},
 					null);
 			} 
 		} else {
-			if (JavaCore.getClasspathVariable("JCL_LIB") == null) {
+			if (JavaScriptCore.getIncludepathVariable("JCL_LIB") == null) {
 //				setupExternalJCL("jclMin");
-				JavaCore.setClasspathVariables(
+				JavaScriptCore.setIncludepathVariables(
 					new String[] {"JCL_LIB", "JCL_SRC", "JCL_SRCROOT"},
 					new IPath[] {getExternalJCLPath(), getExternalJCLSourcePath(), getExternalJCLRootSourcePath()},
 					null);
@@ -2201,7 +2201,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 			System.out.println("Running test "+getName()+"...");
 		}
 	}
-	protected void sortElements(IJavaElement[] elements) {
+	protected void sortElements(IJavaScriptElement[] elements) {
 		Util.Comparer comparer = new Util.Comparer() {
 			public int compare(Object a, Object b) {
 				JavaElement elementA = (JavaElement)a;
@@ -2267,13 +2267,13 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	 */
 	public void startDeltas() {
 		clearDeltas();
-		JavaCore.addElementChangedListener(this.deltaListener);
+		JavaScriptCore.addElementChangedListener(this.deltaListener);
 	}
 	/**
 	 * Stops listening to element deltas, and clears the current deltas.
 	 */
 	public void stopDeltas() {
-		JavaCore.removeElementChangedListener(this.deltaListener);
+		JavaScriptCore.removeElementChangedListener(this.deltaListener);
 		clearDeltas();
 	}
 	protected IPath[] toIPathArray(String[] paths) {
@@ -2333,14 +2333,14 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 	public static void waitUntilIndexesReady() {
 		// dummy query for waiting until the indexes are ready
 		SearchEngine engine = new SearchEngine();
-		IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+		IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 		try {
 			engine.searchAllTypeNames(
 				null,
 				SearchPattern.R_EXACT_MATCH,
 				"!@$#!@".toCharArray(),
 				SearchPattern.R_PATTERN_MATCH | SearchPattern.R_CASE_SENSITIVE,
-				IJavaSearchConstants.CLASS,
+				IJavaScriptSearchConstants.CLASS,
 				scope, 
 				new TypeNameRequestor() {
 					public void acceptType(
@@ -2350,7 +2350,7 @@ public abstract class AbstractJavaModelTests extends SuiteOfTestCases {
 						char[][] enclosingTypeNames,
 						String path) {}
 				},
-				IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+				IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 				null);
 		} catch (CoreException e) {
 		}

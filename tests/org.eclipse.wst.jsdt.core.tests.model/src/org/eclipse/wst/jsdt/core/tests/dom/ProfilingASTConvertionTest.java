@@ -23,15 +23,15 @@ import junit.framework.Test;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.TypeDeclaration;
 import org.eclipse.wst.jsdt.core.tests.model.AbstractJavaModelTests;
 
@@ -67,7 +67,7 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 		return buildModelTestSuite(ProfilingASTConvertionTest.class);
 	}
 
-	ICompilationUnit[] compilationUnits;
+	IJavaScriptUnit[] compilationUnits;
 
 	public ProfilingASTConvertionTest(String name) {
 		super(name);
@@ -206,32 +206,32 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 		super.setUpSuite();
 
 		// ensure variables are set
-		if (JavaCore.getClasspathVariable("CONVERTER_JCL_LIB") == null) { //$NON-NLS-1$
+		if (JavaScriptCore.getIncludepathVariable("CONVERTER_JCL_LIB") == null) { //$NON-NLS-1$
 			setupExternalJCL("converterJclMin");
-			JavaCore.setClasspathVariables(
+			JavaScriptCore.setIncludepathVariables(
 				new String[] {"CONVERTER_JCL_LIB", "CONVERTER_JCL_SRC", "CONVERTER_JCL_SRCROOT"}, //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				new Path[] {new Path(getExternalPath() + "converterJclMin.jar"), new Path(getExternalPath() + "converterJclMinsrc.zip"), new Path("")},
 				null);
 		}		
 		
-		IJavaProject javaProject = setUpJavaProject("Compiler", "1.4"); //$NON-NLS-1$ //$NON-NLS-2$
+		IJavaScriptProject javaProject = setUpJavaProject("Compiler", "1.4"); //$NON-NLS-1$ //$NON-NLS-2$
 		assertNotNull("No java project", javaProject);
 		IPackageFragment[] packageFragments = javaProject.getPackageFragments();
 		assertNotNull("No package fragments", packageFragments);
 		ArrayList collector = new ArrayList();
 		for (int i = 0, max = packageFragments.length; i < max; i++) {
-			ICompilationUnit[] units = packageFragments[i].getCompilationUnits();
+			IJavaScriptUnit[] units = packageFragments[i].getJavaScriptUnits();
 			if (units != null) {
 				for (int j = 0, max2 = units.length; j < max2; j++) {
 					collector.add(units[j]);
 				}
 			}
 		}
-		this.compilationUnits = new ICompilationUnit[collector.size()];
+		this.compilationUnits = new IJavaScriptUnit[collector.size()];
 		collector.toArray(this.compilationUnits);
 	}
 
-	public void test0000() throws JavaModelException {
+	public void test0000() throws JavaScriptModelException {
 		try {
 			RESOLVE_BINDINGS = true;
 			final int apiLevel = AST.JLS3;
@@ -249,8 +249,8 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 				times[i] = System.currentTimeMillis() - time;
 				totalTime += times[i];
 				assertNotNull("No node", node);
-				assertEquals("Wrong type", ASTNode.COMPILATION_UNIT, node.getNodeType());
-				CompilationUnit unit = (CompilationUnit) node;
+				assertEquals("Wrong type", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+				JavaScriptUnit unit = (JavaScriptUnit) node;
 				assertEquals("Has problem", 0, unit.getProblems().length);
 				TypeDeclaration typeDeclaration = (TypeDeclaration) unit.types().get(0);
 				StringBuffer buffer = new StringBuffer();
@@ -269,7 +269,7 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 		}
 	}
 	
-	public void test0001() throws JavaModelException {
+	public void test0001() throws JavaScriptModelException {
 		try {
 			RESOLVE_BINDINGS = true;
 			final int apiLevel = AST.JLS3;
@@ -287,8 +287,8 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 				times[i] = System.currentTimeMillis() - time;
 				totalTime += times[i];
 				assertNotNull("No node", node);
-				assertEquals("Wrong type", ASTNode.COMPILATION_UNIT, node.getNodeType());
-				CompilationUnit unit = (CompilationUnit) node;
+				assertEquals("Wrong type", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+				JavaScriptUnit unit = (JavaScriptUnit) node;
 				assertEquals("Has problem", 0, unit.getProblems().length);
 				TypeDeclaration typeDeclaration = (TypeDeclaration) unit.types().get(0);
 				StringBuffer buffer = new StringBuffer();
@@ -308,7 +308,7 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 		}
 	}
 
-	public void test0002() throws JavaModelException {
+	public void test0002() throws JavaScriptModelException {
 		try {
 			RESOLVE_BINDINGS = false;
 			final int apiLevel = AST.JLS3;
@@ -326,8 +326,8 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 				times[i] = System.currentTimeMillis() - time;
 				totalTime += times[i];
 				assertNotNull("No node", node);
-				assertEquals("Wrong type", ASTNode.COMPILATION_UNIT, node.getNodeType());
-				CompilationUnit unit = (CompilationUnit) node;
+				assertEquals("Wrong type", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+				JavaScriptUnit unit = (JavaScriptUnit) node;
 				assertEquals("Has problem", 0, unit.getProblems().length);
 				TypeDeclaration typeDeclaration = (TypeDeclaration) unit.types().get(0);
 				StringBuffer buffer = new StringBuffer();
@@ -348,7 +348,7 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 	}
 	
 	/** @deprecated using deprecated code */
-	public void test0003() throws JavaModelException {
+	public void test0003() throws JavaScriptModelException {
 		try {
 			RESOLVE_BINDINGS = true;
 			final int apiLevel = AST.JLS2;
@@ -366,8 +366,8 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 				times[i] = System.currentTimeMillis() - time;
 				totalTime += times[i];
 				assertNotNull("No node", node);
-				assertEquals("Wrong type", ASTNode.COMPILATION_UNIT, node.getNodeType());
-				CompilationUnit unit = (CompilationUnit) node;
+				assertEquals("Wrong type", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+				JavaScriptUnit unit = (JavaScriptUnit) node;
 				assertEquals("Has problem", 0, unit.getProblems().length);
 				TypeDeclaration typeDeclaration = (TypeDeclaration) unit.types().get(0);
 				StringBuffer buffer = new StringBuffer();
@@ -388,7 +388,7 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 	}
 
 	/** @deprecated using deprecated code */
-	public void test0004() throws JavaModelException {
+	public void test0004() throws JavaScriptModelException {
 		try {
 			RESOLVE_BINDINGS = false;
 			final int apiLevel = AST.JLS2;
@@ -406,8 +406,8 @@ public class ProfilingASTConvertionTest extends AbstractJavaModelTests {
 				times[i] = System.currentTimeMillis() - time;
 				totalTime += times[i];
 				assertNotNull("No node", node);
-				assertEquals("Wrong type", ASTNode.COMPILATION_UNIT, node.getNodeType());
-				CompilationUnit unit = (CompilationUnit) node;
+				assertEquals("Wrong type", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+				JavaScriptUnit unit = (JavaScriptUnit) node;
 				assertEquals("Has problem", 0, unit.getProblems().length);
 				TypeDeclaration typeDeclaration = (TypeDeclaration) unit.types().get(0);
 				StringBuffer buffer = new StringBuffer();

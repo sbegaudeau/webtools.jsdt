@@ -81,7 +81,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	String TD1S;
 	TypeDeclaration TD2;
 	String TD2S;
-	Javadoc JD1;
+	JSdoc JD1;
 	String JD1S;
 	TagElement TAG1;
 	String TAG1S;
@@ -89,9 +89,9 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	String TEXT1S;
 	MemberRef MBREF1;
 	String MBREF1S;
-	MethodRef MTHREF1;
+	FunctionRef MTHREF1;
 	String MTHREF1S;
-	MethodRefParameter MPARM1;
+	FunctionRefParameter MPARM1;
 	String MPARM1S;
 	LineComment LC1;
 	String LC1S;
@@ -207,7 +207,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		ACD1 = ast.newAnonymousClassDeclaration();
 		ACD1S = "[(ACDACD)]"; //$NON-NLS-1$
 		
-		JD1 = ast.newJavadoc();
+		JD1 = ast.newJSdoc();
 		JD1S = "[(JDJD)]"; //$NON-NLS-1$
 		
 		LC1 = ast.newLineComment();
@@ -228,11 +228,11 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		MBREF1.setName(ast.newSimpleName("p")); //$NON-NLS-1$
 		MBREF1S = "[(MBREF[(nSppnS)]MBREF)]";  //$NON-NLS-1$
 
-		MTHREF1 = ast.newMethodRef();
+		MTHREF1 = ast.newFunctionRef();
 		MTHREF1.setName(ast.newSimpleName("p")); //$NON-NLS-1$
 		MTHREF1S = "[(MTHREF[(nSppnS)]MTHREF)]";  //$NON-NLS-1$
 
-		MPARM1 = ast.newMethodRefParameter();
+		MPARM1 = ast.newFunctionRefParameter();
 		MPARM1.setType(ast.newPrimitiveType(PrimitiveType.CHAR));
 		MPARM1S = "[(MPARM[(tPcharchartP)]MPARM)]";  //$NON-NLS-1$
 
@@ -503,11 +503,11 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			b.append("ACD)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(CompilationUnit node) {
+		public boolean visit(JavaScriptUnit node) {
 			b.append("(CU"); //$NON-NLS-1$
 			return isVisitingChildren();
 		}
-		public void endVisit(CompilationUnit node) {
+		public void endVisit(JavaScriptUnit node) {
 			b.append("CU)"); //$NON-NLS-1$
 		}
 
@@ -654,7 +654,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		 * that come from testing Javadoc.getComment())
 		 *
 		 */
-		public boolean visit(Javadoc node) {
+		public boolean visit(JSdoc node) {
 			b.append("(JD"); //$NON-NLS-1$
 			
 			// verify that children of Javadoc nodes are visited only if requested
@@ -671,7 +671,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		 * that come from testing Javadoc.getComment())
 		 *
 		 */
-		public void endVisit(Javadoc node) {
+		public void endVisit(JSdoc node) {
 			b.append("JD)"); //$NON-NLS-1$
 		}
 
@@ -719,19 +719,19 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			b.append("MBREF)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(MethodRef node) {
+		public boolean visit(FunctionRef node) {
 			b.append("(MTHREF"); //$NON-NLS-1$
 			return isVisitingChildren();
 		}
-		public void endVisit(MethodRef node) {
+		public void endVisit(FunctionRef node) {
 			b.append("MTHREF)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(MethodRefParameter node) {
+		public boolean visit(FunctionRefParameter node) {
 			b.append("(MPARM"); //$NON-NLS-1$
 			return isVisitingChildren();
 		}
-		public void endVisit(MethodRefParameter node) {
+		public void endVisit(FunctionRefParameter node) {
 			b.append("MPARM)"); //$NON-NLS-1$
 		}
 
@@ -743,19 +743,19 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 			b.append("sLA)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(MethodDeclaration node) {
+		public boolean visit(FunctionDeclaration node) {
 			b.append("(MD"); //$NON-NLS-1$
 			return isVisitingChildren();
 		}
-		public void endVisit(MethodDeclaration node) {
+		public void endVisit(FunctionDeclaration node) {
 			b.append("MD)"); //$NON-NLS-1$
 		}
 
-		public boolean visit(MethodInvocation node) {
+		public boolean visit(FunctionInvocation node) {
 			b.append("(eMI"); //$NON-NLS-1$
 			return isVisitingChildren();
 		}
-		public void endVisit(MethodInvocation node) {
+		public void endVisit(FunctionInvocation node) {
 			b.append("eMI)"); //$NON-NLS-1$
 		}
 
@@ -1285,7 +1285,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 		assertTrue(result.equals("[(ACD"+FD1S+FD2S+"ACD)]")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	public void testCompilationUnit() {
-		CompilationUnit x1 = ast.newCompilationUnit();
+		JavaScriptUnit x1 = ast.newJavaScriptUnit();
 		x1.setPackage(PD1);
 		x1.imports().add(ID1);
 		x1.imports().add(ID2);
@@ -1538,7 +1538,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	 *
 	 */
 	public void testJavadoc() {
-		Javadoc x1 = ast.newJavadoc();
+		JSdoc x1 = ast.newJSdoc();
 		x1.tags().add(TAG1);
 		
 		// ASTVisitor() does not visit doc tags
@@ -1602,7 +1602,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 
 	/** @deprecated using deprecated code */
 	public void testMethodDeclaration() {
-		MethodDeclaration x1 = ast.newMethodDeclaration();
+		FunctionDeclaration x1 = ast.newFunctionDeclaration();
 		x1.setJavadoc(JD1);
 		if (ast.apiLevel() == AST.JLS2) {
 			x1.setReturnType(T1);
@@ -1630,7 +1630,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	}
 	/** @deprecated using deprecated code */
 	public void testMethodInvocation() {
-		MethodInvocation x1 = ast.newMethodInvocation();
+		FunctionInvocation x1 = ast.newFunctionInvocation();
 		x1.setExpression(N1);
 		if (ast.apiLevel() >= AST.JLS3) {
 			x1.typeArguments().add(PT1);
@@ -1650,7 +1650,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	}
 
 	public void testMethodRef() {
-		MethodRef x1 = ast.newMethodRef();
+		FunctionRef x1 = ast.newFunctionRef();
 		x1.setQualifier(N1);
 		x1.setName(N2);
 		x1.parameters().add(MPARM1);
@@ -1662,7 +1662,7 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	}
 
 	public void testMethodRefParameter() {
-		MethodRefParameter x1 = ast.newMethodRefParameter();
+		FunctionRefParameter x1 = ast.newFunctionRefParameter();
 		x1.setType(T1);
 		x1.setName(N1);
 		TestVisitor v1 = new TestVisitor();
@@ -2155,20 +2155,20 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testTraverseAndModify() {
 		final TypeDeclaration typeDeclaration = ast.newTypeDeclaration();
 		typeDeclaration.setName(N1);
-		MethodDeclaration methodDeclaration = ast.newMethodDeclaration();
+		FunctionDeclaration methodDeclaration = ast.newFunctionDeclaration();
 		methodDeclaration.setName(ast.newSimpleName("M1")); //$NON-NLS-1$
 		typeDeclaration.bodyDeclarations().add(0, methodDeclaration);
-		final MethodDeclaration methodDeclaration2 = ast.newMethodDeclaration();
+		final FunctionDeclaration methodDeclaration2 = ast.newFunctionDeclaration();
 		methodDeclaration2.setName(ast.newSimpleName("M2")); //$NON-NLS-1$
 		typeDeclaration.bodyDeclarations().add(1, methodDeclaration2);
-		MethodDeclaration methodDeclaration3 = ast.newMethodDeclaration();
+		FunctionDeclaration methodDeclaration3 = ast.newFunctionDeclaration();
 		methodDeclaration3.setName(ast.newSimpleName("M3")); //$NON-NLS-1$
 		typeDeclaration.bodyDeclarations().add(2, methodDeclaration3);
 		// insert a new before the current node during a traverse
 		TestVisitor v1 = new TestVisitor() {
-			public boolean visit(MethodDeclaration node) {
+			public boolean visit(FunctionDeclaration node) {
 				if (node == methodDeclaration2) {
-					MethodDeclaration methodDeclaration4 = ast.newMethodDeclaration();
+					FunctionDeclaration methodDeclaration4 = ast.newFunctionDeclaration();
 					methodDeclaration4.setName(ast.newSimpleName("M4")); //$NON-NLS-1$
 					typeDeclaration.bodyDeclarations().add(0, methodDeclaration4);
 				}
@@ -2183,20 +2183,20 @@ public class ASTVisitorTest extends org.eclipse.wst.jsdt.core.tests.junit.extens
 	public void testTraverseAndModify_2() {
 		final TypeDeclaration typeDeclaration = ast.newTypeDeclaration();
 		typeDeclaration.setName(N1);
-		MethodDeclaration methodDeclaration = ast.newMethodDeclaration();
+		FunctionDeclaration methodDeclaration = ast.newFunctionDeclaration();
 		methodDeclaration.setName(ast.newSimpleName("M1")); //$NON-NLS-1$
 		typeDeclaration.bodyDeclarations().add(0, methodDeclaration);
-		final MethodDeclaration methodDeclaration2 = ast.newMethodDeclaration();
+		final FunctionDeclaration methodDeclaration2 = ast.newFunctionDeclaration();
 		methodDeclaration2.setName(ast.newSimpleName("M2")); //$NON-NLS-1$
 		typeDeclaration.bodyDeclarations().add(1, methodDeclaration2);
-		MethodDeclaration methodDeclaration3 = ast.newMethodDeclaration();
+		FunctionDeclaration methodDeclaration3 = ast.newFunctionDeclaration();
 		methodDeclaration3.setName(ast.newSimpleName("M3")); //$NON-NLS-1$
 		typeDeclaration.bodyDeclarations().add(2, methodDeclaration3);
 		// insert a new after the current node during a traverse
 		TestVisitor v1 = new TestVisitor() {
-			public boolean visit(MethodDeclaration node) {
+			public boolean visit(FunctionDeclaration node) {
 				if (node == methodDeclaration2) {
-					MethodDeclaration methodDeclaration4 = ast.newMethodDeclaration();
+					FunctionDeclaration methodDeclaration4 = ast.newFunctionDeclaration();
 					methodDeclaration4.setName(ast.newSimpleName("M4")); //$NON-NLS-1$
 					typeDeclaration.bodyDeclarations().add(3, methodDeclaration4);
 				}

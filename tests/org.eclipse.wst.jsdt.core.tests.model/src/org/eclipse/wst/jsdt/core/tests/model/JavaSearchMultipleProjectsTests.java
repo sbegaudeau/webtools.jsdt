@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.core.tests.model.AbstractJavaSearchTests.JavaSearchR
 /**
  * Tests the Java search engine accross multiple projects.
  */
-public class JavaSearchMultipleProjectsTests extends ModifyingResourceTests implements IJavaSearchConstants {
+public class JavaSearchMultipleProjectsTests extends ModifyingResourceTests implements IJavaScriptSearchConstants {
 	private final static int UI_DECLARATIONS = DECLARATIONS|IGNORE_DECLARING_TYPE|IGNORE_RETURN_TYPE;
 public JavaSearchMultipleProjectsTests(String name) {
 	super(name);
@@ -45,10 +45,10 @@ static {
  * (regression test for bug 41534 incorrect shadowing reported by rename [refactoring])
  */
 public void testFieldOccurencesInWorkingCopies() throws CoreException {
-	ICompilationUnit wc1 = null, wc2 = null;
+	IJavaScriptUnit wc1 = null, wc2 = null;
 	try {
 		// setup project P1
-		IJavaProject p1 = createJavaProject("P1");
+		IJavaScriptProject p1 = createJavaProject("P1");
 		createFolder("/P1/p1");
 		createFile(
 			"/P1/p1/X.js",
@@ -59,7 +59,7 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 		);
 		
 		// setup project P2
-		IJavaProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] {"/P1"}, "");
 		createFolder("/P2/p2");
 		createFile(
 			"/P2/p2/Y.js",
@@ -79,7 +79,7 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 			"    public static int BAR;\n" +
 			"}"
 		);
-		wc1.reconcile(ICompilationUnit.NO_AST, false, null, null);
+		wc1.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 		wc2 = getCompilationUnit("P2/p2/Y.js").getWorkingCopy(null);
 		wc2.getBuffer().setContents(
 			"package p2;\n" +
@@ -90,12 +90,12 @@ public void testFieldOccurencesInWorkingCopies() throws CoreException {
 			"}"
 		);
 		
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		IField field = wc1.getType("X").getField("BAR");
 		SearchPattern pattern = SearchPattern.createPattern(field, ALL_OCCURRENCES);
-		new SearchEngine(new ICompilationUnit[] {wc1, wc2}).search(
+		new SearchEngine(new IJavaScriptUnit[] {wc1, wc2}).search(
 			pattern, 
 			new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
 			scope, 
@@ -145,10 +145,10 @@ public void testHierarchyScope1() throws CoreException {
 			"	}\n" +
 			"}" 
 		);
-		ICompilationUnit cu = getCompilationUnit("/P2/Y.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P2/Y.js");
 		IType type = cu.getType("Y");
-		IMethod method = type.getMethod("foo", new String[] {});
-		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
+		IFunction method = type.getFunction("foo", new String[] {});
+		IJavaScriptSearchScope scope = SearchEngine.createHierarchyScope(type);
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		search(
@@ -200,10 +200,10 @@ public void testHierarchyScope2() throws CoreException {
 			"}" 
 		);
 
-		ICompilationUnit cu = getCompilationUnit("/P2/Z.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P2/Z.js");
 		IType type = cu.getType("Z");
-		IMethod method = type.getMethod("foo", new String[] {});
-		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
+		IFunction method = type.getFunction("foo", new String[] {});
+		IJavaScriptSearchScope scope = SearchEngine.createHierarchyScope(type);
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		search(
@@ -248,10 +248,10 @@ public void testHierarchyScope3() throws CoreException {
 			"}" 
 		);
 
-		ICompilationUnit cu = getCompilationUnit("/P1/p/X.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P1/p/X.js");
 		IType type = cu.getType("X");
-		IMethod method = type.getMethod("foo", new String[] {});
-		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
+		IFunction method = type.getFunction("foo", new String[] {});
+		IJavaScriptSearchScope scope = SearchEngine.createHierarchyScope(type);
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		search(
@@ -325,10 +325,10 @@ public void testHierarchyScope4() throws CoreException {
 			"}" 
 		);
 
-		ICompilationUnit cu = getCompilationUnit("/P3/p3/Z.js");
+		IJavaScriptUnit cu = getCompilationUnit("/P3/p3/Z.js");
 		IType type = cu.getType("Z");
-		IMethod method = type.getMethod("foo", new String[] {});
-		IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
+		IFunction method = type.getFunction("foo", new String[] {});
+		IJavaScriptSearchScope scope = SearchEngine.createHierarchyScope(type);
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showAccuracy = true;
 		resultCollector.showProject = true;
@@ -351,7 +351,7 @@ public void testHierarchyScope4() throws CoreException {
 public void testMethodOccurences() throws CoreException {
 	try {
 		// setup project P1
-		IJavaProject p1 = createJavaProject("P1");
+		IJavaScriptProject p1 = createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
 			"/P1/p/I.js",
@@ -371,12 +371,12 @@ public void testMethodOccurences() throws CoreException {
 		
 		// copy to project P2
 		p1.getProject().copy(new Path("/P2"), false, null);
-		IJavaProject p2 = getJavaProject("P2");
+		IJavaScriptProject p2 = getJavaProject("P2");
 		
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
-		IMethod method = getCompilationUnit("/P1/p/I.js").getType("I").getMethod("method", new String[] {"QObject;"});
+		IFunction method = getCompilationUnit("/P1/p/I.js").getType("I").getFunction("method", new String[] {"QObject;"});
 		search(
 			method, 
 			ALL_OCCURRENCES,
@@ -399,7 +399,7 @@ public void testMethodOccurences() throws CoreException {
 public void testPackageDeclaration() throws CoreException {
 	try {
 		// setup project P1
-		IJavaProject p1 = createJavaProject("P1");
+		IJavaScriptProject p1 = createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
 			"/P1/p/X.js",
@@ -410,9 +410,9 @@ public void testPackageDeclaration() throws CoreException {
 		
 		// copy to project P2
 		p1.getProject().copy(new Path("/P2"), false, null);
-		IJavaProject p2 = getJavaProject("P2");
+		IJavaScriptProject p2 = getJavaProject("P2");
 		
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		IPackageFragment pkg = getPackage("/P1/p");
@@ -437,7 +437,7 @@ public void testPackageDeclaration() throws CoreException {
 public void testPackageReference1() throws CoreException {
 	try {
 		// setup project P1
-		IJavaProject p1 = createJavaProject("P1");
+		IJavaScriptProject p1 = createJavaProject("P1");
 		createFolder("/P1/p");
 		createFile(
 			"/P1/p/X.js",
@@ -447,7 +447,7 @@ public void testPackageReference1() throws CoreException {
 		);
 		
 		// setup project P2
-		IJavaProject p2 = createJavaProject(
+		IJavaScriptProject p2 = createJavaProject(
 			"P2", 
 			new String[] {""}, 
 			new String[] {"JCL_LIB"}, 
@@ -478,7 +478,7 @@ public void testPackageReference1() throws CoreException {
 			"}"
 		);
 		
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		IPackageFragment pkg = getPackage("/P1/p");
 		search(
@@ -504,12 +504,12 @@ public void testPackageReference1() throws CoreException {
 public void testPackageReference2() throws CoreException, IOException {
 	try {
 		// setup project JavaSearchMultipleProjects1
-		IJavaProject p1 = setUpJavaProject("JavaSearchMultipleProjects1");
+		IJavaScriptProject p1 = setUpJavaProject("JavaSearchMultipleProjects1");
 		
 		// setup project JavaSearchMultipleProjects2
-		IJavaProject p2 = setUpJavaProject("JavaSearchMultipleProjects2");
+		IJavaScriptProject p2 = setUpJavaProject("JavaSearchMultipleProjects2");
 				
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		IPackageFragment pkg = getPackage("/JavaSearchMultipleProjects1/lib/p");
 		search(
@@ -533,11 +533,11 @@ public void testPackageReference2() throws CoreException, IOException {
  * (regression test for bug 57749 Search in working copies doesn't find all matches)
  */
 public void testReferenceInWorkingCopies() throws CoreException {
-	ICompilationUnit workingCopy1 = null;
-	ICompilationUnit workingCopy2 = null;
+	IJavaScriptUnit workingCopy1 = null;
+	IJavaScriptUnit workingCopy2 = null;
 	try {
 		// setup project P1
-		IJavaProject p1 = createJavaProject("P1");
+		IJavaScriptProject p1 = createJavaProject("P1");
 		createFolder("/P1/p1");
 		createFile(
 			"/P1/p1/X.js",
@@ -555,7 +555,7 @@ public void testReferenceInWorkingCopies() throws CoreException {
 		);
 		
 		// setup project P2
-		IJavaProject p2 = createJavaProject(
+		IJavaScriptProject p2 = createJavaProject(
 			"P2", 
 			new String[] {""}, 
 			new String[] {"JCL_LIB"}, 
@@ -603,9 +603,9 @@ public void testReferenceInWorkingCopies() throws CoreException {
 		);
 		workingCopy2.makeConsistent(null);
 		
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
-		IMethod method = workingCopy1.getType("X").getMethod("bar", new String[] {"QTest;"});
+		IFunction method = workingCopy1.getType("X").getFunction("bar", new String[] {"QTest;"});
 		new SearchEngine(owner).search(
 			SearchPattern.createPattern(method, REFERENCES), 
 			new SearchParticipant[] {SearchEngine.getDefaultSearchParticipant()},
@@ -630,10 +630,10 @@ public void testReferenceInWorkingCopies() throws CoreException {
  */
 public void testTypeDeclarationInJar() throws CoreException {
 	try {
-		IJavaProject p1 = createJavaProject("P1", new String[] {}, new String[] {"JCL_LIB"}, "");
-		IJavaProject p2 = createJavaProject("P2", new String[] {}, new String[] {"JCL_LIB"}, "");
+		IJavaScriptProject p1 = createJavaProject("P1", new String[] {}, new String[] {"JCL_LIB"}, "");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {}, new String[] {"JCL_LIB"}, "");
 		
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p1});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p1});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		search(
@@ -647,7 +647,7 @@ public void testTypeDeclarationInJar() throws CoreException {
 			getExternalJCLPathString() + " [in P1] java.lang.Object", 
 			resultCollector);
 			
-		scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p2});
+		scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p2});
 		resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		search(
@@ -673,7 +673,7 @@ public void testTypeDeclarationInJar() throws CoreException {
 public void testBug151189_Workspace() throws CoreException {
 	try {
 		// setup project P1
-		/*IJavaProject p1 = */createJavaProject("P1");
+		/*IJavaScriptProject p1 = */createJavaProject("P1");
 		createFolder("/P1/pack");
 		createFile(
 			"/P1/pack/Declaration.js",
@@ -703,10 +703,10 @@ public void testBug151189_Workspace() throws CoreException {
 		);
 
 		// Get method
-		IMethod method = getCompilationUnit("/P2/test/Declaration_bis.js").getType("Declaration_bis").getMethod("doOperation", new String[] {"I"});
+		IFunction method = getCompilationUnit("/P2/test/Declaration_bis.js").getType("Declaration_bis").getFunction("doOperation", new String[] {"I"});
 
 		// search method declaration in workspace scope
-		IJavaSearchScope scope = SearchEngine.createWorkspaceScope(); //JavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope(); //JavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		search(
@@ -759,7 +759,7 @@ public void testBug151189_Project() throws CoreException {
 		);
 
 		// setup project P2
-		IJavaProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "");
+		IJavaScriptProject p2 = createJavaProject("P2", new String[] {""}, new String[] {"JCL_LIB"}, new String[] { "/P1" }, "");
 		createFolder("/P2/test");
 		createFile(
 			"/P2/test/Declaration_bis.js",
@@ -771,10 +771,10 @@ public void testBug151189_Project() throws CoreException {
 		);
 
 		// Get method
-		IMethod method = getCompilationUnit("/P2/test/Declaration_bis.js").getType("Declaration_bis").getMethod("doOperation", new String[] {"I"});
+		IFunction method = getCompilationUnit("/P2/test/Declaration_bis.js").getType("Declaration_bis").getFunction("doOperation", new String[] {"I"});
 
 		// search method declaration in project scope
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {p2});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		search(
@@ -802,7 +802,7 @@ public void testBug151189_Project() throws CoreException {
 public void testBug163072() throws CoreException {
 	try {
 		// setup project P1
-		/*IJavaProject p1 = */createJavaProject("P1"); // standard project using 1.4 compliance
+		/*IJavaScriptProject p1 = */createJavaProject("P1"); // standard project using 1.4 compliance
 		createFolder("/P1/test");
 		createFile(
 			"/P1/test/Test.js",
@@ -847,11 +847,11 @@ public void testBug163072() throws CoreException {
 		);
 
 		// Get method
-		IMethod method = getCompilationUnit("/P1/test/Test.js").getType("Test").getMethod("getType", new String[0]);
+		IFunction method = getCompilationUnit("/P1/test/Test.js").getType("Test").getFunction("getType", new String[0]);
 		assertTrue("Method 'Test.getType()' should exist!", method.exists());
 
 		// search method declaration in workspace scope
-		IJavaSearchScope scope = SearchEngine.createWorkspaceScope(); //JavaSearchScope(new IJavaElement[] {p1, p2});
+		IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope(); //JavaSearchScope(new IJavaScriptElement[] {p1, p2});
 		JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 		resultCollector.showProject = true;
 		resultCollector.showAccuracy = true;
@@ -873,7 +873,7 @@ public void testBug163072() throws CoreException {
  */
 public void testBug167743() throws CoreException {
 	try {
-		IJavaProject p = createJavaProject("P");
+		IJavaScriptProject p = createJavaProject("P");
 		createFolder("/P/test");
 		createFile(
 			"/P/test/TestClass.js",
@@ -888,16 +888,16 @@ public void testBug167743() throws CoreException {
 				return toFullyQualifiedNamesString();
 			}
 		};
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] { p });
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] { p });
 		new SearchEngine().searchAllTypeNames(
 			null,
 			SearchPattern.R_EXACT_MATCH,
 			new char[] { '*' },
 			SearchPattern.R_PATTERN_MATCH,
-			IJavaSearchConstants.TYPE,
+			IJavaScriptSearchConstants.TYPE,
 			scope,
 			collector,
-			IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+			IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 			null);
 		// Search all type names with TypeNameRequestor
 		SearchTests.SearchTypeNameRequestor requestor = new SearchTests.SearchTypeNameRequestor();
@@ -906,10 +906,10 @@ public void testBug167743() throws CoreException {
 			SearchPattern.R_EXACT_MATCH,
 			new char[] { '*' },
 			SearchPattern.R_PATTERN_MATCH,
-			IJavaSearchConstants.TYPE,
+			IJavaScriptSearchConstants.TYPE,
 			scope,
 			requestor,
-			IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+			IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 			null);
 		// Should have same types with these 2 searches
 		assertEquals("Invalid number of types found!", requestor.size(), collector.size());

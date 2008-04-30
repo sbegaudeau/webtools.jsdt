@@ -35,7 +35,7 @@ import junit.framework.Test;
 /*
  * Test indexing support.
  */
-public class SearchTests extends ModifyingResourceTests implements IJavaSearchConstants {
+public class SearchTests extends ModifyingResourceTests implements IJavaScriptSearchConstants {
 	/*
 	 * Empty jar contents.
 	 * Generated using the following code:
@@ -133,20 +133,20 @@ public static Test suite() {
 public SearchTests(String name) {
 	super(name);
 }
-protected void assertAllTypes(int waitingPolicy, IProgressMonitor progressMonitor, String expected) throws JavaModelException {
+protected void assertAllTypes(int waitingPolicy, IProgressMonitor progressMonitor, String expected) throws JavaScriptModelException {
 	assertAllTypes("Unexpected all types", null/* no specific project*/, waitingPolicy, progressMonitor, expected);
 }
-protected void assertAllTypes(String expected) throws JavaModelException {
+protected void assertAllTypes(String expected) throws JavaScriptModelException {
 	assertAllTypes(WAIT_UNTIL_READY_TO_SEARCH, null/* no progress monitor*/, expected);
 }
-protected void assertAllTypes(String message, IJavaProject project, String expected) throws JavaModelException {
+protected void assertAllTypes(String message, IJavaScriptProject project, String expected) throws JavaScriptModelException {
 	assertAllTypes(message, project, WAIT_UNTIL_READY_TO_SEARCH, null/* no progress monitor*/, expected);
 }
-protected void assertAllTypes(String message, IJavaProject project, int waitingPolicy, IProgressMonitor progressMonitor, String expected) throws JavaModelException {
-	IJavaSearchScope scope =
+protected void assertAllTypes(String message, IJavaScriptProject project, int waitingPolicy, IProgressMonitor progressMonitor, String expected) throws JavaScriptModelException {
+	IJavaScriptSearchScope scope =
 		project == null ?
 			SearchEngine.createWorkspaceScope() :
-			SearchEngine.createJavaSearchScope(new IJavaElement[] {project});
+			SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {project});
 	SearchEngine searchEngine = new SearchEngine();
 	SearchTypeNameRequestor requestor = new SearchTypeNameRequestor();
 	searchEngine.searchAllTypeNames(
@@ -225,7 +225,7 @@ public void testChangeClasspath() throws CoreException, TimeOutException {
 	try {
 		// setup: suspend indexing and create a project (prj=src) with one cu
 		indexManager.disable();
-		JavaCore.run(new IWorkspaceRunnable() {
+		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				createJavaProject("P1");
 				createFile(
@@ -242,9 +242,9 @@ public void testChangeClasspath() throws CoreException, TimeOutException {
 		job.startingSem.acquire(30000); // wait for job to start (wait 30s max)
 		
 		// remove source folder from classpath
-		IJavaProject project = getJavaProject("P1");
-		project.setRawClasspath(
-			new IClasspathEntry[0], 
+		IJavaScriptProject project = getJavaProject("P1");
+		project.setRawIncludepath(
+			new IIncludePathEntry[0], 
 			null);
 			
 		// resume waiting job
@@ -267,7 +267,7 @@ public void testChangeClasspath() throws CoreException, TimeOutException {
  */
 public void testChangeClasspath2() throws CoreException {
 	try {
-		final IJavaProject project = createJavaProject("P1", new String[] {""}, "bin");
+		final IJavaScriptProject project = createJavaProject("P1", new String[] {""}, "bin");
 		createFile(
 				"/P1/X.js",
 				"function bar() {\n" +
@@ -294,7 +294,7 @@ public void testChangeClasspath2() throws CoreException {
 		getWorkspace().run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				createFolder("/P1/src");
-				project.setRawClasspath(createClasspath(new String[] {"/P1/src"}, false, false), null);
+				project.setRawIncludepath(createClasspath(new String[] {"/P1/src"}, false, false), null);
 			}
 		}, null);
 		assertAllTypes(
@@ -328,7 +328,7 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
 	try {
 		// setup: suspend indexing and create a project with one empty jar on its classpath
 		indexManager.disable();
-		JavaCore.run(new IWorkspaceRunnable() {
+		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
 				createJavaProject("P1", new String[] {}, new String[] {"/P1/jclMin.jar"}, "bin");
 				createFile("/P1/jclMin.jar", EMPTY_JAR);
@@ -340,7 +340,7 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
 		indexManager.enable();
 		job.startingSem.acquire(30000); // wait for job to start (wait 30s max)
 				
-		final IJavaProject project = getJavaProject("P1");
+		final IJavaScriptProject project = getJavaProject("P1");
 			
 		// start concurrent job
 		final boolean[] success = new boolean[1];
@@ -365,7 +365,7 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
 						"java.lang.String\n" + 
 						"java.lang.Throwable"
 					);
-				} catch (JavaModelException e) {
+				} catch (JavaScriptModelException e) {
 					e.printStackTrace();
 					return;
 				}
@@ -432,7 +432,7 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
   */
  public void _testProjectLib() throws CoreException { // TODO disabled due to transcient failures (see bug 84164)
  	try {
- 		IJavaProject javaProject = createJavaProject("P1", new String[0], new String[] {"/P1"}, "bin");
+ 		IJavaScriptProject javaProject = createJavaProject("P1", new String[0], new String[] {"/P1"}, "bin");
  		createClassFile("/P1", "X.class", "public class X {}");
  		IProject project = javaProject.getProject();
  		project.close(null);
@@ -455,10 +455,10 @@ public void testConcurrentJob() throws CoreException, InterruptedException, IOEx
 public void testRemoveOuterFolder() throws CoreException {
 	try {
 		// setup: one cu in a nested source folder
-		JavaCore.run(new IWorkspaceRunnable() {
+		JavaScriptCore.run(new IWorkspaceRunnable() {
 			public void run(IProgressMonitor monitor) throws CoreException {
-				IJavaProject project = createJavaProject("P1");
-				project.setRawClasspath(
+				IJavaScriptProject project = createJavaProject("P1");
+				project.setRawIncludepath(
 					createClasspath(new String[] {"/P1/src1", "src2/", "/P1/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), 
 					new Path("/P1/bin"),
 					null);
@@ -470,7 +470,7 @@ public void testRemoveOuterFolder() throws CoreException {
 				);
 			}
 		}, null);
-		IJavaProject project = getJavaProject("P1");
+		IJavaScriptProject project = getJavaProject("P1");
 		assertAllTypes(
 			"Unexpected all types after setup",
 			project,
@@ -478,7 +478,7 @@ public void testRemoveOuterFolder() throws CoreException {
 		);
 		
 		// remove outer folder from classpath
-		project.setRawClasspath(
+		project.setRawIncludepath(
 			createClasspath(new String[] {"/P1/src1/src2", ""}, false/*no inclusion*/, true/*exclusion*/), 
 			null);
 		assertAllTypes(
@@ -498,8 +498,8 @@ public void testSearchPatternCreation01() {
 
 	SearchPattern searchPattern = createPattern(
 			"main(*)", 
-			IJavaSearchConstants.METHOD,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.METHOD,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -514,8 +514,8 @@ public void testSearchPatternCreation02() {
 
 	SearchPattern searchPattern = createPattern(
 			"main(*) void", 
-			IJavaSearchConstants.METHOD,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.METHOD,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -530,8 +530,8 @@ public void testSearchPatternCreation03() {
 
 	SearchPattern searchPattern = createPattern(
 			"main(String*) void", 
-			IJavaSearchConstants.METHOD,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.METHOD,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -546,8 +546,8 @@ public void testSearchPatternCreation04() {
 
 	SearchPattern searchPattern = createPattern(
 			"main(*[])", 
-			IJavaSearchConstants.METHOD,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.METHOD,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -562,8 +562,8 @@ public void testSearchPatternCreation05() {
 
 	SearchPattern searchPattern = createPattern(
 			"java.lang.*.main ", 
-			IJavaSearchConstants.METHOD,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.METHOD,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -578,8 +578,8 @@ public void testSearchPatternCreation06() {
 
 	SearchPattern searchPattern = createPattern(
 			"java.lang.* ", 
-			IJavaSearchConstants.CONSTRUCTOR,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.CONSTRUCTOR,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -594,8 +594,8 @@ public void testSearchPatternCreation07() {
 
 	SearchPattern searchPattern = createPattern(
 			"X(*,*)", 
-			IJavaSearchConstants.CONSTRUCTOR,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.CONSTRUCTOR,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -610,8 +610,8 @@ public void testSearchPatternCreation08() {
 
 	SearchPattern searchPattern = createPattern(
 			"main(String*,*) void", 
-			IJavaSearchConstants.METHOD,
-			IJavaSearchConstants.REFERENCES,
+			IJavaScriptSearchConstants.METHOD,
+			IJavaScriptSearchConstants.REFERENCES,
 			true); // case sensitive
 	
 	assertPattern(
@@ -626,8 +626,8 @@ public void testSearchPatternCreation10() {
 
 	SearchPattern searchPattern = createPattern(
 			"x.y.z.Bar.field Foo", 
-			IJavaSearchConstants.FIELD,
-			IJavaSearchConstants.DECLARATIONS,
+			IJavaScriptSearchConstants.FIELD,
+			IJavaScriptSearchConstants.DECLARATIONS,
 			true); // case sensitive
 	
 	assertPattern(
@@ -642,7 +642,7 @@ public void testSearchPatternCreation12() {
 	IField field = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getField("field");
 	SearchPattern searchPattern = createPattern(
 			field, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"FieldReferencePattern: x.y.z.Foo.field --> int, exact match, case sensitive, erasure only",
@@ -656,7 +656,7 @@ public void testSearchPatternCreation13() {
 	IField field = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getField("field");
 	SearchPattern searchPattern = createPattern(
 			field, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"FieldDeclarationPattern: x.y.z.Foo.field --> int, exact match, case sensitive, erasure only",
@@ -670,7 +670,7 @@ public void testSearchPatternCreation14() {
 	IField field = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getField("field");
 	SearchPattern searchPattern = createPattern(
 			field, 
-			IJavaSearchConstants.ALL_OCCURRENCES);
+			IJavaScriptSearchConstants.ALL_OCCURRENCES);
 	
 	assertPattern(
 		"FieldCombinedPattern: x.y.z.Foo.field --> int, exact match, case sensitive, erasure only",
@@ -684,7 +684,7 @@ public void testSearchPatternCreation15() {
 	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.js").getImport("x.y.*");
 	SearchPattern searchPattern = createPattern(
 			importDecl, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"PackageReferencePattern: <x.y>, exact match, case sensitive, erasure only",
@@ -695,10 +695,10 @@ public void testSearchPatternCreation15() {
  * Test pattern creation
  */
 public void testSearchPatternCreation16() {
-	IMethod method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getMethod("bar", new String[] {});
+	IFunction method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getFunction("bar", new String[] {});
 	SearchPattern searchPattern = createPattern(
 			method, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"MethodDeclarationPattern: x.y.z.Foo.bar() --> void, exact match, case sensitive, erasure only",
@@ -709,10 +709,10 @@ public void testSearchPatternCreation16() {
  * Test pattern creation
  */
 public void testSearchPatternCreation17() {
-	IMethod method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getMethod("bar", new String[] {});
+	IFunction method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getFunction("bar", new String[] {});
 	SearchPattern searchPattern = createPattern(
 			method, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"MethodReferencePattern: x.y.z.Foo.bar() --> void, exact match, case sensitive, erasure only",
@@ -723,10 +723,10 @@ public void testSearchPatternCreation17() {
  * Test pattern creation
  */
 public void testSearchPatternCreation18() {
-	IMethod method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getMethod("bar", new String[] {});
+	IFunction method = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo").getFunction("bar", new String[] {});
 	SearchPattern searchPattern = createPattern(
 			method, 
-			IJavaSearchConstants.ALL_OCCURRENCES);
+			IJavaScriptSearchConstants.ALL_OCCURRENCES);
 	
 	assertPattern(
 		"MethodCombinedPattern: x.y.z.Foo.bar() --> void, exact match, case sensitive, erasure only",
@@ -740,7 +740,7 @@ public void testSearchPatternCreation19() {
 	IType type = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo");
 	SearchPattern searchPattern = createPattern(
 			type, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"TypeDeclarationPattern: pkg<x.y.z>, enclosing<>, type<Foo>, exact match, case sensitive, erasure only",
@@ -754,7 +754,7 @@ public void testSearchPatternCreation20() {
 	IType type = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo");
 	SearchPattern searchPattern = createPattern(
 			type, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"TypeReferencePattern: qualification<x.y.z>, type<Foo>, exact match, case sensitive, erasure only",
@@ -768,7 +768,7 @@ public void testSearchPatternCreation21() {
 	IType type = getCompilationUnit("/P/x/y/z/I.js").getType("I");
 	SearchPattern searchPattern = createPattern(
 			type, 
-			IJavaSearchConstants.IMPLEMENTORS);
+			IJavaScriptSearchConstants.IMPLEMENTORS);
 	
 	assertPattern(
 		"SuperInterfaceReferencePattern: <I>, exact match, case sensitive, erasure only",
@@ -782,7 +782,7 @@ public void testSearchPatternCreation22() {
 	IType type = getCompilationUnit("/P/x/y/z/Foo.js").getType("Foo");
 	SearchPattern searchPattern = createPattern(
 			type, 
-			IJavaSearchConstants.ALL_OCCURRENCES);
+			IJavaScriptSearchConstants.ALL_OCCURRENCES);
 	
 	assertPattern(
 		"TypeDeclarationPattern: pkg<x.y.z>, enclosing<>, type<Foo>, exact match, case sensitive, erasure only\n" + 
@@ -797,7 +797,7 @@ public void testSearchPatternCreation23() {
 	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.js").getPackageDeclaration("x.y.z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"PackageReferencePattern: <x.y.z>, exact match, case sensitive, erasure only",
@@ -811,7 +811,7 @@ public void testSearchPatternCreation24() {
 	IPackageFragment pkg = getPackage("/P/x/y/z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"PackageReferencePattern: <x.y.z>, exact match, case sensitive, erasure only",
@@ -825,7 +825,7 @@ public void testSearchPatternCreation25() {
 	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.js").getImport("java.util.Vector");
 	SearchPattern searchPattern = createPattern(
 			importDecl, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"TypeReferencePattern: qualification<java.util>, type<Vector>, exact match, case sensitive, erasure only",
@@ -839,7 +839,7 @@ public void testSearchPatternCreation26() {
 	IPackageFragment pkg = getPackage("/P/x/y/z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"PackageDeclarationPattern: <x.y.z>, exact match, case sensitive, erasure only",
@@ -853,7 +853,7 @@ public void testSearchPatternCreation27() {
 	IPackageDeclaration pkg = getCompilationUnit("/P/x/y/z/Foo.js").getPackageDeclaration("x.y.z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"PackageDeclarationPattern: <x.y.z>, exact match, case sensitive, erasure only",
@@ -867,7 +867,7 @@ public void testSearchPatternCreation28() {
 	IImportDeclaration importDecl = getCompilationUnit("/P/x/y/z/Foo.js").getImport("x.y.*");
 	SearchPattern searchPattern = createPattern(
 			importDecl, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"PackageDeclarationPattern: <x.y>, exact match, case sensitive, erasure only",
@@ -881,7 +881,7 @@ public void testSearchPatternCreation29() {
 	IPackageFragment pkg = getPackage("/P/x/y/z");
 	SearchPattern searchPattern = createPattern(
 			pkg, 
-			IJavaSearchConstants.ALL_OCCURRENCES);
+			IJavaScriptSearchConstants.ALL_OCCURRENCES);
 	
 	assertPattern(
 		"PackageDeclarationPattern: <x.y.z>, exact match, case sensitive, erasure only\n" +
@@ -893,10 +893,10 @@ public void testSearchPatternCreation29() {
  * Test LocalVarDeclarationPattern creation
  */
 public void testSearchPatternCreation30() {
-	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
+	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getFunction("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
 	SearchPattern searchPattern = createPattern(
 			localVar, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"LocalVarDeclarationPattern: var [in foo() [in X [in X.java [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
@@ -907,10 +907,10 @@ public void testSearchPatternCreation30() {
  * Test LocalVarReferencePattern creation
  */
 public void testSearchPatternCreation31() {
-	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
+	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getFunction("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
 	SearchPattern searchPattern = createPattern(
 			localVar, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"LocalVarReferencePattern: var [in foo() [in X [in X.java [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
@@ -921,10 +921,10 @@ public void testSearchPatternCreation31() {
  * Test LocalVarCombinedPattern creation
  */
 public void testSearchPatternCreation32() {
-	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
+	ILocalVariable localVar = new LocalVariable((JavaElement)getCompilationUnit("/P/X.js").getType("X").getFunction("foo", new String[0]),  "var", 1, 2, 3, 4, "Z");
 	SearchPattern searchPattern = createPattern(
 			localVar, 
-			IJavaSearchConstants.ALL_OCCURRENCES);
+			IJavaScriptSearchConstants.ALL_OCCURRENCES);
 	
 	assertPattern(
 		"LocalVarCombinedPattern: var [in foo() [in X [in X.java [in <default> [in <project root> [in P]]]]]], exact match, case sensitive, erasure only",
@@ -935,10 +935,10 @@ public void testSearchPatternCreation32() {
  * Test TypeDeclarationPattern creation
  */
 public void testSearchPatternCreation33() {
-	IType localType = getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]).getType("Y", 2);
+	IType localType = getCompilationUnit("/P/X.js").getType("X").getFunction("foo", new String[0]).getType("Y", 2);
 	SearchPattern searchPattern = createPattern(
 			localType, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"TypeDeclarationPattern: pkg<>, enclosing<X.*>, type<Y>, exact match, case sensitive, erasure only",
@@ -949,10 +949,10 @@ public void testSearchPatternCreation33() {
  * Test TypeReferencePattern creation
  */
 public void testSearchPatternCreation34() {
-	IType localType = getCompilationUnit("/P/X.js").getType("X").getMethod("foo", new String[0]).getType("Y", 3);
+	IType localType = getCompilationUnit("/P/X.js").getType("X").getFunction("foo", new String[0]).getType("Y", 3);
 	SearchPattern searchPattern = createPattern(
 			localType, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"TypeReferencePattern: qualification<X.*>, type<Y>, exact match, case sensitive, erasure only",
@@ -966,7 +966,7 @@ public void testSearchPatternCreation35() {
 	IType localType = getCompilationUnit("/P/X.js").getType("X").getInitializer(1).getType("Y", 2);
 	SearchPattern searchPattern = createPattern(
 			localType, 
-			IJavaSearchConstants.DECLARATIONS);
+			IJavaScriptSearchConstants.DECLARATIONS);
 	
 	assertPattern(
 		"TypeDeclarationPattern: pkg<>, enclosing<X.*>, type<Y>, exact match, case sensitive, erasure only",
@@ -980,7 +980,7 @@ public void testSearchPatternCreation36() {
 	IType localType = getCompilationUnit("/P/X.js").getType("X").getInitializer(2).getType("Y", 3);
 	SearchPattern searchPattern = createPattern(
 			localType, 
-			IJavaSearchConstants.REFERENCES);
+			IJavaScriptSearchConstants.REFERENCES);
 	
 	assertPattern(
 		"TypeReferencePattern: qualification<X.*>, type<Y>, exact match, case sensitive, erasure only",

@@ -26,23 +26,23 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.content.IContentDescription;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IOpenable;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceReference;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchConstants;
-import org.eclipse.wst.jsdt.core.search.IJavaSearchScope;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchConstants;
+import org.eclipse.wst.jsdt.core.search.IJavaScriptSearchScope;
 import org.eclipse.wst.jsdt.core.search.SearchEngine;
 import org.eclipse.wst.jsdt.core.tests.model.AbstractJavaSearchTests.JavaSearchResultCollector;
 import org.eclipse.wst.jsdt.internal.core.util.Util;
 
 public class EncodingTests extends ModifyingResourceTests {
 	IProject encodingProject;
-	IJavaProject encodingJavaProject;
+	IJavaScriptProject encodingJavaProject;
 	IFile utf8File;
 	ISourceReference utf8Source;
 	static String vmEncoding = System.getProperty("file.encoding");
@@ -94,11 +94,11 @@ public class EncodingTests extends ModifyingResourceTests {
 		super.tearDown();
 	}
 
-	void compareContents(ICompilationUnit cu, String encoding) throws JavaModelException {
+	void compareContents(IJavaScriptUnit cu, String encoding) throws JavaScriptModelException {
 		compareContents(cu, encoding, false);
 	}
 
-	void compareContents(ICompilationUnit cu, String encoding, boolean bom) throws JavaModelException {
+	void compareContents(IJavaScriptUnit cu, String encoding, boolean bom) throws JavaScriptModelException {
 		// Compare source strings
 		String source = cu.getSource();
 		String systemSourceRenamed = org.eclipse.wst.jsdt.core.tests.util.Util.convertToIndependantLineDelimiter(source);
@@ -128,7 +128,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	/**
 	 * Check that the compilation unit is saved with the proper encoding.
 	 */
-	public void testCreateCompilationUnitAndImportContainer() throws JavaModelException, CoreException {
+	public void testCreateCompilationUnitAndImportContainer() throws JavaScriptModelException, CoreException {
 		String savedEncoding = null;
 		try {
 			Preferences preferences = ResourcesPlugin.getPlugin().getPluginPreferences();
@@ -139,19 +139,19 @@ public class EncodingTests extends ModifyingResourceTests {
 			
 			ResourcesPlugin.getPlugin().savePluginPreferences();
 
-			IJavaProject newProject = createJavaProject("P", new String[] { "" }, "");
+			IJavaScriptProject newProject = createJavaProject("P", new String[] { "" }, "");
 			IPackageFragment pkg = getPackageFragment("P", "", "");
 			String source = "public class A {\r\n" +
 				"	public static main(String[] args) {\r\n" +
 				"		System.out.println(\"\u00e9\");\r\n" +
 				"	}\r\n" +
 				"}";
-			ICompilationUnit cu= pkg.createCompilationUnit("A.js", source, false, new NullProgressMonitor());
+			IJavaScriptUnit cu= pkg.createCompilationUnit("A.js", source, false, new NullProgressMonitor());
 			assertCreation(cu);
 			cu.rename("B.js", true, new NullProgressMonitor());
-			cu = pkg.getCompilationUnit("B.js");
+			cu = pkg.getJavaScriptUnit("B.js");
 			cu.rename("A.js", true, new NullProgressMonitor());
-			cu = pkg.getCompilationUnit("A.js");
+			cu = pkg.getJavaScriptUnit("A.js");
 			byte[] tab = null;
 			try {
 				tab = cu.getSource().getBytes(encoding);
@@ -180,7 +180,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Verify first that source is the same than file contents read using UTF-8 encoding...
 	 * Also verify that bytes array converted back to UTF-8 is the same than the file bytes array.
 	 */
-	public void test001() throws JavaModelException, CoreException, UnsupportedEncodingException {
+	public void test001() throws JavaScriptModelException, CoreException, UnsupportedEncodingException {
 
 		// Set file encoding
 		String encoding = "UTF-8";
@@ -208,7 +208,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Verify first that source is the same than file contents read using UTF-8 encoding...
 	 * Also verify that bytes array converted back to UTF-8 is the same than the file bytes array.
 	 */
-	public void test002() throws JavaModelException, CoreException, UnsupportedEncodingException {
+	public void test002() throws JavaScriptModelException, CoreException, UnsupportedEncodingException {
 
 		// Set project encoding
 		String encoding = "UTF-8";
@@ -238,7 +238,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Do not compare array contents in case of VM default encoding equals to "ASCII" as meaningful bit 7 is lost
 	 * during first conversion...
 	 */
-	public void test003() throws JavaModelException, CoreException, UnsupportedEncodingException {
+	public void test003() throws JavaScriptModelException, CoreException, UnsupportedEncodingException {
 
 		// Get source and compare with file contents
 		this.utf8Source = getCompilationUnit(this.utf8File.getFullPath().toString());
@@ -265,7 +265,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * for file different than VM default one.
 	 * Verify that source is different than file contents read using VM default encoding...
 	 */
-	public void test004() throws JavaModelException, CoreException {
+	public void test004() throws JavaScriptModelException, CoreException {
 
 		// Set file encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
@@ -284,7 +284,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * for project different than VM default one.
 	 * Verify that source is different than file contents read using VM default encoding...
 	 */
-	public void test005() throws JavaModelException, CoreException {
+	public void test005() throws JavaScriptModelException, CoreException {
 
 		// Set project encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
@@ -303,7 +303,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Verify that source is different than file contents read using VM default encoding or another one
 	 * if VM and Workspace default encodings are identical...
 	 */
-	public void test006() throws JavaModelException, CoreException {
+	public void test006() throws JavaScriptModelException, CoreException {
 
 		// Set encoding different than workspace default one
 		String encoding = wkspEncoding.equals(vmEncoding) ? ("UTF-8".equals(wkspEncoding) ? "Cp1252" : "UTF-8") : vmEncoding;
@@ -321,7 +321,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	#	Tests with class file
 	##############
 	/* Same config than test001  */
-	public void test011() throws JavaModelException, CoreException, UnsupportedEncodingException {
+	public void test011() throws JavaScriptModelException, CoreException, UnsupportedEncodingException {
 
 		// Set file encoding
 		String encoding = "UTF-8";
@@ -345,7 +345,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	}	
 
 	/* Same config than test002  */
-	public void test012() throws JavaModelException, CoreException, UnsupportedEncodingException {
+	public void test012() throws JavaScriptModelException, CoreException, UnsupportedEncodingException {
 
 		// Set project encoding
 		String encoding = "UTF-8";
@@ -369,7 +369,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	}	
 
 	/* Same config than test003  */
-	public void test013() throws JavaModelException, CoreException, UnsupportedEncodingException {
+	public void test013() throws JavaScriptModelException, CoreException, UnsupportedEncodingException {
 
 		// Get source and compare with file contents
 		this.utf8Source = getClassFile("Encoding" , "bins", "testUTF8", "Test.class"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -392,7 +392,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	}
 
 	/* Same config than test004  */
-	public void test014() throws JavaModelException, CoreException {
+	public void test014() throws JavaScriptModelException, CoreException {
 
 		// Set file encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
@@ -407,7 +407,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	}
 
 	/* Same config than test005  */
-	public void test015() throws JavaModelException, CoreException {
+	public void test015() throws JavaScriptModelException, CoreException {
 
 		// Set project encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
@@ -422,7 +422,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	}	
 
 	/* Same config than test006  */
-	public void test016() throws JavaModelException, CoreException {
+	public void test016() throws JavaScriptModelException, CoreException {
 
 		// Set encoding different than workspace default one
 		String encoding = wkspEncoding.equals(vmEncoding) ? ("UTF-8".equals(wkspEncoding) ? "Cp1252" : "UTF-8") : vmEncoding;
@@ -443,7 +443,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Get class file from jar file with an associated source written in UTF-8 charset using no specific encoding for file.
 	 * Verification is done by comparing source with file contents read directly with VM encoding...
 	 */
-	public void test021() throws JavaModelException, CoreException {
+	public void test021() throws JavaScriptModelException, CoreException {
 
 		// Get class file and compare source
 		IPackageFragmentRoot root = getPackageFragmentRoot("Encoding", "testUTF8.jar");
@@ -461,7 +461,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Get class file from jar file with an associated source written in UTF-8 charset using specific UTF-8 encoding for project.
 	 * Verification is done by comparing source with file contents read directly with UTF-8 encoding...
 	 */
-	public void test022() throws JavaModelException, CoreException {
+	public void test022() throws JavaScriptModelException, CoreException {
 
 		// Set project encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
@@ -481,7 +481,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Get class file from jar file with an associated source written in UTF-8 charset using specific UTF-8 encoding for file.
 	 * Verification is done by comparing source with file contents read directly with UTF-8 encoding...
 	 */
-	public void test023() throws JavaModelException, CoreException {
+	public void test023() throws JavaScriptModelException, CoreException {
 
 		// Set file encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
@@ -506,8 +506,8 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Test for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=55930.
 	 * Verify Buffer.save(IProgressMonitor, boolean) method.
 	 */
-	public void test030() throws JavaModelException, CoreException {
-		ICompilationUnit workingCopy = null;
+	public void test030() throws JavaScriptModelException, CoreException {
+		IJavaScriptUnit workingCopy = null;
 		try {
 			String encoding = "UTF-8";
 			this.createJavaProject("P", new String[] {""}, "");
@@ -516,7 +516,7 @@ public class EncodingTests extends ModifyingResourceTests {
 				"public class Test {}";
 			IFile file = this.createFile("P/Test.js", initialContent);
 			file.setCharset(encoding, null);
-			ICompilationUnit cu = this.getCompilationUnit("P/Test.js"); 
+			IJavaScriptUnit cu = this.getCompilationUnit("P/Test.js"); 
 			
 			// Modif direct the buffer
 			String firstModif = "/**\n"+
@@ -552,8 +552,8 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Test for bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=55930.
 	 * Verify CommitWorkingCopyOperation.executeOperation() method.
 	 */
-	public void test031() throws JavaModelException, CoreException {
-		ICompilationUnit workingCopy = null;
+	public void test031() throws JavaScriptModelException, CoreException {
+		IJavaScriptUnit workingCopy = null;
 		try {
 			String encoding = "UTF-8";
 			this.createJavaProject("P", new String[] {""}, "");
@@ -562,7 +562,7 @@ public class EncodingTests extends ModifyingResourceTests {
 				"public class Test {}";
 			IFile file = this.createFile("P/Test.js", initialContent);
 			file.setCharset(encoding, null);
-			ICompilationUnit cu = this.getCompilationUnit("P/Test.js"); 
+			IJavaScriptUnit cu = this.getCompilationUnit("P/Test.js"); 
 			
 			// Modif using working copy
 			workingCopy = cu.getWorkingCopy(null);
@@ -600,7 +600,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Get compilation unit source on a file written in UTF-8 BOM charset using default charset.
 	 * Verify first that source is the same than UTF-8 file contents read using UTF-8 encoding...
 	 */
-	public void test032() throws JavaModelException, CoreException {
+	public void test032() throws JavaScriptModelException, CoreException {
 
 		// Set file encoding
 		String encoding = "UTF-8";
@@ -646,12 +646,12 @@ public class EncodingTests extends ModifyingResourceTests {
 			}, 
 			null);
 			
-			IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+			IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 			JavaSearchResultCollector resultCollector = new JavaSearchResultCollector();
 			search(
 				"Y\u00F4", 
-				IJavaSearchConstants.TYPE,
-				IJavaSearchConstants.DECLARATIONS,
+				IJavaScriptSearchConstants.TYPE,
+				IJavaScriptSearchConstants.DECLARATIONS,
 				scope, 
 				resultCollector);
 			assertSearchResults("Should not get any result", "", resultCollector);
@@ -660,8 +660,8 @@ public class EncodingTests extends ModifyingResourceTests {
 			getFile("/Encoding/src/test68585/X.js").setCharset(encoding, null);
 			search(
 				"Y\u00F4", 
-				IJavaSearchConstants.TYPE,
-				IJavaSearchConstants.DECLARATIONS,
+				IJavaScriptSearchConstants.TYPE,
+				IJavaScriptSearchConstants.DECLARATIONS,
 				scope, 
 				resultCollector);
 			assertSearchResults(
@@ -721,21 +721,21 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Bug 66898: refactor-rename: encoding is not preserved
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=66898"
 	 */
-	public void testBug66898() throws JavaModelException, CoreException {
+	public void testBug66898() throws JavaScriptModelException, CoreException {
 
 		// Set file encoding
 		String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
 		IFile file = (IFile) this.encodingProject.findMember("src/testBug66898/Test.js");
 		file.setCharset(encoding, null);
 		String fileName = file.getName();
-		ICompilationUnit cu = getCompilationUnit(file.getFullPath().toString());
+		IJavaScriptUnit cu = getCompilationUnit(file.getFullPath().toString());
 		createFolder("/Encoding/src/tmp");
 		IPackageFragment packFrag = getPackageFragment("Encoding", "src", "tmp");
 		
 		try {
 			// Move file
 			cu.move(packFrag, null, null, false, null);
-			ICompilationUnit destSource = packFrag.getCompilationUnit(fileName);
+			IJavaScriptUnit destSource = packFrag.getJavaScriptUnit(fileName);
 			IFile destFile = (IFile) destSource.getUnderlyingResource();
 			assertEquals("Moved file should keep encoding", encoding, destFile.getCharset());
 	
@@ -744,7 +744,7 @@ public class EncodingTests extends ModifyingResourceTests {
 			
 			// Rename file
 			destSource.rename("TestUTF8.js", false, null);
-			ICompilationUnit renamedSource = packFrag.getCompilationUnit("TestUTF8.js");
+			IJavaScriptUnit renamedSource = packFrag.getJavaScriptUnit("TestUTF8.js");
 			IFile renamedFile = (IFile) renamedSource.getUnderlyingResource();
 			assertEquals("Moved file should keep encoding", encoding, renamedFile.getCharset());
 			
@@ -758,7 +758,7 @@ public class EncodingTests extends ModifyingResourceTests {
 			deleteFolder("/Encoding/src/tmp");
 		}
 	}	
-	public void testBug66898b() throws JavaModelException, CoreException {
+	public void testBug66898b() throws JavaScriptModelException, CoreException {
 
 		// Set file encoding
 		final String encoding = "UTF-8".equals(vmEncoding) ? "Cp1252" : "UTF-8";
@@ -773,10 +773,10 @@ public class EncodingTests extends ModifyingResourceTests {
 			// Copy file
 			IWorkspaceRunnable copy = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					ICompilationUnit cu = getCompilationUnit(file.getFullPath().toString());
+					IJavaScriptUnit cu = getCompilationUnit(file.getFullPath().toString());
 					cu.copy(tmpFolder, null, null, true, null);
 					cu.close(); // purge buffer contents from cache
-					ICompilationUnit dest = tmpFolder.getCompilationUnit(fileName);
+					IJavaScriptUnit dest = tmpFolder.getJavaScriptUnit(fileName);
 					IFile destFile = (IFile) dest.getUnderlyingResource();
 					assertEquals("Copied file should keep encoding", encoding, destFile.getCharset());
 			
@@ -784,15 +784,15 @@ public class EncodingTests extends ModifyingResourceTests {
 					compareContents(dest, encoding);
 				}
 			};
-			JavaCore.run(copy, null);
+			JavaScriptCore.run(copy, null);
 	
 			// Rename file
 			IWorkspaceRunnable rename = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					ICompilationUnit cu = tmpFolder.getCompilationUnit(fileName);
+					IJavaScriptUnit cu = tmpFolder.getJavaScriptUnit(fileName);
 					cu.rename("Renamed.js", true, null);
 					cu.close(); // purge buffer contents from cache
-					ICompilationUnit ren = tmpFolder.getCompilationUnit("Renamed.js");
+					IJavaScriptUnit ren = tmpFolder.getJavaScriptUnit("Renamed.js");
 					IFile renFile = (IFile) ren.getUnderlyingResource();
 					assertEquals("Renamed file should keep encoding", encoding, renFile.getCharset());
 			
@@ -800,15 +800,15 @@ public class EncodingTests extends ModifyingResourceTests {
 					compareContents(ren, encoding);
 				}
 			};
-			JavaCore.run(rename, null);
+			JavaScriptCore.run(rename, null);
 	
 			// Move file
 			IWorkspaceRunnable move = new IWorkspaceRunnable() {
 				public void run(IProgressMonitor monitor) throws CoreException {
-					ICompilationUnit cu = tmpFolder.getCompilationUnit("Renamed.js");
+					IJavaScriptUnit cu = tmpFolder.getJavaScriptUnit("Renamed.js");
 					cu.move(srcFolder, null, null, true, null);
 					cu.close(); // purge buffer contents from cache
-					ICompilationUnit moved = srcFolder.getCompilationUnit("Renamed.js");
+					IJavaScriptUnit moved = srcFolder.getJavaScriptUnit("Renamed.js");
 					IFile movedFile = (IFile) moved.getUnderlyingResource();
 					assertEquals("Renamed file should keep encoding", encoding, movedFile.getCharset());
 			
@@ -816,11 +816,11 @@ public class EncodingTests extends ModifyingResourceTests {
 					compareContents(moved, encoding);
 				}
 			};
-			JavaCore.run(move, null);
+			JavaScriptCore.run(move, null);
 		}
 		finally {
 			// Delete temporary file and folder
-			ICompilationUnit cu = srcFolder.getCompilationUnit("Renamed.js");
+			IJavaScriptUnit cu = srcFolder.getJavaScriptUnit("Renamed.js");
 			if (cu.exists()) cu.delete(true, null);
 			deleteFolder("/Encoding/src/tmp");
 		}
@@ -830,7 +830,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Bug 70598: [Encoding] ArrayIndexOutOfBoundsException while testing BOM on *.txt files
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=70598"
 	 */
-	public void testBug70598() throws JavaModelException, CoreException, IOException {
+	public void testBug70598() throws JavaScriptModelException, CoreException, IOException {
 
 		// Create empty file
 		IFile emptyFile = createFile("/Encoding/src/testUTF8BOM/Empty.js", new byte[0]);
@@ -852,7 +852,7 @@ public class EncodingTests extends ModifyingResourceTests {
 	 * Bug 110576: [encoding] Rename CU looses encoding for file which charset is determined by contents
 	 * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=110576"
 	 */
-	public void testBug110576() throws JavaModelException, CoreException {
+	public void testBug110576() throws JavaScriptModelException, CoreException {
 
 		String os = System.getProperty("osgi.os");
 		if (!"win32".equals(os)) {
@@ -865,14 +865,14 @@ public class EncodingTests extends ModifyingResourceTests {
 		verifyUtf8BOM(file);
 
 		String fileName = file.getName();
-		ICompilationUnit testCU = getCompilationUnit(file.getFullPath().toString());
+		IJavaScriptUnit testCU = getCompilationUnit(file.getFullPath().toString());
 		createFolder("/Encoding/src/tmp");
 		IPackageFragment tmpPackage = getPackageFragment("Encoding", "src", "tmp");
 		
 		try {
 			// Copy file
 			testCU.copy(tmpPackage, null, null, false, null);
-			ICompilationUnit copiedCU = tmpPackage.getCompilationUnit(fileName);
+			IJavaScriptUnit copiedCU = tmpPackage.getJavaScriptUnit(fileName);
 			IFile copiedFile = (IFile) copiedCU.getUnderlyingResource();
 			verifyUtf8BOM(copiedFile);
 	
@@ -881,7 +881,7 @@ public class EncodingTests extends ModifyingResourceTests {
 
 			// Rename file
 			copiedCU.rename("TestUTF8.js", false, null);
-			ICompilationUnit renamedCU = tmpPackage.getCompilationUnit("TestUTF8.js");
+			IJavaScriptUnit renamedCU = tmpPackage.getJavaScriptUnit("TestUTF8.js");
 			IFile renamedFile = (IFile) renamedCU.getUnderlyingResource();
 			verifyUtf8BOM(renamedFile);
 			fileName = renamedFile.getName();
@@ -893,7 +893,7 @@ public class EncodingTests extends ModifyingResourceTests {
 			createFolder("/Encoding/src/tmp/sub");
 			IPackageFragment subPackage = getPackageFragment("Encoding", "src", "tmp.sub");
 			renamedCU.move(subPackage, null, null, false, null);
-			ICompilationUnit movedCU = subPackage.getCompilationUnit(fileName);
+			IJavaScriptUnit movedCU = subPackage.getJavaScriptUnit(fileName);
 			IFile movedFile = (IFile) movedCU.getUnderlyingResource();
 			verifyUtf8BOM(movedFile);
 	

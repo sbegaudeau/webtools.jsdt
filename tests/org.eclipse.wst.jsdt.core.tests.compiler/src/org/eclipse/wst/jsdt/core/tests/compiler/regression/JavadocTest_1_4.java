@@ -670,7 +670,7 @@ public class JavadocTest_1_4 extends JavadocTest {
 				"5. ERROR in X.java (at line 7)\n" + 
 				"	public class X<T, , V> {}\n" + 
 				"	               ^\n" + 
-				"Syntax error, insert \"ClassBody\" to complete CompilationUnit\n" + 
+				"Syntax error, insert \"ClassBody\" to complete JavaScriptUnit\n" + 
 				"----------\n"
 		);
 	}
@@ -710,7 +710,7 @@ public class JavadocTest_1_4 extends JavadocTest {
 				"5. ERROR in X.java (at line 7)\n" + 
 				"	public class X<T, U, V extend Exception> {}\n" + 
 				"	                   ^\n" + 
-				"Syntax error, insert \"ClassBody\" to complete CompilationUnit\n" + 
+				"Syntax error, insert \"ClassBody\" to complete JavaScriptUnit\n" + 
 				"----------\n" + 
 				"6. ERROR in X.java (at line 7)\n" + 
 				"	public class X<T, U, V extend Exception> {}\n" + 

@@ -17,14 +17,14 @@ import java.util.Map;
 import junit.framework.Test;
 
 import org.eclipse.wst.jsdt.core.Flags;
-import org.eclipse.wst.jsdt.core.JavaCore;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
 import org.eclipse.wst.jsdt.core.NamingConventions;
 import org.eclipse.wst.jsdt.core.compiler.CharOperation;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 
 public class NamingConventionTests extends AbstractJavaModelTests {
 
-IJavaProject project;
+IJavaScriptProject project;
 
 public NamingConventionTests(String name) {
 	super(name);
@@ -92,10 +92,10 @@ public void testSuggestFieldName002() {
 		toString(suggestions));
 }
 public void testSuggestFieldName003() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"f"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"f"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[][] suggestions = NamingConventions.suggestFieldNames(
 		project,
@@ -105,8 +105,8 @@ public void testSuggestFieldName003() {
 		0,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"fName\n" + //$NON-NLS-1$
 		"fOneName\n" + //$NON-NLS-1$
@@ -115,10 +115,10 @@ public void testSuggestFieldName003() {
 		toString(suggestions));
 }
 public void testSuggestFieldName004() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"_"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"_"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[][] suggestions = NamingConventions.suggestFieldNames(
 		project,
@@ -128,8 +128,8 @@ public void testSuggestFieldName004() {
 		0,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"_name\n" + //$NON-NLS-1$
 		"_oneName\n" + //$NON-NLS-1$
@@ -138,12 +138,12 @@ public void testSuggestFieldName004() {
 		toString(suggestions));
 }
 public void testSuggestFieldName005() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"f"); //$NON-NLS-1$
-	Object staticFieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_STATIC_FIELD_PREFIXES,"fg"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"f"); //$NON-NLS-1$
+	Object staticFieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_STATIC_FIELD_PREFIXES,"fg"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[][] suggestions = NamingConventions.suggestFieldNames(
 		project,
@@ -153,9 +153,9 @@ public void testSuggestFieldName005() {
 		Flags.AccStatic,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_STATIC_FIELD_PREFIXES,staticFieldPrefixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_STATIC_FIELD_PREFIXES,staticFieldPrefixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"fgName\n" + //$NON-NLS-1$
 		"fgOneName\n" + //$NON-NLS-1$
@@ -164,12 +164,12 @@ public void testSuggestFieldName005() {
 		toString(suggestions));
 }
 public void testSuggestFieldName006() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[][] suggestions = NamingConventions.suggestFieldNames(
 		project,
@@ -179,9 +179,9 @@ public void testSuggestFieldName006() {
 		0,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"preNamesuf\n" + //$NON-NLS-1$
 		"preOneNamesuf\n" + //$NON-NLS-1$
@@ -194,12 +194,12 @@ public void testSuggestFieldName006() {
 		toString(suggestions));
 }
 public void testSuggestFieldName007() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[][] suggestions = NamingConventions.suggestFieldNames(
 		project,
@@ -209,9 +209,9 @@ public void testSuggestFieldName007() {
 		0,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"preIsuf\n" + //$NON-NLS-1$
 		"preI\n" + //$NON-NLS-1$
@@ -234,12 +234,12 @@ public void testSuggestFieldName008() {
 		toString(suggestions));
 }
 public void testSuggestFieldName009() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[][] suggestions = NamingConventions.suggestFieldNames(
 		project,
@@ -249,9 +249,9 @@ public void testSuggestFieldName009() {
 		0,
 		new char[][]{"preNamesuf".toCharArray()}); //$NON-NLS-1$
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"preName2suf\n" + //$NON-NLS-1$
 		"preOneNamesuf\n" + //$NON-NLS-1$
@@ -264,12 +264,12 @@ public void testSuggestFieldName009() {
 		toString(suggestions));
 }
 public void testSuggestFieldName010() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[][] suggestions = NamingConventions.suggestFieldNames(
 		project,
@@ -279,9 +279,9 @@ public void testSuggestFieldName010() {
 		0,
 		new char[][]{"preNamesuf".toCharArray()}); //$NON-NLS-1$
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"preNamessuf\n" + //$NON-NLS-1$
 		"preOneNamessuf\n" + //$NON-NLS-1$
@@ -439,99 +439,99 @@ public void testSuggestFieldName020() {
 		toString(suggestions));
 }
 public void testRemovePrefixAndSuffixForFieldName001() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] name = NamingConventions.removePrefixAndSuffixForFieldName(
 		project,
 		"preOneNamesuf".toCharArray(), //$NON-NLS-1$
 		0);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"oneName", //$NON-NLS-1$
 		new String(name));
 }
 public void testRemovePrefixAndSuffixForFieldName002() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] name = NamingConventions.removePrefixAndSuffixForFieldName(
 		project,
 		"preOneNamesuf".toCharArray(), //$NON-NLS-1$
 		Flags.AccStatic);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"preOneNamesuf", //$NON-NLS-1$
 		new String(name));
 }
 public void testRemovePrefixAndSuffixForFieldName003() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] name = NamingConventions.removePrefixAndSuffixForFieldName(
 		project,
 		"preOneNamesuf".toCharArray(), //$NON-NLS-1$
 		0);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"oneName", //$NON-NLS-1$
 		new String(name));
 }
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=114086
 public void testRemovePrefixAndSuffixForFieldName004() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pre,"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pre,"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] name = NamingConventions.removePrefixAndSuffixForFieldName(
 		project,
 		"preOneName".toCharArray(), //$NON-NLS-1$
 		0);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"oneName", //$NON-NLS-1$
 		new String(name));
 }
 public void testRemovePrefixAndSuffixForLocalName001() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_PREFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,"pr, pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_LOCAL_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,"uf, suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,"pr, pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,"uf, suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] name = NamingConventions.removePrefixAndSuffixForLocalVariableName(
 		project,
 		"preOneNamesuf".toCharArray() //$NON-NLS-1$
 		);
 	
-	options.put(JavaCore.CODEASSIST_LOCAL_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_LOCAL_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_LOCAL_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"oneName", //$NON-NLS-1$
 		new String(name));
@@ -561,12 +561,12 @@ public void testSuggestGetterName002() {
 		new String(suggestion));
 }
 public void testSuggestGetterName003() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] suggestion = NamingConventions.suggestGetterName(
 		project,
@@ -575,20 +575,20 @@ public void testSuggestGetterName003() {
 		false,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"getFieldName", //$NON-NLS-1$
 		new String(suggestion));
 }
 public void testSuggestGetterName004() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] suggestion = NamingConventions.suggestGetterName(
 		project,
@@ -597,20 +597,20 @@ public void testSuggestGetterName004() {
 		false,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"getFieldName", //$NON-NLS-1$
 		new String(suggestion));
 }
 public void testSuggestGetterName005() {
-	Hashtable options = JavaCore.getOptions();
-	Object fieldPrefixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_PREFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
-	Object fieldSuffixPreviousValue = options.get(JavaCore.CODEASSIST_FIELD_SUFFIXES);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
-	JavaCore.setOptions(options);
+	Hashtable options = JavaScriptCore.getOptions();
+	Object fieldPrefixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_PREFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,"pr, pre"); //$NON-NLS-1$
+	Object fieldSuffixPreviousValue = options.get(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,"uf, suf"); //$NON-NLS-1$
+	JavaScriptCore.setOptions(options);
 	
 	char[] suggestion = NamingConventions.suggestGetterName(
 		project,
@@ -619,9 +619,9 @@ public void testSuggestGetterName005() {
 		true,
 		CharOperation.NO_CHAR_CHAR);
 	
-	options.put(JavaCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
-	options.put(JavaCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
-	JavaCore.setOptions(options);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_PREFIXES,fieldPrefixPreviousValue);
+	options.put(JavaScriptCore.CODEASSIST_FIELD_SUFFIXES,fieldSuffixPreviousValue);
+	JavaScriptCore.setOptions(options);
 	assertEquals(
 		"isFieldName", //$NON-NLS-1$
 		new String(suggestion));
@@ -681,9 +681,9 @@ public void testSuggestLocalName001() {
 	Map options = this.project.getOptions(true);
 	try {
 		Map newOptions = new HashMap(options);
-		newOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-		newOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-		newOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
+		newOptions.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
+		newOptions.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+		newOptions.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
 		this.project.setOptions(newOptions);
 
 		String[] suggestions = NamingConventions.suggestLocalVariableNames(
@@ -707,9 +707,9 @@ public void testSuggestLocalName002() {
 	Map options = this.project.getOptions(true);
 	try {
 		Map newOptions = new HashMap(options);
-		newOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_1_5);
-		newOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_5);
-		newOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_5);
+		newOptions.put(JavaScriptCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaScriptCore.VERSION_1_5);
+		newOptions.put(JavaScriptCore.COMPILER_SOURCE, JavaScriptCore.VERSION_1_5);
+		newOptions.put(JavaScriptCore.COMPILER_COMPLIANCE, JavaScriptCore.VERSION_1_5);
 		this.project.setOptions(newOptions);
 
 		String[] suggestions = NamingConventions.suggestLocalVariableNames(

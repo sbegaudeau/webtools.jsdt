@@ -24,7 +24,7 @@ import junit.framework.*;
 
 public abstract class AbstractJavaModelCompletionTests extends AbstractJavaModelTests implements RelevanceConstants {
 	public static List COMPLETION_SUITES = null;
-	protected static IJavaProject COMPLETION_PROJECT;
+	protected static IJavaScriptProject COMPLETION_PROJECT;
 	protected class CompletionResult {
 		public String proposals;
 		public String context;
@@ -33,23 +33,23 @@ public abstract class AbstractJavaModelCompletionTests extends AbstractJavaModel
 		public int tokenEnd;
 	}
 	Hashtable oldOptions;
-	ICompilationUnit wc = null;
+	IJavaScriptUnit wc = null;
 public AbstractJavaModelCompletionTests(String name) {
 	super(name);
 }
-protected void addLibrary(String projectName, String jarName, String sourceZipName, String docZipName, boolean exported) throws JavaModelException {
-	IJavaProject javaProject = getJavaProject(projectName);
+protected void addLibrary(String projectName, String jarName, String sourceZipName, String docZipName, boolean exported) throws JavaScriptModelException {
+	IJavaScriptProject javaProject = getJavaProject(projectName);
 	IProject project = javaProject.getProject();
 	String projectPath = '/' + project.getName() + '/';
 	
-	IClasspathAttribute[] extraAttributes;
+	IIncludePathAttribute[] extraAttributes;
 	if(docZipName == null) {
-		extraAttributes = new IClasspathAttribute[0];
+		extraAttributes = new IIncludePathAttribute[0];
 	} else {
 		extraAttributes =
-			new IClasspathAttribute[]{
-				JavaCore.newClasspathAttribute(
-						IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
+			new IIncludePathAttribute[]{
+				JavaScriptCore.newIncludepathAttribute(
+						IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME,
 						"jar:platform:/resource"+projectPath+docZipName+"!/")};
 	}
 	
@@ -64,21 +64,21 @@ protected void addLibrary(String projectName, String jarName, String sourceZipNa
 			exported);
 } 
 protected void removeLibrary(String projectName, String jarName) throws CoreException, IOException {
-	IJavaProject javaProject = getJavaProject(projectName);		
+	IJavaScriptProject javaProject = getJavaProject(projectName);		
 	IProject project = javaProject.getProject();
 	String projectPath = '/' + project.getName() + '/';
 	removeLibraryEntry(javaProject, new Path(projectPath + jarName));
 }
-public ICompilationUnit getWorkingCopy(String path, String source) throws JavaModelException {
+public IJavaScriptUnit getWorkingCopy(String path, String source) throws JavaScriptModelException {
 	return super.getWorkingCopy(path, source, this.wcOwner, null);
 }
-protected CompletionResult complete(String path, String source, String completeBehind) throws JavaModelException {
+protected CompletionResult complete(String path, String source, String completeBehind) throws JavaScriptModelException {
 	return this.complete(path, source, false, completeBehind);
 }
-protected CompletionResult complete(String path, String source, boolean showPositions, String completeBehind) throws JavaModelException {
+protected CompletionResult complete(String path, String source, boolean showPositions, String completeBehind) throws JavaScriptModelException {
 	return this.complete(path,source,showPositions, completeBehind, null, null);
 }
-protected CompletionResult complete(String path, String source, boolean showPositions, String completeBehind, String tokenStartBehind, String token) throws JavaModelException {
+protected CompletionResult complete(String path, String source, boolean showPositions, String completeBehind, String tokenStartBehind, String token) throws JavaScriptModelException {
 	this.wc = getWorkingCopy(path, source);
 
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, showPositions);
@@ -100,7 +100,7 @@ protected CompletionResult complete(String path, String source, boolean showPosi
 	result.tokenEnd = tokenEnd;
 	return result;
 }
-protected CompletionResult contextComplete(ICompilationUnit cu, int cursorLocation) throws JavaModelException {
+protected CompletionResult contextComplete(IJavaScriptUnit cu, int cursorLocation) throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, false, false);
 	cu.codeComplete(cursorLocation, requestor, this.wcOwner);
 	
@@ -115,7 +115,7 @@ protected CompletionResult snippetContextComplete(
 		String snippet,
 		int insertion,
 		int cursorLocation,
-		boolean isStatic) throws JavaModelException {
+		boolean isStatic) throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(true, false, false, false);
 	type.codeComplete(snippet.toCharArray(), insertion, cursorLocation, null, null, null, isStatic, requestor, this.wcOwner);
 	
@@ -127,7 +127,7 @@ protected CompletionResult snippetContextComplete(
 }
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
-	this.oldOptions = JavaCore.getOptions();
+	this.oldOptions = JavaScriptCore.getOptions();
 	waitUntilIndexesReady();
 }
 protected void setUp() throws Exception {
@@ -135,7 +135,7 @@ protected void setUp() throws Exception {
 	this.wcOwner = new WorkingCopyOwner(){};
 }
 public void tearDownSuite() throws Exception {
-	JavaCore.setOptions(this.oldOptions);
+	JavaScriptCore.setOptions(this.oldOptions);
 	this.oldOptions = null;
 	if (COMPLETION_SUITES == null) {
 		deleteProject("Completion");

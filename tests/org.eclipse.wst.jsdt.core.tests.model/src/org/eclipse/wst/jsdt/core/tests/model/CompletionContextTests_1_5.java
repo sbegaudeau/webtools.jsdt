@@ -31,8 +31,8 @@ public void setUpSuite() throws Exception {
 public static Test suite() {
 	return buildModelTestSuite(CompletionContextTests_1_5.class);
 }
-public void test0001() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0001() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0001/X.js",
 		"package test0001;\n" + 
@@ -56,8 +56,8 @@ public void test0001() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0002() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0002() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0002/X.js",
 		"package test0002;\n" + 
@@ -81,8 +81,8 @@ public void test0002() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0003() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0003() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0003/X.js",
 		"package test0003;\n" + 
@@ -106,8 +106,8 @@ public void test0003() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0004() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0004() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0004/X.js",
 		"package test0004;\n" + 
@@ -131,8 +131,8 @@ public void test0004() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0005() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0005() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0005/X.js",
 		"package test0005;\n" + 
@@ -156,8 +156,8 @@ public void test0005() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0006() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0006() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0006/X.js",
 		"package test0006;\n" + 
@@ -180,8 +180,8 @@ public void test0006() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0007() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0007() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0007/X.js",
 		"package test0007;\n" + 
@@ -205,8 +205,8 @@ public void test0007() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0008() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0008() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0008/X.js",
 		"package test0008;\n" + 
@@ -230,8 +230,8 @@ public void test0008() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0009() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0009() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0009/X.js",
 		"package test0009;\n" + 
@@ -257,8 +257,8 @@ public void test0009() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0010() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0010() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0010/X.js",
 		"package test0010;\n" + 
@@ -283,8 +283,8 @@ public void test0010() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0011() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0011() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0011/X.js",
 		"package test0011;\n" + 
@@ -310,8 +310,8 @@ public void test0011() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0012() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0012() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0012/X.js",
 		"package test0012;\n" + 
@@ -337,8 +337,8 @@ public void test0012() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0013() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0013() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0013/X.js",
 		"package test0013;\n" + 
@@ -362,8 +362,8 @@ public void test0013() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0014() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0014() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0014/X.js",
 		"package test0014;\n" + 
@@ -386,8 +386,8 @@ public void test0014() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0015() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0015() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0015/X.js",
 		"package test0015;\n" + 
@@ -411,8 +411,8 @@ public void test0015() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0016() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0016() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0016/X.js",
 		"package test0016;\n" + 
@@ -436,8 +436,8 @@ public void test0016() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0017() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0017() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0017/X.js",
 		"package test0017;\n" + 
@@ -464,8 +464,8 @@ public void test0017() throws JavaModelException {
 		"expectedTypesKeys={I}",
 		result.context);
 }
-public void test0018() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0018() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0018/X.js",
 		"package test0018;\n" + 
@@ -492,8 +492,8 @@ public void test0018() throws JavaModelException {
 		"expectedTypesKeys={I}",
 		result.context);
 }
-public void test0019() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0019() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0019/X.js",
 		"package test0019;\n" + 
@@ -520,8 +520,8 @@ public void test0019() throws JavaModelException {
 		"expectedTypesKeys={I}",
 		result.context);
 }
-public void test0020() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0020() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0020/X.js",
 		"package test0020;\n" + 
@@ -548,8 +548,8 @@ public void test0020() throws JavaModelException {
 		"expectedTypesKeys={I}",
 		result.context);
 }
-public void test0021() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0021() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0021/X.js",
 		"package test0021;\n" + 
@@ -577,8 +577,8 @@ public void test0021() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0022() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0022() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0022/X.js",
 		"package test0022;\n" + 
@@ -606,8 +606,8 @@ public void test0022() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0023() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0023() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0023/X.js",
 		"package test0023;\n" + 
@@ -635,8 +635,8 @@ public void test0023() throws JavaModelException {
 		"expectedTypesKeys=null",
 		result.context);
 }
-public void test0024() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[1];
+public void test0024() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[1];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src3/test0024/X.js",
 		"package test0024;\n" + 

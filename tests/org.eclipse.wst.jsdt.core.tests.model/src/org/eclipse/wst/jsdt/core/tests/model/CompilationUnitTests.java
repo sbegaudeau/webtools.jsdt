@@ -20,9 +20,9 @@ import org.eclipse.wst.jsdt.core.*;
 import junit.framework.Test;
 
 public class CompilationUnitTests extends ModifyingResourceTests {
-	ICompilationUnit cu;
-	ICompilationUnit workingCopy;
-	IJavaProject testProject;
+	IJavaScriptUnit cu;
+	IJavaScriptUnit workingCopy;
+	IJavaScriptProject testProject;
 	
 public CompilationUnitTests(String name) {
 	super(name);
@@ -81,7 +81,7 @@ public void tearDownSuite() throws Exception {
 	super.tearDownSuite();
 }
 
-private ICompilationUnit createWorkingCopy(String source) throws JavaModelException {
+private IJavaScriptUnit createWorkingCopy(String source) throws JavaScriptModelException {
 	this.workingCopy = getCompilationUnit("/P/src/p/Y.js").getWorkingCopy(new WorkingCopyOwner(){}, null, null);
 	this.workingCopy.getBuffer().setContents(source);
 	this.workingCopy.makeConsistent(null);
@@ -94,10 +94,10 @@ private ICompilationUnit createWorkingCopy(String source) throws JavaModelExcept
  * (ie. done with checkDocComment = true) instead of a "light" parse when
  * problems are not computed.
  * 
- * See CompilationUnit#buildStructure() line with comment: // disable javadoc parsing if not computing problems, not resolving and not creating ast
+ * See JavaScriptUnit#buildStructure() line with comment: // disable javadoc parsing if not computing problems, not resolving and not creating ast
  * and org.eclipse.wst.jsdt.internal.compiler.parser.JavadocParser#checkDeprecation(int)
  */
-private ICompilationUnit createWorkingCopyComputingProblems(String source) throws JavaModelException {
+private IJavaScriptUnit createWorkingCopyComputingProblems(String source) throws JavaScriptModelException {
 	this.workingCopy = getWorkingCopy("/P/src/p/Y.js", source, true);
 	return this.workingCopy;
 }
@@ -116,7 +116,7 @@ public void test00Class() throws CoreException {
 			"{\n" + 
 			"}";
 		createFile("/P/src/X.js", source);
-		final ICompilationUnit compilationUnit = getCompilationUnit("/P/src/X.js");
+		final IJavaScriptUnit compilationUnit = getCompilationUnit("/P/src/X.js");
 		IType type = compilationUnit.getType("MyClass");
 		assertTrue("Type not defined", type.exists());
 		
@@ -125,7 +125,7 @@ public void test00Class() throws CoreException {
 		assertEquals("Incorrect name for the  field", "field1", fields[0].getElementName());
 		assertTrue("Field should exist " , fields[0].exists());
 
-		IMethod[] methods= type.getMethods();
+		IFunction[] methods= type.getFunctions();
 		assertEquals("Wrong number of methods returned",  2, methods.length);
 		assertEquals("Incorrect name for the  method", "someMethod", methods[0].getElementName());
 		assertTrue("Field should exist " ,methods[0].exists());
@@ -143,19 +143,19 @@ public void test00Class() throws CoreException {
 /**
  * Calls methods that do nothing to ensure code coverage
  */
-public void testCodeCoverage() throws JavaModelException {
+public void testCodeCoverage() throws JavaScriptModelException {
 	this.cu.discardWorkingCopy();
 	this.cu.restore();
 }
 /**
  * Ensures <code>commitWorkingCopy(boolean, IProgressMonitor)</code> throws the correct 
- * <code>JavaModelException</code> for a <code>CompilationUnit</code>.
+ * <code>JavaScriptModelException</code> for a <code>JavaScriptUnit</code>.
  */
 public void testCommitWorkingCopy() {
 	try {
 		this.cu.commitWorkingCopy(false, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Incorrect status for committing a CompilationUnit", jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Incorrect status for committing a JavaScriptUnit", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 		return;
 	}
 	assertTrue("A compilation unit should throw an exception is a commit is attempted", false);
@@ -163,55 +163,55 @@ public void testCommitWorkingCopy() {
 
 /*
  * Ensure that the deprecated flag is correctly reported
- * (regression test fo bug 23207 Flags.isDeprecated(IMethod.getFlags()) doesn't work)
+ * (regression test fo bug 23207 Flags.isDeprecated(IFunction.getFlags()) doesn't work)
  */
-//public void testDeprecatedFlag01() throws JavaModelException {
+//public void testDeprecatedFlag01() throws JavaScriptModelException {
 //	IType type = this.cu.getType("X");
 //	assertTrue("Type X should not be deprecated", !Flags.isDeprecated(type.getFlags()));
 //}
 //
 /*
  * Ensure that the deprecated flag is correctly reported
- * (regression test fo bug 23207 Flags.isDeprecated(IMethod.getFlags()) doesn't work)
+ * (regression test fo bug 23207 Flags.isDeprecated(IFunction.getFlags()) doesn't work)
  */
-//public void testDeprecatedFlag02() throws JavaModelException {
+//public void testDeprecatedFlag02() throws JavaScriptModelException {
 //	IType type = this.cu.getType("I");
 //	assertTrue("Type I should be deprecated", Flags.isDeprecated(type.getFlags()));
 //}
 
 /*
  * Ensure that the deprecated flag is correctly reported
- * (regression test fo bug 23207 Flags.isDeprecated(IMethod.getFlags()) doesn't work)
+ * (regression test fo bug 23207 Flags.isDeprecated(IFunction.getFlags()) doesn't work)
  */
-public void testDeprecatedFlag03() throws JavaModelException {
+public void testDeprecatedFlag03() throws JavaScriptModelException {
 	IField field = this.cu.getField("f1");
 	assertTrue("Field f1 should not be deprecated", !Flags.isDeprecated(field.getFlags()));
 }
 
 /*
  * Ensure that the deprecated flag is correctly reported
- * (regression test fo bug 23207 Flags.isDeprecated(IMethod.getFlags()) doesn't work)
+ * (regression test fo bug 23207 Flags.isDeprecated(IFunction.getFlags()) doesn't work)
  */
-public void testDeprecatedFlag04() throws JavaModelException {
+public void testDeprecatedFlag04() throws JavaScriptModelException {
 	IField field = this.cu.getField("f2");
 	assertTrue("Field f2 should be deprecated", Flags.isDeprecated(field.getFlags()));
 }
 
 /*
  * Ensure that the deprecated flag is correctly reported
- * (regression test fo bug 23207 Flags.isDeprecated(IMethod.getFlags()) doesn't work)
+ * (regression test fo bug 23207 Flags.isDeprecated(IFunction.getFlags()) doesn't work)
  */
-public void testDeprecatedFlag05() throws JavaModelException {
-	IMethod method = this.cu.getMethod("bar", new String[]{});
+public void testDeprecatedFlag05() throws JavaScriptModelException {
+	IFunction method = this.cu.getFunction("bar", new String[]{});
 	assertTrue("Method bar should not be deprecated", !Flags.isDeprecated(method.getFlags()));
 }
 
 /*
  * Ensure that the deprecated flag is correctly reported
- * (regression test fo bug 23207 Flags.isDeprecated(IMethod.getFlags()) doesn't work)
+ * (regression test fo bug 23207 Flags.isDeprecated(IFunction.getFlags()) doesn't work)
  */
-public void testDeprecatedFlag06() throws JavaModelException {
-	IMethod method = this.cu.getMethod("fred", new String[]{});
+public void testDeprecatedFlag06() throws JavaScriptModelException {
+	IFunction method = this.cu.getFunction("fred", new String[]{});
 	assertTrue("Method fred should be deprecated", Flags.isDeprecated(method.getFlags()));
 }
 
@@ -219,7 +219,7 @@ public void testDeprecatedFlag06() throws JavaModelException {
  * Ensure that the deprecated flag is correctly reported
  * (regression test fo bug 89807 Outliner should recognize @Deprecated annotation)
  */
-public void testDeprecatedFlag07() throws JavaModelException {
+public void testDeprecatedFlag07() throws JavaScriptModelException {
 	IType type = this.cu.getType("I3");
 	assertTrue("Type I3 should be deprecated", Flags.isDeprecated(type.getFlags()));
 }
@@ -228,7 +228,7 @@ public void testDeprecatedFlag07() throws JavaModelException {
  * Ensure that the deprecated flag is correctly reported
  * (regression test fo bug 89807 Outliner should recognize @Deprecated annotation)
  */
-public void testDeprecatedFlag08() throws JavaModelException {
+public void testDeprecatedFlag08() throws JavaScriptModelException {
 	IField field = this.cu.getType("X").getField("f8");
 	assertTrue("Field f8 should be deprecated", Flags.isDeprecated(field.getFlags()));
 }
@@ -237,8 +237,8 @@ public void testDeprecatedFlag08() throws JavaModelException {
  * Ensure that the deprecated flag is correctly reported
  * (regression test fo bug 89807 Outliner should recognize @Deprecated annotation)
  */
-public void testDeprecatedFlag09() throws JavaModelException {
-	IMethod method = this.cu.getType("X").getMethod("fred2", new String[0]);
+public void testDeprecatedFlag09() throws JavaScriptModelException {
+	IFunction method = this.cu.getType("X").getFunction("fred2", new String[0]);
 	assertTrue("Method fred2 should be deprecated", Flags.isDeprecated(method.getFlags()));
 }
 
@@ -331,7 +331,7 @@ public void testGetCategories05() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"test\n",
@@ -351,7 +351,7 @@ public void testGetCategories06() throws CoreException {
 		"  public Y() {}\n" +
 		"}"
 	);
-	String[] categories = workingCopy.getType("Y").getMethod("Y", new String[0]).getCategories();
+	String[] categories = workingCopy.getType("Y").getFunction("Y", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"test\n",
@@ -410,7 +410,7 @@ public void testGetCategories09() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"",
@@ -431,7 +431,7 @@ public void testGetCategories10() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"test1\n" +
@@ -452,7 +452,7 @@ public void testGetCategories11() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"test1\n" +
@@ -469,7 +469,7 @@ public void testGetCategories12() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = this.workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = this.workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"test1\n" +
@@ -488,7 +488,7 @@ public void testGetCategories13() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = this.workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = this.workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"",
@@ -505,7 +505,7 @@ public void testGetCategories14() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = this.workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = this.workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"",
@@ -522,7 +522,7 @@ public void testGetCategories15() throws CoreException {
 		"  void foo() {}\n" +
 		"}"
 	);
-	String[] categories = this.workingCopy.getType("Y").getMethod("foo", new String[0]).getCategories();
+	String[] categories = this.workingCopy.getType("Y").getFunction("foo", new String[0]).getCategories();
 	assertStringsEqual(
 		"Unexpected categories",
 		"test1\n",
@@ -554,7 +554,7 @@ public void testGetChildrenForCategory01() throws CoreException {
 		"  void foo3() {}\n" +
 		"}"
 	);
-	IJavaElement[] children = workingCopy.getType("Y").getChildrenForCategory("test");
+	IJavaScriptElement[] children = workingCopy.getType("Y").getChildrenForCategory("test");
 	assertElementsEqual(
 		"Unexpected children",
 		"field [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]\n" + 
@@ -584,7 +584,7 @@ public void testGetChildrenForCategory02() throws CoreException {
 		"  void foo2() {}\n" +
 		"}"
 	);
-	IJavaElement[] children = workingCopy.getType("Y").getChildrenForCategory("test1");
+	IJavaScriptElement[] children = workingCopy.getType("Y").getChildrenForCategory("test1");
 	assertElementsEqual(
 		"Unexpected children",
 		"Member [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]\n" + 
@@ -613,26 +613,26 @@ public void testGetChildrenForCategory03() throws CoreException, IOException {
 		"  void foo3() {}\n" +
 		"}"
 	);
-	IJavaElement[] tests  = this.workingCopy.getType("Y").getChildrenForCategory("test");
+	IJavaScriptElement[] tests  = this.workingCopy.getType("Y").getChildrenForCategory("test");
 	assertElementsEqual(
 		"Unexpected children",
 		"field [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]\n" + 
 		"foo1() [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]\n" + 
 		"foo2() [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]",
 		tests);
-	IJavaElement[] methods = this.workingCopy.getType("Y").getChildrenForCategory("methods");
+	IJavaScriptElement[] methods = this.workingCopy.getType("Y").getChildrenForCategory("methods");
 	assertElementsEqual(
 		"Unexpected children",
 		"foo1() [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]\n" + 
 		"foo2() [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]\n" + 
 		"foo3() [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]",
 		methods);
-	IJavaElement[] others = this.workingCopy.getType("Y").getChildrenForCategory("other");
+	IJavaScriptElement[] others = this.workingCopy.getType("Y").getChildrenForCategory("other");
 	assertElementsEqual(
 		"Unexpected children",
 		"foo3() [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]",
 		others);
-	IJavaElement[] all = this.workingCopy.getType("Y").getChildrenForCategory("all");
+	IJavaScriptElement[] all = this.workingCopy.getType("Y").getChildrenForCategory("all");
 	assertElementsEqual(
 		"Unexpected children",
 		"field [in Y [in [Working copy] Y.js [in p [in src [in P]]]]]\n" + 
@@ -644,7 +644,7 @@ public void testGetChildrenForCategory03() throws CoreException, IOException {
 
 /**
  * Ensures <code>getContents()</code> returns the correct value
- * for a <code>CompilationUnit</code> that is not present
+ * for a <code>JavaScriptUnit</code> that is not present
  */
 public void testGetContentsForNotPresent() {
 	CompilationUnit compilationUnit = (CompilationUnit)getCompilationUnit("/P/src/p/Absent.js");
@@ -654,11 +654,11 @@ public void testGetContentsForNotPresent() {
 /**
  * Tests Java element retrieval via source position 
  */
-public void testGetElementAt() throws JavaModelException {
+public void testGetElementAt() throws JavaScriptModelException {
 	IField field = this.cu.getField( "f2");
 	ISourceRange sourceRange= field.getSourceRange();
 	//ensure that we are into the body of the type
-	IJavaElement element= 
+	IJavaScriptElement element= 
 		this.cu.getElementAt(sourceRange.getOffset() + field.getElementName().length() + 1);
 	assertTrue("Should have found a type", element instanceof IField);
 	assertEquals(
@@ -672,13 +672,13 @@ public void testGetElementAt() throws JavaModelException {
 }
 ///**
 // * Tests import declararion retrieval via source position.
-// * (regression test for bug 14331 ICompilationUnit.getElementAt dos not find import decl)
+// * (regression test for bug 14331 IJavaScriptUnit.getElementAt dos not find import decl)
 // */
-//public void testGetElementAt2() throws JavaModelException {
+//public void testGetElementAt2() throws JavaScriptModelException {
 //	IImportContainer container = this.cu.getImportContainer();
 //	ISourceRange sourceRange= container.getSourceRange();
 //	//ensure that we are inside the import container
-//	IJavaElement element= this.cu.getElementAt(sourceRange.getOffset() + 1);
+//	IJavaScriptElement element= this.cu.getElementAt(sourceRange.getOffset() + 1);
 //	assertTrue("Should have found an import", element instanceof IImportDeclaration);
 //	assertEquals(
 //		"Import not found",
@@ -688,9 +688,9 @@ public void testGetElementAt() throws JavaModelException {
 /*
  * Ensures that the right field is returnd in a muti-declaration field.
  */
-public void testGetElementAt3() throws JavaModelException {
+public void testGetElementAt3() throws JavaScriptModelException {
 	int fieldPos = this.cu.getSource().indexOf("f5");
-	IJavaElement element= this.cu.getElementAt(fieldPos);
+	IJavaScriptElement element= this.cu.getElementAt(fieldPos);
 	assertEquals(
 		"Unexpected field found",
 		this.cu.getField("f5"),
@@ -699,9 +699,9 @@ public void testGetElementAt3() throws JavaModelException {
 /*
  * Ensures that the right field is returnd in a muti-declaration field.
  */
-public void testGetElementAt4() throws JavaModelException {
+public void testGetElementAt4() throws JavaScriptModelException {
 	int fieldPos = this.cu.getSource().indexOf("f6");
-	IJavaElement element= this.cu.getElementAt(fieldPos);
+	IJavaScriptElement element= this.cu.getElementAt(fieldPos);
 	assertEquals(
 		"Unexpected field found",
 		this.cu.getField("f6"),
@@ -710,9 +710,9 @@ public void testGetElementAt4() throws JavaModelException {
 /*
  * Ensures that the right field is returnd in a muti-declaration field.
  */
-public void testGetElementAt5() throws JavaModelException {
+public void testGetElementAt5() throws JavaScriptModelException {
 	int fieldPos = this.cu.getSource().indexOf("f7");
-	IJavaElement element= this.cu.getElementAt(fieldPos);
+	IJavaScriptElement element= this.cu.getElementAt(fieldPos);
 	assertEquals(
 		"Unexpected field found",
 		this.cu.getField("f7"),
@@ -721,9 +721,9 @@ public void testGetElementAt5() throws JavaModelException {
 /*
  * Ensures that the right field is returned in a muti-declaration field.
  */
-public void testGetElementAt6() throws JavaModelException {
+public void testGetElementAt6() throws JavaScriptModelException {
 	int fieldPos = this.cu.getSource().indexOf("var f5");
-	IJavaElement element= this.cu.getElementAt(fieldPos);
+	IJavaScriptElement element= this.cu.getElementAt(fieldPos);
 	assertEquals(
 		"Unexpected field found",
 		this.cu.getField("f5"),
@@ -732,9 +732,9 @@ public void testGetElementAt6() throws JavaModelException {
 ///*
 // * Ensures that the right type is returnd if an annotation type as a comment in its header.
 // */
-//public void testGetElementAt7() throws JavaModelException {
+//public void testGetElementAt7() throws JavaScriptModelException {
 //	int fieldPos = this.cu.getSource().indexOf("Annot");
-//	IJavaElement element= this.cu.getElementAt(fieldPos);
+//	IJavaScriptElement element= this.cu.getElementAt(fieldPos);
 //	assertEquals(
 //		"Unexpected type found",
 //		this.cu.getType("Annot"),
@@ -744,7 +744,7 @@ public void testGetElementAt6() throws JavaModelException {
  * Ensures that correct number of fields with the correct names, modifiers, signatures
  * and declaring types exist in a type.
  */
-public void testGetFields() throws JavaModelException {
+public void testGetFields() throws JavaScriptModelException {
 //	IType type = this.cu.getType("X");
 	IField[] fields= this.cu.getFields();
 	String[] fieldNames = new String[] {"f1", "f2", "f3", "f4", "f5", "f6", "f7", "f8"};
@@ -779,7 +779,7 @@ public void testGetFields() throws JavaModelException {
 // * Ensures that correct number of imports with the correct names
 // * exist in "GraphicsTest" compilation unit.
 // */
-//public void testGetImports() throws JavaModelException {
+//public void testGetImports() throws JavaScriptModelException {
 //	IImportDeclaration[] imprts = this.cu.getImports();
 //	IImportContainer container= this.cu.getImportContainer();
 //	String[] importNames = new String[] {"p2.*", "p3.Z"};
@@ -818,7 +818,7 @@ public void testGetFields() throws JavaModelException {
  * Ensure that type handles are returned from the
  * compilation unit for an inner type.
  */
-//public void testGetInnerTypes() throws JavaModelException {
+//public void testGetInnerTypes() throws JavaScriptModelException {
 //	IType type1 = cu.getType("X");
 //	assertTrue("X type should have children", type1.hasChildren());
 //	assertTrue("X type superclass name should be null", type1.getSuperclassName() == null);
@@ -861,15 +861,15 @@ public void testGetKey3() {
  * Ensures that the key for an anonymous type is correct
  */
 public void testGetKey4() {
-	IType type = this.cu.getType("X").getMethod("foo", new String[0]).getType("", 1);
+	IType type = this.cu.getType("X").getFunction("foo", new String[0]).getType("", 1);
 	assertEquals("Lp/X$1;", type.getKey());
 }
 /**
  * Ensures that a method has the correct return type, parameters and exceptions.
  */
-public void testGetMethod1() throws JavaModelException {
+public void testGetMethod1() throws JavaScriptModelException {
 //	IType type = this.cu.getType("X");
-	IMethod foo = this.cu.getMethod("foo", new String[]{null});
+	IFunction foo = this.cu.getFunction("foo", new String[]{null});
 //	String[] exceptionTypes= foo.getExceptionTypes();
 //	assertEquals("Wrong number of exception types", 1, exceptionTypes.length);
 //	assertEquals("Unxepected exception type", "QIOException;", exceptionTypes[0]);
@@ -881,27 +881,27 @@ public void testGetMethod1() throws JavaModelException {
 ///**
 // * Ensures that a method has the correct AccVarargs flag set.
 // */
-//public void testGetMethod2() throws JavaModelException {
+//public void testGetMethod2() throws JavaScriptModelException {
 //	IType type = this.cu.getType("X");
-//	IMethod method = type.getMethod("testIsVarArgs", new String[]{"QString;", "[QObject;"});
+//	IFunction method = type.getMethod("testIsVarArgs", new String[]{"QString;", "[QObject;"});
 //	assertTrue("Should have the AccVarargs flag set", Flags.isVarargs(method.getFlags()));
 //}
 ///**
 // * Ensures that a constructor has the correct AccVarargs flag set.
 // * (regression test for bug 77422 [1.5] ArrayIndexOutOfBoundsException with vararg constructor of generic superclass)
 // */
-//public void testGetMethod3() throws JavaModelException {
+//public void testGetMethod3() throws JavaScriptModelException {
 //	IType type = this.cu.getType("X");
-//	IMethod method = type.getMethod("X", new String[]{"[QString;"});
+//	IFunction method = type.getMethod("X", new String[]{"[QString;"});
 //	assertTrue("Should have the AccVarargs flag set", Flags.isVarargs(method.getFlags()));
 //}
 /**
  * Ensures that correct number of methods with the correct names and modifiers
  * exist in a type.
  */
-public void testGetMethods() throws JavaModelException {
+public void testGetMethods() throws JavaScriptModelException {
 //	IType type = this.cu.getType("X");
-	IMethod[] methods= this.cu.getMethods();
+	IFunction[] methods= this.cu.getFunctions();
 	String[] methodNames = new String[] {"foo", "bar", "fred", "fred2"};
 	String[] flags = new String[] {"public", "protected static", "private", "private"};
 	assertEquals("Wrong number of methods returned", methodNames.length, methods.length);
@@ -916,9 +916,9 @@ public void testGetMethods() throws JavaModelException {
 ///**
 // * Ensures that correct modifiers are reported for a method in an interface.
 // */
-//public void testCheckInterfaceMethodModifiers() throws JavaModelException {
+//public void testCheckInterfaceMethodModifiers() throws JavaScriptModelException {
 //	IType type = this.cu.getType("I");
-//	IMethod method = type.getMethod("run", new String[0]);
+//	IFunction method = type.getMethod("run", new String[0]);
 //	String expectedModifiers = "";
 //	String modifiers = Flags.toString(method.getFlags() & ~Flags.AccVarargs);
 //	assertEquals("Expected modifier for " + method.getElementName(), expectedModifiers, modifiers);
@@ -926,7 +926,7 @@ public void testGetMethods() throws JavaModelException {
 ///*
 // * Ensures that IType#getSuperInterfaceTypeSignatures() is correct for a source type.
 // */
-//public void testGetSuperInterfaceTypeSignatures() throws JavaModelException {
+//public void testGetSuperInterfaceTypeSignatures() throws JavaScriptModelException {
 //	IType type = this.cu.getType("Y");
 //	assertStringsEqual(
 //		"Unexpected signatures", 
@@ -938,7 +938,7 @@ public void testGetMethods() throws JavaModelException {
  * compilation unit.
  */
 public void testGetPrimary() {
-	IJavaElement primary = this.cu.getPrimaryElement();
+	IJavaScriptElement primary = this.cu.getPrimaryElement();
 	assertEquals("Primary element for a compilation unit should be the same", this.cu, primary);
 	primary = this.cu.getPrimary();
 	assertEquals("Primary for a compilation unit should be the same", this.cu, primary);
@@ -962,7 +962,7 @@ public void testGetPrimary() {
 // * Ensures that correct number of package declarations with the correct names
 // * exist a compilation unit.
 // */
-//public void testGetPackages() throws JavaModelException {
+//public void testGetPackages() throws JavaScriptModelException {
 //	IPackageDeclaration[] packages = this.cu.getPackageDeclarations();
 //	String packageName = "p";
 //	assertEquals("Wrong number of packages returned", 1, packages.length);
@@ -987,7 +987,7 @@ public void testGetType() {
 // * Ensures that correct number of types with the correct names and modifiers
 // * exist in a compilation unit.
 // */
-//public void testGetTypes() throws JavaModelException {
+//public void testGetTypes() throws JavaScriptModelException {
 //	IType[] types = this.cu.getTypes();
 //	String[] typeNames = new String[] {"X", "I", "I2", "I3", "Y", "Colors", "Annot"};
 //	String[] flags = new String[] {"public", "", "", "", "", "", ""};
@@ -1027,7 +1027,7 @@ public void testGetType() {
 /**
  * Ensures that a compilation unit has children.
  */
-public void testHasChildren() throws JavaModelException {
+public void testHasChildren() throws JavaScriptModelException {
 	this.cu.close();
 	assertTrue("A closed compilation unit should have children", this.cu.hasChildren());
 	this.cu.getChildren();
@@ -1045,12 +1045,12 @@ public void testHasResourceChanged() {
 // * Ensures that hasChildren doesn't return true for an import container that doesn't exist
 // * (regression test for bug 76761 [model] ImportContainer.hasChildren() should not return true
 // */
-//public void testImportContainerHasChildren() throws JavaModelException {
+//public void testImportContainerHasChildren() throws JavaScriptModelException {
 //	IImportContainer importContainer = getCompilationUnit("/Test/DoesNotExist.js").getImportContainer();
 //	boolean gotException = false;
 //	try {
 //		importContainer.hasChildren();
-//	} catch (JavaModelException e) {
+//	} catch (JavaScriptModelException e) {
 //		gotException = e.isDoesNotExist();
 //	}
 //	assertTrue("Should get a not present exception", gotException);
@@ -1058,14 +1058,14 @@ public void testHasResourceChanged() {
 ///*
 // * Ensures that isEnumConstant returns true for a field representing an enum constant.
 // */
-//public void testIsEnumConstant1() throws JavaModelException {
+//public void testIsEnumConstant1() throws JavaScriptModelException {
 //	IField field = this.cu.getType("Colors").getField("BLUE");
 //	assertTrue("Colors#BLUE should be an enum constant", field.isEnumConstant());
 //}
 ///*
 // * Ensures that isEnumConstant returns false for a field that is not representing an enum constant.
 // */
-//public void testIsEnumConstant2() throws JavaModelException {
+//public void testIsEnumConstant2() throws JavaScriptModelException {
 //	IField field = this.cu.getType("X").getField("f1");
 //	assertTrue("X#f1 should not be an enum constant", !field.isEnumConstant());
 //}
@@ -1082,7 +1082,7 @@ public void testNameWithoutJavaLikeExtension() {
  * false to #exists() and #isOpen()
  */
 public void testNotPresent1() {
-	ICompilationUnit compilationUnit = ((IPackageFragment)this.cu.getParent()).getCompilationUnit("DoesNotExist.js");
+	IJavaScriptUnit compilationUnit = ((IPackageFragment)this.cu.getParent()).getJavaScriptUnit("DoesNotExist.js");
 	assertTrue("CU should not be open", !compilationUnit.isOpen());
 	assertTrue("CU should not exist", !compilationUnit.exists());
 	assertTrue("CU should still not be open", !compilationUnit.isOpen());
@@ -1094,7 +1094,7 @@ public void testNotPresent1() {
 // * (regression test for PR #1G2RKD2)
 // */
 //public void testNotPresent2() throws CoreException {
-//	ICompilationUnit compilationUnit = getPackageFragment("P", getExternalJCLPathString(), "java.lang").getCompilationUnit("DoesNotExist.js");
+//	IJavaScriptUnit compilationUnit = getPackageFragment("P", getExternalJCLPathString(), "java.lang").getCompilationUnit("DoesNotExist.js");
 //	assertTrue("CU should not be open", !compilationUnit.isOpen());
 //	assertTrue("CU should not exist", !compilationUnit.exists());
 //	assertTrue("CU should still not be open", !compilationUnit.isOpen());
@@ -1104,7 +1104,7 @@ public void testNotPresent1() {
  * Ensure that the absence of visibility flags is correctly reported as package default
  * (regression test fo bug 127213 Flags class missing methods)
  */
-public void testPackageDefaultFlag1() throws JavaModelException {
+public void testPackageDefaultFlag1() throws JavaScriptModelException {
 	IField field = this.cu.getField("f4");
 	assertTrue("X#f4 should be package default", Flags.isPackageDefault(field.getFlags()));
 }
@@ -1113,7 +1113,7 @@ public void testPackageDefaultFlag1() throws JavaModelException {
 // * Ensure that the presence of a visibility flags is correctly reported as non package default
 // * (regression test fo bug 127213 Flags class missing methods)
 // */
-//public void testPackageDefaultFlag2() throws JavaModelException {
+//public void testPackageDefaultFlag2() throws JavaScriptModelException {
 //	IType type = this.cu.getType("X");
 //	assertTrue("X should not be package default", !Flags.isPackageDefault(type.getFlags()));
 //}
@@ -1122,7 +1122,7 @@ public void testPackageDefaultFlag1() throws JavaModelException {
  * Ensure that the presence of a visibility flags as well as the deprecated flag is correctly reported as non package default
  * (regression test fo bug 127213 Flags class missing methods)
  */
-public void testPackageDefaultFlag3() throws JavaModelException {
+public void testPackageDefaultFlag3() throws JavaScriptModelException {
 	IField field = this.cu.getType("X").getField("f2");
 	assertTrue("X#f2 should not be package default", !Flags.isPackageDefault(field.getFlags()));
 }
@@ -1131,7 +1131,7 @@ public void testPackageDefaultFlag3() throws JavaModelException {
  * Ensure that the absence of a visibility flags and the presence of the deprecated flag is correctly reported as package default
  * (regression test fo bug 127213 Flags class missing methods)
  */
-public void testPackageDefaultFlag4() throws JavaModelException {
+public void testPackageDefaultFlag4() throws JavaScriptModelException {
 	IType type = this.cu.getType("I");
 	assertTrue("X should be package default", Flags.isPackageDefault(type.getFlags()));
 }
@@ -1139,7 +1139,7 @@ public void testPackageDefaultFlag4() throws JavaModelException {
 /**
  * Ensures that the "structure is known" flag is set for a valid compilation unit. 
  */
-public void testStructureKnownForCU() throws JavaModelException {
+public void testStructureKnownForCU() throws JavaScriptModelException {
 	assertTrue("Structure is unknown for valid CU", this.cu.isStructureKnown());
 }
 /**
@@ -1150,7 +1150,7 @@ public void testStructureUnknownForCU() throws CoreException {
 		this.createFile(
 			"/P/src/p/Invalid.js",
 			"@#D(03");
-		ICompilationUnit badCU = getCompilationUnit("/P/src/p/Invalid.js");
+		IJavaScriptUnit badCU = getCompilationUnit("/P/src/p/Invalid.js");
 		assertTrue("Structure is known for an invalid CU", !badCU.isStructureKnown());
 	} finally {
 		this.deleteFile("/P/src/p/Invalid.js");
@@ -1161,7 +1161,7 @@ public void testStructureUnknownForCU() throws CoreException {
 // * Ensure that the super flags is correctly reported
 // * (regression test fo bug 127213 Flags class missing methods)
 // */
-//public void testSuperFlag1() throws JavaModelException {
+//public void testSuperFlag1() throws JavaScriptModelException {
 //	assertTrue("Should contain super flag", Flags.isSuper(Flags.AccSuper));
 //}
 //
@@ -1169,7 +1169,7 @@ public void testStructureUnknownForCU() throws CoreException {
 // * Ensure that the super flags is correctly reported
 // * (regression test fo bug 127213 Flags class missing methods)
 // */
-//public void testSuperFlag2() throws JavaModelException {
+//public void testSuperFlag2() throws JavaScriptModelException {
 //	assertTrue("Should not contain super flag", !Flags.isSuper(Flags.AccDefault));
 //}
 
@@ -1332,13 +1332,13 @@ public void test110172() throws CoreException {
 			"";
 		createFile("/P/src/X.js", source);
 //		IType type = getCompilationUnit("/P/src/X.js").getType("X");
-		IJavaElement[] members = getCompilationUnit("/P/src/X.js").getChildren();
+		IJavaScriptElement[] members = getCompilationUnit("/P/src/X.js").getChildren();
 		final int length = members.length;
 		assertEquals("Wrong number", 5, length);
 		for (int i = 0; i < length; i++) {
-			final IJavaElement element = members[i];
+			final IJavaScriptElement element = members[i];
 			assertTrue(element instanceof IMember);
-			final ISourceRange javadocRange = ((IMember) element).getJavadocRange();
+			final ISourceRange javadocRange = ((IMember) element).getJSdocRange();
 			final String elementName = element.getElementName();
 			if ("f".equals(elementName)) {
 				assertNotNull("No javadoc source range", javadocRange);
@@ -1360,8 +1360,8 @@ public void test110172() throws CoreException {
 				assertTrue("Wrong javadoc", javadocSource.indexOf("member type A") != -1);
 			} else if ("X".equals(elementName)) {
 				// need treatment for the two constructors
-				assertTrue("Not an IMethod", element instanceof IMethod);
-				IMethod method = (IMethod) element;
+				assertTrue("Not an IFunction", element instanceof IFunction);
+				IFunction method = (IFunction) element;
 				switch(method.getNumberOfParameters()) {
 					case 0 :
 						assertNull("Has a javadoc source range", javadocRange);
@@ -1411,13 +1411,13 @@ public void test120902() throws CoreException {
 			"function foo() {\r\n" +
 			"}";
 		createFile("/P/src/X.js", source);
-		final ICompilationUnit compilationUnit = getCompilationUnit("/P/src/X.js");
-		IMethod type = compilationUnit.getMethod("foo",null);
-		ISourceRange javadocRange = type.getJavadocRange();
+		final IJavaScriptUnit compilationUnit = getCompilationUnit("/P/src/X.js");
+		IFunction type = compilationUnit.getFunction("foo",null);
+		ISourceRange javadocRange = type.getJSdocRange();
 		assertNotNull("No source range", javadocRange);
 		compilationUnit.getBuffer().setContents("");
 		try {
-			javadocRange = type.getJavadocRange();
+			javadocRange = type.getJSdocRange();
 			assertNull("Got a source range", javadocRange);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			assertFalse("Should not happen", true);

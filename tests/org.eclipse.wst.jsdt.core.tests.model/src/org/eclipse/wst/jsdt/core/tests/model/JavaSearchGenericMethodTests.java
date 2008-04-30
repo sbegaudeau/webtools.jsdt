@@ -90,8 +90,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	public void testMethodReferencesElementPatternSingleTypeParameter01() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Single.js").getType("Single");
 		// search reference to a standard method
-		IMethod method = type.getMethod("standard", new String[] { "QT;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("standard", new String[] { "QT;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [standard(new Exception())] ERASURE_RAW_MATCH\n" + 
@@ -103,8 +103,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	public void testMethodReferencesElementPatternSingleTypeParameter02() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Single.js").getType("Single");
 		// search reference to a generic method
-		IMethod method = type.getMethod("generic", new String[] { "QU;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("generic", new String[] { "QU;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [generic(new Exception())] ERASURE_RAW_MATCH\n" + 
@@ -116,8 +116,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	public void testMethodReferencesElementPatternSingleTypeParameter03() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Single.js").getType("Single");
 		// search reference to a method returning a parameterized type
-		IMethod method = type.getMethod("returnParamType", new String[] {});
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("returnParamType", new String[] {});
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java Single<T> g5.m.def.Single.complete(U, Single<T>) [returnParamType()] EXACT_MATCH\n" + 
@@ -133,8 +133,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	public void testMethodReferencesElementPatternSingleTypeParameter04() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Single.js").getType("Single");
 		// search reference to a method with parameterized type arguments
-		IMethod method = type.getMethod("paramTypesArgs", new String[] { "QSingle<QT;>;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("paramTypesArgs", new String[] { "QSingle<QT;>;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [paramTypesArgs(gs)] ERASURE_RAW_MATCH\n" + 
@@ -149,8 +149,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	public void testMethodReferencesElementPatternSingleTypeParameter05() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Single.js").getType("Single");
 		// search reference to a generic method returning a param type with param type parameters (=complete)
-		IMethod method = type.getMethod("complete", new String[] { "QU;", "QSingle<QT;>;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("complete", new String[] { "QU;", "QSingle<QT;>;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [complete(new Exception(), gs)] ERASURE_RAW_MATCH\n" + 
@@ -166,8 +166,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	// Search references to methods defined in a multiple type parameters class
 	public void testMethodReferencesElementPatternMultipleTypeParameter01() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Multiple.js").getType("Multiple");
-		IMethod method = type.getMethod("standard", new String[] { "QT1;","QT2;","QT3;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("standard", new String[] { "QT1;","QT2;","QT3;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [standard(new Object(), new Exception(), new RuntimeException())] ERASURE_MATCH\n" +
@@ -176,8 +176,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	}
 	public void testMethodReferencesElementPatternMultipleTypeParameter02() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Multiple.js").getType("Multiple");
-		IMethod method = type.getMethod("generic", new String[] { "QU1;","QU2;","QU3;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("generic", new String[] { "QU1;","QU2;","QU3;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [generic(new Object(), new Exception(), new RuntimeException())] ERASURE_MATCH\n" + 
@@ -188,8 +188,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	}
 	public void testMethodReferencesElementPatternMultipleTypeParameter03() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Multiple.js").getType("Multiple");
-		IMethod method = type.getMethod("returnParamType", new String[] {});
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("returnParamType", new String[] {});
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [returnParamType()] EXACT_MATCH\n" + 
@@ -202,8 +202,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	}
 	public void testMethodReferencesElementPatternMultipleTypeParameter04() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Multiple.js").getType("Multiple");
-		IMethod method = type.getMethod("paramTypesArgs", new String[] { "QSingle<QT1;>;","QSingle<QT2;>;","QSingle<QT3;>;","QMultiple<QT1;QT2;QT3;>;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("paramTypesArgs", new String[] { "QSingle<QT1;>;","QSingle<QT2;>;","QSingle<QT3;>;","QMultiple<QT1;QT2;QT3;>;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [paramTypesArgs(new Single<Object>(), new Single<Exception>(), new Single<RuntimeException>(), gm)] ERASURE_MATCH\n" + 
@@ -215,8 +215,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	}
 	public void testMethodReferencesElementPatternMultipleTypeParameter05() throws CoreException {
 		IType type = getCompilationUnit("JavaSearch15/src/g5/m/def/Multiple.js").getType("Multiple");
-		IMethod method = type.getMethod("complete", new String[] { "QU1;","QU2;","QU3;", "QMultiple<QT1;QT2;QT3;>;" });
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IFunction method = type.getFunction("complete", new String[] { "QU1;","QU2;","QU3;", "QMultiple<QT1;QT2;QT3;>;" });
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [complete(new Object(), new Exception(), new RuntimeException(), gm)] ERASURE_MATCH\n" + 
@@ -228,9 +228,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 
 	// Search references to single parameterized methods
 	public void testMethodReferencesElementPatternSingleParamArguments01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "generic", 3);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "generic", 3);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [generic(new Exception())] EQUIVALENT_RAW_MATCH\n" + 
@@ -240,9 +240,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternSingleParamArguments02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "generic", 6);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "generic", 6);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [generic(new Exception())] EQUIVALENT_RAW_MATCH\n" + 
@@ -252,9 +252,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternSingleParamArguments03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "complete");
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "complete");
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [complete(new Exception(), gs)] EQUIVALENT_RAW_MATCH\n" + 
@@ -267,9 +267,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternSingleParamArguments04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "complete", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "complete", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [complete(new Exception(), gs)] EQUIVALENT_RAW_MATCH\n" + 
@@ -282,9 +282,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternSingleParamArguments05() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "generic", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "generic", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [generic(new Exception())] EXACT_RAW_MATCH\n" + 
@@ -294,9 +294,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternSingleParamArguments06() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "complete");
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "complete");
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [complete(new Exception(), gs)] EXACT_RAW_MATCH\n" + 
@@ -311,9 +311,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 
 	// Search references to multiple parameterized methods
 	public void testMethodReferencesElementPatternMultipleParamArguments01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "generic", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "generic", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [<Object, Exception, RuntimeException>generic(new Object(), new Exception(), new RuntimeException())] EXACT_MATCH\n" + 
@@ -323,8 +323,8 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternMultipleParamArguments02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "generic", 6);
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "generic", 6);
 		search(method, REFERENCES);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [generic(new Object(), new Exception(), new RuntimeException())] ERASURE_MATCH\n" + 
@@ -334,9 +334,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternMultipleParamArguments03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "complete");
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "complete");
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [<Object, Exception, RuntimeException>complete(new Object(), new Exception(), new RuntimeException(), gm)] EXACT_MATCH\n" + 
@@ -346,9 +346,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternMultipleParamArguments04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "complete", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "complete", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [complete(new Object(), new Exception(), new RuntimeException(), gm)] ERASURE_MATCH\n" + 
@@ -358,9 +358,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternMultipleParamArguments05() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "generic", 4);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "generic", 4);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [generic(new Object(), new Exception(), new RuntimeException())] EQUIVALENT_MATCH\n" + 
@@ -370,9 +370,9 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesElementPatternMultipleParamArguments06() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "complete", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "complete", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [complete(new Object(), new Exception(), new RuntimeException(), gm)] EQUIVALENT_MATCH\n" + 
@@ -393,7 +393,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<? extends Exception> complete ", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [complete(new Exception(), gs)] EQUIVALENT_RAW_MATCH\n" + 
@@ -406,7 +406,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<? super Exception>*e?e*", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefRaw.java void g5.m.ref.RefRaw.testSingle() [generic(new Exception())] EQUIVALENT_RAW_MATCH\n" + 
@@ -423,7 +423,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15("g5.m.ref", false);
+		IJavaScriptSearchScope scope = getJavaSearchScope15("g5.m.ref", false);
 		search("generic", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [generic(new Object(), new Exception(), new RuntimeException())] EXACT_MATCH\n" + 
@@ -437,7 +437,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("generic(Object)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			/* Results while resolving string pattern with no qualification (currently disabled as it is not comaptible with previous results):
@@ -451,7 +451,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments06() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("complete(Exception, Single<Exception>)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			/* Results while resolving string pattern with no qualification (currently disabled as it is not comaptible with previous results):
@@ -467,14 +467,14 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments07() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<Exception> generic ( Exception ) ", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefSingle.java void g5.m.ref.RefSingle.testException() [<Exception>generic(new Exception())] EXACT_MATCH"
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments08() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<? extends Exception>complete(Exception, Single<? super Exception>)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefSingle.java void g5.m.ref.RefSingle.testException() [<Exception>complete(new Exception(), gs)] EQUIVALENT_MATCH\n" +
@@ -484,21 +484,21 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments09() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("Single.generic(Exception)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefSingle.java void g5.m.ref.RefSingle.testException() [generic(new Exception())] EQUIVALENT_MATCH"
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments10() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Single<Exception>.generic(Exception)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefSingle.java void g5.m.ref.RefSingle.testException() [generic(new Exception())] EQUIVALENT_MATCH"
 		);
 	}
 	public void testMethodReferencesStringPatternSingleParamArguments11() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Single<? extends Exception>.<? extends Exception>generic(Exception)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefSingle.java void g5.m.ref.RefSingle.testException() [<Exception>generic(new Exception())] EQUIVALENT_MATCH"
@@ -507,7 +507,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 
 	// Search string pattern references to multiple parameterized methods
 	public void testMethodReferencesStringPatternMultipleParamArguments01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<?, ? extends Exception, ? super RuntimeException>generic", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [<Object, Exception, RuntimeException>generic(new Object(), new Exception(), new RuntimeException())] EQUIVALENT_MATCH\n" + 
@@ -517,7 +517,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<Object, Exception, RuntimeException>complete", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [<Object, Exception, RuntimeException>complete(new Object(), new Exception(), new RuntimeException(), gm)] EXACT_MATCH\n" + 
@@ -527,7 +527,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("generic(Object,Exception,RuntimeException)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			/* Results while resolving string pattern with no qualification (currently disabled as it is not comaptible with previous results):
@@ -540,7 +540,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("complete(Object,RuntimeException,RuntimeException,Multiple<Object, RuntimeException, RuntimeException>)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			/* Results while resolving string pattern with no qualification (currently disabled as it is not comaptible with previous results):
@@ -553,7 +553,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments06() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<Object, RuntimeException, RuntimeException>generic(*,*,*)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [generic(new Object(), new Exception(), new RuntimeException())] ERASURE_MATCH\n" + 
@@ -563,7 +563,7 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments07() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<?,? extends Throwable,? extends RuntimeException>complete", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [<Object, Exception, RuntimeException>complete(new Object(), new Exception(), new RuntimeException(), gm)] EQUIVALENT_MATCH\n" + 
@@ -573,21 +573,21 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments08() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("Multiple.generic(Object,Exception,RuntimeException)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [generic(new Object(), new Exception(), new RuntimeException())] EQUIVALENT_MATCH"
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments09() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Multiple<Object, RuntimeException, RuntimeException>.generic(Object,Exception,RuntimeException)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [generic(new Object(), new Exception(), new RuntimeException())] ERASURE_MATCH"
 		);
 	}
 	public void testMethodReferencesStringPatternMultipleParamArguments10() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Multiple<?,? extends Throwable,? extends RuntimeException>.<?,? extends Throwable,? extends RuntimeException>generic(Object,Exception,RuntimeException)", METHOD, REFERENCES, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/ref/RefMultiple.java void g5.m.ref.RefMultiple.test() [<Object, Exception, RuntimeException>generic(new Object(), new Exception(), new RuntimeException())] EQUIVALENT_MATCH"
@@ -599,54 +599,54 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 	 */
 	// Search references to single parameterized methods
 	public void testMethodDeclarationsElementPatternSingleParamArguments01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "generic", 3);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "generic", 3);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternSingleParamArguments02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "generic", 6);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "generic", 6);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternSingleParamArguments03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "generic", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "generic", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternSingleParamArguments04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "complete");
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "complete");
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java Single<T> g5.m.def.Single.complete(U, Single<T>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternSingleParamArguments05() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
-		IMethod method = selectMethod(unit, "complete", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefSingle.js");
+		IFunction method = selectMethod(unit, "complete", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java Single<T> g5.m.def.Single.complete(U, Single<T>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternSingleParamArguments06() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "complete");
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "complete");
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java Single<T> g5.m.def.Single.complete(U, Single<T>) [complete] EXACT_MATCH"
@@ -655,54 +655,54 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 
 	// Search references to multiple parameterized methods
 	public void testMethodDeclarationsElementPatternMultipleParamArguments01() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "generic", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "generic", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java T1 g5.m.def.Multiple.generic(U1, U2, U3) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternMultipleParamArguments02() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "generic", 6);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "generic", 6);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java T1 g5.m.def.Multiple.generic(U1, U2, U3) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternMultipleParamArguments03() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "generic", 4);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "generic", 4);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java T1 g5.m.def.Multiple.generic(U1, U2, U3) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternMultipleParamArguments04() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "complete");
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "complete");
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternMultipleParamArguments05() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
-		IMethod method = selectMethod(unit, "complete", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefMultiple.js");
+		IFunction method = selectMethod(unit, "complete", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsElementPatternMultipleParamArguments06() throws CoreException {
-		ICompilationUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
-		IMethod method = selectMethod(unit, "complete", 2);
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptUnit unit = getCompilationUnit("JavaSearch15/src/g5/m/ref/RefRaw.js");
+		IFunction method = selectMethod(unit, "complete", 2);
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search(method, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
@@ -711,21 +711,21 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 
 	// Search string pattern references to single parameterized methods
 	public void testMethodDeclarationsStringPatternSingleParamArguments01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<Exception>generic", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternSingleParamArguments02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<U>complete", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java Single<T> g5.m.def.Single.complete(U, Single<T>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternSingleParamArguments03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<T> *e?e*", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH\n" + 
@@ -733,35 +733,35 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 		);
 	}
 	public void testMethodDeclarationsStringPatternSingleParamArguments04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("generic(*)", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternSingleParamArguments05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<Exception>generic(*)", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternSingleParamArguments06() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("Single.<Object>generic", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternSingleParamArguments07() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Single<Object>.<U>generic", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternSingleParamArguments08() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Single<?>.<?>generic", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Single.java T g5.m.def.Single.generic(U) [generic] EXACT_MATCH"
@@ -770,49 +770,49 @@ public class JavaSearchGenericMethodTests extends AbstractJavaSearchGenericTests
 
 	// Search string pattern references to multiple parameterized methods
 	public void testMethodDeclarationsStringPatternMultipleParamArguments01() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<?, ? extends Exception, ? super RuntimeException>generic", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java T1 g5.m.def.Multiple.generic(U1, U2, U3) [generic] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternMultipleParamArguments02() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<Object, Exception, RuntimeException>complete", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternMultipleParamArguments03() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("complete(*,*,*,*)", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternMultipleParamArguments04() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("<Object, Exception, RuntimeException>complete(*,*,*,*)", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternMultipleParamArguments05() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("Multiple.<Object, Exception, RuntimeException>complete", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternMultipleParamArguments06() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Multiple<Object, Exception, RuntimeException>.<U1,U2,U3>complete", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"
 		);
 	}
 	public void testMethodDeclarationsStringPatternMultipleParamArguments07() throws CoreException {
-		IJavaSearchScope scope = getJavaSearchScope15();
+		IJavaScriptSearchScope scope = getJavaSearchScope15();
 		search("g5.m.def.Multiple<?,?,?>.<?,?,?>complete", METHOD, DECLARATIONS, scope, resultCollector);
 		assertSearchResults(
 			"src/g5/m/def/Multiple.java Multiple<T1,T2,T3> g5.m.def.Multiple.complete(U1, U2, U3, Multiple<T1,T2,T3>) [complete] EXACT_MATCH"

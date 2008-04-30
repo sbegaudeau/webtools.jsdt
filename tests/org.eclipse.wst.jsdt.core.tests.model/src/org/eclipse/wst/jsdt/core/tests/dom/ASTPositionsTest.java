@@ -13,15 +13,15 @@ package org.eclipse.wst.jsdt.core.tests.dom;
 
 import junit.framework.Test;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 
 public class ASTPositionsTest extends ConverterTestSetup {
 	
-	ICompilationUnit workingCopy;
+	IJavaScriptUnit workingCopy;
 	
 	public void setUpSuite() throws Exception {
 		super.setUpSuite();
@@ -40,7 +40,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 		return buildModelTestSuite(ASTPositionsTest.class);
 	}
 	
-	private void sanityCheck(final String contents, CompilationUnit compilationUnit) {
+	private void sanityCheck(final String contents, JavaScriptUnit compilationUnit) {
 		for (int i = 0, max = contents.length(); i < max; i++) {
     		final int lineNumber = compilationUnit.getLineNumber(i);
     		assertTrue("Wrong value for char at " + i, lineNumber >= 1);
@@ -63,7 +63,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
 		}
 	}
 		
-	public void test001() throws JavaModelException {
+	public void test001() throws JavaScriptModelException {
     	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	final String contents =
 			"import java.util.Map;\r\n" +
@@ -74,8 +74,8 @@ public class ASTPositionsTest extends ConverterTestSetup {
     			contents,
     			this.workingCopy,
     			false);
-    	assertEquals("Not a compilation unit", ASTNode.COMPILATION_UNIT, node.getNodeType());
-    	CompilationUnit compilationUnit = (CompilationUnit) node;
+    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
     	assertEquals("Wrong char", 'X', contents.charAt(compilationUnit.getPosition(2, 13)));
     	assertEquals("Wrong char", 'i', contents.charAt(compilationUnit.getPosition(1, 0)));
     	assertEquals("Wrong position", -1, compilationUnit.getPosition(1, -1));
@@ -88,7 +88,7 @@ public class ASTPositionsTest extends ConverterTestSetup {
     	sanityCheck(contents, compilationUnit);
 	}
 
-	public void test002() throws JavaModelException {
+	public void test002() throws JavaScriptModelException {
     	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	final String contents =
 			"import java.util.Map;\n" +
@@ -99,12 +99,12 @@ public class ASTPositionsTest extends ConverterTestSetup {
     			contents,
     			this.workingCopy,
     			false);
-    	assertEquals("Not a compilation unit", ASTNode.COMPILATION_UNIT, node.getNodeType());
-    	CompilationUnit compilationUnit = (CompilationUnit) node;
+    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
     	sanityCheck(contents, compilationUnit);
 	}
 	
-	public void test003() throws JavaModelException {
+	public void test003() throws JavaScriptModelException {
     	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	final String contents =
 			"import java.util.Map;\r" +
@@ -115,12 +115,12 @@ public class ASTPositionsTest extends ConverterTestSetup {
     			contents,
     			this.workingCopy,
     			false);
-    	assertEquals("Not a compilation unit", ASTNode.COMPILATION_UNIT, node.getNodeType());
-    	CompilationUnit compilationUnit = (CompilationUnit) node;
+    	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+    	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
     	sanityCheck(contents, compilationUnit);
 	}
 	
-	public void test004() throws JavaModelException {
+	public void test004() throws JavaScriptModelException {
     	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	String contents =
 			"package pack1;\npublic class X {}";
@@ -128,13 +128,13 @@ public class ASTPositionsTest extends ConverterTestSetup {
     			contents,
     			this.workingCopy,
     			false);
-       	assertEquals("Not a compilation unit", ASTNode.COMPILATION_UNIT, node.getNodeType());
-       	CompilationUnit compilationUnit = (CompilationUnit) node;
+       	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+       	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
        	sanityCheck(contents, compilationUnit);
 		assertEquals(1, compilationUnit.getLineNumber(0));
 	}
 	
-	public void test005() throws JavaModelException {
+	public void test005() throws JavaScriptModelException {
     	this.workingCopy = getWorkingCopy("/Converter15/src/X.js", true/*resolve*/);
     	String contents =
 			"package pack1;public class X {}";
@@ -142,8 +142,8 @@ public class ASTPositionsTest extends ConverterTestSetup {
     			contents,
     			this.workingCopy,
     			false);
-       	assertEquals("Not a compilation unit", ASTNode.COMPILATION_UNIT, node.getNodeType());
-       	CompilationUnit compilationUnit = (CompilationUnit) node;
+       	assertEquals("Not a compilation unit", ASTNode.JAVASCRIPT_UNIT, node.getNodeType());
+       	JavaScriptUnit compilationUnit = (JavaScriptUnit) node;
 		assertEquals(1, compilationUnit.getLineNumber(0));
        	sanityCheck(contents, compilationUnit);
 	}

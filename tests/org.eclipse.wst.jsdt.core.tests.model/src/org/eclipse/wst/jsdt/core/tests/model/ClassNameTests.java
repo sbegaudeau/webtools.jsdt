@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.internal.core.SourceType;
  */
 public class ClassNameTests extends ModifyingResourceTests {
 
-	static IJavaProject TEST_PROJECT;
+	static IJavaScriptProject TEST_PROJECT;
 	final static int SF_LENGTH = 5;
 	static int TESTS_COUNT;
 
@@ -106,7 +106,7 @@ protected void tearDown() throws Exception {
 	super.tearDown();
 }
 
-protected void assertTypeFound(String typeName, String expectedResult) throws JavaModelException {
+protected void assertTypeFound(String typeName, String expectedResult) throws JavaScriptModelException {
 	assertNotNull("TEST_PROJECT should not be null!!!", TEST_PROJECT);
 	IType type = TEST_PROJECT.findType(typeName, new NullProgressMonitor());
 	assertTrue("type "+typeName+" should exist!", type != null && type.exists());
@@ -115,7 +115,7 @@ protected void assertTypeFound(String typeName, String expectedResult) throws Ja
 		((SourceType)type).toStringWithAncestors()
 	);
 }
-protected void assertTypeFound(String packageName, String typeName, String expectedResult) throws JavaModelException {
+protected void assertTypeFound(String packageName, String typeName, String expectedResult) throws JavaScriptModelException {
 	assertNotNull("TEST_PROJECT should not be null!!!", TEST_PROJECT);
 	IType type = TEST_PROJECT.findType(packageName, typeName, new NullProgressMonitor());
 	assertTrue("type "+typeName+" should exist!", type != null && type.exists());
@@ -125,25 +125,25 @@ protected void assertTypeFound(String packageName, String typeName, String expec
 	);
 }
 
-protected void assertTypeNotFound(String typeName) throws JavaModelException {
+protected void assertTypeNotFound(String typeName) throws JavaScriptModelException {
 	assertNotNull("TEST_PROJECT should not be null!!!", TEST_PROJECT);
 	IType type = TEST_PROJECT.findType(typeName, new NullProgressMonitor());
 	assertNotNull("type "+typeName+" should NOT be null!", type);
 	assertFalse("type "+typeName+" should NOT exist!", type.exists());
 }
-protected void assertTypeNotFound(String packageName, String typeName) throws JavaModelException {
+protected void assertTypeNotFound(String packageName, String typeName) throws JavaScriptModelException {
 	assertNotNull("TEST_PROJECT should not be null!!!", TEST_PROJECT);
 	IType type = TEST_PROJECT.findType(packageName, typeName, new NullProgressMonitor());
 	assertNotNull("type "+typeName+" should NOT be null!", type);
 	assertFalse("type "+typeName+" should NOT exist!", type.exists());
 }
 
-protected void assertTypeUnknown(String typeName) throws JavaModelException {
+protected void assertTypeUnknown(String typeName) throws JavaScriptModelException {
 	assertNotNull("TEST_PROJECT should not be null!!!", TEST_PROJECT);
 	IType type = TEST_PROJECT.findType(typeName, new NullProgressMonitor());
 	assertNull("type "+typeName+" should NOT be found!", type);
 }
-protected void assertTypeUnknown(String packageName, String typeName) throws JavaModelException {
+protected void assertTypeUnknown(String packageName, String typeName) throws JavaScriptModelException {
 	assertNotNull("TEST_PROJECT should not be null!!!", TEST_PROJECT);
 	IType type = TEST_PROJECT.findType(packageName, typeName, new NullProgressMonitor());
 	assertNull("type "+typeName+" should NOT be found!", type);
@@ -152,7 +152,7 @@ protected void assertTypeUnknown(String packageName, String typeName) throws Jav
 /**
  * Tests that a type in a jar with a name ending with $ can be retrieved.
  */
-public void testClassNameWithDollar() throws JavaModelException, CoreException {
+public void testClassNameWithDollar() throws JavaScriptModelException, CoreException {
 	try {
 		byte[] tab = new byte[372];
 		tab[0]=80;
@@ -527,9 +527,9 @@ public void testClassNameWithDollar() throws JavaModelException, CoreException {
 		tab[369]=0;
 		tab[370]=0;
 		tab[371]=0;
-		IJavaProject javaProject = createJavaProject("P", new String[] {"src"}, "bin");
+		IJavaScriptProject javaProject = createJavaProject("P", new String[] {"src"}, "bin");
 		IFile jarFile = createFile("P/lib.jar", tab);
-		javaProject.setRawClasspath(new IClasspathEntry[] {JavaCore.newLibraryEntry(jarFile.getFullPath(), null, null, false)}, new NullProgressMonitor());
+		javaProject.setRawIncludepath(new IIncludePathEntry[] {JavaScriptCore.newLibraryEntry(jarFile.getFullPath(), null, null, false)}, new NullProgressMonitor());
 		javaProject.findType("p1.A$");
 	} catch (CoreException e) {
 		e.printStackTrace();
@@ -541,9 +541,9 @@ public void testClassNameWithDollar() throws JavaModelException, CoreException {
 /**
  * Tests that a member type can be retrived using a dot qualified name.
  */
-public void testFindTypeWithDot() throws JavaModelException, CoreException {
+public void testFindTypeWithDot() throws JavaScriptModelException, CoreException {
 	try {
-		IJavaProject javaProject = createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject javaProject = createJavaProject("P", new String[] {""}, "");
 		this.createFolder("/P/p");
 		this.createFile(
 			"/P/p/X.js", 
@@ -567,7 +567,7 @@ public void testFindTypeWithDot() throws JavaModelException, CoreException {
 /**
  * Tests that a type in a jar with a name ending with $ can be retrieved.
  */
-public void testSearchTypeNameInJars() throws JavaModelException, CoreException {
+public void testSearchTypeNameInJars() throws JavaScriptModelException, CoreException {
 	try {
 		byte[] tab = new byte[478];
 		tab[0]=80;
@@ -1048,11 +1048,11 @@ public void testSearchTypeNameInJars() throws JavaModelException, CoreException 
 		tab[475]=0;
 		tab[476]=0;
 		tab[477]=0;
-		IJavaProject javaProject = createJavaProject("P1", new String[] {"src"}, "bin");
+		IJavaScriptProject javaProject = createJavaProject("P1", new String[] {"src"}, "bin");
 		IFile jarFile = createFile("P1/lib.jar", tab);
-		javaProject.setRawClasspath(new IClasspathEntry[] {JavaCore.newLibraryEntry(jarFile.getFullPath(), null, null, false)}, new NullProgressMonitor());
+		javaProject.setRawIncludepath(new IIncludePathEntry[] {JavaScriptCore.newLibraryEntry(jarFile.getFullPath(), null, null, false)}, new NullProgressMonitor());
 		assertNotNull(javaProject.findType("p1.p2.p3.X"));
-	} catch(JavaModelException e) {
+	} catch(JavaScriptModelException e) {
 		e.printStackTrace();
 		assertTrue(false);
 	} catch (CoreException e) {
@@ -1067,48 +1067,48 @@ public void testSearchTypeNameInJars() throws JavaModelException, CoreException 
  * Bug 36032: JavaProject.findType() fails to find second type in source file
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=36032"
  */
-public void testFindSecondaryType_Exist01() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Exist01() throws JavaScriptModelException, CoreException {
 	int length = SF_LENGTH - 1;
 	assertTypeFound(
 		"org.eclipse.wst.jsdt.core.test"+length+".Foo",
 		"Foo [in Foo.java [in org.eclipse.wst.jsdt.core.test"+length+" [in src"+length+" [in TestProject]]]]"
 	);
 }
-public void testFindSecondaryType_Exist02() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Exist02() throws JavaScriptModelException, CoreException {
 	int length = SF_LENGTH - 1;
 	assertTypeFound(
 		"org.eclipse.wst.jsdt.core.test"+length+".Secondary",
 		"Secondary [in Foo.java [in org.eclipse.wst.jsdt.core.test"+length+" [in src"+length+" [in TestProject]]]]"
 	);
 }
-public void testFindSecondaryType_Exist03() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Exist03() throws JavaScriptModelException, CoreException {
 	assertTypeFound(
 		"org.eclipse.wst.jsdt.core.test0.Foo.InFoo",
 		"InFoo [in Foo [in Foo.java [in org.eclipse.wst.jsdt.core.test0 [in src0 [in TestProject]]]]]"
 	);
 }
-public void testFindSecondaryType_Exist04() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Exist04() throws JavaScriptModelException, CoreException {
 	assertTypeFound(
 		"org.eclipse.wst.jsdt.core.test0.Secondary.InSecondary",
 		"InSecondary [in Secondary [in Foo.java [in org.eclipse.wst.jsdt.core.test0 [in src0 [in TestProject]]]]]"
 	);
 }
-public void testFindSecondaryType_Exist05() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Exist05() throws JavaScriptModelException, CoreException {
 	assertTypeFound(
 		"Foo",
 		"Foo [in Foo.java [in <default> [in src1 [in TestProject]]]]"
 	);
 }
-public void testFindSecondaryType_Exist06() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Exist06() throws JavaScriptModelException, CoreException {
 	assertTypeFound(
 		"Secondary",
 		"Secondary [in Foo.java [in <default> [in src1 [in TestProject]]]]"
 	);
 }
 // duplicate bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=72179
-public void testFindSecondaryType_Bug72179() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Bug72179() throws JavaScriptModelException, CoreException {
 	try {
-		IJavaProject javaProject = createJavaProject("P", new String[] {""}, "");
+		IJavaScriptProject javaProject = createJavaProject("P", new String[] {""}, "");
 		createFolder("/P/p1");
 		createFile(
 			"/P/p1/jc.js", 
@@ -1142,28 +1142,28 @@ public void testFindSecondaryType_Bug72179() throws JavaModelException, CoreExce
 		deleteProject("P");
 	}
 }
-public void testFindSecondaryType_NotFound01() throws JavaModelException, CoreException {
+public void testFindSecondaryType_NotFound01() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("test.Foo");
 }
-public void testFindSecondaryType_NotFound02() throws JavaModelException, CoreException {
+public void testFindSecondaryType_NotFound02() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("InFoo");
 }
-public void testFindSecondaryType_NotFound03() throws JavaModelException, CoreException {
+public void testFindSecondaryType_NotFound03() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("InSecondary");
 }
-public void testFindSecondaryType_NotFound04() throws JavaModelException, CoreException {
+public void testFindSecondaryType_NotFound04() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("Foo.inFoo");
 }
-public void testFindSecondaryType_NotFound05() throws JavaModelException, CoreException {
+public void testFindSecondaryType_NotFound05() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("Secondary.inBar");
 }
-public void testFindSecondaryType_Unknown01() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Unknown01() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("Unknown");
 }
-public void testFindSecondaryType_Unknown02() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Unknown02() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("Foo.Unknown");
 }
-public void testFindSecondaryType_Unknown03() throws JavaModelException, CoreException {
+public void testFindSecondaryType_Unknown03() throws JavaScriptModelException, CoreException {
 	assertTypeUnknown("org.eclipse.wst.jsdt.core.test.Unknown");
 }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.dom.*;
 import org.eclipse.wst.jsdt.core.dom.rewrite.ASTRewrite;
@@ -59,24 +59,24 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public abstract void kee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("    public abstract void lee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // convert constructor to method: insert return type
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "E");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "E");
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 		}
 		{ // change return type
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			assertTrue("Has no return type: gee", methodDecl.getReturnType() != null);
 			
 			Type returnType= methodDecl.getReturnType();
@@ -84,14 +84,14 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace(returnType, newReturnType, null);
 		}
 		{ // remove return type
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "hee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "hee");
 			assertTrue("Has no return type: hee", methodDecl.getReturnType() != null);
 						
 			// from method to constructor
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		{ // rename method name
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "iee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "iee");
 			
 			SimpleName name= methodDecl.getName();
 			SimpleName newName= ast.newSimpleName("xii");
@@ -99,7 +99,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace(name, newName, null);
 		}				
 		{ // rename first param & last throw statement
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "jee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "jee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			SingleVariableDeclaration newParam= createNewParam(ast, "m");
@@ -111,7 +111,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace((ASTNode) thrownExceptions.get(1), newThrownException, null);			
 		}
 		{ // rename first and second param & rename first and last exception
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "kee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "kee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			SingleVariableDeclaration newParam1= createNewParam(ast, "m1");
@@ -127,7 +127,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace((ASTNode) thrownExceptions.get(2), newThrownException2, null);
 		}		
 		{ // rename all params & rename second exception
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "lee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "lee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			SingleVariableDeclaration newParam1= createNewParam(ast, "m1");
@@ -179,19 +179,19 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    void hee(int p1, int p2) {}\n");
 		buf.append("    public void hee(int p1, byte p2) {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
-		MethodDeclaration[] methods= type.getMethods();
+		FunctionDeclaration[] methods= type.getMethods();
 		for (int i= 0; i < methods.length; i++) {
 			
 			// add type parameter
-			MethodDeclaration methodDecl= methods[i];
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.TYPE_PARAMETERS_PROPERTY);
+			FunctionDeclaration methodDecl= methods[i];
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.TYPE_PARAMETERS_PROPERTY);
 			TypeParameter typeParameter= ast.newTypeParameter();
 			typeParameter.setName(ast.newSimpleName("X"));
 			listRewrite.insertFirst(typeParameter, null);
@@ -236,17 +236,17 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public <X> void hee(int p1, byte p2) {}\n");
 		buf.append("    public<X>void hee(int p1, byte p2) {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
-		MethodDeclaration[] methods= type.getMethods();
+		FunctionDeclaration[] methods= type.getMethods();
 		for (int i= 0; i < methods.length; i++) {
 			
 			// add type parameter
-			MethodDeclaration methodDecl= methods[i];
+			FunctionDeclaration methodDecl= methods[i];
 			rewrite.remove((ASTNode) methodDecl.typeParameters().get(0), null);
 
 		}					
@@ -288,74 +288,74 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    /** javadoc comment */\n");
 		buf.append("    /* comment */ void gee3() {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		List list= type.bodyDeclarations();
 		
 		{ // insert return type, add second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(0);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC | Modifier.FINAL), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(0);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC | Modifier.FINAL), null);
 		
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 			
 		}
 		{ // insert return type, add (first) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(1);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(1);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 		}
 		
 		{ // insert return type, add second modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(2);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(2);
 			
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 			
 		}
 		
 		{ // remove return type, add second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(3);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC | Modifier.FINAL), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(3);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC | Modifier.FINAL), null);
 		
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 			
 		}
 		{ // remove return type, add (first) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(4);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(4);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		{ // remove return type, add second modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(5);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(5);
 			
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.FINAL), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		String preview= evaluateRewrite(cu, rewrite);
@@ -391,74 +391,74 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    /** javadoc comment */\n");
 		buf.append("    public /* comment */ void gee3() {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		List list= type.bodyDeclarations();
 		
 		{ // insert return type, remove second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(0);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(0);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC), null);
 		
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 			
 		}
 		{ // insert return type, remove (only) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(1);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(1);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 		}
 		
 		{ // insert return type, remove modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(2);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(2);
 			
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 			
 		}
 		
 		{ // remove return type, remove second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(3);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(3);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(Modifier.PUBLIC), null);
 		
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 			
 		}
 		{ // remove return type, remove (only) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(4);
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(4);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		{ // remove return type, remove modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(5);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(5);
 			
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		String preview= evaluateRewrite(cu, rewrite);
@@ -496,85 +496,85 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    /** javadoc comment */\n");
 		buf.append("    /* comment */ void gee3() {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		List list= type.bodyDeclarations();
 		
 		{ // insert return type, add second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(0);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(0);
 			
-			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			modifiers.insertLast(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 			
 		}
 		{ // insert return type, add (first) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(1);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(1);
 			
-			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			modifiers.insertLast(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 		}
 		
 		{ // insert return type, add second modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(2);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(2);
 			
-			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			modifiers.insertLast(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 			
 		}
 		
 		{ // remove return type, add second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(3);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(3);
 
-			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			modifiers.insertLast(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 			
 		}
 		{ // remove return type, add (first) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(4);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(4);
 
-			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			modifiers.insertLast(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);			
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		{ // remove return type, add second modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(5);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(5);
 			
-			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite modifiers= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			modifiers.insertLast(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		String preview= evaluateRewrite(cu, rewrite);
@@ -610,70 +610,70 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    /** javadoc comment */\n");
 		buf.append("    public /* comment */ void gee3() {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		List list= type.bodyDeclarations();
 		
 		{ // insert return type, remove second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(0);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(0);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(1), null);
 		
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 			
 		}
 		{ // insert return type, remove (only) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(1);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(1);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 		}
 		
 		{ // insert return type, remove modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(2);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(2);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);			
 			Type newReturnType= astRoot.getAST().newPrimitiveType(PrimitiveType.FLOAT);
 			
 			// from constructor to method
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, newReturnType, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.FALSE, null);
 		}
 		
 		{ // remove return type, remove second modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(3);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(3);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(1), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 			
 		}
 		{ // remove return type, remove (only) modifier
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(4);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(4);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		{ // remove return type, remove modifier with comments
-			MethodDeclaration methodDecl= (MethodDeclaration) list.get(5);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) list.get(5);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 			
 			// from method to constructor 
-			rewrite.set(methodDecl, MethodDeclaration.RETURN_TYPE2_PROPERTY, null, null);
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.RETURN_TYPE2_PROPERTY, null, null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
 		}
 		
 		String preview= evaluateRewrite(cu, rewrite);
@@ -711,23 +711,23 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public abstract void kee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("    public abstract void lee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // delete first param
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "E");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "E");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			rewrite.remove((ASTNode) parameters.get(0), null);
 		}
 		{ // delete second param & remove exception & remove public
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
 			// change flags
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(0), null);
 			
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
@@ -738,13 +738,13 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) thrownExceptions.get(0), null);
 		}		
 		{ // delete last param
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "hee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "hee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			rewrite.remove((ASTNode) parameters.get(2), null);	
 		}				
 		{ // delete first and second param & remove first exception
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "iee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "iee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			rewrite.remove((ASTNode) parameters.get(0), null);
@@ -755,7 +755,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) thrownExceptions.get(0), null);	
 		}				
 		{ // delete first and last param & remove second
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "jee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "jee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			rewrite.remove((ASTNode) parameters.get(0), null);
@@ -766,7 +766,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) thrownExceptions.get(1), null);			
 		}
 		{ // delete second and last param & remove first exception
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "kee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "kee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			rewrite.remove((ASTNode) parameters.get(1), null);
@@ -777,7 +777,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) thrownExceptions.get(1), null);
 		}		
 		{ // delete all params & remove first and last exception
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "lee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "lee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			rewrite.remove((ASTNode) parameters.get(0), null);
@@ -816,16 +816,16 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("public class E {\n");
 		buf.append("    public void setMyProp(String property1) {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type = (TypeDeclaration) astRoot.types().get(0);
 		
 		{ // delete param, insert new
-			MethodDeclaration methodDecl= (MethodDeclaration) type.bodyDeclarations().get(0);
+			FunctionDeclaration methodDecl= (FunctionDeclaration) type.bodyDeclarations().get(0);
 			List parameters= methodDecl.parameters();
 			rewrite.remove((ASTNode) parameters.get(0), null);
 			
@@ -833,7 +833,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			decl.setType(ast.newPrimitiveType(PrimitiveType.INT));
 			decl.setName(ast.newSimpleName("property11"));
 			
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertLast(decl, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertLast(decl, null);
 			
 		}
 		String preview= evaluateRewrite(cu, rewrite);
@@ -861,72 +861,72 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public abstract void kee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("    public abstract void lee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // insert before first param & insert an exception
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "E");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "E");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
 			SingleVariableDeclaration newParam= createNewParam(ast, "m");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertFirst(newParam, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertFirst(newParam, null);
 
 			List thrownExceptions= methodDecl.thrownExceptions();
 			assertTrue("must be 0 thrown exceptions", thrownExceptions.size() == 0);
 			
 			Name newThrownException= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertFirst(newThrownException, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertFirst(newThrownException, null);
 
 		}
 		{ // insert before second param & insert before first exception & add synchronized
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
 			// change flags
 			int newModifiers= Modifier.PUBLIC | Modifier.SYNCHRONIZED;
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
 			
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
 			ASTNode secondParam= (ASTNode) parameters.get(1);
 			SingleVariableDeclaration newParam= createNewParam(ast, "m");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertBefore(newParam, secondParam, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertBefore(newParam, secondParam, null);
 
 			List thrownExceptions= methodDecl.thrownExceptions();
 			assertTrue("must be 1 thrown exceptions", thrownExceptions.size() == 1);
 			
 			ASTNode firstException= (ASTNode) thrownExceptions.get(0);
 			Name newThrownException= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertBefore(newThrownException, firstException, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertBefore(newThrownException, firstException, null);
 		}		
 		{ // insert after last param & insert after first exception & add synchronized, static
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "hee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "hee");
 			
 			// change flags
 			int newModifiers= Modifier.PUBLIC | Modifier.SYNCHRONIZED | Modifier.STATIC;
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
 			
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 			
 			SingleVariableDeclaration newParam= createNewParam(ast, "m");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertLast(newParam, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertLast(newParam, null);
 
 			List thrownExceptions= methodDecl.thrownExceptions();
 			assertTrue("must be 1 thrown exceptions", thrownExceptions.size() == 1);
 			
 			ASTNode firstException= (ASTNode) thrownExceptions.get(0);
 			Name newThrownException= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertAfter(newThrownException, firstException, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertAfter(newThrownException, firstException, null);
 
 		}				
 		{ // insert 2 params before first & insert between two exception
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "iee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "iee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
@@ -935,7 +935,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			SingleVariableDeclaration newParam1= createNewParam(ast, "m1");
 			SingleVariableDeclaration newParam2= createNewParam(ast, "m2");
 			
-			ListRewrite listRewrite = rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY);
+			ListRewrite listRewrite = rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY);
 			listRewrite.insertBefore(newParam1, firstParam, null);
 			listRewrite.insertBefore(newParam2, firstParam, null);
 
@@ -944,14 +944,14 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			
 			ASTNode firstException= (ASTNode) thrownExceptions.get(0);
 			Name newThrownException= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertAfter(newThrownException, firstException, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertAfter(newThrownException, firstException, null);
 		}			
 		{ // insert 2 params after first & replace the second exception and insert new after
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "jee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "jee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
-			ListRewrite listRewrite = rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY);
+			ListRewrite listRewrite = rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY);
 
 			ASTNode firstParam= (ASTNode) parameters.get(0);
 			
@@ -964,17 +964,17 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			assertTrue("must be 2 thrown exceptions", thrownExceptions.size() == 2);
 			
 			Name newThrownException1= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException1, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException1, null);
 
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
 			rewrite.replace((ASTNode) thrownExceptions.get(1), newThrownException2, null);
 		}
 		{ // insert 2 params after last & remove the last exception and insert new after
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "kee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "kee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY);
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY);
 			ASTNode lastParam= (ASTNode) parameters.get(2);
 			
 			SingleVariableDeclaration newParam1= createNewParam(ast, "m1");
@@ -990,14 +990,14 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove(lastException, null);
 			
 			Name newThrownException= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertBefore(newThrownException, lastException, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertBefore(newThrownException, lastException, null);
 		}	
 		{ // insert at first and last position & remove 2nd, add after 2nd, remove 3rd
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "lee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "lee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY);
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY);
 			
 			SingleVariableDeclaration newParam1= createNewParam(ast, "m1");
 			SingleVariableDeclaration newParam2= createNewParam(ast, "m2");
@@ -1013,7 +1013,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove(lastException, null);
 			
 			Name newThrownException= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertAfter(newThrownException, secondException, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertAfter(newThrownException, secondException, null);
 
 		}				
 
@@ -1043,19 +1043,19 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("public abstract class E {\n");
 		buf.append("    public abstract void lee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // insert at first and last position & remove 2nd, add after 2nd, remove 3rd
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "lee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "lee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY);
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY);
 			
 			SingleVariableDeclaration newParam1= createNewParam(ast, "m1");
 			SingleVariableDeclaration newParam2= createNewParam(ast, "m2");
@@ -1069,7 +1069,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) thrownExceptions.get(2), null);
 			
 			Name newThrownException= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException, null);
 		}				
 
 
@@ -1099,15 +1099,15 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public abstract void kee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("    public abstract void lee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // delete all and insert after & insert 2 exceptions
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "E");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "E");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 		
@@ -1116,21 +1116,21 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) parameters.get(2), null);
 
 			SingleVariableDeclaration newParam= createNewParam(ast, "m");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertLast(newParam, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertLast(newParam, null);
 
 
 			List thrownExceptions= methodDecl.thrownExceptions();
 			assertTrue("must be 0 thrown exceptions", thrownExceptions.size() == 0);
 			
 			Name newThrownException1= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException1, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException1, null);
 
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
 			
 		}
 		{ // delete first 2, replace last and insert after & replace first exception and insert before
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
@@ -1141,7 +1141,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace((ASTNode) parameters.get(2), newParam1, null);
 						
 			SingleVariableDeclaration newParam2= createNewParam(ast, "m2");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertLast(newParam2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertLast(newParam2, null);
 
 
 			List thrownExceptions= methodDecl.thrownExceptions();
@@ -1151,11 +1151,11 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace((ASTNode) thrownExceptions.get(0), modifiedThrownException, null);
 						
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
 
 		}		
 		{ // delete first 2, replace last and insert at first & remove first and insert before
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "hee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "hee");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 
@@ -1166,7 +1166,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace((ASTNode) parameters.get(2), newParam1, null);
 						
 			SingleVariableDeclaration newParam2= createNewParam(ast, "m2");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertFirst(newParam2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertFirst(newParam2, null);
 
 			List thrownExceptions= methodDecl.thrownExceptions();
 			assertTrue("must be 1 thrown exceptions", thrownExceptions.size() == 1);
@@ -1174,7 +1174,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) thrownExceptions.get(0), null);
 						
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
 		}				
 
 
@@ -1203,15 +1203,15 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("public abstract class E {\n");
 		buf.append("    public E(int p1, int p2, int p3) {}\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // delete all and insert after & insert 2 exceptions
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "E");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "E");
 			List parameters= methodDecl.parameters();
 			assertTrue("must be 3 parameters", parameters.size() == 3);
 		
@@ -1220,16 +1220,16 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove((ASTNode) parameters.get(2), null);
 
 			SingleVariableDeclaration newParam= createNewParam(ast, "m");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertLast(newParam, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertLast(newParam, null);
 
 			List thrownExceptions= methodDecl.thrownExceptions();
 			assertTrue("must be 0 thrown exceptions", thrownExceptions.size() == 0);
 			
 			Name newThrownException1= ast.newSimpleName("InterruptedException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException1, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException1, null);
 			
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
 
 			
 		}
@@ -1261,16 +1261,16 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("       // user comment\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
-		MethodDeclaration[] methods= type.getMethods();
+		FunctionDeclaration[] methods= type.getMethods();
 		Arrays.sort(methods, new Comparator() {
 			public int compare(Object o1, Object o2) {
-				return ((MethodDeclaration) o1).getName().getIdentifier().compareTo(((MethodDeclaration) o2).getName().getIdentifier());
+				return ((FunctionDeclaration) o1).getName().getIdentifier().compareTo(((FunctionDeclaration) o2).getName().getIdentifier());
 			}
 		});
 		
@@ -1314,15 +1314,15 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public abstract void kee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("    public abstract void lee(int p1, int p2, int p3) throws IllegalArgumentException, IllegalAccessException, SecurityException;\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // replace block
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "E");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "E");
 			
 			Block body= methodDecl.getBody();
 			assertTrue("No body: E", body != null);
@@ -1332,11 +1332,11 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.replace(body, newBlock, null);
 		}
 		{ // delete block & set abstract
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
 			// change flags
 			int newModifiers= Modifier.PUBLIC | Modifier.ABSTRACT;
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
 			
 			Block body= methodDecl.getBody();
 			assertTrue("No body: gee", body != null);
@@ -1344,18 +1344,18 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 			rewrite.remove(body, null);
 		}
 		{ // insert block & set to private
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "kee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "kee");
 			
 			// change flags
 			int newModifiers= Modifier.PRIVATE;
-			rewrite.set(methodDecl, MethodDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
+			rewrite.set(methodDecl, FunctionDeclaration.MODIFIERS_PROPERTY, new Integer(newModifiers), null);
 			
 			
 			Block body= methodDecl.getBody();
 			assertTrue("Has body", body == null);
 			
 			Block newBlock= ast.newBlock();
-			rewrite.set(methodDecl, MethodDeclaration.BODY_PROPERTY, newBlock, null);
+			rewrite.set(methodDecl, FunctionDeclaration.BODY_PROPERTY, newBlock, null);
 		}		
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -1390,69 +1390,69 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    public Object foo6(int i)[][] throws IllegalArgumentException { return null; }\n");
 		buf.append("    public Object foo7(int i)[][] { return null; }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // add extra dim, add throws
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo1");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo1");
 			
-			rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
+			rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
 			
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
 
 		}
 		{ // add extra dim, remove throws
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo2");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo2");
 			
-			rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
+			rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
 			
 			rewrite.remove((ASTNode) methodDecl.thrownExceptions().get(0), null);			
 		}		
 		{ // remove extra dim, add throws
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo3");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo3");
 
-			rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
+			rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
 			
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
 
 		}
 		{ // add extra dim, remove throws
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo4");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo4");
 			
-			rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
+			rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(1), null);
 			
 			rewrite.remove((ASTNode) methodDecl.thrownExceptions().get(0), null);			
 		}
 		{ // add params, add extra dim, add throws
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo5");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo5");
 			
 			SingleVariableDeclaration newParam1= createNewParam(ast, "m1");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.PARAMETERS_PROPERTY).insertLast(newParam1, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.PARAMETERS_PROPERTY).insertLast(newParam1, null);
 
 			
-			rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(4), null);
+			rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(4), null);
 			
 			Name newThrownException2= ast.newSimpleName("ArrayStoreException");
-			rewrite.getListRewrite(methodDecl, MethodDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
+			rewrite.getListRewrite(methodDecl, FunctionDeclaration.THROWN_EXCEPTIONS_PROPERTY).insertLast(newThrownException2, null);
 	
 		}
 		{ // remove params, add extra dim, remove throws
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo6");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo6");
 			
 			rewrite.remove((ASTNode) methodDecl.parameters().get(0), null);		
 			
-			rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(4), null);
+			rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(4), null);
 			
 			rewrite.remove((ASTNode) methodDecl.thrownExceptions().get(0), null);			
 		}
 		{ // remove block
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo7");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo7");
 			rewrite.remove(methodDecl.getBody(), null);			
 		}					
 		
@@ -1493,76 +1493,76 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    /** javadoc comment */\n");
 		buf.append("    Object foo9() { return null; }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // insert first and last
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo1");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo1");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			listRewrite.insertFirst(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 			listRewrite.insertLast(ast.newModifier(Modifier.ModifierKeyword.SYNCHRONIZED_KEYWORD), null);
 		}
 		{ // insert 2x first
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo2");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo2");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			listRewrite.insertFirst(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 			listRewrite.insertFirst(ast.newModifier(Modifier.ModifierKeyword.STATIC_KEYWORD), null);
 		}		
 		{ // remove and insert first
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo3");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo3");
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			listRewrite.insertFirst(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 		}
 		{ // remove and insert last
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo4");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo4");
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			listRewrite.insertLast(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 		}
 		{ // insert first and insert Javadoc
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo5");
-			Javadoc javadoc= ast.newJavadoc();
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo5");
+			JSdoc javadoc= ast.newJSdoc();
 			TextElement textElem= ast.newTextElement();
 			textElem.setText("Hello");
 			TagElement tagElement= ast.newTagElement();
 			tagElement.fragments().add(textElem);
 			javadoc.tags().add(tagElement);
-			rewrite.set(methodDecl, MethodDeclaration.JAVADOC_PROPERTY, javadoc, null);
+			rewrite.set(methodDecl, FunctionDeclaration.JAVADOC_PROPERTY, javadoc, null);
 			
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			listRewrite.insertFirst(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 		}
 		{ // remove modifier and remove javadoc
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo6");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo6");
 			rewrite.remove(methodDecl.getJavadoc(), null);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 		}
 		{ // remove modifier and insert javadoc
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo7");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo7");
 			
-			Javadoc javadoc= ast.newJavadoc();
+			JSdoc javadoc= ast.newJSdoc();
 			TextElement textElem= ast.newTextElement();
 			textElem.setText("Hello");
 			TagElement tagElement= ast.newTagElement();
 			tagElement.fragments().add(textElem);
 			javadoc.tags().add(tagElement);
-			rewrite.set(methodDecl, MethodDeclaration.JAVADOC_PROPERTY, javadoc, null);
+			rewrite.set(methodDecl, FunctionDeclaration.JAVADOC_PROPERTY, javadoc, null);
 			
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 		}
 		{ // remove all
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo8");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo8");
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(1), null);
 		}
 		{ // insert (first) with javadoc
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo9");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo9");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			listRewrite.insertFirst(ast.newModifier(Modifier.ModifierKeyword.FINAL_KEYWORD), null);
 		}	
 		
@@ -1610,33 +1610,33 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    @Deprecated\n");
 		buf.append("    public Object foo4() { return null; }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // insert annotation first before normal
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo1");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo1");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			MarkerAnnotation annot= ast.newMarkerAnnotation();
 			annot.setTypeName(ast.newSimpleName("Override"));
 			listRewrite.insertFirst(annot, null);
 		}
 		{ // insert annotation first before annotation
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo2");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo2");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			MarkerAnnotation annot= ast.newMarkerAnnotation();
 			annot.setTypeName(ast.newSimpleName("Override"));
 			listRewrite.insertFirst(annot, null);
 		}		
 		{ // remove annotation before normal
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo3");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo3");
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 		}
 		{ // remove annotation before annotation
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo4");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo4");
 			rewrite.remove((ASTNode) methodDecl.modifiers().get(0), null);
 		}
 		
@@ -1669,35 +1669,35 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    @Deprecated()Object foo3() { return null; }\n");
 		buf.append("    @Deprecated()Object foo4() { return null; }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // insert annotation first 
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo1");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo1");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			MarkerAnnotation annot= ast.newMarkerAnnotation();
 			annot.setTypeName(ast.newSimpleName("Override"));
 			listRewrite.insertFirst(annot, null);
 		}
 		{ // insert modifier first
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo2");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo2");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			Modifier modifier= ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
 			listRewrite.insertFirst(modifier, null);
 		}
 		{ // insert modifier last
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo3");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo3");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			Modifier modifier= ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
 			listRewrite.insertLast(modifier, null);
 		}
 		{ // insert modifier first
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo4");
-			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, MethodDeclaration.MODIFIERS2_PROPERTY);
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo4");
+			ListRewrite listRewrite= rewrite.getListRewrite(methodDecl, FunctionDeclaration.MODIFIERS2_PROPERTY);
 			Modifier modifier= ast.newModifier(Modifier.ModifierKeyword.PUBLIC_KEYWORD);
 			listRewrite.insertFirst(modifier, null);
 		}
@@ -1728,9 +1728,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    int i2= 1, k2= 2, n2= 3;\n");
 		buf.append("    static final int i3= 1, k3= 2, n3= 3;\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -1809,9 +1809,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    static {\n");
 		buf.append("    }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		AST ast= astRoot.getAST();
@@ -1866,15 +1866,15 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("public abstract class E {\n");
 		buf.append("    public Object foo1(int i, boolean b) { return null; }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ // add extra dim, add throws
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo1");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo1");
 			
 			List params= methodDecl.parameters();
 			
@@ -1910,14 +1910,14 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("public abstract class E {\n");
 		buf.append("    public Object foo1(int i, boolean b) { return null; }\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 		
 		{ 
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo1");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo1");
 			
 			List params= methodDecl.parameters();
 			
@@ -1950,16 +1950,16 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private int DD()[]{\n");
 		buf.append("    };\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "DD");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "DD");
 			
-			rewrite.set(methodDecl, MethodDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
-			rewrite.set(methodDecl, MethodDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(0), null);
+			rewrite.set(methodDecl, FunctionDeclaration.CONSTRUCTOR_PROPERTY, Boolean.TRUE, null);
+			rewrite.set(methodDecl, FunctionDeclaration.EXTRA_DIMENSIONS_PROPERTY, new Integer(0), null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -1994,13 +1994,13 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo2(){\n");
 		buf.append("    }\n");	
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 			rewrite.remove(methodDecl, null);
 		}
 
@@ -2041,13 +2041,13 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo2(){\n");
 		buf.append("    }\n");	
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo2");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo2");
 			ASTNode node= rewrite.createCopyTarget(methodDecl);
 
 			ASTNode firstDecl= (ASTNode) type.bodyDeclarations().get(0);
@@ -2100,13 +2100,13 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo2(){\n");
 		buf.append("    }\n");	
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 			rewrite.remove(methodDecl, null);
 		}
 
@@ -2150,13 +2150,13 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo2(){\n");
 		buf.append("    }\n");	
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 			rewrite.remove(methodDecl, null);
 		}
 
@@ -2201,21 +2201,21 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo2(){\n");
 		buf.append("    }\n");	
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 			ASTNode copy= rewrite.createCopyTarget(methodDecl);
 			
 			rewrite.getListRewrite(type, TypeDeclaration.BODY_DECLARATIONS_PROPERTY).insertLast(copy, null);
 			
-			MethodDeclaration newMethodDecl= createNewMethod(astRoot.getAST(), "xoo", false);
+			FunctionDeclaration newMethodDecl= createNewMethod(astRoot.getAST(), "xoo", false);
 			rewrite.replace(methodDecl, newMethodDecl, null);
 			
-			//MethodDeclaration methodDecl2= findMethodDeclaration(type, "foo1");
+			//FunctionDeclaration methodDecl2= findMethodDeclaration(type, "foo1");
 			//rewrite.markAsReplaced(methodDecl2, copy);
 		}
 
@@ -2262,9 +2262,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo1(){\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
@@ -2308,19 +2308,19 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    private void foo2(String format, Object[] args) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		TypeDeclaration type= findTypeDeclaration(astRoot, "DD");
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo1");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo1");
 			SingleVariableDeclaration param= (SingleVariableDeclaration) methodDecl.parameters().get(1);
 			rewrite.set(param, SingleVariableDeclaration.VARARGS_PROPERTY, Boolean.FALSE, null);
 		}
 		{
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "foo2");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo2");
 			SingleVariableDeclaration param= (SingleVariableDeclaration) methodDecl.parameters().get(1);
 			rewrite.set(param, SingleVariableDeclaration.TYPE_PROPERTY, ast.newPrimitiveType(PrimitiveType.INT), null);
 			rewrite.set(param, SingleVariableDeclaration.VARARGS_PROPERTY, Boolean.TRUE, null);
@@ -2349,9 +2349,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("    String value2() default 1;\n");
 		buf.append("    String value3() default 2;\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AnnotationTypeDeclaration type= (AnnotationTypeDeclaration) findAbstractTypeDeclaration(astRoot, "DD");
@@ -2393,9 +2393,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("public enum DD {\n");
 		buf.append("    E1(1), E2, E3(), E4(1, 2)\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		EnumDeclaration type= (EnumDeclaration) findAbstractTypeDeclaration(astRoot, "DD");
@@ -2461,9 +2461,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("        }\n");
 		buf.append("    }\n");	
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		AST ast= astRoot.getAST();
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		EnumDeclaration type= (EnumDeclaration) findAbstractTypeDeclaration(astRoot, "DD");
@@ -2599,9 +2599,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("public enum DD {\n");
 		buf.append("    RED, BROWN(), GREEN(){};\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
+		IJavaScriptUnit cu= pack1.createCompilationUnit("DD.js", buf.toString(), false, null);
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		EnumDeclaration type= (EnumDeclaration) findAbstractTypeDeclaration(astRoot, "DD");
 		{
@@ -2632,13 +2632,13 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("		return 0;\n");
 		buf.append("	}\n");	
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("A.js", buf.toString(), false, null);	
 		
 		// Get method declaration and its body
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "A");
-		MethodDeclaration methodDecl= findMethodDeclaration(type, "foo");
+		FunctionDeclaration methodDecl= findMethodDeclaration(type, "foo");
 		Block body = methodDecl.getBody();
 		
 	   // start record of the modifications
@@ -2655,7 +2655,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		ExpressionStatement expressionStatement = ast.newExpressionStatement(variableDeclarationExpression);
 		newBody.statements().add(expressionStatement);
 		TryStatement tryStatement = ast.newTryStatement();
-		MethodInvocation methodInvocation = ast.newMethodInvocation();
+		FunctionInvocation methodInvocation = ast.newFunctionInvocation();
 		methodInvocation.setName(ast.newSimpleName("lock"));
 		methodInvocation.setExpression(ast.newSimpleName("lock"));
 		ExpressionStatement expressionStatement2 = ast.newExpressionStatement(methodInvocation);
@@ -2663,7 +2663,7 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		tryStatement.setBody(body);
 		Block finallyBlock = ast.newBlock();
 		tryStatement.setFinally(finallyBlock);
-		methodInvocation = ast.newMethodInvocation();
+		methodInvocation = ast.newFunctionInvocation();
 		methodInvocation.setName(ast.newSimpleName("unLock"));
 		methodInvocation.setExpression(ast.newSimpleName("lock"));
 		expressionStatement2 = ast.newExpressionStatement(methodInvocation);
@@ -2685,9 +2685,9 @@ public class ASTRewritingMethodDeclTest extends ASTRewritingTest {
 		buf.append("@An(1)\n");
 		buf.append("class E {\n");
 		buf.append("}\n");	
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);	
 		
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		TypeDeclaration type= findTypeDeclaration(astRoot, "E");

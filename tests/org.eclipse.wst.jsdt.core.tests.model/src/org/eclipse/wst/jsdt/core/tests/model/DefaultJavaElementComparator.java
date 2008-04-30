@@ -22,7 +22,7 @@ import org.eclipse.wst.jsdt.core.dom.BodyDeclaration;
 import org.eclipse.wst.jsdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.wst.jsdt.core.dom.FieldDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Initializer;
-import org.eclipse.wst.jsdt.core.dom.MethodDeclaration;
+import org.eclipse.wst.jsdt.core.dom.FunctionDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Name;
 import org.eclipse.wst.jsdt.core.dom.PrimitiveType;
 import org.eclipse.wst.jsdt.core.dom.QualifiedName;
@@ -31,7 +31,7 @@ import org.eclipse.wst.jsdt.core.dom.SimpleType;
 import org.eclipse.wst.jsdt.core.dom.SingleVariableDeclaration;
 import org.eclipse.wst.jsdt.core.dom.Type;
 import org.eclipse.wst.jsdt.core.dom.VariableDeclarationFragment;
-import org.eclipse.wst.jsdt.core.util.CompilationUnitSorter;
+import org.eclipse.wst.jsdt.core.util.JavaScriptUnitSorter;
 
 import com.ibm.icu.text.Collator;
 
@@ -168,8 +168,8 @@ class DefaultJavaElementComparator implements Comparator {
 	 */
 	private int getCategory(BodyDeclaration node) {
 		switch(node.getNodeType()) {
-			case ASTNode.METHOD_DECLARATION :
-				MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+			case ASTNode.FUNCTION_DECLARATION :
+				FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 				if (methodDeclaration.isConstructor()) {
 					return this.categories[CONSTRUCTOR_CATEGORY];
 				}
@@ -243,15 +243,15 @@ class DefaultJavaElementComparator implements Comparator {
 				return compare;
 			}
 		}
-		int sourceStart1 = ((Integer) node1.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
-		int sourceStart2 = ((Integer) node2.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).intValue();
+		int sourceStart1 = ((Integer) node1.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
+		int sourceStart2 = ((Integer) node2.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).intValue();
 		return sourceStart1 - sourceStart2;
 	}
 
 	private String buildSignature(BodyDeclaration node) {
 		switch(node.getNodeType()) {
-			case ASTNode.METHOD_DECLARATION :
-				MethodDeclaration methodDeclaration = (MethodDeclaration) node;
+			case ASTNode.FUNCTION_DECLARATION :
+				FunctionDeclaration methodDeclaration = (FunctionDeclaration) node;
 				StringBuffer buffer = new StringBuffer();
 				buffer.append(methodDeclaration.getName().getIdentifier());
 				final List parameters = methodDeclaration.parameters();
@@ -273,7 +273,7 @@ class DefaultJavaElementComparator implements Comparator {
 				EnumConstantDeclaration enumConstantDeclaration = (EnumConstantDeclaration) node;
 				return enumConstantDeclaration.getName().getIdentifier();
 			case ASTNode.INITIALIZER :
-				return ((Integer) node.getProperty(CompilationUnitSorter.RELATIVE_ORDER)).toString();
+				return ((Integer) node.getProperty(JavaScriptUnitSorter.RELATIVE_ORDER)).toString();
 			case ASTNode.TYPE_DECLARATION :
 			case ASTNode.ENUM_DECLARATION :
 			case ASTNode.ANNOTATION_TYPE_DECLARATION :

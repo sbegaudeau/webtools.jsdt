@@ -17,19 +17,19 @@ import junit.framework.Test;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.wst.jsdt.core.BindingKey;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IProblemRequestor;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 import org.eclipse.wst.jsdt.core.compiler.IProblem;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
 import org.eclipse.wst.jsdt.core.dom.ASTRequestor;
-import org.eclipse.wst.jsdt.core.dom.CompilationUnit;
+import org.eclipse.wst.jsdt.core.dom.JavaScriptUnit;
 import org.eclipse.wst.jsdt.core.dom.IBinding;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 import org.eclipse.wst.jsdt.core.dom.ITypeBinding;
 import org.eclipse.wst.jsdt.core.dom.IVariableBinding;
 import org.eclipse.wst.jsdt.core.dom.Type;
@@ -40,7 +40,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	
 	public class TestASTRequestor extends ASTRequestor {
 		public ArrayList asts = new ArrayList();
-		public void acceptAST(ICompilationUnit source, CompilationUnit ast) {
+		public void acceptAST(IJavaScriptUnit source, JavaScriptUnit ast) {
 			this.asts.add(ast);
 		}
 		public void acceptBinding(String bindingKey, IBinding binding) {
@@ -55,7 +55,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		public BindingResolver(MarkerInfo[] markerInfos) {
 			this.markerInfos = markerInfos;
 		}
-		public void acceptAST(ICompilationUnit source, CompilationUnit cu) {
+		public void acceptAST(IJavaScriptUnit source, JavaScriptUnit cu) {
 			super.acceptAST(source, cu);
 			ASTNode[] nodes = findNodes(cu, this.markerInfos[++this.index]);
 			for (int i = 0, length = nodes.length; i < length; i++) {
@@ -64,7 +64,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 				
 				// case of a capture binding
 				if (bindingKey.indexOf('!') != -1 && binding.getKind() == IBinding.METHOD) {
-					bindingKey = ((IMethodBinding) binding).getReturnType().getKey();
+					bindingKey = ((IFunctionBinding) binding).getReturnType().getKey();
 				}
 				
 				this.bindingKeys.add(bindingKey);
@@ -124,7 +124,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 * While resolving, for the ASTNode that is marked, ensures that its binding key is the expected one.
 	 * Ensures that the returned binding corresponds to the expected key.
 	 */
-	private void assertRequestedBindingFound(String[] pathAndSources, final String expectedKey) throws JavaModelException {
+	private void assertRequestedBindingFound(String[] pathAndSources, final String expectedKey) throws JavaScriptModelException {
 		assertRequestedBindingsFound(pathAndSources, new String[] {expectedKey});
 	}
 		
@@ -133,7 +133,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 * While resolving, for the ASTNode that is marked, ensures that its binding key is the expected one.
 	 * Ensures that the returned binding corresponds to the expected key.
 	 */
-	private void assertRequestedBindingsFound(String[] pathAndSources, final String[] expectedKeys) throws JavaModelException {		
+	private void assertRequestedBindingsFound(String[] pathAndSources, final String[] expectedKeys) throws JavaScriptModelException {		
 		BindingResolver resolver = requestBindings(pathAndSources, expectedKeys);
 		
 		assertStringsEqual("Unexpected binding for marked node", expectedKeys, resolver.getBindingKeys());
@@ -146,7 +146,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 * Resolves a dummy cu as a batch and on the first accept, create a binding with the expected key using ASTRequestor#createBindings.
 	 * Ensures that the returned binding corresponds to the expected key.
 	 */
-	private void assertBindingCreated(String[] pathAndSources, final String expectedKey) throws JavaModelException {
+	private void assertBindingCreated(String[] pathAndSources, final String expectedKey) throws JavaScriptModelException {
 		assertBindingsCreated(pathAndSources, new String[] {expectedKey});
 	}
 	/*
@@ -154,13 +154,13 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 * Resolves a dummy cu as a batch and on the first accept, create a binding with the expected key using ASTRequestor#createBindings.
 	 * Ensures that the returned binding corresponds to the expected key.
 	 */
-	private void assertBindingsCreated(String[] pathAndSources, final String[] expectedKeys) throws JavaModelException {
-		ICompilationUnit[] copies = null;
+	private void assertBindingsCreated(String[] pathAndSources, final String[] expectedKeys) throws JavaScriptModelException {
+		IJavaScriptUnit[] copies = null;
 		try {
 			copies = createWorkingCopies(pathAndSources);
 			class Requestor extends TestASTRequestor {
 				ArrayList createdBindingKeys = new ArrayList();
-				public void acceptAST(ICompilationUnit source, CompilationUnit cu) {
+				public void acceptAST(IJavaScriptUnit source, JavaScriptUnit cu) {
 					super.acceptAST(source, cu);
 					IBinding[] bindings = createBindings(expectedKeys);
 					if (bindings != null && bindings.length > 0 && bindings[0] != null)
@@ -177,7 +177,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 				}
 			}
 			Requestor requestor = new Requestor();
-			ICompilationUnit[] dummyWorkingCopies = null;
+			IJavaScriptUnit[] dummyWorkingCopies = null;
 			try {
 				dummyWorkingCopies = createWorkingCopies(new String[] {
 					"/P/Test.js",
@@ -204,16 +204,16 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		}
 	}
 
-	private void createASTs(ICompilationUnit[] cus, TestASTRequestor requestor) {
+	private void createASTs(IJavaScriptUnit[] cus, TestASTRequestor requestor) {
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.createASTs(cus, new String[] {}, requestor, null);
 	}
 	
-	protected ICompilationUnit[] createWorkingCopies(String[] pathAndSources) throws JavaModelException {
+	protected IJavaScriptUnit[] createWorkingCopies(String[] pathAndSources) throws JavaScriptModelException {
 		return createWorkingCopies(pathAndSources, this.owner);
 	}
 
-	protected ICompilationUnit[] createWorkingCopies(String[] pathAndSources, boolean resolve) throws JavaModelException {
+	protected IJavaScriptUnit[] createWorkingCopies(String[] pathAndSources, boolean resolve) throws JavaScriptModelException {
 		IProblemRequestor problemRequestor = resolve
 			? new IProblemRequestor() {
 				public void acceptProblem(IProblem problem) {}
@@ -228,17 +228,17 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		return createWorkingCopies(markerInfos, this.owner, problemRequestor);
 	}
 	
-	private void resolveASTs(ICompilationUnit[] cus, TestASTRequestor requestor) {
+	private void resolveASTs(IJavaScriptUnit[] cus, TestASTRequestor requestor) {
 		resolveASTs(cus, new String[0], requestor, getJavaProject("P"), this.owner);
 	}
 	
-	private BindingResolver requestBindings(String[] pathAndSources, final String[] expectedKeys) throws JavaModelException {
-		ICompilationUnit[] copies = null;
+	private BindingResolver requestBindings(String[] pathAndSources, final String[] expectedKeys) throws JavaScriptModelException {
+		IJavaScriptUnit[] copies = null;
 		try {
 			MarkerInfo[] markerInfos = createMarkerInfos(pathAndSources);
 			copies = createWorkingCopies(markerInfos, this.owner);
 			BindingResolver resolver = new BindingResolver(markerInfos);
-			resolveASTs(copies, expectedKeys == null ? new String[0] : expectedKeys, resolver, copies.length > 0 ? copies[0].getJavaProject() : getJavaProject("P"), this.owner);
+			resolveASTs(copies, expectedKeys == null ? new String[0] : expectedKeys, resolver, copies.length > 0 ? copies[0].getJavaScriptProject() : getJavaProject("P"), this.owner);
 			return resolver;
 		} finally {
 			discardWorkingCopies(copies);
@@ -306,8 +306,8 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		);
 		
 		// compare the bindings coming from the 2 ASTs
-		Type superX = (Type) findNode((CompilationUnit) requestor.asts.get(0), markerInfos[0]);
-		TypeDeclaration typeY = (TypeDeclaration) findNode((CompilationUnit) requestor.asts.get(1), markerInfos[1]);
+		Type superX = (Type) findNode((JavaScriptUnit) requestor.asts.get(0), markerInfos[0]);
+		TypeDeclaration typeY = (TypeDeclaration) findNode((JavaScriptUnit) requestor.asts.get(1), markerInfos[1]);
 		IBinding superXBinding = superX.resolveBinding();
 		IBinding typeYBinding = typeY.resolveBinding();
 		assertTrue("Super of X and Y should be the same", superXBinding == typeYBinding);
@@ -317,7 +317,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 * Ensures that ASTs that are required by original source but were not asked for are not handled.
 	 */
 	public void test003() throws CoreException {
-		ICompilationUnit[] otherWorkingCopies = null;
+		IJavaScriptUnit[] otherWorkingCopies = null;
 		try {
 			this.workingCopies = createWorkingCopies(new String[] {
 				"/P/p1/X.js",
@@ -992,7 +992,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 * Ensures that requesting 2 bindings and an AST for the same compilation unit reports the 2 bindings.
 	 */
 	public void test042() throws CoreException {
-		ICompilationUnit workingCopy = null;
+		IJavaScriptUnit workingCopy = null;
 		try {
 			workingCopy = getWorkingCopy(
 				"/P/X.js",
@@ -1007,7 +1007,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 					"LX;.field)I"
 				};
 			resolveASTs(
-				new ICompilationUnit[] {workingCopy}, 
+				new IJavaScriptUnit[] {workingCopy}, 
 				bindingKeys,
 				requestor,
 				getJavaProject("P"),
@@ -1243,7 +1243,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test056() throws CoreException, IOException {
 		try {
-			IJavaProject project = createJavaProject("BinaryProject", new String[0], new String[] {"JCL15_LIB"}, "", "1.5");
+			IJavaScriptProject project = createJavaProject("BinaryProject", new String[0], new String[] {"JCL15_LIB"}, "", "1.5");
 			addLibrary(project, "lib.jar", "src.zip", new String[] {
 				"/BinaryProject/p/X.js",
 				"package p;\n" +
@@ -1460,8 +1460,8 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 * (regression test for bug 97542 ASTParser#createASTs does not correctly resolve bindings in working copies)
 	 */
 	public void test066() throws CoreException {
-		ICompilationUnit primaryWorkingCopy = null;
-		ICompilationUnit ownedWorkingcopy = null;
+		IJavaScriptUnit primaryWorkingCopy = null;
+		IJavaScriptUnit ownedWorkingcopy = null;
 		try {
 			// primary working copy with no method foo()
 			primaryWorkingCopy = getCompilationUnit("/P/p1/X.js");
@@ -1471,7 +1471,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 				"public class X {\n" +
 				"}"
 			);
-			primaryWorkingCopy.reconcile(ICompilationUnit.NO_AST, false, null, null);
+			primaryWorkingCopy.reconcile(IJavaScriptUnit.NO_AST, false, null, null);
 			
 			// working copy for the test's owner with a method foo()
 			ownedWorkingcopy = getWorkingCopy(
@@ -1531,7 +1531,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 	 */
 	public void test068() throws CoreException, IOException {
 		try {
-			IJavaProject project = createJavaProject("P1", new String[] {""}, new String[] {"JCL15_LIB"}, "", "1.5");
+			IJavaScriptProject project = createJavaProject("P1", new String[] {""}, new String[] {"JCL15_LIB"}, "", "1.5");
 			addLibrary(project, "lib.jar", "src.zip", new String[] {
 				"/P1/p/X.js",
 				"package p;\n" +
@@ -1589,7 +1589,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		});
 		String key = BindingKey.createTypeBindingKey("pkg.RefMyAnnoAndClassWithAnno");
 		BindingResolver resolver = new BindingResolver(new MarkerInfo[0]);
-		resolveASTs(new ICompilationUnit[0],  new String[] {key}, resolver, getJavaProject("P"), this.owner);
+		resolveASTs(new IJavaScriptUnit[0],  new String[] {key}, resolver, getJavaProject("P"), this.owner);
 		assertStringsEqual(
 			"Unexpected bindings",
 			"Lpkg/RefAnnoAndClassWithAnno~RefMyAnnoAndClassWithAnno;\n",
@@ -1614,10 +1614,10 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		});
 		this.workingCopies = createWorkingCopies(markerInfos, this.owner);
 		TestASTRequestor requestor = new TestASTRequestor();
-		resolveASTs(new ICompilationUnit[] {this.workingCopies[0]}, requestor);
+		resolveASTs(new IJavaScriptUnit[] {this.workingCopies[0]}, requestor);
 		
 		// get the binding for Y
-		Type y = (Type) findNode((CompilationUnit) requestor.asts.get(0), markerInfos[0]);
+		Type y = (Type) findNode((JavaScriptUnit) requestor.asts.get(0), markerInfos[0]);
 		ITypeBinding yBinding = y.resolveBinding();
 		
 		// ensure that the fields for Y are not resolved
@@ -1643,7 +1643,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 		this.workingCopies = createWorkingCopies(markerInfos, this.owner);
 		class Requestor extends TestASTRequestor {
 			Object constantValue = null;
-			public void acceptAST(ICompilationUnit source, CompilationUnit ast) {
+			public void acceptAST(IJavaScriptUnit source, JavaScriptUnit ast) {
 				super.acceptAST(source, ast);
 				Type y = (Type) findNode(ast, markerInfos[0]);
 				ITypeBinding typeBinding = y.resolveBinding();
@@ -1652,7 +1652,7 @@ public class BatchASTCreationTests extends AbstractASTTests {
 			}
 		}
 		Requestor requestor = new Requestor();
-		resolveASTs(new ICompilationUnit[] {this.workingCopies[0]}, requestor);
+		resolveASTs(new IJavaScriptUnit[] {this.workingCopies[0]}, requestor);
 		
 		assertEquals("Unexpected constant value", new Integer(5), requestor.constantValue);
 	}
@@ -1684,8 +1684,8 @@ public class BatchASTCreationTests extends AbstractASTTests {
 // https://bugs.eclipse.org/bugs/show_bug.cgi?id=159631
 public void test073() throws CoreException, IOException {
 	try {
-		IJavaProject project = createJavaProject("P072", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
-		ICompilationUnit compilationUnits[] = new ICompilationUnit[3]; 
+		IJavaScriptProject project = createJavaProject("P072", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
+		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[3]; 
 		compilationUnits[0] = getWorkingCopy(
 			"P072/X.js",
 			"public class X {\n" +
@@ -1746,7 +1746,7 @@ public void test074_Bug155003() throws CoreException {
 			"}";
 	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
+	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
 	BindingKey bindingKey = new BindingKey(binding.getKey());
 	assertStringsEqual("Unexpected thrown exceptions",
@@ -1766,7 +1766,7 @@ public void test075_Bug155003() throws CoreException {
 		"}";
 	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
+	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
 	BindingKey bindingKey = new BindingKey(binding.getKey());
 	assertStringsEqual("Unexpected thrown exceptions",
@@ -1786,7 +1786,7 @@ public void test076_Bug155003() throws CoreException {
 		"}";
 	this.workingCopies = createWorkingCopies(new String[] { "/P/X.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
+	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
 	BindingKey bindingKey = new BindingKey(binding.getKey());
 	assertStringsEqual("Unexpected thrown exceptions",
@@ -1818,7 +1818,7 @@ public void test077_Bug163647() throws CoreException {
 		"}";
 	this.workingCopies = createWorkingCopies(new String[] { "/P/Test.js", content }, true /*resolve*/);
 	ASTNode node = buildAST(content, this.workingCopies[0]);
-	assertEquals("Invalid node type!", ASTNode.METHOD_INVOCATION, node.getNodeType());
+	assertEquals("Invalid node type!", ASTNode.FUNCTION_INVOCATION, node.getNodeType());
 	IBinding binding = resolveBinding(node);
 	BindingKey bindingKey = new BindingKey(binding.getKey());
 	assertStringsEqual("Unexpected thrown exceptions",
@@ -1831,8 +1831,8 @@ public void test077_Bug163647() throws CoreException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152060
 public void test078() throws CoreException, IOException {
 	try {
-		IJavaProject project = createJavaProject("P078", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
-		ICompilationUnit compilationUnits[] = new ICompilationUnit[1]; 
+		IJavaScriptProject project = createJavaProject("P078", new String[] {}, Util.getJavaClassLibs(), "", "1.5");
+		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[1]; 
 		compilationUnits[0] = getWorkingCopy(
 			"P078/Test.js",
 			"import java.util.*;\n" + 
@@ -1864,7 +1864,7 @@ public void test078() throws CoreException, IOException {
 				key
 			},
 			new ASTRequestor() {
-                public void acceptAST(ICompilationUnit source, CompilationUnit localAst) {
+                public void acceptAST(IJavaScriptUnit source, JavaScriptUnit localAst) {
                 	// do nothing
                 }
                 public void acceptBinding(String bindingKey, IBinding binding) {
@@ -1887,7 +1887,7 @@ public void test078() throws CoreException, IOException {
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=152060
 public void test079() throws CoreException, IOException {
 	try {
-		IJavaProject project = createJavaProject("P079", new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
+		IJavaScriptProject project = createJavaProject("P079", new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
 		createFolder("/P079/src/test");
 		createFile("/P079/src/test/Test.js",
 				"package test;\n" +
@@ -1907,7 +1907,7 @@ public void test079() throws CoreException, IOException {
 				"    public void extra() {\n" + 
 				"    }\n" + 
 				"}");
-		ICompilationUnit compilationUnits[] = new ICompilationUnit[1]; 
+		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[1]; 
 		compilationUnits[0] = getCompilationUnit("P079", "src", "test", "Test.js");
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setResolveBindings(true);
@@ -1920,7 +1920,7 @@ public void test079() throws CoreException, IOException {
 				key
 			},
 			new ASTRequestor() {
-                public void acceptAST(ICompilationUnit source, CompilationUnit localAst) {
+                public void acceptAST(IJavaScriptUnit source, JavaScriptUnit localAst) {
                 	// do nothing
                 }
                 public void acceptBinding(String bindingKey, IBinding binding) {
@@ -1943,7 +1943,7 @@ public void test079() throws CoreException, IOException {
 public void test080() throws CoreException, IOException {
 	final String projectName = "P080";
 	try {
-		IJavaProject project = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
+		IJavaScriptProject project = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
 		createFolder("/" + projectName + "/src/test");
 		createFile("/" + projectName + "/src/test/Test.js",
 				"package test;\n" +
@@ -1965,7 +1965,7 @@ public void test080() throws CoreException, IOException {
 				"            }\n" + 
 				"        }\n" + 
 				"}");
-		ICompilationUnit compilationUnits[] = new ICompilationUnit[1]; 
+		IJavaScriptUnit compilationUnits[] = new IJavaScriptUnit[1]; 
 		compilationUnits[0] = getCompilationUnit(projectName, "src", "test", "Test.js");
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setResolveBindings(true);
@@ -1978,7 +1978,7 @@ public void test080() throws CoreException, IOException {
 				key
 			},
 			new ASTRequestor() {
-                public void acceptAST(ICompilationUnit source, CompilationUnit localAst) {
+                public void acceptAST(IJavaScriptUnit source, JavaScriptUnit localAst) {
                 	// do nothing
                 }
                 public void acceptBinding(String bindingKey, IBinding binding) {
@@ -2002,7 +2002,7 @@ public void test080() throws CoreException, IOException {
 public void test081() throws CoreException, IOException {
 	final String projectName = "P081";
 	try {
-		IJavaProject javaProject = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
+		IJavaScriptProject javaProject = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
 		String typeName = "java.util.List<java.lang.Integer>";
 		class BindingRequestor extends ASTRequestor {
 			ITypeBinding _result = null;
@@ -2019,7 +2019,7 @@ public void test081() throws CoreException, IOException {
 		parser.setResolveBindings(true);
 		parser.setProject(javaProject);
 		// this doesn’t really do a parse; it’s a type lookup
-		parser.createASTs(new ICompilationUnit[] {}, keys, requestor, null);
+		parser.createASTs(new IJavaScriptUnit[] {}, keys, requestor, null);
 		ITypeBinding typeBinding = requestor._result;
 		assertNotNull("No binding", typeBinding);
 		assertTrue("Not a parameterized type binding", typeBinding.isParameterizedType());
@@ -2031,7 +2031,7 @@ public void test081() throws CoreException, IOException {
 public void test082() throws CoreException, IOException {
 	final String projectName = "P082";
 	try {
-		IJavaProject javaProject = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
+		IJavaScriptProject javaProject = createJavaProject(projectName, new String[] {"src"}, Util.getJavaClassLibs(), "bin", "1.5");
 		String typeName = "java.util.List<Integer>";
 		class BindingRequestor extends ASTRequestor {
 			ITypeBinding _result = null;
@@ -2048,7 +2048,7 @@ public void test082() throws CoreException, IOException {
 		parser.setResolveBindings(true);
 		parser.setProject(javaProject);
 		// this doesn’t really do a parse; it’s a type lookup
-		parser.createASTs(new ICompilationUnit[] {}, keys, requestor, null);
+		parser.createASTs(new IJavaScriptUnit[] {}, keys, requestor, null);
 		ITypeBinding typeBinding = requestor._result;
 		assertNull("Got a binding", typeBinding);
 	} finally {

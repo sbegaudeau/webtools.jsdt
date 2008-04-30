@@ -11,9 +11,9 @@
 package org.eclipse.wst.jsdt.core.tests.model;
 
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.internal.codeassist.RelevanceConstants;
 import org.eclipse.wst.jsdt.internal.compiler.classfmt.ClassFileConstants;
 
@@ -62,7 +62,7 @@ protected void assertResults(String expected, String actual) {
 		throw c;
 	}
 }
-public void testCodeSnippetAssistForClassFile() throws JavaModelException {
+public void testCodeSnippetAssistForClassFile() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "aa.bb.cc", "AClass.class");
 	IType type = cf.getType();
@@ -90,9 +90,9 @@ public void testCodeSnippetAssistForClassFile() throws JavaModelException {
 }
 
 
-public void testCodeSnippetAssistForCompilationUnit() throws JavaModelException {
+public void testCodeSnippetAssistForCompilationUnit() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
-	ICompilationUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.js");
+	IJavaScriptUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.js");
 	IType type = cu.getTypes()[0];
 	String snippet = 
 		"int varX;\n" +
@@ -123,7 +123,7 @@ public void testCodeSnippetAssistForCompilationUnit() throws JavaModelException 
 		requestor.getResults());
 }
 
-public void testCodeSnippetAssistForClassFileWithSource() throws JavaModelException {
+public void testCodeSnippetAssistForClassFileWithSource() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "aa.bb.cc", "CClass.class");
 	IType type = cf.getType();
@@ -158,9 +158,9 @@ public void testCodeSnippetAssistForClassFileWithSource() throws JavaModelExcept
 }
 
 
-public void testCodeSnippetAssistForCompilationUnitWithoutSource() throws JavaModelException {
+public void testCodeSnippetAssistForCompilationUnitWithoutSource() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
-	ICompilationUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.js");
+	IJavaScriptUnit cu = getCompilationUnit("SnippetCompletion", "src", "aa.bb.cc", "BClass.js");
 	IType type = cu.getTypes()[0];
 	
 	String snippet = 
@@ -188,7 +188,7 @@ public void testCodeSnippetAssistForCompilationUnitWithoutSource() throws JavaMo
 }
 
 
-public void testCodeSnippetAssistForClassFileInInnerClass() throws JavaModelException {
+public void testCodeSnippetAssistForClassFileInInnerClass() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "aa.bb.cc", "AClass$Inner.class");
 	IType type = cf.getType();
@@ -223,7 +223,7 @@ public void testCodeSnippetAssistForClassFileInInnerClass() throws JavaModelExce
 /*
  * bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=50686
  */
-public void testCodeSnippetAssistForClassFileInInterface() throws JavaModelException {
+public void testCodeSnippetAssistForClassFileInInterface() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "xx.yy", "MyInterface.class");
 	IType type = cf.getType();
@@ -252,7 +252,7 @@ public void testCodeSnippetAssistForClassFileInInterface() throws JavaModelExcep
 /*
  * bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=62201
  */
-public void testCodeSnippetAssistForClassFileInInterface2() throws JavaModelException {
+public void testCodeSnippetAssistForClassFileInInterface2() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "xx.yy", "MyInterface2.class");
 	IType type = cf.getType();
@@ -273,13 +273,13 @@ public void testCodeSnippetAssistForClassFileInInterface2() throws JavaModelExce
 	assertResults(
 		"void[KEYWORD]{void, null, null, void, ["+tokenStart+", "+tokenEnd+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_NON_RESTRICTED)+"}\n"+
 		"var[LOCAL_VARIABLE_REF]{var, null, I, var, ["+tokenStart+", "+tokenEnd+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
-		"varFoo[METHOD_REF]{varFoo(), Lxx.yy.MyInterface2;, ()V, varFoo, ["+tokenStart+", "+tokenEnd+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
+		"varFoo[FUNCTION_REF]{varFoo(), Lxx.yy.MyInterface2;, ()V, varFoo, ["+tokenStart+", "+tokenEnd+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
 		"varX[LOCAL_VARIABLE_REF]{varX, null, I, varX, ["+tokenStart+", "+tokenEnd+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
 		"varY[LOCAL_VARIABLE_REF]{varY, null, I, varY, ["+tokenStart+", "+tokenEnd+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}\n"+
 		"varsc[LOCAL_VARIABLE_REF]{varsc, null, LSuperClass;, varsc, ["+tokenStart+", "+tokenEnd+"], "+(R_DEFAULT + R_INTERESTING + R_CASE + R_UNQUALIFIED + R_NON_RESTRICTED)+"}",
 		requestor.getResults());
 }
-public void testCodeSnippetAssistForClassFileWithDollar() throws JavaModelException {
+public void testCodeSnippetAssistForClassFileWithDollar() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "test00XX", "Test.class");
 	IType type = cf.getType();
@@ -304,7 +304,7 @@ public void testCodeSnippetAssistForClassFileWithDollar() throws JavaModelExcept
 		requestor.getResults());
 }
 
-public void testCodeSnippetAssistInsideNumber() throws JavaModelException {
+public void testCodeSnippetAssistInsideNumber() throws JavaScriptModelException {
 	CompletionTestsRequestor2 requestor = new CompletionTestsRequestor2(false,false,true);
 	IClassFile cf = getClassFile("SnippetCompletion", "class-folder", "aa.bb.cc", "AClass.class");
 	IType type = cf.getType();

@@ -23,7 +23,7 @@ import org.eclipse.wst.jsdt.core.*;
 
 public class ReconcilerStatementsRecoveryTests extends ModifyingResourceTests {
 	
-	protected ICompilationUnit workingCopy;
+	protected IJavaScriptUnit workingCopy;
 	protected ProblemRequestor problemRequestor;
 	
 	/* A problem requestor that auto-cancels on first problem */
@@ -73,7 +73,7 @@ protected void assertProblems(String message, String expected) {
 	assertProblems(message, expected, this.problemRequestor);
 }
 // Expect no error as soon as indexing is finished
-protected void assertNoProblem(char[] source, ICompilationUnit unit) throws InterruptedException, JavaModelException {
+protected void assertNoProblem(char[] source, IJavaScriptUnit unit) throws InterruptedException, JavaScriptModelException {
 	IndexManager indexManager = JavaModelManager.getJavaModelManager().getIndexManager();
 	if (this.problemRequestor.problemCount > 0) {
 		// If errors then wait for indexes to finish
@@ -92,28 +92,28 @@ protected void assertNoProblem(char[] source, ICompilationUnit unit) throws Inte
 		}
 	}
 }
-protected void addClasspathEntries(IClasspathEntry[] entries, boolean enableForbiddenReferences) throws JavaModelException {
-	IJavaProject project = getJavaProject("Reconciler");
-	IClasspathEntry[] oldClasspath = project.getRawClasspath();
+protected void addClasspathEntries(IIncludePathEntry[] entries, boolean enableForbiddenReferences) throws JavaScriptModelException {
+	IJavaScriptProject project = getJavaProject("Reconciler");
+	IIncludePathEntry[] oldClasspath = project.getRawIncludepath();
 	int oldLength = oldClasspath.length;
 	int length = entries.length;
-	IClasspathEntry[] newClasspath = new IClasspathEntry[oldLength+length];
+	IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldLength+length];
 	System.arraycopy(oldClasspath, 0, newClasspath, 0, oldLength);
 	System.arraycopy(entries, 0, newClasspath, oldLength, length);
-	project.setRawClasspath(newClasspath, null);
+	project.setRawIncludepath(newClasspath, null);
 	
 	if (enableForbiddenReferences) {
-		project.setOption(JavaCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaCore.ERROR);
+		project.setOption(JavaScriptCore.COMPILER_PB_FORBIDDEN_REFERENCE, JavaScriptCore.ERROR);
 	}
 }
-protected void removeClasspathEntries(IClasspathEntry[] entries) throws JavaModelException {
-	IJavaProject project = getJavaProject("Reconciler");
-	IClasspathEntry[] oldClasspath = project.getRawClasspath();
+protected void removeClasspathEntries(IIncludePathEntry[] entries) throws JavaScriptModelException {
+	IJavaScriptProject project = getJavaProject("Reconciler");
+	IIncludePathEntry[] oldClasspath = project.getRawIncludepath();
 	int oldLength = oldClasspath.length;
 	int length = entries.length;
-	IClasspathEntry[] newClasspath = new IClasspathEntry[oldLength-length];
+	IIncludePathEntry[] newClasspath = new IIncludePathEntry[oldLength-length];
 	System.arraycopy(oldClasspath, 0, newClasspath, 0, oldLength-length);
-	project.setRawClasspath(newClasspath, null);
+	project.setRawIncludepath(newClasspath, null);
 }
 /**
  * Setup for the next test.
@@ -129,7 +129,7 @@ public void setUpSuite() throws Exception {
 	super.setUpSuite();
 
 	// Create project with 1.4 compliance
-	IJavaProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
+	IJavaScriptProject project14 = createJavaProject("Reconciler", new String[] {"src"}, new String[] {"JCL_LIB"}, "bin");
 	createFolder("/Reconciler/src/p1");
 	createFolder("/Reconciler/src/p2");
 	createFile(
@@ -137,11 +137,11 @@ public void setUpSuite() throws Exception {
 		"  function foo() {\n" +
 		"}"
 	);
-	project14.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.IGNORE);
-	project14.setOption(JavaCore.COMPILER_PB_INVALID_JAVADOC, JavaCore.WARNING);
+	project14.setOption(JavaScriptCore.COMPILER_PB_UNUSED_LOCAL, JavaScriptCore.IGNORE);
+	project14.setOption(JavaScriptCore.COMPILER_PB_INVALID_JAVADOC, JavaScriptCore.WARNING);
 
 	// Create project with 1.5 compliance
-	IJavaProject project15 = createJavaProject("Reconciler15", new String[] {"src"}, new String[] {"JCL15_LIB"}, "bin", "1.5");
+	IJavaScriptProject project15 = createJavaProject("Reconciler15", new String[] {"src"}, new String[] {"JCL15_LIB"}, "bin", "1.5");
 	addLibrary(
 		project15, 
 		"lib15.jar", 
@@ -173,27 +173,27 @@ public void setUpSuite() throws Exception {
 			"   String[] value();\n" +
 			"}"
 		}, 
-		JavaCore.VERSION_1_5
+		JavaScriptCore.VERSION_1_5
 	);
-	project15.setOption(JavaCore.COMPILER_PB_UNUSED_LOCAL, JavaCore.IGNORE);
+	project15.setOption(JavaScriptCore.COMPILER_PB_UNUSED_LOCAL, JavaScriptCore.IGNORE);
 }
-//private void setUp15WorkingCopy() throws JavaModelException {
+//private void setUp15WorkingCopy() throws JavaScriptModelException {
 //	setUp15WorkingCopy("Reconciler15/src/p1/X.js", new WorkingCopyOwner() {});
 //}
-//private void setUp15WorkingCopy(String path, WorkingCopyOwner owner) throws JavaModelException {
+//private void setUp15WorkingCopy(String path, WorkingCopyOwner owner) throws JavaScriptModelException {
 //	String contents = this.workingCopy.getSource();
 //	setUpWorkingCopy(path, contents, owner);
 //}
-//private void setUpWorkingCopy(String path, String contents) throws JavaModelException {
+//private void setUpWorkingCopy(String path, String contents) throws JavaScriptModelException {
 //	setUpWorkingCopy(path, contents, new WorkingCopyOwner() {});
 //}
-//private void setUpWorkingCopy(String path, String contents, WorkingCopyOwner owner) throws JavaModelException {
+//private void setUpWorkingCopy(String path, String contents, WorkingCopyOwner owner) throws JavaScriptModelException {
 //	this.workingCopy.discardWorkingCopy();
 //	this.workingCopy = getCompilationUnit(path).getWorkingCopy(owner, this.problemRequestor, null);
 //	setWorkingCopyContents(contents);
 //	this.workingCopy.makeConsistent(null);
 //}
-void setWorkingCopyContents(String contents) throws JavaModelException {
+void setWorkingCopyContents(String contents) throws JavaScriptModelException {
 	this.workingCopy.getBuffer().setContents(contents);
 	this.problemRequestor.initialize(contents.toCharArray());
 }
@@ -226,7 +226,7 @@ public void testStatementsRecovery01() throws CoreException {
 		"     UnknownType name\n" +
 		"  }\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, false, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, false, null, null);
 	assertDeltas(
 		"Unexpected delta after syntax error", 
 		"[Working copy] X.js[*]: {CONTENT | FINE GRAINED}"
@@ -286,7 +286,7 @@ public void testStatementsRecovery03() throws CoreException {
 		"     UnknownType name\n" +
 		"  }\n" +
 		"}");
-	this.workingCopy.reconcile(ICompilationUnit.NO_AST, false, true, null, null);
+	this.workingCopy.reconcile(IJavaScriptUnit.NO_AST, false, true, null, null);
 	assertDeltas(
 		"Unexpected delta after syntax error", 
 		"[Working copy] X.js[*]: {CONTENT | FINE GRAINED}"

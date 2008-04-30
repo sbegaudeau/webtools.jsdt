@@ -22,7 +22,7 @@ import junit.framework.Test;
 public class TypeHierarchySerializationTests extends AbstractJavaModelTests {
 	private static final String PROJECTNAME = "TypeHierarchySerialization";
 	
-	IJavaProject project;
+	IJavaScriptProject project;
 
 public TypeHierarchySerializationTests(String name) {
 	super(name);
@@ -143,7 +143,7 @@ public void tearDownSuite() throws Exception {
 	
 	super.tearDownSuite();
 }
-private static void testFocusHierarchy(IType type, IJavaProject project) throws JavaModelException{
+private static void testFocusHierarchy(IType type, IJavaScriptProject project) throws JavaScriptModelException{
 	ITypeHierarchy h1 = type.newTypeHierarchy(project, null);
 
 	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -158,48 +158,48 @@ private static void testFocusHierarchy(IType type, IJavaProject project) throws 
 	h2.refresh(null);
 	compare(type.getFullyQualifiedName(), h1, h2);
 }
-public void test001() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "X.js");
+public void test001() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "X.js");
 	IType type = cu.getType("X");
 	testFocusHierarchy(type, project);
 }
-public void test002() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Y.js");
+public void test002() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Y.js");
 	IType type = cu.getType("Y");
 	testFocusHierarchy(type, project);
 }
-public void test003() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Z.js");
+public void test003() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "Z.js");
 	IType type = cu.getType("Z");
 	testFocusHierarchy(type, project);
 }
-public void test004() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I1.js");
+public void test004() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I1.js");
 	IType type = cu.getType("I1");
 	testFocusHierarchy(type, project);
 }
-public void test005() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I2.js");
+public void test005() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I2.js");
 	IType type = cu.getType("I2");
 	testFocusHierarchy(type, project);
 }
-public void test006() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I3.js");
+public void test006() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I3.js");
 	IType type = cu.getType("I3");
 	testFocusHierarchy(type, project);
 }
-public void test007() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I4.js");
+public void test007() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I4.js");
 	IType type = cu.getType("I4");
 	testFocusHierarchy(type, project);
 }
-public void test008() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I5.js");
+public void test008() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I5.js");
 	IType type = cu.getType("I5");
 	testFocusHierarchy(type, project);
 }
-public void test009() throws JavaModelException {
-	ICompilationUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I6.js");
+public void test009() throws JavaScriptModelException {
+	IJavaScriptUnit cu = getCompilationUnit(PROJECTNAME, "src", "p1", "I6.js");
 	IType type = cu.getType("I6");
 	testFocusHierarchy(type, project);
 }

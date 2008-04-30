@@ -15,7 +15,7 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 
 import org.eclipse.wst.jsdt.core.dom.*;
@@ -56,17 +56,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -105,17 +105,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -155,17 +155,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -206,17 +206,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -256,17 +256,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -274,11 +274,11 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			List fragments= tagElement.fragments();
 			assertTrue("Has fragments", !fragments.isEmpty());
 			
-			MethodRef ref= (MethodRef) fragments.get(0);
-			MethodRefParameter param= ast.newMethodRefParameter();
+			FunctionRef ref= (FunctionRef) fragments.get(0);
+			FunctionRefParameter param= ast.newFunctionRefParameter();
 			param.setName(ast.newSimpleName("arg"));
 			param.setType(ast.newPrimitiveType(PrimitiveType.INT));
-			rewrite.getListRewrite(ref, MethodRef.PARAMETERS_PROPERTY).insertLast(param, null);
+			rewrite.getListRewrite(ref, FunctionRef.PARAMETERS_PROPERTY).insertLast(param, null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -309,17 +309,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -331,11 +331,11 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			fragments= tagElement.fragments();
 			assertTrue("Has fragments", !fragments.isEmpty());
 			
-			MethodRef ref= (MethodRef) fragments.get(0);
-			MethodRefParameter param= ast.newMethodRefParameter();
+			FunctionRef ref= (FunctionRef) fragments.get(0);
+			FunctionRefParameter param= ast.newFunctionRefParameter();
 			param.setName(ast.newSimpleName("arg"));
 			param.setType(ast.newPrimitiveType(PrimitiveType.INT));
-			rewrite.getListRewrite(ref, MethodRef.PARAMETERS_PROPERTY).insertLast(param, null);
+			rewrite.getListRewrite(ref, FunctionRef.PARAMETERS_PROPERTY).insertLast(param, null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -366,17 +366,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -387,7 +387,7 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			text.setText("Thrown for no reason.");
 			newTag.fragments().add(text);
 
-			rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY).insertLast(newTag, null);
+			rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY).insertLast(newTag, null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -419,17 +419,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -440,7 +440,7 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			ref.setName(ast.newSimpleName("size"));
 			newTag.fragments().add(ref);
 			
-			rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY).insertFirst(newTag, null);
+			rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY).insertFirst(newTag, null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -471,17 +471,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 0);
 			
@@ -497,7 +497,7 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			
 			newTag.fragments().add(nested);
 			
-			MethodRef ref= ast.newMethodRef();
+			FunctionRef ref= ast.newFunctionRef();
 			ref.setQualifier(ast.newSimpleName("Vector"));
 			ref.setName(ast.newSimpleName("size"));
 			nested.fragments().add(ref);
@@ -506,7 +506,7 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			textNested.setText("Link");
 			nested.fragments().add(textNested);
 
-			rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY).insertFirst(newTag, null);
+			rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY).insertFirst(newTag, null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -536,17 +536,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		AST ast= astRoot.getAST();
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -558,7 +558,7 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			element1.setText("Description line 1\n * Description line 2");
 			fragments.add(element1);
 
-			rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY).insertLast(newTag, null);
+			rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY).insertLast(newTag, null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -591,16 +591,16 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 		
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 1);
 			
@@ -635,16 +635,16 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 2);
 			
@@ -680,17 +680,17 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 2);
 			
@@ -719,9 +719,9 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append(" * @author xy\n");
 		buf.append(" */\n");
 		buf.append("package test1;\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("package-info.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("package-info.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST3(cu);
+		JavaScriptUnit astRoot= createAST3(cu);
 
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
@@ -747,21 +747,21 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= methodDecl.getJavadoc();
+			JSdoc javadoc= methodDecl.getJavadoc();
 			List tags= javadoc.tags();
 			assertTrue("Has one tag", tags.size() == 2);
 			
-			ListRewrite listRewrite= rewrite.getListRewrite(javadoc, Javadoc.TAGS_PROPERTY);
+			ListRewrite listRewrite= rewrite.getListRewrite(javadoc, JSdoc.TAGS_PROPERTY);
 			listRewrite.remove((ASTNode) tags.get(1), null);
 			
 			AST ast= astRoot.getAST();
@@ -801,18 +801,18 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    public void gee(String name) {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
 		{  // insert method at first position
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
-			MethodDeclaration methodDecl= findMethodDeclaration(type, "gee");
+			FunctionDeclaration methodDecl= findMethodDeclaration(type, "gee");
 			
-			Javadoc javadoc= ast.newJavadoc();
+			JSdoc javadoc= ast.newJSdoc();
 			TagElement element= ast.newTagElement();
 			element.setTagName("@since");
 			
@@ -821,7 +821,7 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			element.fragments().add(textElement);
 			javadoc.tags().add(element);
 			
-			rewrite.set(methodDecl, MethodDeclaration.JAVADOC_PROPERTY, javadoc, null);
+			rewrite.set(methodDecl, FunctionDeclaration.JAVADOC_PROPERTY, javadoc, null);
 		}
 
 		String preview= evaluateRewrite(cu, rewrite);
@@ -848,9 +848,9 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("\n");
 		buf.append("    public int count;\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		AST ast= astRoot.getAST();
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
@@ -859,7 +859,7 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 			FieldDeclaration fieldDecl= type.getFields()[0];
 			
-			Javadoc javadoc= ast.newJavadoc();
+			JSdoc javadoc= ast.newJSdoc();
 			TagElement element= ast.newTagElement();
 			element.setTagName("@since");
 			
@@ -898,9 +898,9 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    static {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
 		{  // insert method at first position
@@ -931,9 +931,9 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append(" */\n");
 		buf.append("public class E {\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
@@ -967,15 +967,15 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    static {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
 		{
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 			Initializer initializer= (Initializer) type.bodyDeclarations().get(0);
-			Javadoc javadoc = initializer.getJavadoc();
+			JSdoc javadoc = initializer.getJavadoc();
 			List tags= javadoc.tags();
 			ASTNode node1 = (ASTNode) tags.get(0);
 			ASTNode placeholder1 = rewrite.createMoveTarget(node1);
@@ -1019,15 +1019,15 @@ public class ASTRewritingJavadocTest extends ASTRewritingTest {
 		buf.append("    static {\n");
 		buf.append("    }\n");
 		buf.append("}\n");
-		ICompilationUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
+		IJavaScriptUnit cu= pack1.createCompilationUnit("E.js", buf.toString(), false, null);			
 
-		CompilationUnit astRoot= createAST(cu);
+		JavaScriptUnit astRoot= createAST(cu);
 		ASTRewrite rewrite= ASTRewrite.create(astRoot.getAST());
 	
 		{
 			TypeDeclaration type= findTypeDeclaration(astRoot, "E");
 			Initializer initializer= (Initializer) type.bodyDeclarations().get(0);
-			Javadoc javadoc = initializer.getJavadoc();
+			JSdoc javadoc = initializer.getJavadoc();
 			List tags= javadoc.tags();
 			TagElement elem1= (TagElement) tags.get(0);
 			rewrite.set(elem1, TagElement.TAG_NAME_PROPERTY, "@param", null);

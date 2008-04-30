@@ -14,10 +14,10 @@ import junit.framework.Test;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.*;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.search.*;
 import org.eclipse.wst.jsdt.core.tests.model.AbstractJavaSearchTests.JavaSearchResultCollector;
 import org.eclipse.wst.jsdt.core.tests.util.Util;
@@ -27,9 +27,9 @@ import org.eclipse.wst.jsdt.internal.core.search.processing.JobManager;
 /**
  * Tests the search participant supprt.
  */
-public class SearchParticipantTests extends ModifyingResourceTests implements IJavaSearchConstants {
+public class SearchParticipantTests extends ModifyingResourceTests implements IJavaScriptSearchConstants {
 
-	IJavaProject project;
+	IJavaScriptProject project;
 	boolean deleteProject = true;
 
 	public class TestSearchParticipant extends SearchParticipant {
@@ -71,7 +71,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 			}
 		}
 
-		public void locateMatches(SearchDocument[] documents, SearchPattern pattern, IJavaSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
+		public void locateMatches(SearchDocument[] documents, SearchPattern pattern, IJavaScriptSearchScope scope, SearchRequestor requestor, IProgressMonitor monitor) throws CoreException {
 			int length = documents.length;
 			SearchDocument[] wrapperDocuments = new SearchDocument[length];
 			for (int i = 0; i < length; i++) {
@@ -80,7 +80,7 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 			this.defaultSearchParticipant.locateMatches(wrapperDocuments, pattern, scope, requestor, monitor);
 		}
 
-		public IPath[] selectIndexes(SearchPattern query, IJavaSearchScope scope) {
+		public IPath[] selectIndexes(SearchPattern query, IJavaScriptSearchScope scope) {
 			return new IPath[] {getIndexLocation()};
 		}
 	}
@@ -113,13 +113,13 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 	}
 	
 	public class TestResultCollector extends JavaSearchResultCollector {
-		protected char[] getSource(IResource resource, IJavaElement element, ICompilationUnit unit) throws JavaModelException {
+		protected char[] getSource(IResource resource, IJavaScriptElement element, IJavaScriptUnit unit) throws JavaScriptModelException {
 			IPath path = resource.getLocation().removeFileExtension().addFileExtension("test");
 			String fileContent = Util.fileContent(path.toFile().getPath());
 			if (fileContent == null) return null;
 			return fileContent.toCharArray();
 		}
-		protected String getPathString(IResource resource, IJavaElement element) {
+		protected String getPathString(IResource resource, IJavaScriptElement element) {
 			return super.getPathString(resource, element).replaceAll(".js", ".test");
 		}
 	}
@@ -306,8 +306,8 @@ public class SearchParticipantTests extends ModifyingResourceTests implements IJ
 		waitUntilIndexesReady();
 
 		// search for declaration of X
-		SearchPattern pattern = SearchPattern.createPattern("X", IJavaSearchConstants.DECLARATIONS, IJavaSearchConstants.TYPE, SearchPattern.R_EXACT_MATCH);
-		IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+		SearchPattern pattern = SearchPattern.createPattern("X", IJavaScriptSearchConstants.DECLARATIONS, IJavaScriptSearchConstants.TYPE, SearchPattern.R_EXACT_MATCH);
+		IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 		SearchRequestor requestor =  new TestResultCollector();
 		new SearchEngine().search(pattern, new SearchParticipant[] {participant}, scope, requestor, null);
 		assertSearchResults(

@@ -13,7 +13,7 @@ package org.eclipse.wst.jsdt.core.tests.dom;
 import junit.framework.Assert;
 import org.eclipse.wst.jsdt.core.dom.ASTVisitor;
 import org.eclipse.wst.jsdt.core.dom.ClassInstanceCreation;
-import org.eclipse.wst.jsdt.core.dom.IMethodBinding;
+import org.eclipse.wst.jsdt.core.dom.IFunctionBinding;
 
 class GetKeyVisitor extends ASTVisitor {
 	
@@ -21,7 +21,7 @@ class GetKeyVisitor extends ASTVisitor {
 	 * @see org.eclipse.wst.jsdt.core.dom.ASTVisitor#visit(org.eclipse.wst.jsdt.core.dom.SimpleName)
 	 */
 	public boolean visit(ClassInstanceCreation node) {
-		IMethodBinding constructorBinding = node.resolveConstructorBinding();
+		IFunctionBinding constructorBinding = node.resolveConstructorBinding();
 		Assert.assertNotNull(constructorBinding);
 		Assert.assertNotNull(constructorBinding.getKey());
 		return super.visit(node);

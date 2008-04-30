@@ -40,7 +40,7 @@ public void testDeadlock01() throws CoreException {
 
 	System.out.println("Test deadlock scenario");
 	try {
-		final IJavaProject project = this.createJavaProject(
+		final IJavaScriptProject project = this.createJavaProject(
 				"P", 
 				new String[] {}, 
 				new String[] {"org.eclipse.wst.jsdt.core.tests.model.TEST_CONTAINER"}, 
@@ -48,7 +48,7 @@ public void testDeadlock01() throws CoreException {
 		
 		// simulate state on startup (flush containers, and discard their previous values)
 		waitUntilIndexesReady();
-		project.getJavaModel().close();
+		project.getJavaScriptModel().close();
 		JavaModelManager manager = JavaModelManager.getJavaModelManager();
 		manager.previousSessionContainers = new HashMap(5);
 		manager.containers = new HashMap(5);
@@ -60,7 +60,7 @@ public void testDeadlock01() throws CoreException {
 		final Semaphore hasCompleted = new Semaphore(0); 
 		
 		ContainerInitializer.setInitializer(new ClasspathInitializerTests.DefaultContainerInitializer(new String[] {"P", ""}){
-			public void initialize(IPath containerPath, IJavaProject javaProject) throws CoreException {
+			public void initialize(IPath containerPath, IJavaScriptProject javaProject) throws CoreException {
 				step2.release();
 				System.out.println(Thread.currentThread() + " initializer has started: attempting to acquire workspace lock");
 				super.initialize(containerPath, javaProject);
@@ -98,7 +98,7 @@ public void testDeadlock01() throws CoreException {
 							// needs the JavaModel lock to populate the project
 							project.getChildren(); // trigger classpath initializer activation (requires workspace lock)
 							System.out.println(Thread.currentThread() + " done populating the model");
-					} catch (JavaModelException e) {
+					} catch (JavaScriptModelException e) {
 					}
 					hasCompleted.release();
 					System.out.println(Thread.currentThread() +" Populate JavaModel DONE");

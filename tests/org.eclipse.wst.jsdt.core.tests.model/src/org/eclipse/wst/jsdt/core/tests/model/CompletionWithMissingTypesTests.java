@@ -40,8 +40,8 @@ public static Test suite() {
 	return buildModelTestSuite(CompletionWithMissingTypesTests.class);
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0001() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0001() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -72,13 +72,13 @@ public void test0001() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0002() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0002() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -114,8 +114,8 @@ public void test0002() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0003() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0003() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -157,8 +157,8 @@ public void test0003() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0004() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0004() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -192,33 +192,33 @@ public void test0004() throws JavaModelException {
 	assertResults(
 			"length[FIELD_REF]{length, [Lmissing.MissingType;, I, length, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n" +
-			"clone[METHOD_REF]{clone(), [Lmissing.MissingType;, ()Ljava.lang.Object;, clone, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"clone[FUNCTION_REF]{clone(), [Lmissing.MissingType;, ()Ljava.lang.Object;, clone, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"equals[METHOD_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"equals[FUNCTION_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"finalize[METHOD_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"finalize[FUNCTION_REF]{finalize(), Ljava.lang.Object;, ()V, finalize, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"getClass[METHOD_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"getClass[FUNCTION_REF]{getClass(), Ljava.lang.Object;, ()Ljava.lang.Class;, getClass, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"hashCode[METHOD_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"hashCode[FUNCTION_REF]{hashCode(), Ljava.lang.Object;, ()I, hashCode, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"notify[METHOD_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"notify[FUNCTION_REF]{notify(), Ljava.lang.Object;, ()V, notify, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"notifyAll[METHOD_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"notifyAll[FUNCTION_REF]{notifyAll(), Ljava.lang.Object;, ()V, notifyAll, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"toString[METHOD_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"toString[FUNCTION_REF]{toString(), Ljava.lang.Object;, ()Ljava.lang.String;, toString, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"wait[METHOD_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, ()V, wait, null, ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (J)V, wait, (millis), ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}\n" +
-			"wait[METHOD_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
+			"wait[FUNCTION_REF]{wait(), Ljava.lang.Object;, (JI)V, wait, (millis, nanos), ["+start1+", "+end1+"], " + (relevance2) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance2) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0005() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0005() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -249,13 +249,13 @@ public void test0005() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0006() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0006() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -288,13 +288,13 @@ public void test0006() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0007() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0007() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -332,12 +332,12 @@ public void test0007() throws JavaModelException {
 	int start1 = str.lastIndexOf("m.e") + "m.".length();
 	int end1 = start1 + "e".length();
 	assertResults(
-			"equals[METHOD_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance1) + "}",
+			"equals[FUNCTION_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0008() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0008() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -376,8 +376,8 @@ public void test0008() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0009() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0009() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -415,15 +415,15 @@ public void test0009() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}\n" +
-			"bar[METHOD_REF]{bar(), Lmissing2.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing2.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing2.MissingType, missing2, Lmissing2.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0010() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0010() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -456,13 +456,13 @@ public void test0010() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingMemberType");
 	int end2 = start2 + "MissingMemberType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType.MissingMemberType[TYPE_REF]{missing.MissingType.MissingMemberType, missing, Lmissing.MissingType$MissingMemberType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0011() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0011() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -493,13 +493,13 @@ public void test0011() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0012() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0012() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -530,13 +530,13 @@ public void test0012() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0013() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0013() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -574,12 +574,12 @@ public void test0013() throws JavaModelException {
 	int start1 = str.lastIndexOf("m().e") + "m().".length();
 	int end1 = start1 + "e".length();
 	assertResults(
-			"equals[METHOD_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance1) + "}",
+			"equals[FUNCTION_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0014() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0014() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -618,8 +618,8 @@ public void test0014() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0015() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0015() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -659,13 +659,13 @@ public void test0015() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0016() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0016() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -698,13 +698,13 @@ public void test0016() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"bar[METHOD_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"bar[FUNCTION_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0017() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0017() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -736,8 +736,8 @@ public void test0017() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0018() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0018() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -769,8 +769,8 @@ public void test0018() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0019() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[2];
+public void test0019() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[2];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -803,20 +803,20 @@ public void test0019() throws JavaModelException {
 	int start2 = str.lastIndexOf("MissingType");
 	int end2 = start2 + "MissingType".length();
 	assertResults(
-			"equals[METHOD_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+			"equals[FUNCTION_REF]{equals(), Ljava.lang.Object;, (Ljava.lang.Object;)Z, equals, (obj), ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 			"   MissingType[TYPE_REF]{missing.MissingType, missing, Lmissing.MissingType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0020() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0020() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -850,23 +850,23 @@ public void test0020() throws JavaModelException {
 		int start2 = str.lastIndexOf("MissingMemberType");
 		int end2 = start2 + "MissingMemberType".length();
 		assertResults(
-				"bar[METHOD_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+				"bar[FUNCTION_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 				"   MissingType.MissingMemberType[TYPE_REF]{missing.MissingType.MissingMemberType, missing, Lmissing.MissingType$MissingMemberType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0021() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0021() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -898,19 +898,19 @@ public void test0021() throws JavaModelException {
 				"",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0022() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0022() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -946,23 +946,23 @@ public void test0022() throws JavaModelException {
 		int start2 = str.lastIndexOf("MissingMemberMemberType");
 		int end2 = start2 + "MissingMemberMemberType".length();
 		assertResults(
-				"bar[METHOD_REF]{bar(), Lmissing.MissingType$MissingMemberType$MissingMemberMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+				"bar[FUNCTION_REF]{bar(), Lmissing.MissingType$MissingMemberType$MissingMemberMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 				"   MissingType.MissingMemberType.MissingMemberMemberType[TYPE_REF]{missing.MissingType.MissingMemberType.MissingMemberMemberType, missing, Lmissing.MissingType$MissingMemberType$MissingMemberMemberType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0023() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0023() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_DEPRECATION_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_DEPRECATION_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -996,19 +996,19 @@ public void test0023() throws JavaModelException {
 				"",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void _test0024() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void _test0024() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -1041,23 +1041,23 @@ public void _test0024() throws JavaModelException {
 		int start2 = str.lastIndexOf("MissingMemberType");
 		int end2 = start2 + "MissingMemberType".length();
 		assertResults(
-				"bar[METHOD_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+				"bar[FUNCTION_REF]{bar(), Lmissing.MissingType$MissingMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 				"   MissingType.MissingMemberType[TYPE_REF]{missing.MissingType.MissingMemberType, missing, Lmissing.MissingType$MissingMemberType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0025() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0025() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -1088,19 +1088,19 @@ public void test0025() throws JavaModelException {
 				"",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void _test0026() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void _test0026() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.DISABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.DISABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -1135,23 +1135,23 @@ public void _test0026() throws JavaModelException {
 		int start2 = str.lastIndexOf("MissingMemberMemberType");
 		int end2 = start2 + "MissingMemberMemberType".length();
 		assertResults(
-				"bar[METHOD_REF]{bar(), Lmissing.MissingType$MissingMemberType$MissingMemberMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
+				"bar[FUNCTION_REF]{bar(), Lmissing.MissingType$MissingMemberType$MissingMemberMemberType;, ()V, bar, null, ["+start1+", "+end1+"], " + (relevance1) + "}\n" +
 				"   MissingType.MissingMemberType.MissingMemberMemberType[TYPE_REF]{missing.MissingType.MissingMemberType.MissingMemberMemberType, missing, Lmissing.MissingType$MissingMemberType$MissingMemberMemberType;, null, null, ["+start2+", "+end2+"], " + (relevance1) + "}",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0027() throws JavaModelException {
-	this.oldOptions = JavaCore.getOptions();
+public void test0027() throws JavaScriptModelException {
+	this.oldOptions = JavaScriptCore.getOptions();
 	
 	try {
 		Hashtable options = new Hashtable(this.oldOptions);
-		options.put(JavaCore.CODEASSIST_VISIBILITY_CHECK, JavaCore.ENABLED);
-		JavaCore.setOptions(options);
+		options.put(JavaScriptCore.CODEASSIST_VISIBILITY_CHECK, JavaScriptCore.ENABLED);
+		JavaScriptCore.setOptions(options);
 		
-		this.workingCopies = new ICompilationUnit[2];
+		this.workingCopies = new IJavaScriptUnit[2];
 		this.workingCopies[0] = getWorkingCopy(
 			"/Completion/src/test/Test.js",
 			"package test;\n"+
@@ -1184,12 +1184,12 @@ public void test0027() throws JavaModelException {
 				"",
 				requestor.getResults());
 	} finally {
-		JavaCore.setOptions(oldOptions);
+		JavaScriptCore.setOptions(oldOptions);
 	}
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0028() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0028() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1227,8 +1227,8 @@ public void test0028() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0029() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0029() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1266,8 +1266,8 @@ public void test0029() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0030() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0030() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1305,8 +1305,8 @@ public void test0030() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test031() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test031() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1344,8 +1344,8 @@ public void test031() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0032() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0032() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+
@@ -1383,8 +1383,8 @@ public void test0032() throws JavaModelException {
 			requestor.getResults());
 }
 //https://bugs.eclipse.org/bugs/show_bug.cgi?id=44984
-public void test0033() throws JavaModelException {
-	this.workingCopies = new ICompilationUnit[3];
+public void test0033() throws JavaScriptModelException {
+	this.workingCopies = new IJavaScriptUnit[3];
 	this.workingCopies[0] = getWorkingCopy(
 		"/Completion/src/test/Test.js",
 		"package test;"+

@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.*;
 import org.eclipse.wst.jsdt.core.*;
 
 public class RenameTests extends CopyMoveTests {
-	ICompilationUnit cu;
+	IJavaScriptUnit cu;
 /**
  */
 public RenameTests(String name) {
@@ -30,12 +30,12 @@ public RenameTests(String name) {
  * Attempts to rename the elements with optional 
  * forcing. The operation should fail with the failure code.
  */
-public void renameNegative(IJavaElement[] elements ,String[] renamings, boolean force, int failureCode) {
+public void renameNegative(IJavaScriptElement[] elements ,String[] renamings, boolean force, int failureCode) {
 	try {
 		//rename
-	 	getJavaModel().rename(elements, new IJavaElement[]{elements[0].getParent()}, renamings, force, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Code not correct for JavaModelException: "  + jme, jme.getStatus().getCode() == failureCode); 
+	 	getJavaModel().rename(elements, new IJavaScriptElement[]{elements[0].getParent()}, renamings, force, null);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Code not correct for JavaScriptModelException: "  + jme, jme.getStatus().getCode() == failureCode); 
 		return;
 	}
 	assertTrue("The rename should have failed for multiple renaming", false);
@@ -45,12 +45,12 @@ public void renameNegative(IJavaElement[] elements ,String[] renamings, boolean 
  * Attempts to rename the element with optional 
  * forcing. The operation should fail with the failure code.
  */
-public void renameNegative(IJavaElement element, String rename, boolean force, int failureCode) {
+public void renameNegative(IJavaScriptElement element, String rename, boolean force, int failureCode) {
 	try {
 		//rename
-		getJavaModel().rename(new IJavaElement[] {element}, new IJavaElement[] {element.getParent()}, new String[] {rename}, force, null);
-	} catch (JavaModelException jme) {
-		assertTrue("Code not correct for JavaModelException: " + jme, jme.getStatus().getCode() == failureCode);
+		getJavaModel().rename(new IJavaScriptElement[] {element}, new IJavaScriptElement[] {element.getParent()}, new String[] {rename}, force, null);
+	} catch (JavaScriptModelException jme) {
+		assertTrue("Code not correct for JavaScriptModelException: " + jme, jme.getStatus().getCode() == failureCode);
 		return;
 	}
 	assertTrue("The rename should have failed for: " + element, false);
@@ -61,15 +61,15 @@ public void renameNegative(IJavaElement element, String rename, boolean force, i
  * forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void renamePositive(IJavaElement[] elements, String[] names, boolean force) throws JavaModelException {
-	renamePositive(elements, new IJavaElement[]{elements[0].getParent()}, names, force);
+public void renamePositive(IJavaScriptElement[] elements, String[] names, boolean force) throws JavaScriptModelException {
+	renamePositive(elements, new IJavaScriptElement[]{elements[0].getParent()}, names, force);
 }
 /**
  * Renames the element to the container with optional 
  * forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void renamePositive(IJavaElement[] elements, IJavaElement[] destinations, String[] names, boolean force) throws JavaModelException {
+public void renamePositive(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, String[] names, boolean force) throws JavaScriptModelException {
 	renamePositive(elements, destinations, names, force, false);
 }
 /**
@@ -77,7 +77,7 @@ public void renamePositive(IJavaElement[] elements, IJavaElement[] destinations,
  * forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void renamePositive(IJavaElement[] elements, IJavaElement[] destinations, String[] names, boolean force, boolean originalShouldExist) throws JavaModelException {
+public void renamePositive(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, String[] names, boolean force, boolean originalShouldExist) throws JavaScriptModelException {
 	renamePositive(elements, destinations, names, force, originalShouldExist, null);
 }
 /**
@@ -85,13 +85,13 @@ public void renamePositive(IJavaElement[] elements, IJavaElement[] destinations,
  * forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void renamePositive(IJavaElement[] elements, IJavaElement[] destinations, String[] names, boolean force, boolean originalShouldExist, IProgressMonitor monitor) throws JavaModelException {
+public void renamePositive(IJavaScriptElement[] elements, IJavaScriptElement[] destinations, String[] names, boolean force, boolean originalShouldExist, IProgressMonitor monitor) throws JavaScriptModelException {
 	// if forcing, ensure that a name collision exists
 	int i;
 	if (force) {
 		for (i = 0; i < elements.length; i++) {
-			IJavaElement e = elements[i];
-			IJavaElement collision = generateHandle(e, names[i], e.getParent());
+			IJavaScriptElement e = elements[i];
+			IJavaScriptElement collision = generateHandle(e, names[i], e.getParent());
 			assertTrue("Collision does not exist", collision.exists());
 		}
 	}
@@ -100,26 +100,26 @@ public void renamePositive(IJavaElement[] elements, IJavaElement[] destinations,
 	getJavaModel().rename(elements, destinations, names, force, monitor);
 	for (i = 0; i < elements.length; i++) {
 		// generate the new element	handle
-		IJavaElement e = elements[i];
-		IJavaElement renamed = generateHandle(e, names[i], e.getParent());
+		IJavaScriptElement e = elements[i];
+		IJavaScriptElement renamed = generateHandle(e, names[i], e.getParent());
 		assertTrue("Renamed element should exist", renamed.exists());
 		if (!originalShouldExist) {
 			assertTrue("Original element should not exist", !e.exists());
 		}
-		IJavaElementDelta destDelta = getDeltaFor(renamed.getParent());
+		IJavaScriptElementDelta destDelta = getDeltaFor(renamed.getParent());
 		if (isMainType(e, e.getParent())) {
-			assertTrue("Renamed compilation unit as result of main type not added", destDelta != null && destDelta.getKind() == IJavaElementDelta.ADDED);
+			assertTrue("Renamed compilation unit as result of main type not added", destDelta != null && destDelta.getKind() == IJavaScriptElementDelta.ADDED);
 			assertTrue("Added children not correct for element copy", destDelta.getElement().equals(renamed.getParent()));
-			assertTrue("flag should be F_MOVED_FROM", (destDelta.getFlags() & IJavaElementDelta.F_MOVED_FROM) > 0);
+			assertTrue("flag should be F_MOVED_FROM", (destDelta.getFlags() & IJavaScriptElementDelta.F_MOVED_FROM) > 0);
 			assertTrue("moved from handle should be original", destDelta.getMovedFromElement().equals(e.getParent()));
 		} else {
 			assertTrue("Destination container not changed", destDelta != null && deltaChildrenChanged(destDelta));
-			IJavaElementDelta[] deltas = destDelta.getAddedChildren();
+			IJavaScriptElementDelta[] deltas = destDelta.getAddedChildren();
 			assertTrue("Added children not correct for element rename", deltas.length > i && deltas[i].getElement().equals(renamed));
-			assertTrue("kind should be K_ADDED", deltas[i].getKind() == IJavaElementDelta.ADDED);
+			assertTrue("kind should be K_ADDED", deltas[i].getKind() == IJavaScriptElementDelta.ADDED);
 			deltas = destDelta.getRemovedChildren();
 			assertTrue("Removed children not correct for element rename", deltas.length > i && deltas[i].getElement().equals(e));
-			assertTrue("kind should be K_REMOVED", deltas[i].getKind() == IJavaElementDelta.REMOVED);
+			assertTrue("kind should be K_REMOVED", deltas[i].getKind() == IJavaScriptElementDelta.REMOVED);
 		}
 	}
 }
@@ -128,8 +128,8 @@ public void renamePositive(IJavaElement[] elements, IJavaElement[] destinations,
  * forcing. The operation should succeed, so any exceptions
  * encountered are thrown.
  */
-public void renamePositive(IJavaElement element, String rename, boolean force) throws JavaModelException {
-	renamePositive(new IJavaElement[] {element}, new String[] {rename}, force);
+public void renamePositive(IJavaScriptElement element, String rename, boolean force) throws JavaScriptModelException {
+	renamePositive(new IJavaScriptElement[] {element}, new String[] {rename}, force);
 }
 /**
  * Setup for the next test.
@@ -161,7 +161,7 @@ public void setUp() throws Exception {
 public void setUpSuite() throws Exception {
 	super.setUpSuite();
 	
-	IJavaProject project = this.createJavaProject("BinaryProject", new String[] {"src"}, new String[] {"JCL_LIB"}, "lib");
+	IJavaScriptProject project = this.createJavaProject("BinaryProject", new String[] {"src"}, new String[] {"JCL_LIB"}, "lib");
 	this.createFile(
 		"/BinaryProject/src/X.js",
 		"public class X {\n" +
@@ -172,9 +172,9 @@ public void setUpSuite() throws Exception {
 	);
 	project.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 	waitForAutoBuild();
-	project.setRawClasspath(
-		new IClasspathEntry[] {
-			JavaCore.newLibraryEntry(new Path("/BinaryProject/lib"), null, null)
+	project.setRawIncludepath(
+		new IIncludePathEntry[] {
+			JavaScriptCore.newLibraryEntry(new Path("/BinaryProject/lib"), null, null)
 		},
 		null
 	);
@@ -207,26 +207,26 @@ public void tearDownSuite() throws Exception {
 /**
  * Ensures that a binary field cannot be renamed.
  */
-public void testRenameBinaryField() throws JavaModelException {
+public void testRenameBinaryField() throws JavaScriptModelException {
 	IClassFile cf = getClassFile("BinaryProject", "lib", "", "X.class");
 	IField binaryField = cf.getType().getField("bar");
-	renameNegative(binaryField, "fred", false, IJavaModelStatusConstants.READ_ONLY);
+	renameNegative(binaryField, "fred", false, IJavaScriptModelStatusConstants.READ_ONLY);
 }
 /**
  * Ensures that a binary method cannot be renamed.
  */
-public void testRenameBinaryMethod() throws JavaModelException {
+public void testRenameBinaryMethod() throws JavaScriptModelException {
 	IClassFile cf = getClassFile("BinaryProject", "lib", "", "X.class");
-	IMethod binaryMethod = cf.getType().getMethods()[0];
-	renameNegative(binaryMethod, "fred", false, IJavaModelStatusConstants.READ_ONLY);
+	IFunction binaryMethod = cf.getType().getFunctions()[0];
+	renameNegative(binaryMethod, "fred", false, IJavaScriptModelStatusConstants.READ_ONLY);
 }
 /**
  * Ensures that a binary type cannot be renamed.
  */
-public void testRenameBinaryType() throws JavaModelException {
+public void testRenameBinaryType() throws JavaScriptModelException {
 	IClassFile cf = getClassFile("BinaryProject", "lib", "", "X.class");
 	IType binaryType = cf.getType();
-	renameNegative(binaryType, "Y", false, IJavaModelStatusConstants.READ_ONLY);
+	renameNegative(binaryType, "Y", false, IJavaScriptModelStatusConstants.READ_ONLY);
 }
 
 /**
@@ -235,10 +235,10 @@ public void testRenameBinaryType() throws JavaModelException {
  */
 public void testRenameCompilationUnitAndType() {
 	renameNegative(
-		new IJavaElement[] {this.cu, this.cu.getType("X")}, 
+		new IJavaScriptElement[] {this.cu, this.cu.getType("X")}, 
 		new String[]{"Y.js", "Y"}, 
 		false, 
-		IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+		IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 }
 /**
  * Ensures that compilation units cannot be renamed to an existing cu name
@@ -251,7 +251,7 @@ public void testRenameCompilationUnitResultingInCollision() throws CoreException
 		"}"
 	);
 	
-	renameNegative(this.cu, "Y.js", false, IJavaModelStatusConstants.NAME_COLLISION);
+	renameNegative(this.cu, "Y.js", false, IJavaScriptModelStatusConstants.NAME_COLLISION);
 	renamePositive(this.cu, "Y.js", true);
 }
 /**
@@ -265,11 +265,11 @@ public void testRenameCompilationUnitsCheckingDeltas() throws CoreException{
 		"public class Y {\n" +
 		"}"
 	);
-	ICompilationUnit cu2 = this.getCompilationUnit("/P/src/Y.js");
+	IJavaScriptUnit cu2 = this.getCompilationUnit("/P/src/Y.js");
 	
 	clearDeltas();
 	renamePositive(
-		new ICompilationUnit[] {this.cu, cu2}, 
+		new IJavaScriptUnit[] {this.cu, cu2}, 
 		new String[] {"NewX.js", "NewY.js"}, 
 		false);
 	
@@ -289,14 +289,14 @@ public void testRenameCompilationUnitsCheckingDeltas() throws CoreException{
  * The new name for a cu must end in .java and be a valid Java identifier.
  */
 public void testRenameCompilationUnitWithInvalidName() {
-	renameNegative(this.cu, "NewX", false, IJavaModelStatusConstants.INVALID_NAME);
-	renameNegative(this.cu, "New X.js", false, IJavaModelStatusConstants.INVALID_NAME);
+	renameNegative(this.cu, "NewX", false, IJavaScriptModelStatusConstants.INVALID_NAME);
+	renameNegative(this.cu, "New X.js", false, IJavaScriptModelStatusConstants.INVALID_NAME);
 }
 /**
  * This operation should fail as renaming a CU with a null name should throw
  * an <code>IllegalArgumentException</code>
  */
-public void testRenameCompilationUnitWithNull() throws JavaModelException {
+public void testRenameCompilationUnitWithNull() throws JavaScriptModelException {
 	try {
 		this.cu.rename(null, false, null);
 	} catch (IllegalArgumentException iae) {
@@ -309,8 +309,8 @@ public void testRenameCompilationUnitWithNull() throws JavaModelException {
  * <code>RenameElementsOperation</code>.  
  */
 public void testRenameConstructor() {
-	IMethod constructor = this.cu.getType("X").getMethod("X",  new String[] {"I"});
-	renameNegative(constructor, "newName", false, IJavaModelStatusConstants.NAME_COLLISION);
+	IFunction constructor = this.cu.getType("X").getFunction("X",  new String[] {"I"});
+	renameNegative(constructor, "newName", false, IJavaScriptModelStatusConstants.NAME_COLLISION);
 }
 
 /**
@@ -320,7 +320,7 @@ public void testRenameCU() throws CoreException {
 	this.cu.rename("NewX.js", false, null);
 	assertTrue("Original CU should not exist", !cu.exists());
 
-	ICompilationUnit newCU = getCompilationUnit("/P/src/NewX.js");
+	IJavaScriptUnit newCU = getCompilationUnit("/P/src/NewX.js");
 	assertTrue("New CU should exist", newCU.exists());
 	
 	assertTypesEqual(
@@ -348,7 +348,7 @@ public void testRenameCUForce() throws CoreException {
 	this.cu.rename("Y.js", true, null);
 
 	IFile file = (IFile)this.cu.getResource();
-	ICompilationUnit destCU = getCompilationUnit("/P/src/Y.js");
+	IJavaScriptUnit destCU = getCompilationUnit("/P/src/Y.js");
 	IFile destFile = (IFile)destCU.getResource();
 
 	assertTrue("Original CU should not exist", !cu.exists());
@@ -405,9 +405,9 @@ public void testRenameEnum() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit enumCU = getCompilationUnit("/P15/En.js");
+		IJavaScriptUnit enumCU = getCompilationUnit("/P15/En.js");
 		enumCU.rename("OtherEnum.js", false, null);
-		ICompilationUnit renamedCu = getCompilationUnit("/P15/OtherEnum.js");
+		IJavaScriptUnit renamedCu = getCompilationUnit("/P15/OtherEnum.js");
 		assertSourceEquals(
 			"Unexpected source after rename",
 			"public enum OtherEnum {\n" +
@@ -435,9 +435,9 @@ public void testRenameEnum2() throws CoreException {
 			"  }\n" +
 			"}"
 		);
-		ICompilationUnit enumCU = getCompilationUnit("/P15/En.js");
+		IJavaScriptUnit enumCU = getCompilationUnit("/P15/En.js");
 		enumCU.rename("OtherEnum.js", false, null);
-		ICompilationUnit renamedCu = getCompilationUnit("/P15/OtherEnum.js");
+		IJavaScriptUnit renamedCu = getCompilationUnit("/P15/OtherEnum.js");
 		assertSourceEquals(
 			"Unexpected source after rename",
 			"public enum OtherEnum {\n" +
@@ -456,7 +456,7 @@ public void testRenameEnum2() throws CoreException {
  * of running the operation. As well ensures that the fields are
  * positioned in the same location as before the rename.
  */
-public void testRenameFieldsCheckingDeltasAndPositions() throws JavaModelException {
+public void testRenameFieldsCheckingDeltasAndPositions() throws JavaScriptModelException {
 	IType type = this.cu.getType("X");
 	IField field = type.getField("bar");
 	renamePositive(field, "fred", false);
@@ -484,7 +484,7 @@ public void testRenameFieldFragment() throws Exception {
             "  int int1, int2, int3;\n" +
             "}"
     );
-    ICompilationUnit c = getCompilationUnit("/P/src/Y.js");
+    IJavaScriptUnit c = getCompilationUnit("/P/src/Y.js");
     IType type = c.getType("Y");
     IField field = type.getField("int2");
     renamePositive(field, "int2_renamed", false);
@@ -506,10 +506,10 @@ public void testRenameFieldsMultiStatus() throws CoreException {
 
 	boolean e = false;
 	try {
-		type.getJavaModel().rename(iFields, new IJavaElement[] {type}, newNames, false, null);
-	} catch (JavaModelException jme) {
+		type.getJavaScriptModel().rename(iFields, new IJavaScriptElement[] {type}, newNames, false, null);
+	} catch (JavaScriptModelException jme) {
 		assertTrue("Should not be multistatus (only one failure)", !jme.getStatus().isMultiStatus());
-		assertTrue("Should be an invalid destination", jme.getStatus().getCode() == IJavaModelStatusConstants.INVALID_NAME);
+		assertTrue("Should be an invalid destination", jme.getStatus().getCode() == IJavaScriptModelStatusConstants.INVALID_NAME);
 		e = true;
 	}
 	assertTrue("Should have been an exception", e);
@@ -525,13 +525,13 @@ public void testRenameFieldsMultiStatus() throws CoreException {
 		"					other[-]: {}"
 	);
 	
-	IJavaElement copy = generateHandle(iFields[0], newNames[0], type);
+	IJavaScriptElement copy = generateHandle(iFields[0], newNames[0], type);
 	assertTrue("Copy should exist", copy.exists());
 }
 /**
  * Ensures that fields cannot be renamed to the same name.
  */
-public void testRenameFieldsResultingInCollision() throws JavaModelException {
+public void testRenameFieldsResultingInCollision() throws JavaScriptModelException {
 	String addition = "new";
 	IType type= this.cu.getType("X");
 	IField[] iFields = type.getFields();
@@ -544,7 +544,7 @@ public void testRenameFieldsResultingInCollision() throws JavaModelException {
 	//set two fields to have the same new name
 	newNames[i-1]= newNames[i-2];
 
-	renameNegative(iFields, newNames, false, IJavaModelStatusConstants.NAME_COLLISION);
+	renameNegative(iFields, newNames, false, IJavaScriptModelStatusConstants.NAME_COLLISION);
 }
 /**
  * Ensures that renaming can be canceled.
@@ -563,7 +563,7 @@ public void testRenameFieldsWithCancel() throws CoreException {
 	try {
 		TestProgressMonitor monitor = TestProgressMonitor.getInstance();
 		monitor.setCancelledCounter(1);
-		renamePositive(iFields, new IJavaElement[] {type}, newNames, false, false, monitor);
+		renamePositive(iFields, new IJavaScriptElement[] {type}, newNames, false, false, monitor);
 	} catch (OperationCanceledException e) {
 		isCanceled = true;
 	}
@@ -576,7 +576,7 @@ public void testRenameInitializer() {
 	IType typeSource= this.cu.getType("X");
 	IInitializer initializerSource= typeSource.getInitializer(1);
 
-	renameNegative(initializerSource, "someName", false, IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+	renameNegative(initializerSource, "someName", false, IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 }
 /**
  * Ensures that main types can be renamed. As a side effect
@@ -591,35 +591,35 @@ public void testRenameMainTypes() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	ICompilationUnit cu2 = getCompilationUnit("/P/src/Y.js");
+	IJavaScriptUnit cu2 = getCompilationUnit("/P/src/Y.js");
 	IPackageFragment pkg = (IPackageFragment) this.cu.getParent();
 
-	IJavaElement[] types = new IJavaElement[] {
+	IJavaScriptElement[] types = new IJavaScriptElement[] {
 		this.cu.getType("X"),
 		cu2.getType("Y")
 	};
 	String[] newNames = new String[] {"NewX", "NewY"};
 	renamePositive(
-		new IJavaElement[] {
+		new IJavaScriptElement[] {
 			this.cu.getType("X"),
 			cu2.getType("Y")
 		}, 
-		new IJavaElement[] {
+		new IJavaScriptElement[] {
 			types[0].getParent(), 
 			types[1].getParent()}, 
 		newNames, 
 		false);
 
 	//test that both the compilation unit, main type and constructors have been renamed.
-	ICompilationUnit renamedCU1= pkg.getCompilationUnit("NewX.js");
-	ICompilationUnit renamedCU2= pkg.getCompilationUnit("NewY.js");
+	IJavaScriptUnit renamedCU1= pkg.getJavaScriptUnit("NewX.js");
+	IJavaScriptUnit renamedCU2= pkg.getJavaScriptUnit("NewY.js");
 	IType newType1 = renamedCU1.getType("NewX");
 	IType newType2 = renamedCU2.getType("NewY");
 	assertTrue("NewX should be present", newType1.exists());
 	assertTrue("NewY should be present", newType2.exists());
 	
-	IMethod constructor1 = newType1.getMethod("NewX", new String[] {"I"});
-	IMethod constructor2 = newType2.getMethod("NewY", new String[] {});
+	IFunction constructor1 = newType1.getFunction("NewX", new String[] {"I"});
+	IFunction constructor2 = newType2.getFunction("NewY", new String[] {});
 	assertTrue("NewX(int) should be present", constructor1.exists());
 	assertTrue("NewY() should be present", constructor2.exists());
 }
@@ -637,19 +637,19 @@ public void testRenameMainTypesAndAChild() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	ICompilationUnit cu2 = getCompilationUnit("/P/src/Y.js");
+	IJavaScriptUnit cu2 = getCompilationUnit("/P/src/Y.js");
 
 	String[] newNames = new String[] {
 		"newBar",
 		"NewX",
 		"NewY"
 	};
-	IJavaElement[] elements = new IJavaElement[] {
+	IJavaScriptElement[] elements = new IJavaScriptElement[] {
 		this.cu.getType("X").getField("bar"),
 		this.cu.getType("X"),
 		cu2.getType("Y")
 	};
-	IJavaElement[] destinations = new IJavaElement[elements.length];
+	IJavaScriptElement[] destinations = new IJavaScriptElement[elements.length];
 	for (int i = 0; i < elements.length; i++) {
 		destinations[i] = elements[i].getParent();
 	}
@@ -658,11 +658,11 @@ public void testRenameMainTypesAndAChild() throws CoreException {
 
 	//test that both the compilation unit and the main type have been renamed.
 	IPackageFragment pkg = (IPackageFragment) this.cu.getParent();
-	ICompilationUnit renamedCU1= pkg.getCompilationUnit("NewX.js");
+	IJavaScriptUnit renamedCU1= pkg.getJavaScriptUnit("NewX.js");
 	IType newX = renamedCU1.getType("NewX");
 	assertTrue("NewX should be present", newX.exists());
 	
-	ICompilationUnit renamedCU2= pkg.getCompilationUnit("NewY.js");
+	IJavaScriptUnit renamedCU2= pkg.getJavaScriptUnit("NewY.js");
 	IType newY = renamedCU2.getType("NewY");
 	assertTrue("NewY should be present", newY.exists());
 	
@@ -672,31 +672,31 @@ public void testRenameMainTypesAndAChild() throws CoreException {
 /**
  * Ensures that a method can be renamed.
  */
-public void testRenameMethod() throws JavaModelException {
+public void testRenameMethod() throws JavaScriptModelException {
 	IType type = this.cu.getType("X");
-	IMethod method = type.getMethod("foo", new String[] {"QString;"});
+	IFunction method = type.getFunction("foo", new String[] {"QString;"});
 	renamePositive(method, "newFoo", false);
 	
 	//ensure that the method did not move as a result of the rename
 	ensureCorrectPositioning(
 		type, 
-		type.getMethod("newFoo", new String[] {"QString;"}), 
-		type.getMethod("otherMethod", new String[] {"QString;"}));
+		type.getFunction("newFoo", new String[] {"QString;"}), 
+		type.getFunction("otherMethod", new String[] {"QString;"}));
 }
 /**
  * Ensures that a method cannot be renamed to an existing method name.
  */
 public void testRenameMethodResultingInCollision() {
 	IType type = this.cu.getType("X");
-	IMethod method = type.getMethod("foo", new String[] {"QString;"});
-	renameNegative(method, "otherMethod", false, IJavaModelStatusConstants.NAME_COLLISION);
+	IFunction method = type.getFunction("foo", new String[] {"QString;"});
+	renameNegative(method, "otherMethod", false, IJavaScriptModelStatusConstants.NAME_COLLISION);
 }
 /**
  * Ensures that a method cannot be renamed to an invalid method name
  */
 public void testRenameMethodsWithInvalidName() {
-	IMethod method = this.cu.getType("X").getMethod("foo", new String[] {"QString;"});
-	renameNegative(method, "%%someInvalidName", false, IJavaModelStatusConstants.INVALID_NAME);
+	IFunction method = this.cu.getType("X").getFunction("foo", new String[] {"QString;"});
+	renameNegative(method, "%%someInvalidName", false, IJavaScriptModelStatusConstants.INVALID_NAME);
 }
 public void testRenamePF() throws CoreException {
 	this.createFolder("/P/src/x/y/z");
@@ -715,7 +715,7 @@ public void testRenamePF() throws CoreException {
 	assertTrue("Old package should not exist", !frag.exists());
 	assertTrue("New package should exist", newFrag.exists());
 
-	ICompilationUnit compilationUnit = newFrag.getCompilationUnit("A.js");
+	IJavaScriptUnit compilationUnit = newFrag.getJavaScriptUnit("A.js");
 	assertTrue("A.java should exits in new package", compilationUnit.exists());
 	
 	IType[] types = compilationUnit.getTypes();
@@ -755,7 +755,7 @@ public void testRenamePF2() throws CoreException {
 	assertTrue("Old package should not exist", !frag.exists());
 	assertTrue("New package should exist", newFrag.exists());
 
-	ICompilationUnit compilationUnit = newFrag.getCompilationUnit("A.js");
+	IJavaScriptUnit compilationUnit = newFrag.getJavaScriptUnit("A.js");
 	assertTrue("A.java should exits in new package", compilationUnit.exists());
 	
 	IType[] types = compilationUnit.getTypes();
@@ -775,7 +775,7 @@ public void testRenamePF2() throws CoreException {
 	);
 }
 /*
- * Ensure that renaming a package to a sub package and using IJavaProject#findType(...) in a IWorskpaceRunnable
+ * Ensure that renaming a package to a sub package and using IJavaScriptProject#findType(...) in a IWorskpaceRunnable
  * finds the right type
  * (regression test for bug 83646 NPE renaming package)
  */
@@ -817,7 +817,7 @@ public void testRenamePFWithSubPackages() throws CoreException {
 	IPackageFragment newFrag = getPackage("/P/src/newX");
 	assertTrue("New package should exist", newFrag.exists());
 
-	ICompilationUnit compilationUnit = oldFrag.getCompilationUnit("A.js");
+	IJavaScriptUnit compilationUnit = oldFrag.getJavaScriptUnit("A.js");
 	assertTrue("A.java should exits in old inner package", compilationUnit.exists());
 	
 	assertDeltas(
@@ -838,35 +838,35 @@ public void testRenameSyntaxErrorMethod() throws CoreException {
 		"  }\n" +
 		"}"
 	);
-	IMethod method = getCompilationUnit("/P/src/Y.js").getType("Y").getMethod("foo", null);
+	IFunction method = getCompilationUnit("/P/src/Y.js").getType("Y").getFunction("foo", null);
 	renamePositive(method, "newFoo", false);
 }
 /**
  * Ensures that attempting to rename with an incorrect number of renamings fails
  */
 public void testRenameWithInvalidRenamings() {
-	IMethod method = getCompilationUnit("/P/src/X.js").getType("X").getMethod("foo", null);
+	IFunction method = getCompilationUnit("/P/src/X.js").getType("X").getFunction("foo", null);
 
 	renameNegative(
-		new IJavaElement[] {method}, 
+		new IJavaScriptElement[] {method}, 
 		new String[]{"", ""}, 
 		false, 
-		IJavaModelStatusConstants.INDEX_OUT_OF_BOUNDS);
+		IJavaScriptModelStatusConstants.INDEX_OUT_OF_BOUNDS);
 
 	renameNegative(
-		new IJavaElement[] {method}, 
+		new IJavaScriptElement[] {method}, 
 		null, 
 		false, 
-		IJavaModelStatusConstants.NULL_NAME);
+		IJavaScriptModelStatusConstants.NULL_NAME);
 }
 /**
  * Ensures that a working copy cannot be renamed.
  */
-public void testRenameWorkingCopy() throws JavaModelException {
-	ICompilationUnit copy = null;
+public void testRenameWorkingCopy() throws JavaScriptModelException {
+	IJavaScriptUnit copy = null;
 	try {
 		copy = this.cu.getWorkingCopy(null);
-		renameNegative(copy, "NewX", false, IJavaModelStatusConstants.INVALID_ELEMENT_TYPES);
+		renameNegative(copy, "NewX", false, IJavaScriptModelStatusConstants.INVALID_ELEMENT_TYPES);
 	} finally {
 		if (copy != null) copy.discardWorkingCopy();
 	}

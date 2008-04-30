@@ -21,16 +21,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.IJavaProject;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
 import org.eclipse.wst.jsdt.core.IMember;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.ISourceRange;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.dom.AST;
 import org.eclipse.wst.jsdt.core.dom.ASTNode;
 import org.eclipse.wst.jsdt.core.dom.ASTParser;
@@ -118,7 +118,7 @@ private void setUpGenericJar() throws IOException, CoreException {
 		"class AType<E> {\n" + // type name containing character 'T'
 		"}"
 	};
-	addLibrary("generic.jar", "genericsrc.zip", pathAndContents, JavaCore.VERSION_1_5);
+	addLibrary("generic.jar", "genericsrc.zip", pathAndContents, JavaScriptCore.VERSION_1_5);
 	IFile jar = getFile("/AttachSourceTests/generic.jar");
 	this.genericType = this.currentProject.getPackageFragmentRoot(jar).getPackageFragment("generic").getClassFile("X.class").getType();
 }
@@ -151,7 +151,7 @@ private void setUpInnerClassesJar() throws IOException, CoreException {
 		"  }\n" +
 		"}"
 	};
-	addLibrary("innerClasses.jar", "innerClassessrc.zip", pathAndContents, JavaCore.VERSION_1_4);
+	addLibrary("innerClasses.jar", "innerClassessrc.zip", pathAndContents, JavaScriptCore.VERSION_1_4);
 	IFile jar = getFile("/AttachSourceTests/innerClasses.jar");
 	this.innerClasses = this.currentProject.getPackageFragmentRoot(jar).getPackageFragment("inner");
 }
@@ -179,7 +179,7 @@ public void tearDownSuite() throws Exception {
 /**
  * Test AST.parseCompilationUnit(IClassFile, boolean).
  */
-public void testASTParsing() throws JavaModelException {
+public void testASTParsing() throws JavaScriptModelException {
 	this.attachSource(this.pkgFragmentRoot, "/AttachSourceTests/attachsrc.zip", "");	
 	IClassFile classFile = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	ASTNode node = runConversion(classFile, true);
@@ -198,7 +198,7 @@ public void testASTParsing() throws JavaModelException {
  * Test AST.parseCompilationUnit(IClassFile, boolean).
  * Test for http://bugs.eclipse.org/bugs/show_bug.cgi?id=30471
  */
-public void testASTParsing2() throws JavaModelException {
+public void testASTParsing2() throws JavaScriptModelException {
 	this.attachSource(this.pkgFragmentRoot, "/AttachSourceTests/attachsrc.zip", "");	
 	IClassFile classFile = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	ASTNode node = runConversion(classFile, false);
@@ -219,7 +219,7 @@ public void testASTParsing2() throws JavaModelException {
  */
 public void testChangeSourceAttachmentFile() throws CoreException {
 	IClassFile cf = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
-	IMethod method = cf.getType().getMethod("foo", new String[] {});
+	IFunction method = cf.getType().getFunction("foo", new String[] {});
 	
 	// check initial source
 	assertSourceEquals(
@@ -255,10 +255,10 @@ public void testChangeSourceAttachmentFile() throws CoreException {
 /**
  * Ensure that a class file with an attached source can retrieve its children given a source index.
  */
-public void testClassFileGetElementAt01() throws JavaModelException {
+public void testClassFileGetElementAt01() throws JavaScriptModelException {
 	IClassFile classFile = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	String source = classFile.getSource();
-	IJavaElement element = classFile.getElementAt(source.indexOf("class A"));
+	IJavaScriptElement element = classFile.getElementAt(source.indexOf("class A"));
 	assertElementEquals(
 		"Unexpected element",
 		"A [in A.class [in x.y [in attach.jar [in AttachSourceTests]]]]",
@@ -267,10 +267,10 @@ public void testClassFileGetElementAt01() throws JavaModelException {
 /**
  * Ensure that a class file with an attached source can retrieve its children given a source index.
  */
-public void testClassFileGetElementAt02() throws JavaModelException {
+public void testClassFileGetElementAt02() throws JavaScriptModelException {
 	IClassFile classFile = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	String source = classFile.getSource();
-	IJavaElement element = classFile.getElementAt(source.indexOf("public A"));
+	IJavaScriptElement element = classFile.getElementAt(source.indexOf("public A"));
 	assertElementEquals(
 		"Unexpected element",
 		"A() [in A [in A.class [in x.y [in attach.jar [in AttachSourceTests]]]]]",
@@ -279,10 +279,10 @@ public void testClassFileGetElementAt02() throws JavaModelException {
 /**
  * Ensure that a class file with an attached source can retrieve its children given a source index.
  */
-public void testClassFileGetElementAt03() throws JavaModelException {
+public void testClassFileGetElementAt03() throws JavaScriptModelException {
 	IClassFile classFile = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	String source = classFile.getSource();
-	IJavaElement element = classFile.getElementAt(source.indexOf("void foo"));
+	IJavaScriptElement element = classFile.getElementAt(source.indexOf("void foo"));
 	assertElementEquals(
 		"Unexpected element",
 		"foo() [in A [in A.class [in x.y [in attach.jar [in AttachSourceTests]]]]]",
@@ -292,10 +292,10 @@ public void testClassFileGetElementAt03() throws JavaModelException {
  * Ensure that a constructor of a binary member type can be retrieved with its source position.
  * (regression test for bug 119249 codeResolve, search, etc. don't work on constructor of binary inner class)
  */
-public void testClassFileGetElementAt04() throws JavaModelException {
+public void testClassFileGetElementAt04() throws JavaScriptModelException {
 	IClassFile classFile = this.innerClasses.getClassFile("X$V.class");
 	String source = classFile.getSource();
-	IJavaElement element = classFile.getElementAt(source.indexOf("V(String s)"));
+	IJavaScriptElement element = classFile.getElementAt(source.indexOf("V(String s)"));
 	assertElementEquals(
 		"Unexpected element",
 		"V(inner.X, java.lang.String) [in V [in X$V.class [in inner [in innerClasses.jar [in AttachSourceTests]]]]]",
@@ -317,14 +317,14 @@ public void testClassFileInOutput() throws CoreException {
  * Retrieves the source code for "A.class", which is
  * the entire CU for "A.js".
  */
-public void testClassRetrieval() throws JavaModelException {
+public void testClassRetrieval() throws JavaScriptModelException {
 	IClassFile objectCF = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	assertTrue("source code does not exist for the entire attached compilation unit", objectCF.getSource() != null);
 }
 /**
  * Removes the source attachment from the jar.
  */
-public void testDetachSource() throws JavaModelException {
+public void testDetachSource() throws JavaScriptModelException {
 	this.attachSource(this.pkgFragmentRoot, null, null);
 	IClassFile cf = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	assertTrue("source code should no longer exist for A", cf.getSource() == null);
@@ -336,8 +336,8 @@ public void testDetachSource() throws JavaModelException {
 /*
  * Ensures that the source of a generic method can be retrieved.
  */
-public void testGeneric1() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"QX<QT;>;"});
+public void testGeneric1() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"QX<QT;>;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"void foo(X<T> x) {\n" + 
@@ -347,8 +347,8 @@ public void testGeneric1() throws JavaModelException {
 /*
  * Ensures that the source of a generic method can be retrieved.
  */
-public void testGeneric2() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"QK;", "QV;"});
+public void testGeneric2() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"QK;", "QV;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"<K, V> V foo(K key, V value) {\n" + 
@@ -360,48 +360,48 @@ public void testGeneric2() throws JavaModelException {
  * Ensures that the source of a generic method can be retrieved.
  * (regression test for bug 129317 Outline view inconsistent with code
  */
-public void testGeneric3() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"I", "Lgeneric.X<[Ljava.lang.Object;>;"});
+public void testGeneric3() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"I", "Lgeneric.X<[Ljava.lang.Object;>;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"void foo(int i, X<Object[]> x) {\n" + 
 		"  }",
 		method.getSource());
 }
-public void testGeneric4() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"Z", "Lgeneric.X<+Lgeneric.X;>;"});
+public void testGeneric4() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"Z", "Lgeneric.X<+Lgeneric.X;>;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"void foo(boolean b, X<? extends X> x) {\n" + 
 		"  }",
 		method.getSource());
 }
-public void testGeneric5() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"F", "Lgeneric.X<*>;"});
+public void testGeneric5() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"F", "Lgeneric.X<*>;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"void foo(float f, X<?> x) {\n" + 
 		"  }",
 		method.getSource());
 }
-public void testGeneric6() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"Lgeneric.Y<+Ljava.lang.Integer;+Ljava.lang.Object;>;"});
+public void testGeneric6() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"Lgeneric.Y<+Ljava.lang.Integer;+Ljava.lang.Object;>;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"void foo(Y<? extends Integer, ? extends Object> y) {\n" + 
 		"  }",
 		method.getSource());
 }
-public void testGeneric7() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"Lgeneric.Z.Inner<Ljava.lang.Object;>;"});
+public void testGeneric7() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"Lgeneric.Z.Inner<Ljava.lang.Object;>;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"void foo(Z.Inner<Object> inner) {\n" + 
 		"  }",
 		method.getSource());
 }
-public void testGeneric8() throws JavaModelException {
-	IMethod method = this.genericType.getMethod("foo", new String[] {"Lgeneric.AType<Ljava.lang.Object;>;"});
+public void testGeneric8() throws JavaScriptModelException {
+	IFunction method = this.genericType.getFunction("foo", new String[] {"Lgeneric.AType<Ljava.lang.Object;>;"});
 	assertSourceEquals(
 		"Unexpected source",
 		"void foo(AType<Object> t) {\n" + 
@@ -412,16 +412,16 @@ public void testGeneric8() throws JavaModelException {
  * Ensures that name ranges exists for BinaryMembers that have
  * mapped source.
  */
-public void testGetNameRange01() throws JavaModelException {
+public void testGetNameRange01() throws JavaScriptModelException {
 	IClassFile classFile = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
-	IMethod method = classFile.getType().getMethod("foo", null);
+	IFunction method = classFile.getType().getFunction("foo", null);
 	assertSourceEquals("Unexpected name source", "foo", getNameSource(classFile.getSource(), method));
 }
 /**
  * Ensures that name ranges exists for BinaryMembers that have
  * mapped source.
  */
-public void testGetNameRange02() throws JavaModelException {
+public void testGetNameRange02() throws JavaScriptModelException {
 	IClassFile classFile = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	assertSourceEquals("Unexpected name source", "A", getNameSource(classFile.getSource(), classFile.getType()));
 }
@@ -429,15 +429,15 @@ public void testGetNameRange02() throws JavaModelException {
  * Ensure that the name range for a constructor of a binary member type is correct.
  * (regression test for bug 119249 codeResolve, search, etc. don't work on constructor of binary inner class)
  */
-public void testGetNameRange03() throws JavaModelException {
+public void testGetNameRange03() throws JavaScriptModelException {
 	IClassFile classFile = this.innerClasses.getClassFile("X$V.class");
-	IMethod constructor = classFile.getType().getMethod("V", new String[] {"Linner.X;", "Ljava.lang.String;"});
+	IFunction constructor = classFile.getType().getFunction("V", new String[] {"Linner.X;", "Ljava.lang.String;"});
 	assertSourceEquals("Unexpected name source", "V", getNameSource(classFile.getSource(), constructor));
 }
 /**
  * Retrieves the source attachment paths for jar root.
  */
-public void testGetSourceAttachmentPath() throws JavaModelException {
+public void testGetSourceAttachmentPath() throws JavaScriptModelException {
 	IPath saPath= this.pkgFragmentRoot.getSourceAttachmentPath();
 	assertEquals("Source attachment path not correct for root " + this.pkgFragmentRoot, "/AttachSourceTests/attachsrc.zip", saPath.toString());
 	assertEquals("Source attachment root path should be empty", new Path(""), this.pkgFragmentRoot.getSourceAttachmentRootPath());
@@ -446,7 +446,7 @@ public void testGetSourceAttachmentPath() throws JavaModelException {
  * Ensures that a source range exists for the class file that has
  * mapped source.
  */
-public void testGetSourceRange() throws JavaModelException {
+public void testGetSourceRange() throws JavaScriptModelException {
 	IClassFile cf = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
 	ISourceRange sourceRange = cf.getSourceRange();
 	assertTrue("Class file should have associated source range", sourceRange != null);
@@ -457,7 +457,7 @@ public void testGetSourceRange() throws JavaModelException {
  * Ensures that a source range exists for the (inner) class file that has
  * mapped source.
  */
-public void testGetSourceRangeInnerClass() throws JavaModelException {
+public void testGetSourceRangeInnerClass() throws JavaScriptModelException {
 	IClassFile cf = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A$Inner.class");
 	ISourceRange sourceRange = cf.getSourceRange();
 	assertTrue("Inner class file should have associated source range", sourceRange != null);
@@ -467,7 +467,7 @@ public void testGetSourceRangeInnerClass() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass1() throws JavaModelException {
+public void testInnerClass1() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -500,7 +500,7 @@ public void testInnerClass1() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass2() throws JavaModelException {
+public void testInnerClass2() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$1.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -510,7 +510,7 @@ public void testInnerClass2() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass3() throws JavaModelException {
+public void testInnerClass3() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$2.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -522,7 +522,7 @@ public void testInnerClass3() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass4() throws JavaModelException {
+public void testInnerClass4() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$3.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -532,7 +532,7 @@ public void testInnerClass4() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass5() throws JavaModelException {
+public void testInnerClass5() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$1$Y.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -542,7 +542,7 @@ public void testInnerClass5() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass6() throws JavaModelException {
+public void testInnerClass6() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$1$W.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -556,7 +556,7 @@ public void testInnerClass6() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass7() throws JavaModelException {
+public void testInnerClass7() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$2$Z.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -566,7 +566,7 @@ public void testInnerClass7() throws JavaModelException {
 /*
  * Ensures that the source of an inner class can be retrieved.
  */
-public void testInnerClass8() throws JavaModelException {
+public void testInnerClass8() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$V.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -580,7 +580,7 @@ public void testInnerClass8() throws JavaModelException {
  * Ensures that the source of an inner class can be retrieved.
  * (regression test for bug 124611 IAE in Signature.createCharArrayTypeSignature)
  */
-public void testInnerClass9() throws JavaModelException {
+public void testInnerClass9() throws JavaScriptModelException {
 	IType type = this.innerClasses.getClassFile("X$4$U.class").getType();
 	assertSourceEquals(
 		"Unexpected source",
@@ -594,7 +594,7 @@ public void testInnerClass9() throws JavaModelException {
 /**
  * Ensures that a source folder can be attached to a lib folder.
  */
-public void testLibFolder() throws JavaModelException {
+public void testLibFolder() throws JavaScriptModelException {
 	IPackageFragmentRoot root = this.getPackageFragmentRoot("/AttachSourceTests/lib");
 	this.attachSource(root, "/AttachSourceTests/srcLib", "");
 	
@@ -611,11 +611,11 @@ public void testLibFolder() throws JavaModelException {
 /**
  * Retrieves the source code for methods of class A.
  */
-public void testMethodRetrieval() throws JavaModelException {
+public void testMethodRetrieval() throws JavaScriptModelException {
 	IClassFile cf = this.pkgFragmentRoot.getPackageFragment("x.y").getClassFile("A.class");
-	IMethod[] methods = cf.getType().getMethods();
+	IFunction[] methods = cf.getType().getFunctions();
 	for (int i = 0; i < methods.length; i++) {
-		IMethod method = methods[i];
+		IFunction method = methods[i];
 		assertTrue("source code does not exist for the method " + method, method.getSource() != null);
 		assertTrue("method name range not correct", method.getNameRange().getOffset() != -1 && method.getNameRange().getLength() != 0);
 	}
@@ -624,7 +624,7 @@ public void testMethodRetrieval() throws JavaModelException {
  * Closes the jar, to ensure when it is re-opened the source
  * attachment still exists.
  */
-public void testPersistence() throws JavaModelException {
+public void testPersistence() throws JavaScriptModelException {
 	this.pkgFragmentRoot.close();
 	testClassRetrieval();
 	testMethodRetrieval();
@@ -647,7 +647,7 @@ public void testProjectAsClassFolder1() throws CoreException {
 		);
 		IProject p1 = getProject("P1");
 		p1.build(IncrementalProjectBuilder.FULL_BUILD, null);
-		IJavaProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"}, "");
+		IJavaScriptProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"}, "");
 		IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(p1);
 		attachSource(root, "/P1", null);
 		IClassFile cf = root.getPackageFragment("p").getClassFile("X.class");
@@ -678,7 +678,7 @@ public void testProjectAsClassFolder2() throws CoreException {
 		);
 		IProject p1 = getProject("P1");
 		p1.build(IncrementalProjectBuilder.FULL_BUILD, null);
-		IJavaProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"}, "");
+		IJavaScriptProject javaProject = createJavaProject("P2", new String[]{""}, new String[]{"/P1"}, "");
 		IPackageFragmentRoot root = javaProject.getPackageFragmentRoot(p1);
 		attachSource(root, "/P1", null);
 		IClassFile cf = root.getPackageFragment("").getClassFile("X.class");
@@ -699,7 +699,7 @@ public void testProjectAsClassFolder2() throws CoreException {
  */
 public void testProjectAsSourceAttachment() throws CoreException {
 	try {
-		IJavaProject javaProject = createJavaProject("Test", new String[]{""}, new String[]{"/AttachSourceTests/test.jar"}, "");
+		IJavaScriptProject javaProject = createJavaProject("Test", new String[]{""}, new String[]{"/AttachSourceTests/test.jar"}, "");
 		createFolder("/Test/test1");
 		createFile("/Test/test1/Test.js",
 			"package test1;\n" + 
@@ -724,8 +724,8 @@ public void testProjectAsSourceAttachment() throws CoreException {
  * a nested root structure and exists as a resource.  Tests that
  * the attachment is persisted as a server property for the jar.
  */
-public void testRootPath() throws JavaModelException {
-	IJavaProject project = getJavaProject("AttachSourceTests");
+public void testRootPath() throws JavaScriptModelException {
+	IJavaScriptProject project = getJavaProject("AttachSourceTests");
 	IFile jar = (IFile) project.getProject().findMember("attach2.jar");
 	IFile srcZip=(IFile) project.getProject().findMember("attach2src.zip");
 	JarPackageFragmentRoot root = (JarPackageFragmentRoot) project.getPackageFragmentRoot(jar);
@@ -749,8 +749,8 @@ public void testRootPath() throws JavaModelException {
  * Attaches a source zip to a jar specifying an invalid root path.  
  * Ensures that the root path is just used as a hint, and that the source is still retrieved.
  */
-public void testRootPath2() throws JavaModelException {
-	IJavaProject project = getJavaProject("AttachSourceTests");
+public void testRootPath2() throws JavaScriptModelException {
+	IJavaScriptProject project = getJavaProject("AttachSourceTests");
 	IFile jar = (IFile) project.getProject().findMember("attach2.jar");
 	IFile srcZip=(IFile) project.getProject().findMember("attach2src.zip");
 	JarPackageFragmentRoot root = (JarPackageFragmentRoot) project.getPackageFragmentRoot(jar);
@@ -764,7 +764,7 @@ public void testRootPath2() throws JavaModelException {
  * Attaches a sa source folder can be attached to a lib folder specifying an invalid root path.  
  * Ensures that the root path is just used as a hint, and that the source is still retrieved.
  */
-public void testRootPath3() throws JavaModelException {
+public void testRootPath3() throws JavaScriptModelException {
 	IPackageFragmentRoot root = this.getPackageFragmentRoot("/AttachSourceTests/lib");
 	this.attachSource(root, "/AttachSourceTests/srcLib", "invalid");
 	
@@ -782,8 +782,8 @@ public void testRootPath3() throws JavaModelException {
 /**
  * Attach a jar with a source attachement that doesn't contain the source folders
  */
-public void testRootPath4() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath4() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/test.jar"));
 	this.attachSource(root, "/AttachSourceTests/src.zip", "invalid");
 	
@@ -799,8 +799,8 @@ public void testRootPath4() throws JavaModelException {
 /**
  * Attach a jar with a source attachement that doesn't contain the source folders
  */
-public void testRootPath5() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath5() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/update.jar"));
 	this.attachSource(root, "/AttachSourceTests/src.zip", "invalid");
 	
@@ -824,8 +824,8 @@ public void testRootPath5() throws JavaModelException {
 /**
  * Attach a jar with a source attachement that doesn't contain the source folders
  */
-public void testRootPath6() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath6() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/update.jar"));
 	this.attachSource(root, "/AttachSourceTests/src.zip", null);
 	
@@ -849,8 +849,8 @@ public void testRootPath6() throws JavaModelException {
 /**
  * Attach a jar with a source attachement that doesn't contain the source folders
  */
-public void testRootPath7() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath7() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/full.jar"));
 	this.attachSource(root, "/AttachSourceTests/src.zip", null);
 	
@@ -882,8 +882,8 @@ public void testRootPath7() throws JavaModelException {
 /**
  * Attach a jar with a source attachement that contains the source folders
  */
-public void testRootPath8() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath8() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/full.jar"));
 	this.attachSource(root, "/AttachSourceTests/fullsrc.zip", null);
 	
@@ -915,8 +915,8 @@ public void testRootPath8() throws JavaModelException {
 /**
  * Attach a jar with a source attachement that contains the source folders
  */
-public void testRootPath9() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath9() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/full.jar"));
 	this.attachSource(root, "/AttachSourceTests/fullsrc.zip", "invalid");
 	
@@ -948,8 +948,8 @@ public void testRootPath9() throws JavaModelException {
 /**
  * Attach a jar with a source attachement that is itself
  */
-public void testRootPath10() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath10() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/test2.jar"));
 	this.attachSource(root, "/AttachSourceTests/test2.jar", null);
 	
@@ -970,8 +970,8 @@ public void testRootPath10() throws JavaModelException {
 ///**
 // * http://bugs.eclipse.org/bugs/show_bug.cgi?id=35965
 // */
-//public void testRootPath11() throws JavaModelException {
-//	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+//public void testRootPath11() throws JavaScriptModelException {
+//	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 //	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/test4.jar"));
 //	this.attachSource(root, "/AttachSourceTests/test4_src.zip", null);
 //	
@@ -1000,8 +1000,8 @@ public void testRootPath10() throws JavaModelException {
  * Attach a jar with a source attachement that is itself. The jar contains 2 root paths for the same class file.
  * (regression test for bug 74014 prefix path for source attachements - automatic detection does not seem to work)
  */
-public void testRootPath12() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testRootPath12() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/test5.jar"));
 	attachSource(root, "/AttachSourceTests/test5.jar", null);
 	
@@ -1018,8 +1018,8 @@ public void testRootPath12() throws JavaModelException {
 /**
  * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=110172"
  */
-public void testBug110172() throws JavaModelException {
-	IJavaProject project = this.getJavaProject("/AttachSourceTests");
+public void testBug110172() throws JavaScriptModelException {
+	IJavaScriptProject project = this.getJavaProject("/AttachSourceTests");
 	IPackageFragmentRoot root = project.getPackageFragmentRoot(this.getFile("/AttachSourceTests/test6.jar"));
 	assertTrue("Root doesn't exist", root.exists());
 	attachSource(root, "/AttachSourceTests/test6src.zip", null);
@@ -1030,18 +1030,18 @@ public void testBug110172() throws JavaModelException {
 		assertNotNull(cf);
 		final String source = cf.getSource();
 		assertNotNull("No source", source);
-		IJavaElement[] children = cf.getChildren();
+		IJavaScriptElement[] children = cf.getChildren();
 		assertEquals("Wrong number of children", 1, children.length);
-		IJavaElement element = children[0];
+		IJavaScriptElement element = children[0];
 		assertTrue("Not a type", element instanceof IType);
 		IType type = (IType) element;
-		IJavaElement[] members = type.getChildren();
+		IJavaScriptElement[] members = type.getChildren();
 		final int length = members.length;
 		assertEquals("Wrong number", 9, length);
 		for (int i = 0; i < length; i++) {
 			element = members[i];
 			assertTrue(element instanceof IMember);
-			final ISourceRange javadocRange = ((IMember) element).getJavadocRange();
+			final ISourceRange javadocRange = ((IMember) element).getJSdocRange();
 			final String elementName = element.getElementName();
 			if ("f".equals(elementName)) {
 				assertNotNull("No javadoc source range", javadocRange);
@@ -1063,8 +1063,8 @@ public void testBug110172() throws JavaModelException {
 				assertTrue("Wrong javadoc", javadocSource.indexOf("member type A") != -1);
 			} else if ("X".equals(elementName)) {
 				// need treatment for the two constructors
-				assertTrue("Not an IMethod", element instanceof IMethod);
-				IMethod method = (IMethod) element;
+				assertTrue("Not an IFunction", element instanceof IFunction);
+				IFunction method = (IFunction) element;
 				switch(method.getNumberOfParameters()) {
 					case 0 :
 						assertNull("Has a javadoc source range", javadocRange);
@@ -1099,7 +1099,7 @@ public void testBug110172() throws JavaModelException {
  * @test bug 153133: [model] toggle breakpoint in constructor creates a class load breakpoint
  * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=153133"
  */
-public void testBug153133() throws JavaModelException {
+public void testBug153133() throws JavaScriptModelException {
 	IPackageFragmentRoot root = this.currentProject.getPackageFragmentRoot(this.getFile("/AttachSourceTests/b153133.jar"));
 	assertTrue("Root doesn't exist", root.exists());
 	
@@ -1109,26 +1109,26 @@ public void testBug153133() throws JavaModelException {
 		assertNotNull(cf);
 		final String source = cf.getSource();
 		assertNotNull("No source", source);
-		IJavaElement[] children = cf.getChildren();
+		IJavaScriptElement[] children = cf.getChildren();
 		assertEquals("Wrong number of children", 1, children.length);
-		IJavaElement element = children[0];
+		IJavaScriptElement element = children[0];
 		assertTrue("Not a type", element instanceof IType);
 		IType type = (IType) element;
-		IJavaElement[] members = type.getChildren();
+		IJavaScriptElement[] members = type.getChildren();
 		final int length = members.length;
 		assertEquals("Wrong number", 7, length);
 		
 		// Need to get type members constructors
 		for (int i = 0; i < length; i++) {
 			assertTrue(members[i] instanceof IMember);
-			if (((IMember)members[i]).getElementType() == IJavaElement.TYPE) {
+			if (((IMember)members[i]).getElementType() == IJavaScriptElement.TYPE) {
 				IType typeMember = (IType) members[i];
 				String typeName = typeMember.getElementName();
-				IMethod[] methods = typeMember.getMethods();
+				IFunction[] methods = typeMember.getFunctions();
 				assertEquals("Expected only one constructor defined in type "+typeName, 1, methods.length);
 				// Verify that source range is valid
 				assertTrue("Expected a constructor instead of a method in type "+typeName, methods[0].isConstructor());
-				IMethod constructor = methods[0];
+				IFunction constructor = methods[0];
 				ISourceRange sourceRange = constructor.getSourceRange();
 				assertTrue("Constructor "+constructor.getElementName()+" has invalid offset: "+sourceRange, sourceRange.getOffset() >= 0);
 				assertTrue("Constructor "+constructor.getElementName()+" has invalid length: "+sourceRange, sourceRange.getLength() > 0);

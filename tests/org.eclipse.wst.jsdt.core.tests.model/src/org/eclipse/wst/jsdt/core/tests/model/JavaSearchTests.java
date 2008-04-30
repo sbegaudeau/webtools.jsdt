@@ -26,7 +26,7 @@ import org.eclipse.wst.jsdt.internal.core.JavaModelStatus;
 /**
  * Tests the Java search engine where results are JavaElements and source positions.
  */
-public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSearchConstants {
+public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaScriptSearchConstants {
 
 	public JavaSearchTests(String name) {
 		super(name);
@@ -80,8 +80,8 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 	}
 
 	public void test00() throws CoreException { // was testSimpleConstructorReference1
-		ICompilationUnit compilationUnit = getCompilationUnit("JSSearch", "src", "p", "A.js");
-		IMethod constructor = compilationUnit.getMethod("A", new String[] {"QX;"});
+		IJavaScriptUnit compilationUnit = getCompilationUnit("JSSearch", "src", "p", "A.js");
+		IFunction constructor = compilationUnit.getFunction("A", new String[] {"QX;"});
 		search(
 			constructor, 
 			DECLARATIONS, 
@@ -93,8 +93,8 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 
 
 	public void test01() throws CoreException { // was testSimpleConstructorDeclaration
-		ICompilationUnit compilationUnit = getCompilationUnit("JSSearch", "src", "p", "A.js");
-		IMethod constructor = compilationUnit.getMethod("A", new String[] {"QX;"});
+		IJavaScriptUnit compilationUnit = getCompilationUnit("JSSearch", "src", "p", "A.js");
+		IFunction constructor = compilationUnit.getFunction("A", new String[] {"QX;"});
 		search(
 			constructor, 
 			DECLARATIONS, 
@@ -105,8 +105,8 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 
 
 	public void test02() throws CoreException { // was testSimpleConstructorReference1
-		ICompilationUnit compilationUnit =  getCompilationUnit("JSSearch", "src", "p", "A.js");
-	IMethod constructor = compilationUnit.getMethod("A", new String[] {"QX;"});
+		IJavaScriptUnit compilationUnit =  getCompilationUnit("JSSearch", "src", "p", "A.js");
+	IFunction constructor = compilationUnit.getFunction("A", new String[] {"QX;"});
 	search(
 		constructor, 
 		REFERENCES, 
@@ -118,7 +118,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 	}
 
 	public void test03() throws CoreException { // was testSimpleConstructorReference1
-		ICompilationUnit compilationUnit =  getCompilationUnit("JSSearch", "src", "p", "A.js");
+		IJavaScriptUnit compilationUnit =  getCompilationUnit("JSSearch", "src", "p", "A.js");
 	IField field = compilationUnit.getField("x");
 	search(
 			field, 
@@ -131,7 +131,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 	}
 
 	public void test04() throws CoreException { // was testSimpleConstructorReference1
-		ICompilationUnit compilationUnit =  getCompilationUnit("JSSearch", "src", "p", "A.js");
+		IJavaScriptUnit compilationUnit =  getCompilationUnit("JSSearch", "src", "p", "A.js");
 	IField field = compilationUnit.getField("x");
 	search(
 			field, 
@@ -145,7 +145,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 
 	public void test05() throws CoreException { // was testSimpleConstructorReference1
 		IType type = getCompilationUnit("JSSearch", "src", "p", "cls1.js").getType("MyClass");
-		IMethod method = type.getMethod("someMethod", new String[] {});
+		IFunction method = type.getFunction("someMethod", new String[] {});
 
 		search(
 			method, 
@@ -158,9 +158,9 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 	}
 
 	public void test06() throws CoreException {
-		IMethod method = 
+		IFunction method = 
 			getCompilationUnit("JSSearch", "src", "a6", "A.js").
-				getMethod("m", new String[] {});
+				getFunction("m", new String[] {});
 		searchDeclarationsOfAccessedFields(
 			method, 
 			resultCollector
@@ -174,7 +174,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorDeclaration01() throws CoreException { // was testSimpleConstructorDeclaration
 //		IType type = getCompilationUnit("JSSearch", "src", "p", "A.js").getType("A");
-//		IMethod constructor = type.getMethod("A", new String[] {"QX;"});
+//		IFunction constructor = type.getMethod("A", new String[] {"QX;"});
 //		search(
 //			constructor, 
 //			DECLARATIONS, 
@@ -187,7 +187,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorDeclaration02() throws CoreException { // was testConstructorDeclarationInJar
 //		IType type = getClassFile("JSSearch", "MyJar.jar", "p1", "A.class").getType();
-//		IMethod method = type.getMethod("A", new String[] {"Ljava.lang.String;"});
+//		IFunction method = type.getMethod("A", new String[] {"Ljava.lang.String;"});
 //		search(
 //			method, 
 //			DECLARATIONS, 
@@ -202,7 +202,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorReference01() throws CoreException { // was testSimpleConstructorReference1
 //		IType type = getCompilationUnit("JSSearch", "src", "p", "A.js").getType("A");
-//		IMethod constructor = type.getMethod("A", new String[] {"QX;"});
+//		IFunction constructor = type.getMethod("A", new String[] {"QX;"});
 //		search(
 //			constructor, 
 //			REFERENCES, 
@@ -231,7 +231,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorReference03() throws CoreException { // was testConstructorReferenceExplicitConstructorCall1
 //		IType type = getCompilationUnit("JSSearch", "src", "p", "Y.js").getType("Y");
-//		IMethod method = type.getMethod("Y", new String[] {"I"});
+//		IFunction method = type.getMethod("Y", new String[] {"I"});
 //		search(
 //			method, 
 //			REFERENCES, 
@@ -246,7 +246,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorReference04() throws CoreException { // was testConstructorReferenceExplicitConstructorCall2
 //		IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X");
-//		IMethod method = type.getMethod("X", new String[] {"I"});
+//		IFunction method = type.getMethod("X", new String[] {"I"});
 //		search(
 //			method, 
 //			REFERENCES, 
@@ -263,7 +263,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorReference05() throws CoreException { // was testConstructorReferenceImplicitConstructorCall1
 //		IType type = getCompilationUnit("JSSearch", "src", "c7", "X.js").getType("X");
-//		IMethod method = type.getMethod("X", new String[] {});
+//		IFunction method = type.getMethod("X", new String[] {});
 //		search(
 //			method, 
 //			REFERENCES, 
@@ -294,7 +294,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorReference07() throws CoreException { // was testConstructorReferenceInFieldInitializer
 //		IType type = getCompilationUnit("JSSearch", "src", "", "A.js").getType("A").getType("Inner");
-//		IMethod method = type.getMethod("Inner", new String[] {"I"});
+//		IFunction method = type.getMethod("Inner", new String[] {"I"});
 //		search(
 //			method, 
 //			REFERENCES, 
@@ -325,7 +325,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 */
 //	public void testConstructorReference09() throws CoreException {
 //		IType type = getCompilationUnit("JavaSearch15/src/p2/X.js").getType("X");
-//		IMethod method = type.getMethod("X", new String[] {"QE;"});
+//		IFunction method = type.getMethod("X", new String[] {"QE;"});
 //		search(
 //			method, 
 //			REFERENCES, 
@@ -359,8 +359,8 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 	 * (regression test for PR #1G3UI7A)
 	 */
 	public void testCoreException() throws CoreException {
-		ICompilationUnit compilationUnit = getCompilationUnit("JSSearch", "src", "p", "A.js");
-		IMethod method = compilationUnit.getMethod("A", new String[] {"QX;"});
+		IJavaScriptUnit compilationUnit = getCompilationUnit("JSSearch", "src", "p", "A.js");
+		IFunction method = compilationUnit.getFunction("A", new String[] {"QX;"});
 		SearchRequestor result = new SearchRequestor() {
 			public void acceptSearchMatch(SearchMatch match) throws CoreException {
 				throw new CoreException(new JavaModelStatus(-1, "test"));
@@ -383,9 +383,9 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 	 * (regression test for bug 6538 searchDeclarationsOf* incorrect)
 	 */
 	public void testDeclarationOfAccessedFields1() throws CoreException {
-		IMethod method = 
+		IFunction method = 
 			getCompilationUnit("JSSearch", "src", "a5", "B.js").
-				getType("C").getMethod("i", new String[] {});
+				getType("C").getFunction("i", new String[] {});
 		searchDeclarationsOfAccessedFields(
 			method, 
 			resultCollector
@@ -400,7 +400,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 * (regression test for bug 6538 searchDeclarationsOf* incorrect)
 //	 */
 //	public void testDeclarationOfAccessedFields2() throws CoreException {
-//		IMethod method = 
+//		IFunction method = 
 //			getCompilationUnit("JSSearch", "src", "a6", "A.js").
 //				getType("P").getMethod("mm", new String[] {});
 //		searchDeclarationsOfAccessedFields(
@@ -416,7 +416,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 * (regression test for bug 10386 NPE in MatchLocator.lookupType)
 //	 */
 //	public void testDeclarationOfAccessedFields3() throws CoreException {
-//		IMethod method = 
+//		IFunction method = 
 //			getCompilationUnit("JSSearch", "src", "b6", "A.js").
 //				getType("A").getMethod("foo", new String[] {});
 //		searchDeclarationsOfAccessedFields(
@@ -431,7 +431,7 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
 //	 * Declaration of referenced types test.
 //	 */
 //	public void testDeclarationOfReferencedTypes01() throws CoreException {
-//		IMethod method = 
+//		IFunction method = 
 //			getCompilationUnit("JSSearch", "src", "a3", "References.js").
 //				getType("References").getMethod("foo", new String[] {});
 //		searchDeclarationsOfReferencedTypes(
@@ -454,9 +454,9 @@ public class JavaSearchTests extends AbstractJavaSearchTests implements IJavaSea
  * (Regression test for bug 6779 searchDeclarationsOfReferencedTyped - missing exception types)
  */
 public void testDeclarationOfReferencedTypes02() throws CoreException {
-	IMethod method = 
+	IFunction method = 
 		getCompilationUnit("JSSearch", "src", "a7", "X.js").
-			getType("X").getMethod("foo", new String[] {});
+			getType("X").getFunction("foo", new String[] {});
 	searchDeclarationsOfReferencedTypes(
 		method, 
 		resultCollector
@@ -470,7 +470,7 @@ public void testDeclarationOfReferencedTypes02() throws CoreException {
  * (Regression test for bug 12649 Missing import after move  )
  */
 public void testDeclarationOfReferencedTypes03() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JSSearch", "src", "c1", "A.js");
+	IJavaScriptUnit unit = getCompilationUnit("JSSearch", "src", "c1", "A.js");
 	searchDeclarationsOfReferencedTypes(
 		unit, 
 		resultCollector
@@ -484,7 +484,7 @@ public void testDeclarationOfReferencedTypes03() throws CoreException {
  * (Regression test for bug 12649 Missing import after move  )
  */
 public void testDeclarationOfReferencedTypes04() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JSSearch", "src", "c1", "B.js");
+	IJavaScriptUnit unit = getCompilationUnit("JSSearch", "src", "c1", "B.js");
 	searchDeclarationsOfReferencedTypes(
 		unit, 
 		resultCollector
@@ -498,7 +498,7 @@ public void testDeclarationOfReferencedTypes04() throws CoreException {
  * (Regression test for bug 18418 search: searchDeclarationsOfReferencedTypes reports import declarations)
  */
 public void testDeclarationOfReferencedTypes05() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JSSearch", "src", "c2", "A.js");
+	IJavaScriptUnit unit = getCompilationUnit("JSSearch", "src", "c2", "A.js");
 	searchDeclarationsOfReferencedTypes(
 		unit, 
 		resultCollector
@@ -512,7 +512,7 @@ public void testDeclarationOfReferencedTypes05() throws CoreException {
  * (Regression test for bug 24934 Move top level doesn't optimize the imports[refactoring])
  */
 public void testDeclarationOfReferencedTypes06() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JSSearch", "src", "d1", "X.js");
+	IJavaScriptUnit unit = getCompilationUnit("JSSearch", "src", "d1", "X.js");
 	IType innerType = unit.getType("X").getType("Inner");
 	searchDeclarationsOfReferencedTypes(
 		innerType, 
@@ -540,7 +540,7 @@ public void testDeclarationOfReferencedTypes07() throws CoreException {
 
 /**
  * Declaration of referenced types test.
- * (Regression test for bug 47787 IJavaSearchResultCollector.aboutToStart() and done() not called)
+ * (Regression test for bug 47787 IJavaScriptSearchResultCollector.aboutToStart() and done() not called)
  */
 public void testDeclarationOfReferencedTypes08() throws CoreException {
 	IPackageFragment pkg = getPackageFragment("JSSearch", "src", "r7");
@@ -568,7 +568,7 @@ public void testDeclarationOfReferencedTypes08() throws CoreException {
 )
  */
 public void testDeclarationOfReferencedTypes09() throws CoreException {
-	ICompilationUnit cu = getCompilationUnit("JavaSearch15/src/p3/X.js");
+	IJavaScriptUnit cu = getCompilationUnit("JavaSearch15/src/p3/X.js");
 	JavaSearchResultCollector result = new JavaSearchResultCollector() {
 	    public void beginReporting() {
 	        results.append("Starting search...");
@@ -591,7 +591,7 @@ public void testDeclarationOfReferencedTypes09() throws CoreException {
  * Simple declarations of sent messages test.
  */
 public void testDeclarationsOfSentMessages01() throws CoreException { // was testSimpleDeclarationsOfSentMessages
-	ICompilationUnit cu = getCompilationUnit("JSSearch", "src", "", "Test.js");
+	IJavaScriptUnit cu = getCompilationUnit("JSSearch", "src", "", "Test.js");
 	searchDeclarationsOfSentMessages(
 		cu, 
 		this.resultCollector);
@@ -608,9 +608,9 @@ public void testDeclarationsOfSentMessages01() throws CoreException { // was tes
  * (regression test for bug 6538 searchDeclarationsOf* incorrect)
  */
 public void testDeclarationsOfSentMessages02() throws CoreException { // was testDeclarationOfSentMessages
-	IMethod method = 
+	IFunction method = 
 		getCompilationUnit("JSSearch", "src", "a5", "B.js").
-			getType("C").getMethod("i", new String[] {});
+			getType("C").getFunction("i", new String[] {});
 	searchDeclarationsOfSentMessages(
 		method, 
 		resultCollector
@@ -753,10 +753,10 @@ public void testFieldReference05() throws CoreException {
 	IField field = type.getField("x");
 
 	// Set 1.4 compliance level (no constant yet)
-	Hashtable options = JavaCore.getOptions();
+	Hashtable options = JavaScriptCore.getOptions();
 	String currentOption = (String)options.get("org.eclipse.wst.jsdt.core.compiler.compliance");
 	options.put("org.eclipse.wst.jsdt.core.compiler.compliance", "1.4");
-	JavaCore.setOptions(options);
+	JavaScriptCore.setOptions(options);
 	
 	try {
 		search(
@@ -770,7 +770,7 @@ public void testFieldReference05() throws CoreException {
 	} finally {
 		// Restore compliance level
 		options.put("org.eclipse.wst.jsdt.core.compiler.compliance", currentOption);
-		JavaCore.setOptions(options);
+		JavaScriptCore.setOptions(options);
 	}
 }
 /**
@@ -1018,7 +1018,7 @@ public void testFieldReference19() throws CoreException { // was testAccurateFie
 		"d6.X.CONSTANT", 
 		FIELD, 
 		REFERENCES,
-		SearchEngine.createJavaSearchScope(new IJavaElement[] {
+		SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {
 			getPackageFragment("JSSearch", "src", "d6")
 		}), 
 		this.resultCollector);
@@ -1200,7 +1200,7 @@ public void testLocalVariableReference3() throws CoreException {
  */
 public void testMethodDeclaration01() throws CoreException { // was testSimpleMethodDeclaration
 	IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X");
-	IMethod method = type.getMethod("foo", new String[] {"I", "QString;", "QX;"});
+	IFunction method = type.getFunction("foo", new String[] {"I", "QString;", "QX;"});
 
 	search(
 		method, 
@@ -1223,7 +1223,7 @@ public void testMethodDeclaration02() throws CoreException { // was testMethodDe
 		"foo(String, String)", 
 		METHOD,
 		DECLARATIONS,
-		SearchEngine.createJavaSearchScope(new IJavaElement[] {type}), 
+		SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type}), 
 		this.resultCollector);
 	assertSearchResults(
 		"src/e2/X.java void e2.X.foo(String, String) [foo]",
@@ -1236,7 +1236,7 @@ public void testMethodDeclaration02() throws CoreException { // was testMethodDe
  */
 public void testMethodDeclaration03() throws CoreException { // was testInnerMethodDeclaration
 	IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X").getType("Inner");
-	IMethod method = type.getMethod("foo", new String[] {});
+	IFunction method = type.getFunction("foo", new String[] {});
 
 	search(
 		method, 
@@ -1270,7 +1270,7 @@ public void testMethodDeclaration04() throws CoreException { // was testMethodDe
  */
 public void testMethodDeclaration05() throws CoreException { // was testMethodDeclarationInHierarchyScope2
 	IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X");
-	IMethod method = type.getMethod("foo", new String[] {"I", "QString;", "QX;"});
+	IFunction method = type.getFunction("foo", new String[] {"I", "QString;", "QX;"});
 
 	search(
 		method, 
@@ -1287,7 +1287,7 @@ public void testMethodDeclaration05() throws CoreException { // was testMethodDe
  */
 public void testMethodDeclaration06() throws CoreException { // was testMethodDeclarationInHierarchyScope3
 	IType type = getCompilationUnit("JSSearch", "src", "d3", "A.js").getType("B");
-	IMethod method = type.getMethod("foo", new String[] {});
+	IFunction method = type.getFunction("foo", new String[] {});
 
 	search(
 		method, 
@@ -1304,7 +1304,7 @@ public void testMethodDeclaration06() throws CoreException { // was testMethodDe
  */
 public void testMethodDeclaration07() throws CoreException { // was testMethodDeclarationInPackageScope
 	IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getPackageFragment()});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getPackageFragment()});
 
 	search(
 		"main(String[])", 
@@ -1321,7 +1321,7 @@ public void testMethodDeclaration07() throws CoreException { // was testMethodDe
  */
 public void testMethodDeclaration08() throws CoreException { // was testMethodDeclarationInJar
 	IType type = getClassFile("JSSearch", "MyJar.jar", "p1", "A.class").getType();
-	IMethod method = type.getMethod("foo", new String[] {"Ljava.lang.String;"});
+	IFunction method = type.getFunction("foo", new String[] {"Ljava.lang.String;"});
 
 	search(
 		method, 
@@ -1354,7 +1354,7 @@ public void testMethodDeclaration09() throws CoreException { // was testMethodDe
  */
 public void testMethodDeclaration10() throws CoreException { // was testMethodDeclarationNoReturnType
 	IType type = getCompilationUnit("JSSearch", "src", "e8", "A.js").getType("A");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getPackageFragment()});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getPackageFragment()});
 
 	search(
 		"m() int", 
@@ -1371,11 +1371,11 @@ public void testMethodDeclaration10() throws CoreException { // was testMethodDe
  * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=92210"
  */
 public void testMethodDeclaration11() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JSSearch", "otherSrc()", "", "X92210.js");
+	IJavaScriptUnit unit = getCompilationUnit("JSSearch", "otherSrc()", "", "X92210.js");
 	assertNotNull("Should have found an unit", unit);
-	IJavaElement root = unit.getAncestor(IJavaElement.PACKAGE_FRAGMENT_ROOT);
+	IJavaScriptElement root = unit.getAncestor(IJavaScriptElement.PACKAGE_FRAGMENT_ROOT);
 	assertNotNull("Should have found package fragment root", root);
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {root});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {root});
 
 	search(
 		"foo", 
@@ -1393,7 +1393,7 @@ public void testMethodDeclaration11() throws CoreException {
  */
 public void testMethodReference01() throws CoreException {
 	IType type = getCompilationUnit("JSSearch", "src", "q5", "AQ.js").getType("I");
-	IMethod method = type.getMethod("k", new String[] {});
+	IFunction method = type.getFunction("k", new String[] {});
 
 	search(
 		method, 
@@ -1410,7 +1410,7 @@ public void testMethodReference01() throws CoreException {
  */
 public void testMethodReference02() throws CoreException {
 	IType type = getCompilationUnit("JSSearch", "src", "q6", "CD.js").getType("AQ");
-	IMethod method = type.getMethod("k", new String[] {});
+	IFunction method = type.getFunction("k", new String[] {});
 
 	search(
 		method, 
@@ -1427,7 +1427,7 @@ public void testMethodReference02() throws CoreException {
  */
 public void testMethodReference03() throws CoreException {
 	IType type = getCompilationUnit("JSSearch", "src", "q7", "AQ.js").getType("I");
-	IMethod method = type.getMethod("k", new String[] {});
+	IFunction method = type.getFunction("k", new String[] {});
 
 	search(
 		method, 
@@ -1444,7 +1444,7 @@ public void testMethodReference03() throws CoreException {
  */
 public void testMethodReference04() throws CoreException {
 	IType type = getCompilationUnit("JSSearch", "src", "b2", "Y.js").getType("Y");
-	IMethod method = type.getMethod("foo", new String[] {"QX.Inner;"});
+	IFunction method = type.getFunction("foo", new String[] {"QX.Inner;"});
 
 	search(
 		method, 
@@ -1460,8 +1460,8 @@ public void testMethodReference04() throws CoreException {
  * (regression test for bug 49120 search doesn't find references to anonymous inner methods)
  */
 public void testMethodReference05() throws CoreException {
-	IType type = getCompilationUnit("JavaSearch/src/e9/A.js").getType("A").getMethod("foo", new String[] {}).getType("", 1);
-	IMethod method = type.getMethod("bar", new String[] {});
+	IType type = getCompilationUnit("JavaSearch/src/e9/A.js").getType("A").getFunction("foo", new String[] {}).getType("", 1);
+	IFunction method = type.getFunction("bar", new String[] {});
 
 	search(
 		method, 
@@ -1476,7 +1476,7 @@ public void testMethodReference05() throws CoreException {
  * Method reference in second anonymous and second local type of a method test.
  */
 public void testMethodReference06() throws CoreException {
-	IMethod method= getCompilationUnit("JavaSearch/src/f3/X.js").getType("X").getMethod("bar", new String[] {});
+	IFunction method= getCompilationUnit("JavaSearch/src/f3/X.js").getType("X").getFunction("bar", new String[] {});
 
 	search(
 		method, 
@@ -1493,7 +1493,7 @@ public void testMethodReference06() throws CoreException {
  */
 public void testMethodReference07() throws CoreException { // was testSimpleMethodReference
 	IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X");
-	IMethod method = type.getMethod("foo", new String[] {"I", "QString;", "QX;"});
+	IFunction method = type.getFunction("foo", new String[] {"I", "QString;", "QX;"});
 
 	search(
 		method, 
@@ -1512,7 +1512,7 @@ public void testMethodReference07() throws CoreException { // was testSimpleMeth
  */
 public void testMethodReference08() throws CoreException { // was testStaticMethodReference1
 	IType type = getCompilationUnit("JSSearch", "src", "p", "Y.js").getType("Y");
-	IMethod method = type.getMethod("bar", new String[] {});
+	IFunction method = type.getFunction("bar", new String[] {});
 
 	search(
 		method, 
@@ -1528,7 +1528,7 @@ public void testMethodReference08() throws CoreException { // was testStaticMeth
  */
 public void testMethodReference09() throws CoreException { // was testStaticMethodReference2
 	IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X");
-	IMethod method = type.getMethod("bar", new String[] {});
+	IFunction method = type.getFunction("bar", new String[] {});
 
 	search(
 		method, 
@@ -1544,7 +1544,7 @@ public void testMethodReference09() throws CoreException { // was testStaticMeth
  */
 public void testMethodReference10() throws CoreException { // was testInnerMethodReference
 	IType type = getCompilationUnit("JSSearch", "src", "p", "X.js").getType("X").getType("Inner");
-	IMethod method = type.getMethod("foo", new String[] {});
+	IFunction method = type.getFunction("foo", new String[] {});
 
 	search(
 		method, 
@@ -1560,7 +1560,7 @@ public void testMethodReference10() throws CoreException { // was testInnerMetho
  */
 public void testMethodReference11() throws CoreException { // was testMethodReferenceThroughSuper
 	IType type = getCompilationUnit("JSSearch", "src", "sd", "AQ.js").getType("AQ");
-	IMethod method = type.getMethod("k", new String[] {});
+	IFunction method = type.getFunction("k", new String[] {});
 
 	search(
 		method, 
@@ -1576,7 +1576,7 @@ public void testMethodReference11() throws CoreException { // was testMethodRefe
  */
 public void testMethodReference12() throws CoreException { // was testMethodReferenceInInnerClass
 	IType type = getCompilationUnit("JSSearch", "src", "", "CA.js").getType("CA");
-	IMethod method = type.getMethod("m", new String[] {});
+	IFunction method = type.getFunction("m", new String[] {});
 
 	search(
 		method, 
@@ -1594,7 +1594,7 @@ public void testMethodReference12() throws CoreException { // was testMethodRefe
  */
 public void testMethodReference13() throws CoreException { // was testMethodReferenceInAnonymousClass
 	IType type = getCompilationUnit("JSSearch", "src", "", "PR_1GGNOTF.js").getType("PR_1GGNOTF");
-	IMethod method = type.getMethod("method", new String[] {});
+	IFunction method = type.getFunction("method", new String[] {});
 
 	search(
 		method, 
@@ -1611,7 +1611,7 @@ public void testMethodReference13() throws CoreException { // was testMethodRefe
  */
 public void testMethodReference14() throws CoreException { // was testMethodReferenceThroughArray
 	IType type = getClassFile("JSSearch", getExternalJCLPathString(), "java.lang", "Object.class").getType();
-	IMethod method = type.getMethod("clone", new String[] {});
+	IFunction method = type.getFunction("clone", new String[] {});
 
 	search(
 		method, 
@@ -1627,7 +1627,7 @@ public void testMethodReference14() throws CoreException { // was testMethodRefe
  */
 public void testMethodReference15() throws CoreException { // was testMethodReferenceInOutDocComment
 	IType type = getCompilationUnit("JSSearch", "src", "s4", "X.js").getType("X");
-	IMethod method = type.getMethod("foo", new String[] {});
+	IFunction method = type.getFunction("foo", new String[] {});
 	resultCollector.showInsideDoc = true;
 	search(method, REFERENCES, getJavaSearchScope(), resultCollector);
 	assertSearchResults(
@@ -1640,7 +1640,7 @@ public void testMethodReference15() throws CoreException { // was testMethodRefe
  */
 public void testMethodReference16() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15/src/p2/X.js").getType("X");
-	IMethod method = type.getMethod("foo", new String[] {"QE;"});
+	IFunction method = type.getFunction("foo", new String[] {"QE;"});
 	search(method, REFERENCES, ERASURE_RULE, getJavaSearchScope15(), resultCollector);
 	assertSearchResults(
 		"src/p2/Y.java void p2.Y.bar() [foo(this)]",
@@ -1652,7 +1652,7 @@ public void testMethodReference16() throws CoreException {
  */
 public void testMethodReference17() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch/src/b111416/X.js").getType("X");
-	IMethod method = type.getMethod("open", new String[] {"QString;"});
+	IFunction method = type.getFunction("open", new String[] {"QString;"});
 	resultCollector.showAccuracy = true;
 	search(method, REFERENCES, ERASURE_RULE, getJavaSearchScope(), resultCollector);
 	assertSearchResults(
@@ -1664,11 +1664,11 @@ public void testMethodReference17() throws CoreException {
  * (regression test for bug 5862 search : too many matches on search with OrPattern)
  */
 public void testOrPattern() throws CoreException {
-	IMethod leftMethod = getCompilationUnit("JSSearch", "src", "q9", "I.js")
-		.getType("I").getMethod("m", new String[] {});
+	IFunction leftMethod = getCompilationUnit("JSSearch", "src", "q9", "I.js")
+		.getType("I").getFunction("m", new String[] {});
 	SearchPattern leftPattern = createPattern(leftMethod, ALL_OCCURRENCES);
-	IMethod rightMethod = getCompilationUnit("JSSearch", "src", "q9", "I.js")
-		.getType("A1").getMethod("m", new String[] {});
+	IFunction rightMethod = getCompilationUnit("JSSearch", "src", "q9", "I.js")
+		.getType("A1").getFunction("m", new String[] {});
 	SearchPattern rightPattern = createPattern(rightMethod, ALL_OCCURRENCES);
 	SearchPattern orPattern = SearchPattern.createOrPattern(leftPattern, rightPattern);
 	resultCollector.showAccuracy = true;
@@ -1735,15 +1735,15 @@ public void testPackageDeclaration3() throws CoreException { // was testPackageD
  * (regression test for bug 75561 Rename package results in I/O exception)
  */
 public void testPackageDeclaration4() throws CoreException {
-	IJavaProject project = getJavaProject("JSSearch");
-	IClasspathEntry[] originalCP = project.getRawClasspath();
+	IJavaScriptProject project = getJavaProject("JSSearch");
+	IIncludePathEntry[] originalCP = project.getRawIncludepath();
 	try {
 		// add corrupt.jar to classpath
 		int cpLength = originalCP.length;
-		IClasspathEntry[] newCP = new IClasspathEntry[cpLength+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[cpLength+1];
 		System.arraycopy(originalCP, 0, newCP, 0, cpLength);
-		newCP[cpLength] = JavaCore.newLibraryEntry(new Path("/JavaSearch/corrupt.jar"), null, null);
-		project.setRawClasspath(newCP, null);
+		newCP[cpLength] = JavaScriptCore.newLibraryEntry(new Path("/JavaSearch/corrupt.jar"), null, null);
+		project.setRawIncludepath(newCP, null);
 		
 
 		search(
@@ -1756,7 +1756,7 @@ public void testPackageDeclaration4() throws CoreException {
 			"src/r9 r9", 
 			this.resultCollector);
 	} finally {
-		project.setRawClasspath(originalCP, null);
+		project.setRawIncludepath(originalCP, null);
 	}
 }
 /**
@@ -1789,7 +1789,7 @@ public void testPackageDeclarationBug117020() throws CoreException {
 			"src/b117020 b117020 EXACT_MATCH",
 			result);
 	}
-	catch (JavaModelException jme) {
+	catch (JavaScriptModelException jme) {
 		// give up
 	}
 	finally {
@@ -1836,7 +1836,7 @@ public void testPackageReference2() throws CoreException {
  */
 public void testPackageReference3() throws CoreException {
 	IPackageFragment pkg = getPackageFragment("JSSearch", "test47989.jar", "p1");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {pkg.getParent()});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {pkg.getParent()});
 
 	search(
 		pkg, 
@@ -1954,15 +1954,15 @@ public void testPackageReference8() throws CoreException { // was testPatternMat
  * (Regression test for 1G4IN3E: ITPJCORE:WINNT - AbortCompilation using J9 to search for class declaration) 
  */
 public void testPotentialMatchInBinary1() throws CoreException {
-	IJavaProject project = this.getJavaProject("JSSearch");
-	IClasspathEntry[] classpath = project.getRawClasspath();
+	IJavaScriptProject project = this.getJavaProject("JSSearch");
+	IIncludePathEntry[] classpath = project.getRawIncludepath();
 	try {
 		// add AbortCompilation.jar to classpath
 		int length = classpath.length;
-		IClasspathEntry[] newClasspath = new IClasspathEntry[length+1];
+		IIncludePathEntry[] newClasspath = new IIncludePathEntry[length+1];
 		System.arraycopy(classpath, 0, newClasspath, 0, length);
-		newClasspath[length] = JavaCore.newLibraryEntry(new Path("/JavaSearch/AbortCompilation.jar"), null, null);
-		project.setRawClasspath(newClasspath, null);
+		newClasspath[length] = JavaScriptCore.newLibraryEntry(new Path("/JavaSearch/AbortCompilation.jar"), null, null);
+		project.setRawIncludepath(newClasspath, null);
 		
 		// potential match for a field declaration
 
@@ -1980,7 +1980,7 @@ public void testPotentialMatchInBinary1() throws CoreException {
 			this.resultCollector);
 	} finally {
 		// reset classpath
-		project.setRawClasspath(classpath, null);
+		project.setRawIncludepath(classpath, null);
 	}
 }	
 /**
@@ -1989,15 +1989,15 @@ public void testPotentialMatchInBinary1() throws CoreException {
  * (Regression test for 1G4IN3E: ITPJCORE:WINNT - AbortCompilation using J9 to search for class declaration) 
  */
 public void testPotentialMatchInBinary2() throws CoreException {
-	IJavaProject project = this.getJavaProject("JSSearch");
-	IClasspathEntry[] classpath = project.getRawClasspath();
+	IJavaScriptProject project = this.getJavaProject("JSSearch");
+	IIncludePathEntry[] classpath = project.getRawIncludepath();
 	try {
 		// add AbortCompilation.jar to classpath
 		int length = classpath.length;
-		IClasspathEntry[] newClasspath = new IClasspathEntry[length+1];
+		IIncludePathEntry[] newClasspath = new IIncludePathEntry[length+1];
 		System.arraycopy(classpath, 0, newClasspath, 0, length);
-		newClasspath[length] = JavaCore.newLibraryEntry(new Path("/JavaSearch/AbortCompilation.jar"), null, null);
-		project.setRawClasspath(newClasspath, null);
+		newClasspath[length] = JavaScriptCore.newLibraryEntry(new Path("/JavaSearch/AbortCompilation.jar"), null, null);
+		project.setRawIncludepath(newClasspath, null);
 		
 		// potential match for a method declaration
 
@@ -2015,7 +2015,7 @@ public void testPotentialMatchInBinary2() throws CoreException {
 			this.resultCollector);
 	} finally {
 		// reset classpath
-		project.setRawClasspath(classpath, null);
+		project.setRawIncludepath(classpath, null);
 	}
 }	
 /**
@@ -2024,15 +2024,15 @@ public void testPotentialMatchInBinary2() throws CoreException {
  * (Regression test for 1G4IN3E: ITPJCORE:WINNT - AbortCompilation using J9 to search for class declaration) 
  */
 public void testPotentialMatchInBinary3() throws CoreException {
-	IJavaProject project = this.getJavaProject("JSSearch");
-	IClasspathEntry[] classpath = project.getRawClasspath();
+	IJavaScriptProject project = this.getJavaProject("JSSearch");
+	IIncludePathEntry[] classpath = project.getRawIncludepath();
 	try {
 		// add AbortCompilation.jar to classpath
 		int length = classpath.length;
-		IClasspathEntry[] newClasspath = new IClasspathEntry[length+1];
+		IIncludePathEntry[] newClasspath = new IIncludePathEntry[length+1];
 		System.arraycopy(classpath, 0, newClasspath, 0, length);
-		newClasspath[length] = JavaCore.newLibraryEntry(new Path("/JavaSearch/AbortCompilation.jar"), null, null);
-		project.setRawClasspath(newClasspath, null);
+		newClasspath[length] = JavaScriptCore.newLibraryEntry(new Path("/JavaSearch/AbortCompilation.jar"), null, null);
+		project.setRawIncludepath(newClasspath, null);
 		
 		// potential match for a type declaration
 
@@ -2050,7 +2050,7 @@ public void testPotentialMatchInBinary3() throws CoreException {
 			this.resultCollector);
 	} finally {
 		// reset classpath
-		project.setRawClasspath(classpath, null);
+		project.setRawIncludepath(classpath, null);
 	}
 }
 /**
@@ -2058,9 +2058,9 @@ public void testPotentialMatchInBinary3() throws CoreException {
  * (regression test for bug 3445 search: type hierarchy scope incorrect (1GLC8VS))
  */
 public void testSearchScope01() throws CoreException { // was testHierarchyScope
-	ICompilationUnit cu = this. getCompilationUnit("JSSearch", "src", "a9", "A.js");
+	IJavaScriptUnit cu = this. getCompilationUnit("JSSearch", "src", "a9", "A.js");
 	IType type = cu.getType("C");
-	IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
+	IJavaScriptSearchScope scope = SearchEngine.createHierarchyScope(type);
 	assertTrue("a9.C should be included in hierarchy scope", scope.encloses(type));
 	assertTrue("a9.A should be included in hierarchy scope", scope.encloses(cu.getType("A")));
 	assertTrue("a9.B should be included in hierarchy scope", scope.encloses(cu.getType("B")));
@@ -2072,7 +2072,7 @@ public void testSearchScope01() throws CoreException { // was testHierarchyScope
  */
 public void testSearchScope02() throws CoreException { // was testSubCUSearchScope1
 	IType type = getCompilationUnit("JSSearch", "src", "b3", "X.js").getType("X");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type});
 
 	search(
 		type, 
@@ -2092,7 +2092,7 @@ public void testSearchScope02() throws CoreException { // was testSubCUSearchSco
  */
 public void testSearchScope03() throws CoreException { // was testSubCUSearchScope2
 	IType type = getCompilationUnit("JSSearch", "src", "b3", "X.js").getType("X");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getField("field")});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getField("field")});
 
 	search(
 		type, 
@@ -2109,7 +2109,7 @@ public void testSearchScope03() throws CoreException { // was testSubCUSearchSco
  */
 public void testSearchScope04() throws CoreException { // was testSubCUSearchScope3
 	IType type = getCompilationUnit("JSSearch", "src", "b3", "X.js").getType("X");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getType("Y")});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getType("Y")});
 
 	search(
 		type, 
@@ -2129,19 +2129,19 @@ public void testSearchScope05() throws CoreException, IOException { // was testE
 	File workspaceLocation = new File(workspace.getRoot().getLocation().toOSString());
 	File minimalJar = new File(workspaceLocation, "JavaSearch/MyJar.jar");
 	File externalJar = new File(workspaceLocation.getParentFile().getCanonicalFile(), "MyJar.jar"); // canonicalize the external path as this is not done on case sensitive platforms when creating a new lib entry
-	IJavaProject project = this.getJavaProject("JSSearch");
-	IClasspathEntry[] classpath = project.getRawClasspath();
+	IJavaScriptProject project = this.getJavaProject("JSSearch");
+	IIncludePathEntry[] classpath = project.getRawIncludepath();
 	try {
 		copy(minimalJar, externalJar);
 		int length = classpath.length;
-		IClasspathEntry[] newClasspath = new IClasspathEntry[length];
+		IIncludePathEntry[] newClasspath = new IIncludePathEntry[length];
 		System.arraycopy(classpath, 0, newClasspath, 0, length-1);
 		String externalPath = externalJar.getAbsolutePath();
-		newClasspath[length-1] = JavaCore.newLibraryEntry(new Path(externalPath), new Path(externalPath), null, false);
-		project.setRawClasspath(newClasspath, null);
+		newClasspath[length-1] = JavaScriptCore.newLibraryEntry(new Path(externalPath), new Path(externalPath), null, false);
+		project.setRawIncludepath(newClasspath, null);
 		
 		IPackageFragment pkg = this.getPackageFragment("JSSearch", externalPath, "p0");
-		IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {pkg});
+		IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {pkg});
 
 		search(
 			"X", 
@@ -2154,7 +2154,7 @@ public void testSearchScope05() throws CoreException, IOException { // was testE
 			this.resultCollector);
 			
 		IClassFile classFile = pkg.getClassFile("X.class");
-		scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {classFile});
+		scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {classFile});
 		resultCollector = new JavaSearchResultCollector();
 		search(
 			classFile.getType(), 
@@ -2167,7 +2167,7 @@ public void testSearchScope05() throws CoreException, IOException { // was testE
 		
 	} finally {
 		Util.delete(externalJar);
-		project.setRawClasspath(classpath, null);
+		project.setRawIncludepath(classpath, null);
 	}
 	
 }
@@ -2190,7 +2190,7 @@ public void testTypeDeclaration01() throws CoreException { // was testSimpleType
  */
 public void testTypeDeclaration02() throws CoreException {
 	IPackageFragment pkg = this.getPackageFragment("JavaSearch15", "src", "p1");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {pkg});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {pkg});
 
 	search(
 		"Y", 
@@ -2208,7 +2208,7 @@ public void testTypeDeclaration02() throws CoreException {
  */
 public void testTypeDeclaration03() throws CoreException { // was testTypeDeclaration
 	IPackageFragment pkg = this.getPackageFragment("JSSearch", "src", "d8");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {pkg});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {pkg});
 
 	search(
 		"A", 
@@ -2239,7 +2239,7 @@ public void testTypeDeclaration04() throws CoreException { // was testTypeDeclar
  */
 public void testTypeDeclaration05() throws CoreException { // was testTypeDeclarationInJar2
 	IPackageFragmentRoot root = getPackageFragmentRoot("JSSearch", "test20631.jar");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {root});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {root});
 
 	search(
 		"Y", 
@@ -2257,7 +2257,7 @@ public void testTypeDeclaration05() throws CoreException { // was testTypeDeclar
  */
 public void testTypeDeclaration06() throws CoreException { // was testTypeDeclarationInPackageScope
 	IType type = getCompilationUnit("JSSearch", "src", "p3", "X.js").getType("X");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getPackageFragment()});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getPackageFragment()});
 
 	search(
 		"X", 
@@ -2275,7 +2275,7 @@ public void testTypeDeclaration06() throws CoreException { // was testTypeDeclar
  */
 public void testTypeDeclaration07() throws CoreException { // was testTypeDeclarationInPackageScope2
 	IType type = getClassFile("JSSearch", "MyJar.jar", "p0", "X.class").getType();
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getPackageFragment()});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getPackageFragment()});
 
 	search(
 		"X", 
@@ -2292,7 +2292,7 @@ public void testTypeDeclaration07() throws CoreException { // was testTypeDeclar
  * (regression test for bug 9992 Member class declaration not found)
  */
 public void testTypeDeclaration08() throws CoreException { // was testMemberTypeDeclaration
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[]{
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[]{
 		this.getPackageFragment("JSSearch", "src", "b4")
 	});
 
@@ -2341,7 +2341,7 @@ public void testTypeDeclaration10() throws CoreException { // was testLongDeclar
  */
 public void testTypeDeclaration11() throws CoreException { // was testLocalTypeDeclaration1
 	IPackageFragment pkg = getPackageFragment("JSSearch", "src", "f2");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {pkg});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {pkg});
 
 	search(
 		"Y", 
@@ -2357,9 +2357,9 @@ public void testTypeDeclaration11() throws CoreException { // was testLocalTypeD
  * Local type declaration test.
  */
 public void testTypeDeclaration12() throws CoreException { // was testLocalTypeDeclaration2
-	IType type = getCompilationUnit("JavaSearch/src/f2/X.js").getType("X").getMethod("foo1", new String[0]).getType("Y", 1);
+	IType type = getCompilationUnit("JavaSearch/src/f2/X.js").getType("X").getFunction("foo1", new String[0]).getType("Y", 1);
 	
-	IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+	IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 
 	search(
 		type, 
@@ -2397,7 +2397,7 @@ public void testTypeOccurence1() throws CoreException { // was testTypeOccurence
  */
 public void testTypeOccurence2() throws CoreException {
 	IType type = getCompilationUnit("JSSearch", "src", "r8", "B.js").getType("B");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getPackageFragment()});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getPackageFragment()});
 
 	search(
 		type, 
@@ -2519,7 +2519,7 @@ public void testTypeReference04() throws CoreException {
  */
 public void testTypeReference05() throws CoreException {
 	IType type = getCompilationUnit("JSSearch", "test48261.jar", "p", "X.js").getType("X");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {type.getPackageFragment().getParent()});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type.getPackageFragment().getParent()});
 
 	search(
 		type, 
@@ -2906,7 +2906,7 @@ public void testTypeReference25() throws CoreException { // was testInnacurateTy
 		"Zork", 
 		TYPE, 
 		REFERENCES,
-		SearchEngine.createJavaSearchScope(new IJavaElement[] {
+		SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {
 			getPackageFragment("JSSearch", "src", "b5")
 		}), 
 		this.resultCollector);
@@ -2927,7 +2927,7 @@ public void testTypeReference26() throws CoreException { // was testInnacurateTy
 		"p.Zork", 
 		TYPE, 
 		REFERENCES,
-		SearchEngine.createJavaSearchScope(new IJavaElement[] {
+		SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {
 			getPackageFragment("JSSearch", "src", "b5")
 		}), 
 		this.resultCollector);
@@ -2992,7 +2992,7 @@ public void testTypeReference29() throws CoreException { // was testPatternMatch
  */
 public void testTypeReference30() throws CoreException { // was testTypeReferenceNotCaseSensitive
 	IPackageFragment pkg = getPackageFragment("JSSearch", "src", "d4");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {pkg});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {pkg});
 	SearchPattern pattern = createPattern("Y", TYPE, REFERENCES, false);
 
 	search(
@@ -3012,7 +3012,7 @@ public void testTypeReference31() throws CoreException { // was testAccurateType
 		"d5.X", 
 		TYPE, 
 		REFERENCES,
-		SearchEngine.createJavaSearchScope(new IJavaElement[] {
+		SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {
 			getPackageFragment("JSSearch", "src", "d5")
 		}), 
 		this.resultCollector);
@@ -3029,7 +3029,7 @@ public void testTypeReference31() throws CoreException { // was testAccurateType
 public void testTypeReference32() throws CoreException { // was testTypeReferenceInHierarchy
 	IType type = getCompilationUnit("JSSearch", "src", "d9.p1", "A.js").getType("A");
 
-	IJavaSearchScope scope = SearchEngine.createHierarchyScope(type);
+	IJavaScriptSearchScope scope = SearchEngine.createHierarchyScope(type);
 	search(
 		type, 
 		REFERENCES, 
@@ -3068,7 +3068,7 @@ public void testTypeReference34() throws CoreException { // was testTypeReferenc
 		"B36479", 
 		TYPE,
 		REFERENCES, 
-		SearchEngine.createJavaSearchScope(new IJavaElement[] {type}), 
+		SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {type}), 
 		this.resultCollector);
 	assertSearchResults(
 		"src/e6/A.java Object e6.A.foo() [B36479] POTENTIAL_MATCH",
@@ -3079,15 +3079,15 @@ public void testTypeReference34() throws CoreException { // was testTypeReferenc
  * (Regression test for bug 39831 Search finds only "inexact" matches)
  */
 public void testTypeReference35() throws CoreException { // was testTypeReferenceWithCorruptJar
-	IJavaProject project = getJavaProject("JSSearch");
-	IClasspathEntry[] originalCP = project.getRawClasspath();
+	IJavaScriptProject project = getJavaProject("JSSearch");
+	IIncludePathEntry[] originalCP = project.getRawIncludepath();
 	try {
 		// add corrupt.jar to classpath
 		int cpLength = originalCP.length;
-		IClasspathEntry[] newCP = new IClasspathEntry[cpLength+1];
+		IIncludePathEntry[] newCP = new IIncludePathEntry[cpLength+1];
 		System.arraycopy(originalCP, 0, newCP, 0, cpLength);
-		newCP[cpLength] = JavaCore.newLibraryEntry(new Path("/JavaSearch/corrupt.jar"), null, null);
-		project.setRawClasspath(newCP, null);
+		newCP[cpLength] = JavaScriptCore.newLibraryEntry(new Path("/JavaSearch/corrupt.jar"), null, null);
+		project.setRawIncludepath(newCP, null);
 		
 		IType type = getCompilationUnit("JSSearch", "src", "e7", "A.js").getType("A");
 
@@ -3095,13 +3095,13 @@ public void testTypeReference35() throws CoreException { // was testTypeReferenc
 		search(
 			type, 
 			REFERENCES,
-			SearchEngine.createJavaSearchScope(new IJavaElement[] {project}), 
+			SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {project}), 
 			this.resultCollector);
 		assertSearchResults(
 			"src/e7/A.java e7.A.a [A] EXACT_MATCH",
 			this.resultCollector);
 	} finally {
-		project.setRawClasspath(originalCP, null);
+		project.setRawIncludepath(originalCP, null);
 	}
 }
 /*
@@ -3109,7 +3109,7 @@ public void testTypeReference35() throws CoreException { // was testTypeReferenc
  */
 public void testTypeReference36() throws CoreException { // was testLocalTypeReference1
 	IPackageFragment pkg = getPackageFragment("JSSearch", "src", "f2");
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaElement[] {pkg});
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(new IJavaScriptElement[] {pkg});
 
 	resultCollector.showContext = true;
 	search(
@@ -3127,10 +3127,10 @@ public void testTypeReference36() throws CoreException { // was testLocalTypeRef
  */
 public void testTypeReference37() throws CoreException { // was testLocalTypeReference2
 	IType type = getCompilationUnit("JavaSearch/src/f2/X.js").getType("X");
-	IMethod method = type.getMethod("foo1", new String[0]);
+	IFunction method = type.getFunction("foo1", new String[0]);
 	IType localType = method.getType("Y", 1);
 	
-	IJavaSearchScope scope = SearchEngine.createWorkspaceScope();
+	IJavaScriptSearchScope scope = SearchEngine.createWorkspaceScope();
 
 	resultCollector.showContext = true;
 	search(
@@ -3175,7 +3175,7 @@ public void testEnum01() throws CoreException {
 }
 public void testEnum02() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "e1", "Team.js").getType("Team");
-	IMethod method = type.getMethod("Team", new String[0]);
+	IFunction method = type.getFunction("Team", new String[0]);
 	search(method, REFERENCES, getJavaSearchScope15("e1", false), this.resultCollector);
 	assertSearchResults(
 		"src/e1/Team.java e1.Team.FREDERIC [FREDERIC]",
@@ -3183,7 +3183,7 @@ public void testEnum02() throws CoreException {
 }
 public void testEnum03() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "e1", "Team.js").getType("Team");
-	IMethod method = type.getMethod("Team", new String[] { "I" });
+	IFunction method = type.getFunction("Team", new String[] { "I" });
 	search(method, REFERENCES, getJavaSearchScope15("e1", false), this.resultCollector);
 	assertSearchResults(
 		"src/e1/Team.java e1.Team.PHILIPPE [PHILIPPE(37)]\n" + 
@@ -3195,7 +3195,7 @@ public void testEnum03() throws CoreException {
 }
 public void testEnum04() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "e1", "Team.js").getType("Team");
-	IMethod method = type.getMethod("age", new String[0]);
+	IFunction method = type.getFunction("age", new String[0]);
 	search(method, REFERENCES, getJavaSearchScope15("e1", false), this.resultCollector);
 	assertSearchResults(
 		"src/e1/Test.java void e1.Test.main(String[]) [age()]",
@@ -3203,7 +3203,7 @@ public void testEnum04() throws CoreException {
 }
 public void testEnum05() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "e1", "Team.js").getType("Team");
-	IMethod method = type.getMethod("isManager", new String[0]);
+	IFunction method = type.getFunction("isManager", new String[0]);
 	search(method, ALL_OCCURRENCES, getJavaSearchScope15("e1", false), this.resultCollector);
 	assertSearchResults(
 		"src/e1/Team.java boolean e1.Team.PHILIPPE:<anonymous>#1.isManager() [isManager]\n" + 
@@ -3213,7 +3213,7 @@ public void testEnum05() throws CoreException {
 }
 public void testEnum06() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "e1", "Team.js").getType("Team");
-	IMethod method = type.getMethod("setRole", new String[] { "Z" });
+	IFunction method = type.getFunction("setRole", new String[] { "Z" });
 	search(method, REFERENCES, getJavaSearchScope15("e1", false), this.resultCollector);
 	assertSearchResults(
 		"src/e1/Test.java void e1.Test.main(String[]) [setRole(t.isManager())]",
@@ -3224,7 +3224,7 @@ public void testEnum06() throws CoreException {
  */
 public void testVarargs01() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "v1", "X.js").getType("X");
-	IMethod method = type.getMethod("vargs", new String[] { "I", "I" });
+	IFunction method = type.getFunction("vargs", new String[] { "I", "I" });
 	search(method, ALL_OCCURRENCES, getJavaSearchScope15(), this.resultCollector);
 	assertSearchResults(
 		"src/v1/X.java void v1.X.vargs(int, int) [vargs]\n" + 
@@ -3233,7 +3233,7 @@ public void testVarargs01() throws CoreException {
 }
 public void testVarargs02() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "v1", "X.js").getType("X");
-	IMethod method = type.getMethod("vargs", new String[] { "I", "[I" });
+	IFunction method = type.getFunction("vargs", new String[] { "I", "[I" });
 	search(method, ALL_OCCURRENCES, getJavaSearchScope15(), this.resultCollector);
 	assertSearchResults(
 		"src/v1/X.java void v1.X.vargs(int, int ...) [vargs]\n" + 
@@ -3243,7 +3243,7 @@ public void testVarargs02() throws CoreException {
 }
 public void testVarargs03() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "v1", "X.js").getType("X");
-	IMethod method = type.getMethod("vargs", new String[] { "[QString;" });
+	IFunction method = type.getFunction("vargs", new String[] { "[QString;" });
 	search(method, ALL_OCCURRENCES, getJavaSearchScope15(), this.resultCollector);
 	assertSearchResults(
 		"src/v1/X.java void v1.X.vargs(String ...) [vargs]\n" + 
@@ -3252,7 +3252,7 @@ public void testVarargs03() throws CoreException {
 }
 public void testVarargs04() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "v1", "X.js").getType("X");
-	IMethod method = type.getMethod("vargs", new String[] { "QString;", "[Z" });
+	IFunction method = type.getFunction("vargs", new String[] { "QString;", "[Z" });
 	search(method, ALL_OCCURRENCES, getJavaSearchScope15(), this.resultCollector);
 	assertSearchResults(
 		"src/v1/X.java void v1.X.vargs(String, boolean ...) [vargs]\n" + 
@@ -3291,7 +3291,7 @@ public void testAnnotationType01() throws CoreException {
 		this.resultCollector);
 }
 public void testAnnotationType02() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "a1", "Test.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "a1", "Test.js");
 	IType type = selectType(unit, "Author");
 	search(type, DECLARATIONS, getJavaSearchScope15(), this.resultCollector);
 	assertSearchResults(
@@ -3303,7 +3303,7 @@ public void testAnnotationType02() throws CoreException {
  * Search for auto-boxing
  */
 public void testAutoBoxing01() throws CoreException {
-	workingCopies = new ICompilationUnit[1];
+	workingCopies = new IJavaScriptUnit[1];
 	workingCopies[0] = getWorkingCopy("/JavaSearch15/src/p/X.js",
 		"package p;\n" + 
 		"public class X {\n" + 
@@ -3313,8 +3313,8 @@ public void testAutoBoxing01() throws CoreException {
 		"	}\n" + 
 		"}\n"
 		);
-	IJavaSearchScope scope = SearchEngine.createJavaSearchScope(workingCopies);
-	IMethod method = workingCopies[0].getType("X").getMethod("foo", new String[] { "I" });
+	IJavaScriptSearchScope scope = SearchEngine.createJavaSearchScope(workingCopies);
+	IFunction method = workingCopies[0].getType("X").getFunction("foo", new String[] { "I" });
 	search(method, REFERENCES, scope);
 	assertSearchResults(
 		"src/p/X.java void p.X.bar() [foo(new Integer(0))]"
@@ -3328,7 +3328,7 @@ public void testAutoBoxing01() throws CoreException {
  * Type type parameters
  */
 public void testTypeParameterTypes01() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "T");
 	search(typeParam, REFERENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3343,7 +3343,7 @@ public void testTypeParameterTypes01() throws CoreException {
 	);
 }
 public void testTypeParameterTypes02() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "T", 3); // return type of returnParamType() method
 	search(typeParam, DECLARATIONS, getJavaSearchScope15());
 	assertSearchResults(
@@ -3351,7 +3351,7 @@ public void testTypeParameterTypes02() throws CoreException {
 	);
 }
 public void testTypeParameterTypes03() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "T", 4); // type argument of Single<T>
 	search(typeParam, ALL_OCCURRENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3367,7 +3367,7 @@ public void testTypeParameterTypes03() throws CoreException {
 	);
 }
 public void testTypeParameterTypes04() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "T3");
 	search(typeParam, REFERENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3382,7 +3382,7 @@ public void testTypeParameterTypes04() throws CoreException {
 	);
 }
 public void testTypeParameterTypes05() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "T1", 2); // return type of returnParamType() method
 	search(typeParam, DECLARATIONS, getJavaSearchScope15());
 	assertSearchResults(
@@ -3390,7 +3390,7 @@ public void testTypeParameterTypes05() throws CoreException {
 	);
 }
 public void testTypeParameterTypes06() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "T2", 3); // type argument of Multiple<T1,T2,T3>
 	search(typeParam, ALL_OCCURRENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3409,7 +3409,7 @@ public void testTypeParameterTypes06() throws CoreException {
  * Methods type parameters
  */
 public void testTypeParameterMethods01() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U");
 	search(typeParam, REFERENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3417,7 +3417,7 @@ public void testTypeParameterMethods01() throws CoreException {
 	);
 }
 public void testTypeParameterMethods02() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U", 2); // argument of generic method
 	search(typeParam, DECLARATIONS, getJavaSearchScope15());
 	assertSearchResults(
@@ -3425,7 +3425,7 @@ public void testTypeParameterMethods02() throws CoreException {
 	);
 }
 public void testTypeParameterMethods03() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U", 4); // argument of complete method
 	search(typeParam, ALL_OCCURRENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3434,7 +3434,7 @@ public void testTypeParameterMethods03() throws CoreException {
 	);
 }
 public void testTypeParameterMethods04() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U3", 3); // type parameter of complete method (extends)
 	search(typeParam, REFERENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3442,7 +3442,7 @@ public void testTypeParameterMethods04() throws CoreException {
 	);
 }
 public void testTypeParameterMethods05() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U1", 2); // argument of generic method
 	search(typeParam, DECLARATIONS, getJavaSearchScope15());
 	assertSearchResults(
@@ -3450,7 +3450,7 @@ public void testTypeParameterMethods05() throws CoreException {
 	);
 }
 public void testTypeParameterMethods06() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.m.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U2", 4); // argument of complete method
 	search(typeParam, ALL_OCCURRENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3462,7 +3462,7 @@ public void testTypeParameterMethods06() throws CoreException {
  * Constructors type parameters
  */
 public void testTypeParameterConstructors01() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U");
 	search(typeParam, REFERENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3470,7 +3470,7 @@ public void testTypeParameterConstructors01() throws CoreException {
 	);
 }
 public void testTypeParameterConstructors02() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U");
 	// TODO (frederic) use following line instead when bug 83438 will be fixed
 	// ITypeParameter typeParam = selectTypeParameter(unit, "U", 2); // argument of generic method
@@ -3480,7 +3480,7 @@ public void testTypeParameterConstructors02() throws CoreException {
 	);
 }
 public void testTypeParameterConstructors03() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Single.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Single.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U");
 	// TODO (frederic) use following line instead when bug 83438 will be fixed
 	//ITypeParameter typeParam = selectTypeParameter(unit, "U", 4); // argument of complete method
@@ -3491,7 +3491,7 @@ public void testTypeParameterConstructors03() throws CoreException {
 	);
 }
 public void testTypeParameterConstructors04() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U3", 3); // type parameter of complete method (extends)
 	search(typeParam, REFERENCES, getJavaSearchScope15());
 	assertSearchResults(
@@ -3499,7 +3499,7 @@ public void testTypeParameterConstructors04() throws CoreException {
 	);
 }
 public void testTypeParameterConstructors05() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U1");
 	// TODO (frederic) use following line instead when bug 83438 will be fixed
 	//ITypeParameter typeParam = selectTypeParameter(unit, "U1", 2); // argument of generic method
@@ -3509,7 +3509,7 @@ public void testTypeParameterConstructors05() throws CoreException {
 	);
 }
 public void testTypeParameterConstructors06() throws CoreException {
-	ICompilationUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Multiple.js");
+	IJavaScriptUnit unit = getCompilationUnit("JavaSearch15", "src", "g5.c.def", "Multiple.js");
 	ITypeParameter typeParam = selectTypeParameter(unit, "U2", 3);
 	// TODO (frederic) use following line instead when bug 83438 will be fixed
 	//ITypeParameter typeParam = selectTypeParameter(unit, "U2", 4); // argument of complete method
@@ -3592,7 +3592,7 @@ public void testStaticImportMethod01() throws CoreException {
 }
 public void testStaticImportMethod02() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "s2.pack.age", "S.js").getType("S");
-	IMethod method = type.getMethod("out", new String[0]);
+	IFunction method = type.getFunction("out", new String[0]);
 	search(method, REFERENCES, getJavaSearchScope15(), resultCollector);
 	assertSearchResults(
 		"src/s2/A.java [s2.pack.age.S.out]\n" + 
@@ -3617,7 +3617,7 @@ public void testStaticImportMethod03() throws CoreException {
 public void testStaticImportMethod04() throws CoreException {
 	IType type = getCompilationUnit("JavaSearch15", "src", "s2.pack.age", "S.js").getType("S");
 	IType member = type.getType("M");
-	IMethod method = member.getMethod("in", new String[0]);
+	IFunction method = member.getFunction("in", new String[0]);
 	search(method, REFERENCES, getJavaSearchScope15(), resultCollector);
 	assertSearchResults(
 		"src/s2/A.java [s2.pack.age.S.M.in]\n" + 
@@ -3711,7 +3711,7 @@ public void testCamelCaseTypePattern06() throws CoreException {
 		TYPE,
 		getJavaSearchScope(),
 		requestor,
-		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		null
 	);
 	assertSearchResults(
@@ -3730,7 +3730,7 @@ public void testCamelCaseTypePattern07() throws CoreException {
 		TYPE,
 		getJavaSearchScope(),
 		requestor,
-		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		null
 	);
 	assertSearchResults(
@@ -3753,7 +3753,7 @@ public void testCamelCaseTypePattern08() throws CoreException {
 		TYPE,
 		getJavaSearchScope(),
 		requestor,
-		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		null
 	);
 	assertSearchResults(
@@ -3775,7 +3775,7 @@ public void testCamelCaseTypePattern09() throws CoreException {
 		TYPE,
 		getJavaSearchScope(),
 		requestor,
-		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		null
 	);
 	assertSearchResults(
@@ -3804,10 +3804,10 @@ public void testBug160323() throws CoreException {
 		SearchPattern.R_EXACT_MATCH,
 		null,
 		SearchPattern.R_PREFIX_MATCH,
-		IJavaSearchConstants.TYPE,
+		IJavaScriptSearchConstants.TYPE,
 		getJavaSearchScope(),
 		collector,
-		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		null);
 	// Search all type names with TypeNameRequestor
 	SearchTests.SearchTypeNameRequestor requestor = new SearchTests.SearchTypeNameRequestor();
@@ -3816,10 +3816,10 @@ public void testBug160323() throws CoreException {
 		SearchPattern.R_EXACT_MATCH,
 		null,
 		SearchPattern.R_PREFIX_MATCH,
-		IJavaSearchConstants.TYPE,
+		IJavaScriptSearchConstants.TYPE,
 		getJavaSearchScope(),
 		requestor,
-		IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
+		IJavaScriptSearchConstants.WAIT_UNTIL_READY_TO_SEARCH,
 		null);
 	// Should have same types with these 2 searches
 	assertEquals("We should get some types!", requestor.size(), collector.size());

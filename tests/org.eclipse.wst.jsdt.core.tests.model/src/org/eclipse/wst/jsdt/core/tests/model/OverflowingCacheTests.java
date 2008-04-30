@@ -222,7 +222,7 @@ public class OverflowingCacheTests extends ModifyingResourceTests {
 			return 0;
 		}
 
-		public IJavaElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
+		public IJavaScriptElement getHandleFromMemento(String token, MementoTokenizer memento, WorkingCopyOwner owner) {
 			return null;
 		}
 		
@@ -287,7 +287,7 @@ public class OverflowingCacheTests extends ModifyingResourceTests {
 	 */
 	public void testBigNumberOfRoots() throws CoreException {
 		try {
-			IJavaProject project = createJavaProject("P");
+			IJavaScriptProject project = createJavaProject("P");
 			int rootSize = JavaModelCache.DEFAULT_ROOT_SIZE * 2;
 			for (int i = 0; i < rootSize; i++) {
 				if (i < 10)
@@ -297,20 +297,20 @@ public class OverflowingCacheTests extends ModifyingResourceTests {
 				else
 					createFolder("/P/src" + i);
 			}
-			IClasspathEntry[] classpath = new IClasspathEntry[rootSize+1];
+			IIncludePathEntry[] classpath = new IIncludePathEntry[rootSize+1];
 			for (int i = 0; i < rootSize; i++) {
 				if (i < 10)
-					classpath[i] = JavaCore.newSourceEntry(new Path("/P/src00" + i));
+					classpath[i] = JavaScriptCore.newSourceEntry(new Path("/P/src00" + i));
 				else if (i < 100)
-					classpath[i] = JavaCore.newSourceEntry(new Path("/P/src0" + i));
+					classpath[i] = JavaScriptCore.newSourceEntry(new Path("/P/src0" + i));
 				else
-					classpath[i] = JavaCore.newSourceEntry(new Path("/P/src" + i));
+					classpath[i] = JavaScriptCore.newSourceEntry(new Path("/P/src" + i));
 			}
-			classpath[rootSize] = JavaCore.newVariableEntry(new Path("JCL_LIB"), null, null);
-			project.setRawClasspath(classpath, new Path("/P/bin"), null);
+			classpath[rootSize] = JavaScriptCore.newVariableEntry(new Path("JCL_LIB"), null, null);
+			project.setRawIncludepath(classpath, new Path("/P/bin"), null);
 			
 			// Open all roots
-			IJavaElement[] roots = project.getChildren();
+			IJavaScriptElement[] roots = project.getChildren();
 			for (int i = 0; i < rootSize; i++) {
 				((IOpenable) roots[i]).open(null);
 			}
@@ -505,7 +505,7 @@ public class OverflowingCacheTests extends ModifyingResourceTests {
 				);
 			}
 			IPackageFragment pkg= getPackage("P");
-			ICompilationUnit[] cus = pkg.getCompilationUnits();
+			IJavaScriptUnit[] cus = pkg.getJavaScriptUnits();
 		
 			// fill the cache - open 60 buffers
 			int max = 60;

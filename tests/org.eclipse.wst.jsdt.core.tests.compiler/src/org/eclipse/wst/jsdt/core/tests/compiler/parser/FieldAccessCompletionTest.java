@@ -1434,7 +1434,7 @@ public void testMethodBody() {
 	);
 }
 /*
- * MethodInvocation ::= Name '(' <ArgumentListopt> ')'  
+ * FunctionInvocation ::= Name '(' <ArgumentListopt> ')'  
  */
 public void testMethodInvocation() {
 	this.runTestCheckMethodParse(
@@ -1465,7 +1465,7 @@ public void testMethodInvocation() {
 	);
 }
 /*
- * MethodInvocation ::= Primary '.' 'Identifier' '(' <ArgumentListopt> ')'  
+ * FunctionInvocation ::= Primary '.' 'Identifier' '(' <ArgumentListopt> ')'  
  */
 public void testMethodInvocationPrimary() {
 	this.runTestCheckMethodParse(
@@ -1496,7 +1496,7 @@ public void testMethodInvocationPrimary() {
 	);
 }
 /*
- * MethodInvocation ::= 'super' '.' 'Identifier' '(' <ArgumentListopt> ')' 
+ * FunctionInvocation ::= 'super' '.' 'Identifier' '(' <ArgumentListopt> ')' 
  */
 public void testMethodInvocationSuper() {
 	this.runTestCheckMethodParse(

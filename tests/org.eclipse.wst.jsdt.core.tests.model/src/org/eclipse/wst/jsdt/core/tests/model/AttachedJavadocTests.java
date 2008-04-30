@@ -22,17 +22,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.wst.jsdt.core.IClassFile;
-import org.eclipse.wst.jsdt.core.IClasspathAttribute;
-import org.eclipse.wst.jsdt.core.IClasspathEntry;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
+import org.eclipse.wst.jsdt.core.IIncludePathAttribute;
+import org.eclipse.wst.jsdt.core.IIncludePathEntry;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
 import org.eclipse.wst.jsdt.core.IField;
-import org.eclipse.wst.jsdt.core.IJavaProject;
-import org.eclipse.wst.jsdt.core.IMethod;
+import org.eclipse.wst.jsdt.core.IJavaScriptProject;
+import org.eclipse.wst.jsdt.core.IFunction;
 import org.eclipse.wst.jsdt.core.IPackageFragment;
 import org.eclipse.wst.jsdt.core.IPackageFragmentRoot;
 import org.eclipse.wst.jsdt.core.IType;
-import org.eclipse.wst.jsdt.core.JavaCore;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.JavaScriptCore;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 
 public class AttachedJavadocTests extends ModifyingResourceTests {
@@ -46,7 +46,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 		return buildModelTestSuite(AttachedJavadocTests.class);
 	}
 
-	private IJavaProject project;
+	private IJavaScriptProject project;
 	private IPackageFragmentRoot root;
 
 	public AttachedJavadocTests(String name) {
@@ -61,9 +61,9 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 
 		this.project = setUpJavaProject("AttachedJavadocProject", "1.5"); //$NON-NLS-1$
 		Map options = this.project.getOptions(true);
-		options.put(JavaCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, "2000"); //$NON-NLS-1$
+		options.put(JavaScriptCore.TIMEOUT_FOR_PARAMETER_NAME_FROM_ATTACHED_JAVADOC, "2000"); //$NON-NLS-1$
 		this.project.setOptions(options);
-		IClasspathEntry[] entries = this.project.getRawClasspath();
+		IIncludePathEntry[] entries = this.project.getRawIncludepath();
 		IResource resource = this.project.getProject().findMember("/doc/"); //$NON-NLS-1$
 		assertNotNull("doc folder cannot be null", resource); //$NON-NLS-1$
 		URI locationURI = resource.getLocationURI();
@@ -76,16 +76,16 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 		} catch(IllegalArgumentException e) {
 			assertTrue("Should not happen", false); //$NON-NLS-1$
 		}
-		IClasspathAttribute attribute = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, docUrl.toExternalForm());
+		IIncludePathAttribute attribute = JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME, docUrl.toExternalForm());
 		for (int i = 0, max = entries.length; i < max; i++) {
-			final IClasspathEntry entry = entries[i];
-			if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
+			final IIncludePathEntry entry = entries[i];
+			if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY
 					&& entry.getContentKind() == IPackageFragmentRoot.K_BINARY
 					&& "/AttachedJavadocProject/lib/test6.jar".equals(entry.getPath().toString())) { //$NON-NLS-1$
-				entries[i] = JavaCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), new IClasspathAttribute[] { attribute}, entry.isExported());
+				entries[i] = JavaScriptCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), new IIncludePathAttribute[] { attribute}, entry.isExported());
 			}
 		}
-		project.setRawClasspath(entries, null);
+		project.setRawIncludepath(entries, null);
 
 		IPackageFragmentRoot[] roots = this.project.getAllPackageFragmentRoots();
 		int count = 0;
@@ -116,7 +116,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 
 	// test javadoc for a package fragment
-	public void test001() throws JavaModelException {
+	public void test001() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		String javadoc = packageFragment.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
@@ -124,7 +124,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 
 	// for a class file
-	public void test002() throws JavaModelException {
+	public void test002() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
@@ -134,7 +134,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 
 	// for a field
-	public void test003() throws JavaModelException {
+	public void test003() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
@@ -147,13 +147,13 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 
 	// for a method
-	public void test004() throws JavaModelException {
+	public void test004() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod method = type.getMethod("foo", new String[] {"I", "J", "Ljava.lang.String;"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+		IFunction method = type.getFunction("foo", new String[] {"I", "J", "Ljava.lang.String;"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 		assertTrue(method.exists());
 		String javadoc = method.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
 		assertNotNull("Should have a javadoc", javadoc); //$NON-NLS-1$
@@ -166,13 +166,13 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 
 	// for a constructor
-	public void test005() throws JavaModelException {
+	public void test005() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod method = type.getMethod("X", new String[] {"I"}); //$NON-NLS-1$ //$NON-NLS-2$
+		IFunction method = type.getFunction("X", new String[] {"I"}); //$NON-NLS-1$ //$NON-NLS-2$
 		assertTrue(method.exists());
 		String javadoc = method.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
 		assertNotNull("Should have a javadoc", javadoc); //$NON-NLS-1$
@@ -183,7 +183,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// for a member type
-	public void test006() throws JavaModelException {
+	public void test006() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X$A.class"); //$NON-NLS-1$
@@ -193,13 +193,13 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// for a constructor
-	public void test007() throws JavaModelException {
+	public void test007() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X$A.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod method = type.getMethod("A", new String[] {"Lp1.p2.X;", "F"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		IFunction method = type.getFunction("A", new String[] {"Lp1.p2.X;", "F"}); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		assertTrue(method.exists());
 		String javadoc = method.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
 		assertNotNull("Should have a javadoc", javadoc); //$NON-NLS-1$
@@ -210,13 +210,13 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// for a method foo2
-	public void test008() throws JavaModelException {
+	public void test008() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod method = type.getMethod("foo2", new String[0]); //$NON-NLS-1$
+		IFunction method = type.getFunction("foo2", new String[0]); //$NON-NLS-1$
 		assertTrue(method.exists());
 		String javadoc = method.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
 		assertNotNull("Should have a javadoc", javadoc); //$NON-NLS-1$
@@ -226,7 +226,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// for a field f2
-	public void test009() throws JavaModelException {
+	public void test009() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
@@ -239,11 +239,11 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// test archive doc
-	public void test010() throws JavaModelException {
-		IClasspathEntry[] savedEntries = null;
+	public void test010() throws JavaScriptModelException {
+		IIncludePathEntry[] savedEntries = null;
 		try {
-			IClasspathEntry[] entries = this.project.getRawClasspath();
-			savedEntries = (IClasspathEntry[]) entries.clone();
+			IIncludePathEntry[] entries = this.project.getRawIncludepath();
+			savedEntries = (IIncludePathEntry[]) entries.clone();
 			IResource resource = this.project.getProject().findMember("/doc.zip"); //$NON-NLS-1$
 			assertNotNull("doc folder cannot be null", resource); //$NON-NLS-1$
 			URI locationURI = resource.getLocationURI();
@@ -258,16 +258,16 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 			}
 			final String path = "jar:" + docUrl.toExternalForm() + "!/doc"; //$NON-NLS-1$ //$NON-NLS-2$
 			//final String path = "jar:" + "platform:/resource/AttachedJavadocProject/doc.zip" + "!/doc";
-			IClasspathAttribute attribute = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, path);
+			IIncludePathAttribute attribute = JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME, path);
 			for (int i = 0, max = entries.length; i < max; i++) {
-				final IClasspathEntry entry = entries[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
+				final IIncludePathEntry entry = entries[i];
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY
 						&& entry.getContentKind() == IPackageFragmentRoot.K_BINARY
 						&& "/AttachedJavadocProject/lib/test6.jar".equals(entry.getPath().toString())) { //$NON-NLS-1$
-					entries[i] = JavaCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), new IClasspathAttribute[] { attribute }, entry.isExported());
+					entries[i] = JavaScriptCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), new IIncludePathAttribute[] { attribute }, entry.isExported());
 				}
 			}
-			this.project.setRawClasspath(entries, null);
+			this.project.setRawIncludepath(entries, null);
 			IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 			assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 			IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
@@ -280,13 +280,13 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 		} finally {
 			// restore classpath
 			if (savedEntries != null) {
-				this.project.setRawClasspath(savedEntries, null);
+				this.project.setRawIncludepath(savedEntries, null);
 			}
 		}
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=120597
-	public void test011() throws JavaModelException {
+	public void test011() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("Z.class"); //$NON-NLS-1$
@@ -299,7 +299,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=120637
-	public void test012() throws JavaModelException {
+	public void test012() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("Z.class"); //$NON-NLS-1$
@@ -310,7 +310,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=120559
-	public void test013() throws JavaModelException {
+	public void test013() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("W.class"); //$NON-NLS-1$
@@ -320,7 +320,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=120637
-	public void test014() throws JavaModelException {
+	public void test014() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("E.class"); //$NON-NLS-1$
@@ -331,7 +331,7 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=120637
-	public void test015() throws JavaModelException {
+	public void test015() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("Annot.class"); //$NON-NLS-1$
@@ -342,21 +342,21 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=120847
-	public void test016() throws JavaModelException {
-		IClasspathEntry[] savedEntries = null;
+	public void test016() throws JavaScriptModelException {
+		IIncludePathEntry[] savedEntries = null;
 		try {
-			IClasspathEntry[] entries = this.project.getRawClasspath();
-			savedEntries = (IClasspathEntry[]) entries.clone();
-			IClasspathAttribute attribute = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, "invalid_path");
+			IIncludePathEntry[] entries = this.project.getRawIncludepath();
+			savedEntries = (IIncludePathEntry[]) entries.clone();
+			IIncludePathAttribute attribute = JavaScriptCore.newIncludepathAttribute(IIncludePathAttribute.JSDOC_LOCATION_ATTRIBUTE_NAME, "invalid_path");
 			for (int i = 0, max = entries.length; i < max; i++) {
-				final IClasspathEntry entry = entries[i];
-				if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
+				final IIncludePathEntry entry = entries[i];
+				if (entry.getEntryKind() == IIncludePathEntry.CPE_LIBRARY
 						&& entry.getContentKind() == IPackageFragmentRoot.K_BINARY
 						&& "/AttachedJavadocProject/lib/test6.jar".equals(entry.getPath().toString())) { //$NON-NLS-1$
-					entries[i] = JavaCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), new IClasspathAttribute[] { attribute }, entry.isExported());
+					entries[i] = JavaScriptCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(), entry.getSourceAttachmentRootPath(), entry.getAccessRules(), new IIncludePathAttribute[] { attribute }, entry.isExported());
 				}
 			}
-			this.project.setRawClasspath(entries, null);
+			this.project.setRawIncludepath(entries, null);
 			IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 			assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 			IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
@@ -366,19 +366,19 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 			assertNotNull(field);
 			field.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
 			assertFalse("Should be unreachable", true);
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			assertTrue("Must occur", true);
 			assertEquals("Wrong error message", "Cannot retrieve the attached javadoc for invalid_path", e.getMessage());
 		} finally {
 			// restore classpath
 			if (savedEntries != null) {
-				this.project.setRawClasspath(savedEntries, null);
+				this.project.setRawIncludepath(savedEntries, null);
 			}
 		}
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=120875
-	public void test017() throws JavaModelException {
+	public void test017() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("Annot2.class"); //$NON-NLS-1$
@@ -389,16 +389,16 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=138167
-	public void test018() throws JavaModelException {
+	public void test018() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2/p3"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("C.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod[] methods = type.getMethods();
+		IFunction[] methods = type.getFunctions();
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		for (int i = 0, max = methods.length; i < max; i++) {
-			IMethod method = methods[i];
+			IFunction method = methods[i];
 			String javadoc = method.getAttachedJavadoc(monitor);
 			assertNotNull("Should have a javadoc", javadoc);
 			final String selector = method.getElementName();
@@ -407,13 +407,13 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=138167
-	public void test019() throws JavaModelException {
+	public void test019() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2/p3"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("C.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod method = type.getMethod("bar5", new String[] {"Ljava.util.Map<TK;TV;>;", "I", "Ljava.util.Map<TK;TV;>;"}); //$NON-NLS-1$
+		IFunction method = type.getFunction("bar5", new String[] {"Ljava.util.Map<TK;TV;>;", "I", "Ljava.util.Map<TK;TV;>;"}); //$NON-NLS-1$
 		assertTrue(method.exists());
 		String javadoc = method.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
 		assertNotNull("Should have a javadoc", javadoc); //$NON-NLS-1$
@@ -426,18 +426,18 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 	
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=139160
-	public void test020() throws JavaModelException {
+	public void test020() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("Z.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod method = type.getMethod("foo", new String[] {"I", "I"}); //$NON-NLS-1$
+		IFunction method = type.getFunction("foo", new String[] {"I", "I"}); //$NON-NLS-1$
 		assertTrue(method.exists());
 		String javadoc = null;
 		try {
 			javadoc = method.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			assertTrue("Should not happen", false);
 		}
 		assertNull("Should not have a javadoc", javadoc); //$NON-NLS-1$
@@ -454,11 +454,11 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	 * (regression test for bug 140879 Spontaneous error "java.util.Set cannot be resolved...")
 	 */
 	public void test021() throws CoreException, IOException {
-		ICompilationUnit workingCopy = null;
+		IJavaScriptUnit workingCopy = null;
 		try {
 			IPackageFragment p = this.root.getPackageFragment("p2");
 			IType type = p.getClassFile("X.class").getType();
-			IMethod method = type.getMethod("foo", new String[0]);
+			IFunction method = type.getFunction("foo", new String[0]);
 			
 			// the following call should have no side-effect
 			method.getAttachedJavadoc(null);
@@ -485,18 +485,18 @@ public class AttachedJavadocTests extends ModifyingResourceTests {
 	}
 
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=149154
-	public void test022() throws JavaModelException {
+	public void test022() throws JavaScriptModelException {
 		IPackageFragment packageFragment = this.root.getPackageFragment("p1/p2"); //$NON-NLS-1$
 		assertNotNull("Should not be null", packageFragment); //$NON-NLS-1$
 		IClassFile classFile = packageFragment.getClassFile("X.class"); //$NON-NLS-1$
 		assertNotNull(classFile);
 		IType type = classFile.getType();
-		IMethod method = type.getMethod("access$1", new String[] {"Lp1.p2.X;", "I"}); //$NON-NLS-1$
+		IFunction method = type.getFunction("access$1", new String[] {"Lp1.p2.X;", "I"}); //$NON-NLS-1$
 		assertTrue(method.exists());
 		String javadoc = null;
 		try {
 			javadoc = method.getAttachedJavadoc(new NullProgressMonitor()); //$NON-NLS-1$
-		} catch(JavaModelException e) {
+		} catch(JavaScriptModelException e) {
 			assertTrue("Should not happen", false);
 		}
 		assertNull("Should not have a javadoc", javadoc); //$NON-NLS-1$

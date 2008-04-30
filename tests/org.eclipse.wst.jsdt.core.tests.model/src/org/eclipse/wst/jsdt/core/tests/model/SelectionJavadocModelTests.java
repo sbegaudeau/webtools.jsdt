@@ -13,14 +13,14 @@ package org.eclipse.wst.jsdt.core.tests.model;
 import junit.framework.Test;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.wst.jsdt.core.ICompilationUnit;
-import org.eclipse.wst.jsdt.core.IJavaElement;
-import org.eclipse.wst.jsdt.core.JavaModelException;
+import org.eclipse.wst.jsdt.core.IJavaScriptUnit;
+import org.eclipse.wst.jsdt.core.IJavaScriptElement;
+import org.eclipse.wst.jsdt.core.JavaScriptModelException;
 import org.eclipse.wst.jsdt.core.WorkingCopyOwner;
 
 public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 	
-	IJavaElement element;
+	IJavaScriptElement element;
 
 	public SelectionJavadocModelTests(String name) {
 		super(name, 3);
@@ -47,8 +47,8 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		super.tearDownSuite();
 	}
 
-	void setUnit(String name, String source) throws JavaModelException {
-		this.workingCopies = new ICompilationUnit[1];
+	void setUnit(String name, String source) throws JavaScriptModelException {
+		this.workingCopies = new IJavaScriptUnit[1];
 		this.workingCopies[0] = getWorkingCopy("/Tests/"+name, source);
 	}
 
@@ -56,17 +56,17 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		assertElementEquals(message, expected, this.element);
 	}
 
-	void assertSelectionIsEmpty(ICompilationUnit unit, String selection) throws JavaModelException {
+	void assertSelectionIsEmpty(IJavaScriptUnit unit, String selection) throws JavaScriptModelException {
 		assertSelectionIsEmpty(unit, selection, 1);
 	}
 
-	void assertSelectionIsEmpty(ICompilationUnit unit, String selection, int occurences) throws JavaModelException {
+	void assertSelectionIsEmpty(IJavaScriptUnit unit, String selection, int occurences) throws JavaScriptModelException {
 		int[] selectionPositions = selectionInfo(unit, selection, occurences);
-		IJavaElement[] elements = unit.codeSelect(selectionPositions[0], selectionPositions[1]);
+		IJavaScriptElement[] elements = unit.codeSelect(selectionPositions[0], selectionPositions[1]);
 		assertTrue("Selection should be empty", elements == null || elements.length == 0);
 	}
 
-	public void test00() throws JavaModelException {
+	public void test00() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"" + 
 			"" + 
@@ -83,7 +83,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 	}
 
 
-	public void test01() throws JavaModelException {
+	public void test01() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"" + 
 			"" + 
@@ -99,7 +99,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test01a() throws JavaModelException {
+	public void test01a() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"" + 
 			"" + 
@@ -115,7 +115,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test02() throws JavaModelException {
+	public void test02() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/** {@link #foo() foo} */\n" + 
@@ -131,7 +131,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test03() throws JavaModelException {
+	public void test03() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/** @see Test */\n" + 
@@ -144,7 +144,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test04() throws JavaModelException {
+	public void test04() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/** Javadoc {@link Test} */\n" + 
@@ -157,7 +157,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test05() throws JavaModelException {
+	public void test05() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	int field;\n" + 
@@ -171,7 +171,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test06() throws JavaModelException {
+	public void test06() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	int field;\n" + 
@@ -185,7 +185,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test07() throws JavaModelException {
+	public void test07() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
@@ -200,7 +200,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo(int x, String s) {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[7];
+		IJavaScriptElement[] elements = new IJavaScriptElement[7];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectField(this.workingCopies[0], "field");
 		elements[2] = selectMethod(this.workingCopies[0], "foo");
@@ -220,7 +220,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test08() throws JavaModelException {
+	public void test08() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
@@ -235,7 +235,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo(int x, String s) {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[7];
+		IJavaScriptElement[] elements = new IJavaScriptElement[7];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectField(this.workingCopies[0], "field");
 		elements[2] = selectMethod(this.workingCopies[0], "foo");
@@ -255,7 +255,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test09() throws JavaModelException {
+	public void test09() throws JavaScriptModelException {
 		setUnit("test/junit/Test.js",
 			"package test.junit;\n" + 
 			"public class Test {\n" + 
@@ -271,7 +271,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo(Object[] array) {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[6];
+		IJavaScriptElement[] elements = new IJavaScriptElement[6];
 		assertSelectionIsEmpty(this.workingCopies[0], "test", 2);
 		assertSelectionIsEmpty(this.workingCopies[0], "junit", 2);
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
@@ -296,7 +296,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test10() throws JavaModelException {
+	public void test10() throws JavaScriptModelException {
 		setUnit("test/junit/Test.js",
 			"package test.junit;\n" + 
 			"public class Test {\n" + 
@@ -311,7 +311,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo(Object[] array) {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[6];
+		IJavaScriptElement[] elements = new IJavaScriptElement[6];
 		assertSelectionIsEmpty(this.workingCopies[0], "test", 2);
 		assertSelectionIsEmpty(this.workingCopies[0], "junit", 2);
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
@@ -336,7 +336,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test11() throws JavaModelException {
+	public void test11() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
@@ -346,7 +346,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo() {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[2];
+		IJavaScriptElement[] elements = new IJavaScriptElement[2];
 		elements[0] = selectType(this.workingCopies[0], "RuntimeException");
 		elements[1] = selectType(this.workingCopies[0], "InterruptedException");
 		assertElementsEqual("Invalid selection(s)",
@@ -356,7 +356,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test12() throws JavaModelException {
+	public void test12() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
@@ -366,7 +366,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo() {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[2];
+		IJavaScriptElement[] elements = new IJavaScriptElement[2];
 		elements[0] = selectType(this.workingCopies[0], "RuntimeException");
 		elements[1] = selectType(this.workingCopies[0], "InterruptedException");
 		assertElementsEqual("Invalid selection(s)",
@@ -376,7 +376,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test13() throws JavaModelException {
+	public void test13() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	/**\n" + 
@@ -386,7 +386,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo(int xxx, String str) {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[2];
+		IJavaScriptElement[] elements = new IJavaScriptElement[2];
 		elements[0] = selectLocalVariable(this.workingCopies[0], "xxx");
 		elements[1] = selectLocalVariable(this.workingCopies[0], "str");
 		assertElementsEqual("Invalid selection(s)",
@@ -396,7 +396,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test14() throws JavaModelException {
+	public void test14() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"/**\n" + 
 			" * Javadoc of {@link Test}\n" + 
@@ -416,7 +416,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	int foo;\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[9];
+		IJavaScriptElement[] elements = new IJavaScriptElement[9];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectType(this.workingCopies[0], "Field");
 		elements[2] = selectField(this.workingCopies[0], "foo");
@@ -440,7 +440,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test15() throws JavaModelException {
+	public void test15() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"/**\n" + 
 			" * Javadoc of {@link Test}\n" + 
@@ -468,7 +468,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo(int xxx, String str) throws RuntimeException, InterruptedException {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[13];
+		IJavaScriptElement[] elements = new IJavaScriptElement[13];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectType(this.workingCopies[0], "Method");
 		elements[2] = selectMethod(this.workingCopies[0], "foo");
@@ -500,7 +500,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test16() throws JavaModelException {
+	public void test16() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"/**\n" + 
 			" * Javadoc of {@link Test}\n" + 
@@ -513,7 +513,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			" */\n" + 
 			"class Other {}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[4];
+		IJavaScriptElement[] elements = new IJavaScriptElement[4];
 		elements[0] = selectType(this.workingCopies[0], "Test");
 		elements[1] = selectType(this.workingCopies[0], "Other");
 		elements[2] = selectType(this.workingCopies[0], "Test", 3);
@@ -527,7 +527,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test17() throws JavaModelException {
+	public void test17() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"/**\n" + 
 			" * @see Test.Field#foo\n" + 
@@ -546,7 +546,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[11];
+		IJavaScriptElement[] elements = new IJavaScriptElement[11];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectType(this.workingCopies[0], "Field");
 		elements[2] = selectField(this.workingCopies[0], "foo");
@@ -574,7 +574,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test18() throws JavaModelException {
+	public void test18() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"/**\n" + 
 			" * @see Test.Method#foo()\n" + 
@@ -593,7 +593,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}"
 		);
-		IJavaElement[] elements = new IJavaElement[11];
+		IJavaScriptElement[] elements = new IJavaScriptElement[11];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectType(this.workingCopies[0], "Method");
 		elements[2] = selectMethod(this.workingCopies[0], "foo");
@@ -621,7 +621,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test19() throws JavaModelException {
+	public void test19() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"/**\n" + 
 			" * @see Test.Other\n" + 
@@ -635,7 +635,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	class Other {}\n" + 
 			"}"
 		);
-		IJavaElement[] elements = new IJavaElement[6];
+		IJavaScriptElement[] elements = new IJavaScriptElement[6];
 		elements[0] = selectType(this.workingCopies[0], "Test");
 		elements[1] = selectType(this.workingCopies[0], "Other");
 		elements[2] = selectType(this.workingCopies[0], "Test", 3);
@@ -653,7 +653,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test20() throws JavaModelException {
+	public void test20() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
@@ -670,7 +670,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[5];
+		IJavaScriptElement[] elements = new IJavaScriptElement[5];
 		elements[0] = selectType(this.workingCopies[0], "Field");
 		elements[1] = selectField(this.workingCopies[0], "foo");
 		elements[2] = selectField(this.workingCopies[0], "foo", 2);
@@ -687,7 +687,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test21() throws JavaModelException {
+	public void test21() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
@@ -704,7 +704,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}"
 		);
-		IJavaElement[] elements = new IJavaElement[5];
+		IJavaScriptElement[] elements = new IJavaScriptElement[5];
 		elements[0] = selectType(this.workingCopies[0], "Method");
 		elements[1] = selectMethod(this.workingCopies[0], "foo");
 		elements[2] = selectMethod(this.workingCopies[0], "foo", 2);
@@ -721,7 +721,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test22() throws JavaModelException {
+	public void test22() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
@@ -733,7 +733,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}"
 		);
-		IJavaElement[] elements = new IJavaElement[2];
+		IJavaScriptElement[] elements = new IJavaScriptElement[2];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectType(this.workingCopies[0], "Other");
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
@@ -744,7 +744,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test23() throws JavaModelException {
+	public void test23() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
@@ -763,7 +763,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[5];
+		IJavaScriptElement[] elements = new IJavaScriptElement[5];
 		elements[0] = selectType(this.workingCopies[0], "Field");
 		elements[1] = selectField(this.workingCopies[0], "foo");
 		elements[2] = selectField(this.workingCopies[0], "foo", 2);
@@ -780,7 +780,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test24() throws JavaModelException {
+	public void test24() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
@@ -799,7 +799,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}"
 		);
-		IJavaElement[] elements = new IJavaElement[5];
+		IJavaScriptElement[] elements = new IJavaScriptElement[5];
 		elements[0] = selectType(this.workingCopies[0], "Method");
 		elements[1] = selectMethod(this.workingCopies[0], "foo");
 		elements[2] = selectMethod(this.workingCopies[0], "foo", 2);
@@ -816,7 +816,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test25() throws JavaModelException {
+	public void test25() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	void bar() {\n" + 
@@ -830,7 +830,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	}\n" + 
 			"}"
 		);
-		IJavaElement[] elements = new IJavaElement[2];
+		IJavaScriptElement[] elements = new IJavaScriptElement[2];
 		elements[0] = selectType(this.workingCopies[0], "Test", 2);
 		elements[1] = selectType(this.workingCopies[0], "Other");
 		// Running test with Unix/Windows do not matter even if result includes positions as we use working copies
@@ -841,7 +841,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 		);
 	}
 
-	public void test26() throws JavaModelException {
+	public void test26() throws JavaScriptModelException {
 		setUnit("Test.js",
 			"public class Test {\n" + 
 			"	static int field;\n" + 
@@ -852,7 +852,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"	void foo() {}\n" + 
 			"}\n"
 		);
-		IJavaElement[] elements = new IJavaElement[3];
+		IJavaScriptElement[] elements = new IJavaScriptElement[3];
 		elements[0] = selectField(this.workingCopies[0], "field");
 		elements[1] = selectType(this.workingCopies[0], "Test");
 		elements[2] = selectField(this.workingCopies[0], "field");
@@ -870,7 +870,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 	 */
 	public void testBug86380() throws CoreException {
 		this.wcOwner = new WorkingCopyOwner() {};
-		workingCopies = new ICompilationUnit[2];
+		workingCopies = new IJavaScriptUnit[2];
 		workingCopies[0] = getWorkingCopy("/Tests/b86380/package-info.js",
 			"/**\n" + 
 			" * Valid javadoc.\n" + 
@@ -900,7 +900,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			wcOwner,
 			null/*don't compute problems*/
 		);
-		IJavaElement[] elements = new IJavaElement[3];
+		IJavaScriptElement[] elements = new IJavaScriptElement[3];
 		elements[0] = selectType(this.workingCopies[0], "Test");
 		elements[1] = selectMethod(this.workingCopies[0], "foo");
 		elements[2] = selectField(this.workingCopies[0], "field");
@@ -916,7 +916,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 	 * Bug 90266: [select] Code select returns null when there's a string including a slash on same line
 	 * @see "https://bugs.eclipse.org/bugs/show_bug.cgi?id=90266"
 	 */
-	public void testBug90266_String() throws JavaModelException {
+	public void testBug90266_String() throws JavaScriptModelException {
 		setUnit("b90266/Test.js",
 			"package b90266;\n" + 
 			"public class Test {\n" + 
@@ -928,13 +928,13 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"}\n"
 		);
 		int[] selectionPositions = selectionInfo(workingCopies[0], "field", 2);
-		IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
+		IJavaScriptElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
 		assertElementsEqual("Invalid selection(s)",
 			"field [in Test [in [Working copy] Test.js [in b90266 [in <project root> [in Tests]]]]]",
 			elements
 		);
 	}
-	public void testBug90266_Char() throws JavaModelException {
+	public void testBug90266_Char() throws JavaScriptModelException {
 		setUnit("b90266/Test.js",
 			"package b90266;\n" + 
 			"public class Test {\n" + 
@@ -946,7 +946,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
 			"}\n"
 		);
 		int[] selectionPositions = selectionInfo(workingCopies[0], "field", 2);
-		IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
+		IJavaScriptElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
 		assertElementsEqual("Invalid selection(s)",
 			"field [in Test [in [Working copy] Test.js [in b90266 [in <project root> [in Tests]]]]]",
 			elements
@@ -958,7 +958,7 @@ public class SelectionJavadocModelTests extends AbstractJavaModelTests {
  * @test Ensure that no exception is thrown while selecting method in javadoc comment
  * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=165701"
  */
-public void testBug165701() throws JavaModelException {
+public void testBug165701() throws JavaScriptModelException {
 	setUnit("b165701/Test.js",
 		"package b165701;\n" + 
 		"/**\n" + 
@@ -969,7 +969,7 @@ public void testBug165701() throws JavaModelException {
 		"}\n"
 	);
 	int[] selectionPositions = selectionInfo(workingCopies[0], "fooo", 1);
-	IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
+	IJavaScriptElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
 	assertElementsEqual("Invalid selection(s)",
 		"Test [in [Working copy] Test.js [in b165701 [in <project root> [in Tests]]]]",
 		elements
@@ -981,7 +981,7 @@ public void testBug165701() throws JavaModelException {
  * @test Ensure that no exception is thrown while selecting method in javadoc comment
  * @see "http://bugs.eclipse.org/bugs/show_bug.cgi?id=165794"
  */
-public void testBug165794() throws JavaModelException {
+public void testBug165794() throws JavaScriptModelException {
 	setUnit("b165794/Test.js",
 		"package b165794;\n" + 
 		"/**\n" + 
@@ -1011,7 +1011,7 @@ public void testBug165794() throws JavaModelException {
 		"class Z {}"
 	);
 	int[] selectionPositions = selectionInfo(workingCopies[0], "getMax", 1);
-	IJavaElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
+	IJavaScriptElement[] elements = workingCopies[0].codeSelect(selectionPositions[0], 0);
 	assertElementsEqual("Invalid selection(s)",
 		"getMax(A<T>) [in X [in [Working copy] Test.js [in b165794 [in <project root> [in Tests]]]]]",
 		elements
